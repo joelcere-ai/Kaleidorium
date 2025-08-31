@@ -16,76 +16,70 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'development' 
-              ? [
-                  "default-src 'self'",
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
-                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com https://www.google-analytics.com https://analytics.google.com ws: wss:",
-                  "style-src 'self' 'unsafe-inline'",
-                  "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
-                  "font-src 'self' data:",
-                  "frame-src 'none'",
-                  "object-src 'none'",
-                  "base-uri 'self'",
-                  "form-action 'self'"
-                ].join('; ')
-              : [
-                  "default-src 'self'",
-                  "script-src 'self' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
-                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com https://www.google-analytics.com https://analytics.google.com",
-                  "style-src 'self' 'unsafe-inline'",
-                  "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
-                  "font-src 'self' data:",
-                  "frame-src 'none'",
-                  "object-src 'none'",
-                  "base-uri 'self'",
-                  "form-action 'self'"
-                ].join('; ')
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          ...(process.env.NODE_ENV === 'production' ? [
-            {
-              key: 'Strict-Transport-Security',
-              value: 'max-age=31536000; includeSubDomains; preload'
-            }
-          ] : []),
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'off'
-          },
-          {
-            key: 'X-Download-Options',
-            value: 'noopen'
-          }
-        ]
-      }
-    ]
+  // Temporarily disable CSP to fix Google Analytics
+  // async headers() {
+  //   return [
+  //     {
+  //       source: '/:path*',
+  //       headers: [
+  //         {
+  //           key: 'Content-Security-Policy',
+  //           value: process.env.NODE_ENV === 'development' 
+  //             ? [
+  //                 "default-src 'self'",
+  //                 "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net",
+  //                 "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com",
+  //                 "style-src 'self' 'unsafe-inline'",
+  //                 "img-src 'self' data: blob: https://*.supabase.co",
+  //                 "font-src 'self' data:",
+  //                 "frame-src 'none'",
+  //                 "object-src 'none'",
+  //                 "base-uri 'self'",
+  //                 "form-action 'self'"
+  //               ].join('; ')
+  //             : [
+  //                 "default-src 'self'",
+  //                 "script-src 'self' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
+  //                 "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com https://www.google-analytics.com https://analytics.google.com",
+  //                 "style-src 'self' 'unsafe-inline'",
+  //                 "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
+  //                 "font-src 'self' data:",
+  //                 "frame-src 'none'",
+  //                 "object-src 'none'",
+  //                 "base-uri 'self'",
+  //                 "form-action 'self'"
+  //               ].join('; ')
+  //         },
+  //         {
+  //           key: 'X-Frame-Options',
+  //           value: 'DENY'
+  //         },
+  //         {
+  //           key: 'X-Content-Type-Options',
+  //           value: 'nosniff'
+  //         },
+  //         {
+  //           key: 'X-XSS-Protection',
+  //           value: '1; mode=block'
+  //         },
+  //         {
+  //           key: 'Referrer-Policy',
+  //           value: 'strict-origin-when-cross-origin'
+  //         },
+  //         {
+  //           key: 'Permissions-Policy',
+  //           value: 'camera=(), microphone=(), geolocation=()'
+  //         }
+  //       ],
+  //     },
+  //   ]
+  // },
+  experimental: {
+    serverComponentsExternalPackages: ['sharp'],
+  },
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Add any custom webpack config here
+    return config
   },
   // Enable React strict mode for better development experience
   reactStrictMode: true,
