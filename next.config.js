@@ -26,10 +26,10 @@ const nextConfig = {
             value: process.env.NODE_ENV === 'development' 
               ? [
                   "default-src 'self'",
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net",
-                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com ws: wss:",
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
+                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com https://www.google-analytics.com https://analytics.google.com ws: wss:",
                   "style-src 'self' 'unsafe-inline'",
-                  "img-src 'self' data: blob: https://*.supabase.co",
+                  "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
                   "font-src 'self' data:",
                   "frame-src 'none'",
                   "object-src 'none'",
@@ -38,10 +38,10 @@ const nextConfig = {
                 ].join('; ')
               : [
                   "default-src 'self'",
-                  "script-src 'self' https://api.emailjs.com https://cdn.jsdelivr.net",
-                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com",
+                  "script-src 'self' 'unsafe-inline' https://api.emailjs.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
+                  "connect-src 'self' https://api.emailjs.com https://*.supabase.co https://api.openai.com https://www.google-analytics.com https://analytics.google.com",
                   "style-src 'self' 'unsafe-inline'",
-                  "img-src 'self' data: blob: https://*.supabase.co",
+                  "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
                   "font-src 'self' data:",
                   "frame-src 'none'",
                   "object-src 'none'",
