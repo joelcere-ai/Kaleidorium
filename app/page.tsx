@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const initialView = (searchParams.get("view") as "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") || "discover";
   const [view, setView] = useState<typeof initialView>(initialView);
@@ -19,6 +19,14 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <ArtDiscovery view={view} setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
 

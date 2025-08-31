@@ -3,9 +3,9 @@
 import { ProfilePage } from '@/components/profile-page';
 import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 
-export default function Profile() {
+function ProfileContent() {
   const router = useRouter();
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">("profile");
   const [collectionCount, setCollectionCount] = useState(0);
@@ -24,5 +24,13 @@ export default function Profile() {
       <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
       <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
     </div>
+  );
+}
+
+export default function Profile() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+      <ProfileContent />
+    </Suspense>
   );
 } 
