@@ -1,0 +1,16 @@
+{
+  "name": "kaleidorium-bulk-upload",
+  "version": "1.0.0",
+  "description": "Bulk upload script for Kaleidorium artwork",
+  "main": "bulk-upload-artwork.js",
+  "scripts": {
+    "upload": "node bulk-upload-artwork.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "csv-parser": "^3.0.0"
+  },
+  "keywords": ["supabase", "bulk-upload", "artwork"],
+  "author": "Kaleidorium",
+  "license": "MIT"
+} 

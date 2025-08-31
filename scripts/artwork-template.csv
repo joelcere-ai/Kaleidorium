@@ -1,0 +1,4 @@
+filename,artwork_title,artist,description,price,medium,genre,style,subject,colour,dimensions,year,artwork_link
+example1.jpg,"Digital Dreams","Jane Smith","A vibrant exploration of digital consciousness and virtual reality landscapes.","$5,000","Digital","abstract","Abstract","dreams","blue","1920x1080 pixels","2024","https://janesmith.art/digital-dreams"
+example2.png,"Urban Reflections","Mike Johnson","Street photography capturing the essence of metropolitan life.","Not for sale","Photography","realism","Photorealistic","cityscape","grey","3000x2000 pixels","2023","https://mikejohnson.photo"
+example3.webp,"Organic Flow","Sarah Chen","Fluid forms inspired by natural patterns and biological structures.","$8,500","Mixed Media","abstract","Abstract","nature","green","1600x2400 pixels","2024","" 

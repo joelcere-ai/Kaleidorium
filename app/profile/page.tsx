@@ -1,0 +1,28 @@
+"use client"
+
+import { ProfilePage } from '@/components/profile-page';
+import { useRouter } from 'next/navigation';
+import { AppHeader } from '@/components/app-header';
+import { useState } from 'react';
+
+export default function Profile() {
+  const router = useRouter();
+  const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">("profile");
+  const [collectionCount, setCollectionCount] = useState(0);
+  
+  const handleReturnToDiscover = () => {
+    router.push('/');
+  };
+
+  const handleNavigate = (nextView: typeof view) => {
+    if (nextView === "profile") return;
+    router.push(`/?view=${nextView}`);
+  };
+
+  return (
+    <div>
+      <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
+      <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
+    </div>
+  );
+} 

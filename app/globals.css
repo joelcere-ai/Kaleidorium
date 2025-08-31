@@ -2,20 +2,258 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  html {
+    font-size: 16px;
+  }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-base leading-relaxed;
+  }
+  button, .btn, .Button, .shadcn-button, .ui-button {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+
+  /* Logo and main headings */
+  .logo, h1.artwork-title {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-4xl font-bold;
+  }
+  /* Navigation */
+  nav, .nav, .main-nav, .navbar {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-lg font-bold;
+  }
+  /* Artwork title (if not using .logo) */
+  h1, .artwork-title {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-3xl font-bold;
+  }
+  /* Artist name */
+  .artist-name {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-lg font-normal;
+  }
+  /* Price */
+  .artwork-price {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-4xl font-bold;
+  }
+  /* Labels (Medium, Dimensions, etc.) */
+  .artwork-label, .artwork-section-label, label, .field-label, .form-label {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-sm font-semibold tracking-wide;
+  }
+  /* Description & body */
+  .artwork-description, .artwork-body, p, textarea, input, select {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-base font-normal;
+  }
+  /* Tags */
+  .artwork-tag, .tag, .chip, .artwork-tags span {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-xs lowercase rounded-full bg-gray-200 text-gray-700 px-3 py-1 mr-1 mb-1 inline-block;
+    letter-spacing: 0.02em;
+  }
+  h2 {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-2xl font-semibold leading-tight;
+  }
+  h3 {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-xl font-semibold leading-snug;
+  }
+  h4 {
+    font-family: 'Times New Roman', Times, serif;
+    @apply text-lg font-medium leading-snug;
+  }
+  ul, ol, li {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-base font-normal;
+  }
+  a {
+    font-family: Arial, Helvetica, sans-serif;
+    @apply text-base font-normal;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
+
+/* Landscape orientation optimizations for mobile devices */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  /* Optimize mobile artwork display in landscape */
+  .mobile-artwork-landscape {
+    height: 100vh !important;
+    width: 100vw !important;
+  }
+  
+  /* Reduce header padding in landscape for more image space */
+  .mobile-header-landscape {
+    padding: 0.5rem 1rem !important;
+  }
+  
+  /* Optimize button spacing in landscape */
+  .mobile-buttons-landscape {
+    padding: 0.75rem 1rem !important;
+    gap: 2rem !important;
+  }
+  
+  /* Optimize modal sizing in landscape */
+  .mobile-modal-landscape {
+    max-width: 80vw !important;
+    max-height: 85vh !important;
+  }
+}
+
+/* Smooth transitions for orientation changes */
+@media screen and (orientation: landscape) {
+  .artwork-container {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .artwork-container {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+@layer components {
+  /* Action buttons with colored borders - restore original red/green colors */
+  button[class*="border-red-200"] {
+    background-color: transparent !important;
+    color: rgb(220 38 38) !important; /* red-600 */
+    border-color: rgb(254 202 202) !important; /* red-200 */
+  }
+  
+  button[class*="border-red-200"]:hover {
+    background-color: rgb(254 242 242) !important; /* red-50 */
+    color: rgb(220 38 38) !important; /* red-600 */
+    border-color: rgb(254 202 202) !important; /* red-200 */
+  }
+  
+  button[class*="border-green-200"] {
+    background-color: transparent !important;
+    color: rgb(22 163 74) !important; /* green-600 */
+    border-color: rgb(187 247 208) !important; /* green-200 */
+  }
+  
+  button[class*="border-green-200"]:hover {
+    background-color: rgb(240 253 244) !important; /* green-50 */
+    color: rgb(22 163 74) !important; /* green-600 */
+    border-color: rgb(187 247 208) !important; /* green-200 */
+  }
+  
+  /* Form and upload buttons - keep black */
+  form button[type="submit"],
+  .registration-form button[type="submit"],
+  .upload-container button:not([class*="variant-outline"]),
+  button[class*="upload"]:not([class*="variant-outline"]) {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+  
+  /* Primary action buttons - keep black for specific buttons only */
+  .primary-action-button,
+  button[type="submit"]:not([class*="variant-outline"]):not([class*="border-red"]):not([class*="border-green"]),
+  .add-to-collection-button {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+  
+  /* Reset any forced card styling to use theme defaults */
+  .bg-card {
+    background-color: hsl(var(--card)) !important;
+  }
+  
+  .text-card-foreground {
+    color: hsl(var(--card-foreground)) !important;
+  }
+
+}
+
+.force-sans, .force-sans * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Collection modal swipe optimizations */
+.collection-modal-swipe {
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Smooth transitions for swipe animations */
+.swipe-container {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Prevent text selection during swipe */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+

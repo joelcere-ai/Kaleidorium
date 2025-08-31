@@ -1,0 +1,169 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { ArrowLeft } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
+import { supabase } from "@/lib/supabase"
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSendingReset, setIsSendingReset] = useState(false)
+  const { toast } = useToast()
+  const router = useRouter()
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      if (data.user) {
+        // Update last session time
+        await supabase
+          .from("UserProfile")
+          .update({ last_session: new Date().toISOString() })
+          .eq("id", data.user.id)
+
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+        })
+
+        router.push("/")
+      }
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address to reset your password.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsSendingReset(true)
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email)
+
+      if (error) throw error
+
+      toast({
+        title: "Password reset email sent",
+        description: "Please check your email for the password reset link.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send password reset email. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSendingReset(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-[800px] py-10">
+        <Button
+          variant="ghost"
+          className="mb-8"
+          onClick={() => router.push("/")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Discovery
+        </Button>
+
+        <div className="grid gap-6">
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src="/logo.svg"
+              alt="BlockMeister Logo"
+              width={120}
+              height={120}
+              className="mb-6"
+            />
+            <h1 className="text-2xl font-semibold tracking-tight mb-2">
+              Welcome back
+            </h1>
+            <p className="text-muted-foreground">
+              Sign in to continue exploring and collecting digital art.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+
+            <Button
+              variant="link"
+              type="button"
+              className="p-0 h-auto font-normal text-sm"
+              onClick={handleForgotPassword}
+              disabled={isSendingReset}
+            >
+              {isSendingReset ? "Sending reset email..." : "Forgot password?"}
+            </Button>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Button
+              variant="link"
+              className="p-0 h-auto font-normal"
+              onClick={() => router.push("/register")}
+            >
+              Create one
+            </Button>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+} 

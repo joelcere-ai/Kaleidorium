@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaleidorium Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 10px;
+            border-radius: 20px;
+        }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #333;
+        }
+        .preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .size-label {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Kaleidorium Icon Generator</h1>
+        <p>Generate PWA icons with transparent rounded corners for perfect mobile display.</p>
+        
+        <button onclick="generateAllIcons()">Generate All Icons</button>
+        <button onclick="downloadAll()">Download All</button>
+        
+        <div class="preview" id="preview"></div>
+    </div>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const generatedIcons = {};
+
+        function drawRoundedIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Calculate measurements
+            const radius = size * 0.2; // 20% radius for nice rounded corners
+            const kSize = size * 0.6; // K letter size
+            const kX = size * 0.2; // K position X
+            const kY = size * 0.2; // K position Y
+            
+            // Draw rounded rectangle background
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Draw white K letter
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `bold ${kSize}px "Times New Roman", serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Draw the K letter centered
+            ctx.fillText('K', size/2, size/2);
+        }
+
+        function generateAllIcons() {
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            
+            sizes.forEach(size => {
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const container = document.createElement('div');
+                const label = document.createElement('div');
+                
+                // Set up elements
+                label.className = 'size-label';
+                label.textContent = `${size}×${size}`;
+                container.appendChild(canvas);
+                container.appendChild(label);
+                preview.appendChild(container);
+                
+                // Draw icon
+                drawRoundedIcon(canvas, size);
+                
+                // Store for download
+                generatedIcons[size] = canvas;
+            });
+        }
+
+        function downloadIcon(canvas, size) {
+            const link = document.createElement('a');
+            link.download = `icon-${size}x${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            Object.entries(generatedIcons).forEach(([size, canvas]) => {
+                setTimeout(() => {
+                    downloadIcon(canvas, size);
+                }, parseInt(size) / 10); // Stagger downloads
+            });
+        }
+
+        // Add click handlers to canvases for individual download
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'CANVAS') {
+                const size = e.target.width;
+                downloadIcon(e.target, size);
+            }
+        });
+
+        // Generate icons on page load
+        window.onload = () => {
+            generateAllIcons();
+        };
+    </script>
+</body>
+</html> 
