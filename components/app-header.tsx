@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Heart, Menu, Search, User, X, Palette, Info, AtSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
@@ -51,13 +50,6 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
       <div className="flex items-center justify-between p-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image
-            src="/kaleidorium-logo.jpg"
-            alt="Kaleidorium"
-            width={32}
-            height={32}
-            className="rounded"
-          />
           <span className="font-serif text-xl font-semibold">Kaleidorium</span>
         </Link>
 
