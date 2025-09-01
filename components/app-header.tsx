@@ -64,21 +64,19 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
             Discover Art
           </Button>
           
-          {user && (
-            <Button 
-              variant="ghost" 
-              className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNav("collection")}
-            >
-              <Heart className="w-4 h-4 mr-1" />
-              Collection
-              {collectionCount && collectionCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {collectionCount}
-                </span>
-              )}
-            </Button>
-          )}
+          <Button 
+            variant="ghost" 
+            className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNav("collection")}
+          >
+            <Heart className="w-4 h-4 mr-1" />
+            Collection
+            {collectionCount && collectionCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {collectionCount}
+              </span>
+            )}
+          </Button>
           
           <Button 
             variant="ghost" 
@@ -152,21 +150,19 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
               Discover Art
             </Button>
             
-            {user && (
-              <Button
-                variant="ghost"
-                className={`justify-start relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
-                onClick={() => handleNav("collection")}
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Collection
-                {collectionCount && collectionCount > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {collectionCount}
-                  </span>
-                )}
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              className={`justify-start relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
+              onClick={() => handleNav("collection")}
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              Collection
+              {collectionCount && collectionCount > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {collectionCount}
+                </span>
+              )}
+            </Button>
             
             <Button
               variant="ghost"
