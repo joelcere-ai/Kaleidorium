@@ -2,13 +2,13 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
+import { AppHeader } from "@/components/app-header"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -89,6 +89,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader />
       <div className="container max-w-[800px] py-10">
         <Button
           variant="ghost"
@@ -101,13 +102,6 @@ export default function LoginPage() {
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
-            <Image
-              src="/logo.svg"
-              alt="BlockMeister Logo"
-              width={120}
-              height={120}
-              className="mb-6"
-            />
             <h1 className="text-2xl font-semibold tracking-tight mb-2">
               Welcome back
             </h1>
