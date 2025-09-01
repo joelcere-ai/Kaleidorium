@@ -1455,7 +1455,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4">
               <div className="mb-6 flex flex-col justify-between items-start gap-4">
-                <h2 className="font-serif text-[28px] leading-tight">My Collection ({dbCollection.length})</h2>
+                <h2 className="font-serif text-[28px] leading-tight">My Collection ({(user ? dbCollection : collection).length})</h2>
                 <Button onClick={() => setView("discover")}>Return to Discovery</Button>
               </div>
 
@@ -1468,14 +1468,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <Button onClick={() => router.push('/register')} variant="default">Register</Button>
                 </div>
               )}
-              {dbCollection.length === 0 ? (
+              {(user ? dbCollection.length === 0 : collection.length === 0) ? (
                 <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
                   <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 rounded-full bg-muted flex items-center justify-center">
                     <Heart className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
                   </div>
                   <h3 className="text-lg sm:text-xl font-medium mb-2">Your collection is empty</h3>
                   <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base">
-                    Start exploring BlockMeister's curated selection of artwork and add pieces you love to your collection.
+                    Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.
                   </p>
                   <Button onClick={() => setView("discover")}>Discover Artwork</Button>
                 </div>
@@ -1542,7 +1542,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               ) : (
                 // Mobile grid view of collection
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {dbCollection.map((artwork) => (
+                  {(user ? dbCollection : collection).map((artwork) => (
                     <Card
                       key={artwork.id}
                       className="overflow-hidden group"
@@ -1597,7 +1597,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop Collection Page
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="font-serif text-[28px] leading-tight">My Collection ({dbCollection.length})</h2>
+              <h2 className="font-serif text-[28px] leading-tight">My Collection ({(user ? dbCollection : collection).length})</h2>
               <Button onClick={() => setView("discover")}>Return to Discovery</Button>
             </div>
 
@@ -1610,14 +1610,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <Button onClick={() => router.push('/register')} variant="default">Register</Button>
               </div>
             )}
-            {dbCollection.length === 0 ? (
+            {(user ? dbCollection.length === 0 : collection.length === 0) ? (
               <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 rounded-full bg-muted flex items-center justify-center">
                   <Heart className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-medium mb-2">Your collection is empty</h3>
                 <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base">
-                  Start exploring BlockMeister's curated selection of artwork and add pieces you love to your collection.
+                  Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.
                 </p>
                 <Button onClick={() => setView("discover")}>Discover Artwork</Button>
               </div>
@@ -1643,10 +1643,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     {/* Position indicator */}
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-500">
-                        {currentDesktopCollectionIndex + 1} of {dbCollection.length}
+                        {currentDesktopCollectionIndex + 1} of {(user ? dbCollection : collection).length}
                       </span>
                       <div className="flex gap-1">
-                        {dbCollection.map((_, index) => (
+                        {(user ? dbCollection : collection).map((_, index) => (
                           <div
                             key={index}
                             className={`w-2 h-2 rounded-full transition-colors ${
@@ -1685,7 +1685,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           ← Previous
                         </Button>
                       )}
-                      {currentDesktopCollectionIndex < dbCollection.length - 1 && (
+                      {currentDesktopCollectionIndex < (user ? dbCollection : collection).length - 1 && (
                         <Button
                           variant="outline"
                           onClick={() => navigateToDesktopCollectionItem(currentDesktopCollectionIndex + 1)}
@@ -1703,11 +1703,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           if (selectedCollectionArtwork && selectedCollectionArtwork.id) {
                             handleRemoveFromCollection(selectedCollectionArtwork.id)
                             // Adjust index if we removed the last item
-                            if (currentDesktopCollectionIndex >= dbCollection.length - 1) {
-                              setCurrentDesktopCollectionIndex(Math.max(0, dbCollection.length - 2));
+                            if (currentDesktopCollectionIndex >= (user ? dbCollection : collection).length - 1) {
+                              setCurrentDesktopCollectionIndex(Math.max(0, (user ? dbCollection : collection).length - 2));
                             }
                             // Close modal if collection becomes empty
-                            if (dbCollection.length <= 1) {
+                            if ((user ? dbCollection : collection).length <= 1) {
                               setSelectedCollectionArtwork(null);
                             }
                           }
@@ -1744,7 +1744,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             ) : (
               // Desktop grid view of collection
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {dbCollection.map((artwork) => (
+                {(user ? dbCollection : collection).map((artwork) => (
                   <Card
                     key={artwork.id}
                     className="overflow-hidden group cursor-pointer"
