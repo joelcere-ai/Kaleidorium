@@ -106,7 +106,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-muted-foreground">
-              Sign in to continue exploring and collecting digital art.
+              Sign in to continue exploring and collecting art specially curated for you.
             </p>
           </div>
 
