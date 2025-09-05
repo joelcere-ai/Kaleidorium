@@ -621,7 +621,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
     }
     
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/auth/password-reset`,
+      redirectTo: `${window.location.origin}/auth/password-reset-callback`,
     });
     if (error) {
       setResetMessage(error.message);
