@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const next = requestUrl.searchParams.get('next')
+  const type = requestUrl.searchParams.get('type')
 
   if (code) {
     const supabase = createRouteHandlerClient<Database>({ cookies })
@@ -18,15 +19,13 @@ export async function GET(request: NextRequest) {
     }
 
     if (session?.user.aud === 'authenticated') {
-      // Check if this is a password recovery flow
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.user_metadata?.is_recovery) {
-          // It's a recovery, so clear the flag and redirect to update password
-           await supabase.auth.updateUser({
-               data: { is_recovery: undefined } 
-           });
-          return NextResponse.redirect(`${requestUrl.origin}/update-password`);
+      // Check if this is a password recovery flow by checking the 'type' parameter
+      // Supabase sends type=recovery for password reset flows
+      if (type === 'recovery') {
+        return NextResponse.redirect(`${requestUrl.origin}/auth/password-reset`);
       }
+      
+      // For regular sign-in, redirect to homepage
       return NextResponse.redirect(requestUrl.origin);
     }
   }
