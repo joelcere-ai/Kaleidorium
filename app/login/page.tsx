@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isSendingReset, setIsSendingReset] = useState(false)
+
   const { toast } = useToast()
   const router = useRouter()
 
@@ -55,36 +55,8 @@ export default function LoginPage() {
     }
   }
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      toast({
-        title: "Email required",
-        description: "Please enter your email address to reset your password.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsSendingReset(true)
-
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email)
-
-      if (error) throw error
-
-      toast({
-        title: "Password reset email sent",
-        description: "Please check your email for the password reset link.",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send password reset email. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSendingReset(false)
-    }
+  const handleForgotPassword = () => {
+    router.push("/forgot-password");
   }
 
   return (
@@ -136,9 +108,8 @@ export default function LoginPage() {
               type="button"
               className="p-0 h-auto font-normal text-sm"
               onClick={handleForgotPassword}
-              disabled={isSendingReset}
             >
-              {isSendingReset ? "Sending reset email..." : "Forgot password?"}
+              Forgot password?
             </Button>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
