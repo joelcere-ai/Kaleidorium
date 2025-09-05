@@ -2,7 +2,7 @@ import React from "react";
 
 export function Footer() {
   return (
-    <footer className="w-full py-4 border-t bg-background text-center text-xs text-muted-foreground">
+    <footer className="w-full py-4 border-t bg-background text-center text-base text-foreground">
       <div className="container mx-auto flex flex-col sm:flex-row justify-center gap-4">
         <a
           href="/terms"
