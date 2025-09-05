@@ -30,6 +30,7 @@ export default function ForgotPasswordPage() {
 
     try {
       console.log('Sending password reset to:', email);
+      console.log('Using production URL for redirect');
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: 'https://v0-kaleidorium-bnc8m0z24-joelcere-gmailcoms-projects.vercel.app/password-reset',
       });
