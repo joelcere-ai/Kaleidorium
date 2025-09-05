@@ -8,16 +8,16 @@ export function Footer() {
           href="/terms"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:underline"
+          className="hover:underline text-base text-foreground font-normal"
         >
           Terms of Service
         </a>
-        <span className="hidden sm:inline">|</span>
+        <span className="hidden sm:inline text-base text-foreground">|</span>
         <a
           href="/privacy"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:underline"
+          className="hover:underline text-base text-foreground font-normal"
         >
           Privacy & Data Policy
         </a>
