@@ -95,6 +95,44 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   const [dbCollection, setDbCollection] = useState<Artwork[]>([]);
 
+  // Enhanced localStorage helpers for temporary collection
+  const saveTemporaryCollection = (newCollection: Artwork[]) => {
+    try {
+      localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(newCollection));
+      setCollectionCount(newCollection.length);
+    } catch (error) {
+      console.error('Failed to save temporary collection:', error);
+    }
+  };
+
+  const loadTemporaryCollection = (): Artwork[] => {
+    try {
+      const saved = localStorage.getItem('kaleidorium_temp_collection');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error('Failed to load temporary collection:', error);
+      return [];
+    }
+  };
+
+  // Load temporary collection on mount for anonymous users
+  useEffect(() => {
+    if (mounted && !user) {
+      const savedCollection = loadTemporaryCollection();
+      setCollection(savedCollection);
+      setCollectionCount(savedCollection.length);
+    }
+  }, [mounted, user, setCollectionCount]);
+
+  // Update collection count when collection changes
+  useEffect(() => {
+    if (!user) {
+      setCollectionCount(collection.length);
+    } else {
+      setCollectionCount(dbCollection.length);
+    }
+  }, [collection.length, dbCollection.length, user, setCollectionCount]);
+
   // Debug logging for mobile menu state
   useEffect(() => {
     console.log('Mobile menu state:', { showMenuModal, isMobile, isTablet, view });
@@ -636,7 +674,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     });
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences]);
 
-  // Refactored handleAddToCollection
+  // Enhanced handleAddToCollection with localStorage persistence
   const handleAddToCollection = useCallback(async () => {
     if (!mounted || !currentArtwork) return;
     
@@ -646,15 +684,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!user) {
       updateLocalPreferences(currentArtwork, 'add');
       if (currentArtwork && currentArtwork.id && !collection.some((item) => item.id === currentArtwork.id)) {
-        setCollection([...collection, currentArtwork]);
-      toast({
-        title: "Added to collection",
+        const newCollection = [...collection, currentArtwork];
+        setCollection(newCollection);
+        saveTemporaryCollection(newCollection); // Persist to localStorage
+        toast({
+          title: "Added to collection",
           description: `\"${currentArtwork.title}\" has been added to your collection.`,
         });
       } else if (currentArtwork && currentArtwork.id) {
-      toast({
-        title: "Already in collection",
-        description: "This artwork is already in your collection.",
+        toast({
+          title: "Already in collection",
+          description: "This artwork is already in your collection.",
         });
       }
       const recommendedArtworks = getLocalRecommendations(artworks);
@@ -875,10 +915,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   const handleRemoveFromCollection = async (id: string) => {
     if (!user) {
+      // Handle temporary collection removal
+      const newCollection = collection.filter((item) => item.id !== id);
+      setCollection(newCollection);
+      saveTemporaryCollection(newCollection); // Persist to localStorage
+      
+      const removedArtwork = collection.find((item) => item.id === id);
       toast({
-        title: "Error",
-        description: "You must be logged in to remove artworks from your collection.",
-        variant: "destructive",
+        title: "Removed from collection",
+        description: removedArtwork ? `\"${removedArtwork.title}\" has been removed from your collection.` : "Artwork removed from collection.",
       });
       return;
     }
@@ -1459,13 +1504,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <Button onClick={() => setView("discover")}>Return to Discovery</Button>
               </div>
 
-              {!user && (
+              {!user && collection.length > 0 && (
+                <div
+                  className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg text-blue-900 flex flex-col items-start gap-3 font-sans shadow-sm"
+                  style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-blue-600" />
+                    <span className="font-semibold">Save Your Collection!</span>
+                  </div>
+                  <span className="text-sm">
+                    You've collected {collection.length} artwork{collection.length !== 1 ? 's' : ''}! Register now to save your collection permanently and get personalized recommendations.
+                  </span>
+                  <div className="flex gap-2">
+                    <Button onClick={() => router.push('/register')} variant="default" size="sm">
+                      Register Now
+                    </Button>
+                    <Button onClick={() => router.push('/login')} variant="outline" size="sm">
+                      Sign In
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {!user && collection.length === 0 && (
                 <div
                   className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 flex flex-col items-start gap-2 font-sans"
                   style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
                 >
-                  <span>You need to register to save your collection and your preferences.</span>
-                  <Button onClick={() => router.push('/register')} variant="default">Register</Button>
+                  <span>Register to save your collection and preferences as you discover art.</span>
+                  <Button onClick={() => router.push('/register')} variant="default" size="sm">Register</Button>
                 </div>
               )}
               {(user ? dbCollection.length === 0 : collection.length === 0) ? (
@@ -1601,13 +1669,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <Button onClick={() => setView("discover")}>Return to Discovery</Button>
             </div>
 
-            {!user && (
+            {!user && collection.length > 0 && (
+              <div
+                className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg text-blue-900 flex flex-col items-start gap-3 font-sans shadow-sm"
+                style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
+              >
+                <div className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-blue-600" />
+                  <span className="font-semibold">Save Your Collection!</span>
+                </div>
+                <span className="text-sm">
+                  You've collected {collection.length} artwork{collection.length !== 1 ? 's' : ''}! Register now to save your collection permanently and get personalized recommendations.
+                </span>
+                <div className="flex gap-2">
+                  <Button onClick={() => router.push('/register')} variant="default" size="sm">
+                    Register Now
+                  </Button>
+                  <Button onClick={() => router.push('/login')} variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {!user && collection.length === 0 && (
               <div
                 className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 flex flex-col items-start gap-2 font-sans"
                 style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
               >
-                <span>You need to register to save your collection and your preferences.</span>
-                <Button onClick={() => router.push('/register')} variant="default">Register</Button>
+                <span>Register to save your collection and preferences as you discover art.</span>
+                <Button onClick={() => router.push('/register')} variant="default" size="sm">Register</Button>
               </div>
             )}
             {(user ? dbCollection.length === 0 : collection.length === 0) ? (
