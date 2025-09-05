@@ -436,9 +436,30 @@ export default function RegisterPage() {
           }
         }
 
+        // Send welcome email
+        try {
+          await fetch('/api/send-welcome-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: email,
+              name: `${firstName} ${surname}`,
+              userType: 'collector',
+              firstName: firstName,
+              surname: surname
+            }),
+          });
+          console.log('Welcome email sent successfully');
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't block registration if email fails
+        }
+
         toast({
           title: "Registration successful!",
-          description: "Please check your email to verify your account.",
+          description: "Welcome to Kaleidorium! Please check your email to verify your account and get started.",
         })
 
         router.push("/?view=profile")

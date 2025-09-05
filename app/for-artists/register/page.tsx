@@ -453,14 +453,26 @@ function ArtistRegisterPage() {
         }, publicKey);
       } catch (err) { console.error("Failed to send admin notification email:", err); }
 
-      // -- Welcome Email to Artist --
+      // -- Welcome Email to Artist (using centralized system) --
       try {
-        const welcomeTemplateId = 'template_3v22kbl';
-        await sendEmailJS(serviceId, welcomeTemplateId, {
-          to_email: inviteEmail,
-          artist_name: artist.username,
-        }, publicKey);
-      } catch (err) { console.error("Failed to send welcome email to artist:", err); }
+        await fetch('/api/send-welcome-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: inviteEmail,
+            name: artist.username,
+            userType: 'artist',
+            firstName: artist.firstname,
+            surname: artist.surname
+          }),
+        });
+        console.log('Welcome email sent successfully to artist');
+      } catch (emailError) {
+        console.error('Failed to send welcome email to artist:', emailError);
+        // Don't block registration if email fails
+      }
 
       setSubmissionSuccess(true);
       toast({ title: "Success!", description: "Your artist profile and artwork have been submitted." });
