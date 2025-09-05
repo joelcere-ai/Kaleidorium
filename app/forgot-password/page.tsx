@@ -43,7 +43,9 @@ export default function ForgotPasswordPage() {
     try {
       console.log('Sending password reset to:', email);
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/password-reset`,
+        redirectTo: `${process.env.NODE_ENV === 'production' 
+          ? 'https://v0-kaleidorium-bnc8m0z24-joelcere-gmailcoms-projects.vercel.app' 
+          : window.location.origin}/password-reset`,
       });
       
       if (error) {
