@@ -14,8 +14,65 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Kaleidorium - Discover and Collect Fine Art",
-  description: "Discover and collect fine art from emerging and established artists on Kaleidorium.",
+  title: "Discover Contemporary & Digital Art Curated For You | Kaleidorium",
+  description: "Swipe, match, and discover digital and contemporary art curated to your taste. Kaleidorium connects artists and collectors to make finding art you love easier.",
+  keywords: [
+    "digital art finder",
+    "contemporary art online", 
+    "NFT alternatives",
+    "swipe art discovery",
+    "art collector platform",
+    "match artists with collectors",
+    "AI art curation",
+    "online art gallery",
+    "curated art collection",
+    "art discovery platform",
+    "digital art marketplace",
+    "contemporary art gallery"
+  ],
+  authors: [{ name: "Kaleidorium" }],
+  creator: "Kaleidorium",
+  publisher: "Kaleidorium",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.kaleidorium.com',
+    title: 'Kaleidorium – Discover & Collect Art Curated For You',
+    description: 'Swipe, discover, and fall in love with art. We connect collectors with artists through a unique swipe-based experience.',
+    siteName: 'Kaleidorium',
+    images: [
+      {
+        url: '/android-chrome-512x512.png',
+        width: 512,
+        height: 512,
+        alt: 'Kaleidorium - Art Discovery Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kaleidorium – Discover & Collect Art Curated For You',
+    description: 'Swipe, discover, and fall in love with art. We connect collectors with artists through a unique swipe-based experience.',
+    images: ['/android-chrome-512x512.png'],
+    creator: '@kaleidorium',
+    site: '@kaleidorium',
+  },
+  alternates: {
+    canonical: 'https://www.kaleidorium.com',
+  },
+  category: 'Art & Culture',
+  classification: 'Art Discovery Platform',
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -55,6 +112,8 @@ export const metadata: Metadata = {
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'default',
     'theme-color': '#000000',
+    'msapplication-TileColor': '#000000',
+    'application-name': 'Kaleidorium',
   }
 }
 

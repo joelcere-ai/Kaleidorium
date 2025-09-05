@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /profile/
+Disallow: /reset-password/
+Disallow: /update-password/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /for-artists
+Allow: /login
+Allow: /register
+Allow: /terms
+Allow: /privacy
+
+# Sitemap location
+Sitemap: https://www.kaleidorium.com/sitemap.xml 
