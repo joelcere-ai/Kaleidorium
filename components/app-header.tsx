@@ -47,10 +47,10 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
 
   return (
     <header className="border-b bg-background relative app-header">
-      <div className="flex items-center justify-between p-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-serif text-xl font-semibold">Kaleidorium</span>
+      <div className="flex items-center justify-between p-4 md:p-6">
+        {/* Logo with improved mobile spacing */}
+        <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
+          <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -62,6 +62,19 @@ export default function MobileArtDiscovery({
     show: boolean;
   }>({ type: null, show: false });
   
+  // Add button animation states
+  const [buttonStates, setButtonStates] = useState<{
+    dislike: boolean;
+    info: boolean;
+    add: boolean;
+    like: boolean;
+  }>({
+    dislike: false,
+    info: false,
+    add: false,
+    like: false
+  });
+  
   const cardRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -76,7 +89,7 @@ export default function MobileArtDiscovery({
     if (isLandscape && screenWidth > 0 && screenHeight > 0) {
       // In landscape, use more of the available screen space
       const headerHeight = 72; // Approximate header height
-      const buttonAreaHeight = 100; // Approximate button area height
+      const buttonAreaHeight = 120; // Increased for better touch targets
       const availableHeight = screenHeight - headerHeight - buttonAreaHeight;
       const availableWidth = screenWidth - 32; // Account for padding
       
@@ -110,16 +123,16 @@ export default function MobileArtDiscovery({
 
   const getCardClasses = () => {
     if (isLandscape) {
-      return "relative rounded-2xl shadow-2xl transition-transform duration-300 ease-out bg-white max-w-full max-h-full";
+      return "relative rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out bg-white max-w-full max-h-full transform hover:scale-[1.01]";
     }
-    return "absolute inset-4 rounded-2xl shadow-2xl transition-transform duration-300 ease-out bg-white";
+    return "absolute inset-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out bg-white transform hover:scale-[1.01]";
   };
 
   const getImageClasses = () => {
     if (isLandscape) {
-      return "object-contain w-full h-full";
+      return "object-contain w-full h-full transition-opacity duration-300";
     }
-    return "object-cover";
+    return "object-cover transition-opacity duration-300";
   };
 
   // Modal swipe handlers
@@ -642,56 +655,42 @@ export default function MobileArtDiscovery({
     }, 1500);
   };
 
-  const handleButtonAction = (action: 'like' | 'dislike' | 'info' | 'add') => {
-    if (isAnimating) return;
-    
+  // Enhanced button action handler with micro-interactions
+  const handleButtonAction = async (action: 'like' | 'dislike' | 'add' | 'info') => {
+    if (!currentArtwork || isAnimating) return;
+
+    // Trigger haptic feedback if available
+    if (navigator.vibrate) {
+      navigator.vibrate(50); // Subtle haptic feedback
+    }
+
+    // Button animation
+    setButtonStates(prev => ({ ...prev, [action]: true }));
+    setTimeout(() => {
+      setButtonStates(prev => ({ ...prev, [action]: false }));
+    }, 200);
+
+    // Action feedback
+    if (action !== 'info') {
+      setActionFeedback({ type: action, show: true });
+      setTimeout(() => {
+        setActionFeedback({ type: null, show: false });
+      }, 1000);
+    }
+
     switch (action) {
       case 'like':
-        setIsAnimating(true);
-        if (cardRef.current) {
-          cardRef.current.style.transform = `translateX(${screenWidth || window.innerWidth}px) rotate(20deg)`;
-          cardRef.current.style.opacity = '0';
-        }
-        setTimeout(() => {
-          onLike(currentArtwork);
-          showActionFeedback('like');
-          toast({
-            title: "Liked! 👍",
-            description: `Added "${currentArtwork.title}" to your liked artworks`,
-          });
-          onNext();
-          resetCard();
-          setIsAnimating(false);
-        }, 300);
+        onLike(currentArtwork);
         break;
       case 'dislike':
-        setIsAnimating(true);
-        if (cardRef.current) {
-          cardRef.current.style.transform = `translateX(-${screenWidth || window.innerWidth}px) rotate(-20deg)`;
-          cardRef.current.style.opacity = '0';
-        }
-        setTimeout(() => {
-          onDislike(currentArtwork);
-          showActionFeedback('dislike');
-          toast({
-            title: "Disliked 👎",
-            description: `We'll show you less art like "${currentArtwork.title}"`,
-          });
-          onNext();
-          resetCard();
-          setIsAnimating(false);
-        }, 300);
-        break;
-      case 'info':
-        setShowInfoModal(true);
+        onDislike(currentArtwork);
         break;
       case 'add':
         onAddToCollection(currentArtwork);
-        showActionFeedback('add');
-        toast({
-          title: "Added to Collection! ❤️",
-          description: `"${currentArtwork.title}" is now in your collection`,
-        });
+        break;
+      case 'info':
+        setSelectedArtwork(currentArtwork);
+        setShowInfoModal(true);
         break;
     }
   };
@@ -782,49 +781,74 @@ export default function MobileArtDiscovery({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className={`bg-white border-t border-gray-200 p-4 z-10 ${isLandscape ? 'flex-shrink-0' : ''}`}>
-        <div className={`flex items-center justify-center gap-4 ${isLandscape ? 'gap-8' : ''}`}>
+      {/* Enhanced Action Buttons with better spacing and micro-interactions */}
+      <div className={`bg-white border-t border-gray-100 p-6 z-10 ${isLandscape ? 'flex-shrink-0' : ''} shadow-lg`}>
+        <div className={`flex items-center justify-center gap-6 ${isLandscape ? 'gap-12' : ''}`}>
           <Button
             variant="outline"
             size="icon"
-            className="w-14 h-14 rounded-full border-red-300 hover:bg-red-50 hover:border-red-400"
+            className={`w-16 h-16 rounded-full border-red-300 hover:bg-red-50 hover:border-red-400 
+              transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              ${buttonStates.dislike ? 'scale-95 bg-red-50' : ''}`}
             onClick={() => handleButtonAction('dislike')}
             disabled={isAnimating}
           >
-            <ThumbsDown className="w-6 h-6 text-red-600" />
+            <ThumbsDown className="w-7 h-7 text-red-600" />
           </Button>
           
           <Button
             variant="outline"
             size="icon"
-            className="w-14 h-14 rounded-full border-blue-300 hover:bg-blue-50 hover:border-blue-400"
+            className={`w-16 h-16 rounded-full border-blue-300 hover:bg-blue-50 hover:border-blue-400 
+              transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              ${buttonStates.info ? 'scale-95 bg-blue-50' : ''}`}
             onClick={() => handleButtonAction('info')}
             disabled={isAnimating}
           >
-            <Info className="w-6 h-6 text-blue-600" />
+            <Info className="w-7 h-7 text-blue-600" />
           </Button>
           
           <Button
             variant="outline"
             size="icon"
-            className="w-14 h-14 rounded-full border-pink-300 hover:bg-pink-50 hover:border-pink-400"
+            className={`w-16 h-16 rounded-full border-pink-300 hover:bg-pink-50 hover:border-pink-400 
+              transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              ${buttonStates.add ? 'scale-95 bg-pink-50 animate-pulse' : ''}`}
             onClick={() => handleButtonAction('add')}
             disabled={isAnimating}
           >
-            <Heart className="w-6 h-6 text-pink-600" />
+            <Heart className="w-7 h-7 text-pink-600" />
           </Button>
           
           <Button
             variant="outline"
             size="icon"
-            className="w-14 h-14 rounded-full border-green-300 hover:bg-green-50 hover:border-green-400"
+            className={`w-16 h-16 rounded-full border-green-300 hover:bg-green-50 hover:border-green-400 
+              transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              ${buttonStates.like ? 'scale-95 bg-green-50' : ''}`}
             onClick={() => handleButtonAction('like')}
             disabled={isAnimating}
           >
-            <ThumbsUp className="w-6 h-6 text-green-600" />
+            <ThumbsUp className="w-7 h-7 text-green-600" />
           </Button>
         </div>
+        
+        {/* Action Feedback Overlay */}
+        {actionFeedback.show && (
+          <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+            <div className={`
+              px-8 py-4 rounded-full text-white font-semibold text-lg shadow-2xl
+              transform animate-bounce
+              ${actionFeedback.type === 'like' ? 'bg-green-500' : ''}
+              ${actionFeedback.type === 'dislike' ? 'bg-red-500' : ''}
+              ${actionFeedback.type === 'add' ? 'bg-pink-500' : ''}
+            `}>
+              {actionFeedback.type === 'like' && '👍 Liked!'}
+              {actionFeedback.type === 'dislike' && '👎 Not for me'}
+              {actionFeedback.type === 'add' && '❤️ Added to Collection!'}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info Drawer for Discovery View */}

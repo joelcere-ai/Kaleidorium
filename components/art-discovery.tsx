@@ -30,6 +30,7 @@ import { AboutContent } from "@/components/about-content"
 import { useViewContext } from "./ViewContext"
 import { useMobileDetection } from "@/hooks/use-mobile-detection"
 import MobileArtDiscovery from "./mobile-art-discovery"
+import ProgressiveImage from "./progressive-image"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact"
@@ -1413,19 +1414,21 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           />
         ) : currentArtwork ? (
           <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
-            {/* Artwork Display Area (70% on desktop, full width on mobile) */}
+            {/* Enhanced Artwork Display Area with smooth transitions */}
             <div className="w-full lg:w-[70%] flex-shrink-0 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 bg-white relative">
               <div className="w-full max-w-2xl lg:max-w-none">
                 <div
-                  className="relative cursor-zoom-in rounded-2xl overflow-hidden bg-gray-100 border border-gray-200"
+                  className="relative cursor-zoom-in rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 
+                    shadow-elegant hover:shadow-elegant-hover transition-all duration-500 hover:scale-[1.01] artwork-card"
                   style={{ aspectRatio: '4/3' }}
                   onClick={() => currentArtwork && openImageOverlay(currentArtwork.artwork_image, currentArtwork.title)}
                 >
-                  <img
+                  <ProgressiveImage
                     src={currentArtwork.artwork_image || "/placeholder.svg"}
-                  alt={currentArtwork.title}
-                    className="w-full h-full object-contain p-4"
-                    style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                    alt={currentArtwork.title}
+                    className="w-full h-full p-4 transition-all duration-500"
+                    style={{ objectFit: 'contain' }}
+                    priority={true}
                   />
                   {/* Overlay only covers the artwork image area, not the whole page */}
                   {showEndOfMatchesOverlay && (
@@ -1438,24 +1441,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   )}
                 </div>
               </div>
-              {/* Button Area */}
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-8 w-full relative z-10">
+              {/* Enhanced Button Area with micro-interactions */}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8 w-full relative z-10">
               <Button
                 variant="outline"
                 size="lg"
                 onClick={handleDislike}
-                  className={"flex-1 sm:flex-none min-w-[120px] border-red-200 transition-colors hover:bg-red-50 hover:text-red-600"}
+                className={"flex-1 sm:flex-none min-w-[120px] border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-600 hover:scale-105 button-bounce shadow-md hover:shadow-lg"}
               >
-                <ThumbsDown className="mr-2 h-5 w-5" />
+                <ThumbsDown className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
                   <span className="sm:hidden">👎</span>
                   <span className="hidden sm:inline">Dislike</span>
               </Button>
                 <Button 
                   size="lg" 
                   onClick={handleAddToCollection} 
-                  className={"flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8"}
+                  className={"flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 transition-all duration-200 hover:scale-105 button-bounce shadow-md hover:shadow-lg bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600"}
                 >
-                <Heart className="mr-2 h-5 w-5" />
+                <Heart className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
                   <span className="sm:hidden">❤️</span>
                   <span className="hidden sm:inline">Add to Collection</span>
               </Button>
@@ -1463,9 +1466,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 variant="outline"
                 size="lg"
                 onClick={handleLike}
-                  className={"flex-1 sm:flex-none min-w-[120px] border-green-200 transition-colors hover:bg-green-50 hover:text-green-600"}
+                className={"flex-1 sm:flex-none min-w-[120px] border-green-200 transition-all duration-200 hover:bg-green-50 hover:text-green-600 hover:scale-105 button-bounce shadow-md hover:shadow-lg"}
               >
-                <ThumbsUp className="mr-2 h-5 w-5" />
+                <ThumbsUp className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
                   <span className="sm:hidden">👍</span>
                   <span className="hidden sm:inline">Like</span>
               </Button>
@@ -1608,31 +1611,54 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
                 </div>
               ) : (
-                // Mobile grid view of collection
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(user ? dbCollection : collection).map((artwork) => (
+                // Enhanced mobile masonry view of collection
+                <div className="columns-1 sm:columns-2 gap-4 space-y-4">
+                  {(user ? dbCollection : collection).map((artwork, index) => (
                     <Card
                       key={artwork.id}
-                      className="overflow-hidden group"
+                      className="overflow-hidden group cursor-pointer break-inside-avoid mb-4 
+                        shadow-elegant hover:shadow-elegant-hover transition-all duration-300 
+                        hover:scale-[1.02] border-0 bg-white/90 backdrop-blur-sm artwork-card"
+                      onClick={() => setSelectedCollectionArtwork(artwork)}
+                      style={{
+                        animationDelay: `${index * 50}ms`,
+                        animation: 'fadeInUp 0.6s ease-out forwards'
+                      }}
                     >
-                      <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: '1/1' }}>
-                        <img
+                      <div className="relative rounded-2xl overflow-hidden group-hover:rounded-xl transition-all duration-300">
+                        <ProgressiveImage
                           src={artwork.artwork_image || "/placeholder.svg"}
                           alt={artwork.title}
-                          className="object-contain p-2"
-                          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                          className="w-full h-auto transition-all duration-500 group-hover:scale-105"
+                          style={{ 
+                            minHeight: '150px',
+                            maxHeight: '400px'
+                          }}
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <div className="flex gap-2">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
+                          opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+                          <div className="flex gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <Button
                               variant="secondary"
                               size="sm"
+                              className="backdrop-blur-md bg-white/90 hover:bg-white text-black shadow-lg button-bounce"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 openImageOverlay(artwork.artwork_image, artwork.title)
                               }}
                             >
                               View
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="backdrop-blur-md bg-red-500/90 hover:bg-red-600 shadow-lg button-bounce"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleRemoveFromCollection(artwork.id)
+                              }}
+                            >
+                              <Trash className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
@@ -1833,32 +1859,57 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 </div>
               </div>
             ) : (
-              // Desktop grid view of collection
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {(user ? dbCollection : collection).map((artwork) => (
+              // Enhanced masonry/Pinterest-style grid for collection
+              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6 space-y-4 sm:space-y-6">
+                {(user ? dbCollection : collection).map((artwork, index) => (
                   <Card
                     key={artwork.id}
-                    className="overflow-hidden group cursor-pointer"
+                    className="overflow-hidden group cursor-pointer break-inside-avoid mb-4 sm:mb-6 
+                      shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] 
+                      border-0 bg-white/80 backdrop-blur-sm"
                     onClick={() => handleArtworkClick(artwork)}
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                      animation: 'fadeInUp 0.6s ease-out forwards'
+                    }}
                   >
-                    <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: '1/1' }}>
-                      <img
+                    <div className="relative rounded-2xl overflow-hidden group-hover:rounded-xl transition-all duration-300">
+                      <ProgressiveImage
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
-                        className="object-contain p-2"
-                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                        className="w-full h-auto transition-all duration-500 group-hover:scale-105 artwork-card"
+                        style={{ 
+                          minHeight: '200px',
+                          maxHeight: '500px'
+                        }}
+                        onClick={() => handleArtworkClick(artwork)}
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <div className="flex gap-2">
+                      
+                      {/* Enhanced hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
+                        opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+                        <div className="flex gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                           <Button
                             variant="secondary"
                             size="sm"
+                            className="backdrop-blur-md bg-white/90 hover:bg-white text-black shadow-lg"
                             onClick={(e) => {
                               e.stopPropagation()
                               openImageOverlay(artwork.artwork_image, artwork.title)
                             }}
                           >
                             View
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="backdrop-blur-md bg-red-500/90 hover:bg-red-600 shadow-lg"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleRemoveFromCollection(artwork.id)
+                            }}
+                          >
+                            <Trash className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>

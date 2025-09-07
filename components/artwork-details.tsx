@@ -47,54 +47,74 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
   );
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-serif font-medium">{artwork.title}</h2>
-      <p className="text-lg text-muted-foreground mb-4">{artwork.artist}</p>
+    <div className="p-6 space-y-6">
+      {/* Enhanced Typography Hierarchy */}
+      <div className="space-y-3">
+        <h1 className="text-3xl font-serif font-bold leading-tight tracking-tight">{artwork.title}</h1>
+        <div className="flex items-center gap-2">
+          <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">By</span>
+          <p className="text-xl font-serif font-medium text-foreground">{artwork.artist}</p>
+        </div>
+      </div>
 
+      {/* Enhanced Price Display */}
       {artwork.price && (
-        <div className="text-3xl font-medium mb-6">
+        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
           {artwork.price.toLowerCase() === 'not for sale'
-            ? <span className="text-lg font-normal text-muted-foreground">Not for sale</span>
-            : <span>{artwork.price}</span>
+            ? <div className="text-center">
+                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
+              </div>
+            : <div className="text-center">
+                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
+              </div>
           }
         </div>
       )}
 
-      <div className="space-y-4 mb-6">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="text-sm text-muted-foreground">Medium</div>
-          <div className="text-sm">{artwork.medium}</div>
-        </div>
+      {/* Enhanced Metadata Grid */}
+      <div className="space-y-6">
+        <div className="grid gap-4">
+          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Medium</span>
+            <span className="text-base font-medium text-foreground">{artwork.medium}</span>
+          </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div className="text-sm text-muted-foreground">Dimensions</div>
-          <div className="text-sm">{artwork.dimensions}</div>
-        </div>
+          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Dimensions</span>
+            <span className="text-base font-medium text-foreground">{artwork.dimensions}</span>
+          </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div className="text-sm text-muted-foreground">Year</div>
-          <div className="text-sm">{artwork.year}</div>
+          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Year</span>
+            <span className="text-base font-medium text-foreground">{artwork.year}</span>
+          </div>
         </div>
       </div>
 
-      <Separator className="my-6" />
+      <Separator className="my-8" />
 
-      <div className="mb-6">
-        <h3 className="text-sm font-medium mb-2">Description</h3>
-        <p className="text-sm leading-relaxed">{artwork.description}</p>
+      {/* Enhanced Description */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
+        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
       </div>
 
-      <div>
-        <h3 className="text-sm font-medium mb-2">Style & Subject</h3>
-        <div className="flex flex-wrap gap-2">
+      {/* Enhanced Tags */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-serif font-semibold text-foreground">Style & Subject</h3>
+        <div className="flex flex-wrap gap-3">
           {allTags.length > 0 ? (
             allTags.map((tag) => (
-              <Badge key={tag} variant="outline" className="font-normal">
+              <Badge 
+                key={tag} 
+                variant="outline" 
+                className="px-3 py-1 text-sm font-medium border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+              >
                 {tag}
               </Badge>
             ))
           ) : (
-            <span className="text-muted-foreground text-sm">No tags</span>
+            <span className="text-muted-foreground text-sm italic">No tags available</span>
           )}
         </div>
       </div>
