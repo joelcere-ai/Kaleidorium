@@ -2,18 +2,42 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
+import AnimatedLoading from "@/components/animated-loading";
 
 function HomeContent() {
   const searchParams = useSearchParams();
   const initialView = (searchParams.get("view") as "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") || "discover";
   const [view, setView] = useState<typeof initialView>(initialView);
   const [collectionCount, setCollectionCount] = useState(0);
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const [hasShownLoading, setHasShownLoading] = useState(false);
 
   // Update view if query param changes (e.g., via navigation)
   useEffect(() => {
     const paramView = (searchParams.get("view") as typeof view) || "discover";
     setView(paramView);
   }, [searchParams]);
+
+  // Check if we've already shown the loading screen in this session
+  useEffect(() => {
+    const hasShown = sessionStorage.getItem('kaleidorium-loading-shown');
+    if (hasShown) {
+      setIsAppLoading(false);
+      setHasShownLoading(true);
+    }
+  }, []);
+
+  // Handle app loading completion
+  const handleLoadingComplete = () => {
+    setIsAppLoading(false);
+    setHasShownLoading(true);
+    sessionStorage.setItem('kaleidorium-loading-shown', 'true');
+  };
+
+  // Show animated loading screen only on first visit in session
+  if (isAppLoading && !hasShownLoading) {
+    return <AnimatedLoading onComplete={handleLoadingComplete} />;
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -24,7 +48,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<AnimatedLoading />}>
       <HomeContent />
     </Suspense>
   );

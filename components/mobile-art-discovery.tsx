@@ -908,15 +908,32 @@ export default function MobileArtDiscovery({
         {actionFeedback.show && (
           <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
             <div className={`
-              px-8 py-4 rounded-full text-white font-semibold text-lg shadow-2xl
-              transform animate-bounce
-              ${actionFeedback.type === 'like' ? 'bg-green-500' : ''}
-              ${actionFeedback.type === 'dislike' ? 'bg-red-500' : ''}
-              ${actionFeedback.type === 'add' ? 'bg-pink-500' : ''}
+              px-6 py-4 rounded-2xl text-white font-serif text-lg shadow-2xl backdrop-blur-sm
+              transform animate-in fade-in-0 zoom-in-95 duration-300
+              ${actionFeedback.type === 'like' ? 'bg-green-500/90' : ''}
+              ${actionFeedback.type === 'dislike' ? 'bg-red-500/90' : ''}
+              ${actionFeedback.type === 'add' ? 'bg-pink-500/90' : ''}
             `}>
-              {actionFeedback.type === 'like' && '👍 Liked!'}
-              {actionFeedback.type === 'dislike' && '👎 Not for me'}
-              {actionFeedback.type === 'add' && '❤️ Added to Collection!'}
+              <div className="flex items-center gap-3">
+                {actionFeedback.type === 'like' && (
+                  <>
+                    <ThumbsUp className="w-6 h-6" />
+                    <span>Liked</span>
+                  </>
+                )}
+                {actionFeedback.type === 'dislike' && (
+                  <>
+                    <ThumbsDown className="w-6 h-6" />
+                    <span>Disliked</span>
+                  </>
+                )}
+                {actionFeedback.type === 'add' && (
+                  <>
+                    <Heart className="w-6 h-6" />
+                    <span>Added to Collection</span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
