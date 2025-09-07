@@ -1184,31 +1184,8 @@ export default function MobileArtDiscovery({
       {/* Full-Screen Artwork Overlay */}
       {showFullscreenArtwork && (view === "discover" ? currentArtwork : selectedArtwork) && (
         <div className="fixed inset-0 bg-black z-[200] flex items-center justify-center">
-          {/* Close button */}
-          <button
-            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 rounded-full p-3 backdrop-blur-sm transition-all duration-200 hover:scale-110"
-            onClick={handleFullscreenClose}
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-
-          {/* Artwork info overlay */}
-          <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-2xl p-4 text-white">
-            <h3 className="text-xl font-serif font-bold mb-1">{(view === "discover" ? currentArtwork : selectedArtwork)?.title}</h3>
-            <p className="text-lg opacity-90 mb-2">{(view === "discover" ? currentArtwork : selectedArtwork)?.artist}</p>
-            <div className="flex items-center justify-between text-sm opacity-75">
-              <span>{(view === "discover" ? currentArtwork : selectedArtwork)?.year}</span>
-              <span>{(view === "discover" ? currentArtwork : selectedArtwork)?.medium}</span>
-            </div>
-            {(view === "discover" ? currentArtwork : selectedArtwork)?.price && (
-              <div className="mt-2 text-lg font-semibold">
-                {(view === "discover" ? currentArtwork : selectedArtwork)?.price}
-              </div>
-            )}
-          </div>
-
           {/* Full-screen image */}
-          <div className="relative w-full h-full flex items-center justify-center p-4">
+          <div className="relative w-full h-full flex items-center justify-center">
             {!fullscreenImageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -1223,15 +1200,6 @@ export default function MobileArtDiscovery({
               onLoad={() => setFullscreenImageLoaded(true)}
               onError={() => setFullscreenImageLoaded(true)}
             />
-          </div>
-
-          {/* Tap to close hint */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-            <div className={`bg-white/20 rounded-full px-4 py-2 text-white text-sm backdrop-blur-sm transition-opacity duration-1000 ${
-              fullscreenImageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}>
-              Tap anywhere to close
-            </div>
           </div>
 
           {/* Tap anywhere to close */}
