@@ -86,6 +86,28 @@ export default function MobileArtDiscovery({
   const currentY = useRef(0);
   const isDragging = useRef(false);
 
+  // Prevent pull-to-refresh when modal is open
+  useEffect(() => {
+    if (showInfoModal) {
+      // Prevent pull-to-refresh
+      document.body.style.overscrollBehavior = 'none';
+      document.body.style.touchAction = 'pan-x pan-y';
+      document.documentElement.style.overscrollBehavior = 'none';
+    } else {
+      // Restore default behavior
+      document.body.style.overscrollBehavior = '';
+      document.body.style.touchAction = '';
+      document.documentElement.style.overscrollBehavior = '';
+    }
+    
+    return () => {
+      // Cleanup on unmount
+      document.body.style.overscrollBehavior = '';
+      document.body.style.touchAction = '';
+      document.documentElement.style.overscrollBehavior = '';
+    };
+  }, [showInfoModal]);
+
   const currentArtwork = artworks[currentIndex];
 
   // Handle keyboard shortcuts for fullscreen
@@ -940,37 +962,62 @@ export default function MobileArtDiscovery({
       </div>
 
       {/* Info Drawer for Discovery View */}
+      {showInfoModal && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-[99]"
+          onClick={() => setShowInfoModal(false)}
+        />
+      )}
+      
       <div 
         className={`fixed inset-x-0 bottom-0 bg-white rounded-t-2xl shadow-2xl transform transition-transform duration-300 ease-out z-[100] ${
           showInfoModal ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ maxHeight: '80vh' }}
+        onTouchStart={(e) => {
+          // Prevent pull-to-refresh when drawer is open
+          e.stopPropagation();
+          const startY = e.touches[0].clientY;
+          const startTime = Date.now();
+          
+          const handleTouchMove = (moveEvent: TouchEvent) => {
+            moveEvent.preventDefault(); // Prevent default browser behavior
+            const currentY = moveEvent.touches[0].clientY;
+            const deltaY = currentY - startY;
+            const deltaTime = Date.now() - startTime;
+            
+            // Only close if swiping down with sufficient distance and speed
+            if (deltaY > 80 && deltaTime < 500) {
+              setShowInfoModal(false);
+              document.removeEventListener('touchmove', handleTouchMove);
+            }
+          };
+          
+          const handleTouchEnd = () => {
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+          };
+          
+          document.addEventListener('touchmove', handleTouchMove, { passive: false });
+          document.addEventListener('touchend', handleTouchEnd);
+        }}
       >
         {/* Drag Handle */}
         <div 
           className="flex justify-center pt-3 pb-2 cursor-pointer"
           onClick={() => setShowInfoModal(false)}
-          onTouchStart={(e) => {
-            const startY = e.touches[0].clientY;
-            const handleTouchMove = (moveEvent: TouchEvent) => {
-              const currentY = moveEvent.touches[0].clientY;
-              const deltaY = currentY - startY;
-              if (deltaY > 50) { // Swipe down threshold
-                setShowInfoModal(false);
-                document.removeEventListener('touchmove', handleTouchMove);
-              }
-            };
-            document.addEventListener('touchmove', handleTouchMove);
-            document.addEventListener('touchend', () => {
-              document.removeEventListener('touchmove', handleTouchMove);
-            }, { once: true });
-          }}
         >
           <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
         </div>
 
         {/* Content */}
-        <div className="px-6 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 60px)' }}>
+        <div className="px-6 pb-6 overflow-y-auto"
+          style={{ maxHeight: 'calc(80vh - 60px)' }}
+          onTouchStart={(e) => {
+            // Prevent parent touch events when scrolling content
+            e.stopPropagation();
+          }}
+        >
           {currentArtwork && (
             <>
               <div className="mb-4">
