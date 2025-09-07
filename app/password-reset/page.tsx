@@ -17,24 +17,35 @@ function PasswordResetContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Check if we have the necessary hash parameters for password reset
+    // Check if we have the necessary parameters for password reset (hash or query params)
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-    const type = hashParams.get('type');
+    const queryParams = new URLSearchParams(window.location.search);
+    
+    // Try hash parameters first, then query parameters
+    const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+    const type = hashParams.get('type') || queryParams.get('type');
 
     console.log('Password reset page loaded with:', {
       type,
       hasAccessToken: !!accessToken,
       hasRefreshToken: !!refreshToken,
-      fullHash: window.location.hash
+      fullHash: window.location.hash,
+      fullSearch: window.location.search,
+      fullUrl: window.location.href
     });
 
     if (type === 'recovery' && accessToken) {
       // This is a valid password reset session
       console.log('Valid password reset session detected');
+      
+      // Set the session with the tokens
+      if (accessToken && refreshToken) {
+        console.log('Setting session with tokens');
+        // The session should be automatically set by Supabase when the page loads
+      }
     } else {
-      console.log('No valid password reset session, redirecting to login');
+      console.log('No valid password reset session, redirecting to forgot password');
       toast({
         title: "Invalid Reset Link",
         description: "This password reset link is invalid or has expired. Please request a new one.",
