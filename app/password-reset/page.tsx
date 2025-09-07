@@ -147,7 +147,7 @@ export default function PasswordResetPage() {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-semibold mb-2">Reset Your Password</h1>
           <p className="text-gray-600">
-            Enter your new password below.
+            Please enter your new password below.
           </p>
         </div>
 
