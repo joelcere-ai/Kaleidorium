@@ -47,13 +47,13 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
   );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-4">
       {/* Enhanced Typography Hierarchy */}
-      <div className="space-y-3">
-        <h1 className="text-3xl font-serif font-bold leading-tight tracking-tight">{artwork.title}</h1>
+      <div className="space-y-2">
+        <h1 className="text-xl font-serif font-bold leading-tight tracking-tight">{artwork.title}</h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">By</span>
-          <p className="text-xl font-serif font-medium text-foreground">{artwork.artist}</p>
+          <span className="text-sm tracking-wider text-muted-foreground font-medium">by</span>
+          <p className="text-lg font-serif font-medium text-foreground">{artwork.artist}</p>
         </div>
       </div>
 
@@ -71,33 +71,33 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
         </div>
       )}
 
-      {/* Enhanced Metadata Grid */}
-      <div className="space-y-6">
-        <div className="grid gap-4">
-          <div className="flex justify-between items-center py-3 border-b border-gray-100">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Medium</span>
+      {/* Enhanced Description - Moved higher */}
+      <div className="space-y-3">
+        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
+        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
+      </div>
+
+      {/* Enhanced Metadata Grid - More compact */}
+      <div className="space-y-3">
+        <div className="grid gap-2">
+          <div className="flex justify-between items-center py-2 border-b border-gray-100">
+            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Medium</span>
             <span className="text-base font-medium text-foreground">{artwork.medium}</span>
           </div>
 
-          <div className="flex justify-between items-center py-3 border-b border-gray-100">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Dimensions</span>
+          <div className="flex justify-between items-center py-2 border-b border-gray-100">
+            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Dimensions</span>
             <span className="text-base font-medium text-foreground">{artwork.dimensions}</span>
           </div>
 
-          <div className="flex justify-between items-center py-3 border-b border-gray-100">
-            <span className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">Year</span>
+          <div className="flex justify-between items-center py-2 border-b border-gray-100">
+            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Year</span>
             <span className="text-base font-medium text-foreground">{artwork.year}</span>
           </div>
         </div>
       </div>
 
-      <Separator className="my-8" />
-
-      {/* Enhanced Description */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
-        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
-      </div>
+      <Separator className="my-6" />
 
       {/* Enhanced Tags */}
       <div className="space-y-4">
