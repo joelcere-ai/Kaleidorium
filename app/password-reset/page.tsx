@@ -22,36 +22,43 @@ export default function PasswordResetPage() {
       try {
         console.log('Checking password reset session...');
         console.log('Current URL:', window.location.href);
-        console.log('Hash:', window.location.hash);
-        console.log('Search:', window.location.search);
 
-        // Check if we have hash parameters for password reset
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const queryParams = new URLSearchParams(window.location.search);
+        // Check if we have an active Supabase session (set by auth callback)
+        const { data: { session }, error } = await supabase.auth.getSession();
         
-        const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
-        const type = hashParams.get('type') || queryParams.get('type');
-
-        console.log('Tokens found:', {
-          hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken,
-          type
+        console.log('Session check:', {
+          hasSession: !!session,
+          sessionError: error?.message,
+          user: session?.user?.email
         });
 
-        if (type === 'recovery' && accessToken) {
-          console.log('Valid password reset session detected');
+        if (session && session.user) {
+          console.log('Valid password reset session detected for user:', session.user.email);
           setIsValidSession(true);
         } else {
-          console.log('No valid password reset session found');
-          toast({
-            title: "Invalid Reset Link",
-            description: "This password reset link is invalid or has expired. Please request a new one.",
-            variant: "destructive"
-          });
-          setTimeout(() => {
-            router.push('/forgot-password');
-          }, 3000);
+          console.log('No valid session found - checking URL parameters as fallback...');
+          
+          // Fallback: check for tokens in URL (hash or query params)
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const queryParams = new URLSearchParams(window.location.search);
+          
+          const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+          const type = hashParams.get('type') || queryParams.get('type');
+
+          if (type === 'recovery' && accessToken) {
+            console.log('Found recovery tokens in URL, allowing password reset');
+            setIsValidSession(true);
+          } else {
+            console.log('No valid password reset session or tokens found');
+            toast({
+              title: "Invalid Reset Link",
+              description: "This password reset link is invalid or has expired. Please request a new one.",
+              variant: "destructive"
+            });
+            setTimeout(() => {
+              router.push('/forgot-password');
+            }, 3000);
+          }
         }
       } catch (err) {
         console.error('Error checking session:', err);
