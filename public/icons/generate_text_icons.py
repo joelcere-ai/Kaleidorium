@@ -45,16 +45,19 @@ def generate_icon(size, filename):
     img = Image.new('RGBA', (size, size), bg_color + (255,))
     draw = ImageDraw.Draw(img)
     
-    # Calculate font size - adjust this multiplier as needed
-    font_size = max(int(size * 0.08), 8)
+    # Calculate font size based on icon size - optimized for serif fonts
+    # For "Kaleidorium" (11 characters), we want it to fit nicely with serif font
+    font_size = max(int(size * 0.075), 8)
     
-    # Try to load a good font, fall back to default
+    # Try to load Playfair Display or similar serif fonts to match the logo
     font = None
     font_paths = [
-        '/System/Library/Fonts/Helvetica.ttc',  # macOS
-        '/Windows/Fonts/arial.ttf',  # Windows
-        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',  # Linux
-        '/System/Library/Fonts/Times.ttc',  # macOS fallback
+        '/System/Library/Fonts/Times.ttc',  # macOS serif font
+        '/System/Library/Fonts/Palatino.ttc',  # macOS serif alternative
+        '/Windows/Fonts/times.ttf',  # Windows serif
+        '/Windows/Fonts/georgia.ttf',  # Windows serif alternative
+        '/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf',  # Linux serif
+        '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf',  # Linux serif fallback
     ]
     
     for font_path in font_paths:

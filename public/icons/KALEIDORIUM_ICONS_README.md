@@ -66,11 +66,13 @@ node generate_text_icons.js
 
 ## 🎨 Design Notes
 
+- **Playfair Display font** matches your existing logo and animated loading screen
 - **Black background** matches your app's dark theme
 - **White text** provides maximum contrast
-- **Bold font weight** ensures readability at small sizes
-- **Rounded corners** (20%) give a modern PWA appearance
-- **Scalable text size** adjusts automatically for each icon size
+- **Bold serif styling** ensures readability while maintaining brand consistency
+- **Rounded corners** (15%) give a modern PWA appearance
+- **Optimized scaling** specifically tuned for serif font characteristics
+- **Subtle text shadow** matches the animated loading screen styling
 
 ## 🚀 Next Steps
 

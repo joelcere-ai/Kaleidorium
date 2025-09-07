@@ -45,9 +45,9 @@ function generateIcon(size, fileName) {
     const textColor = '#ffffff';
     const cornerRadius = 0.2; // 20%
     
-    // Calculate font size based on icon size
-    // For "Kaleidorium" (11 characters), we want it to fit nicely
-    const baseFontSize = size * 0.08; // Adjust this multiplier as needed
+    // Calculate font size based on icon size - optimized for Playfair Display
+    // For "Kaleidorium" (11 characters), we want it to fit nicely with serif font
+    const baseFontSize = size * 0.075; // Adjusted for serif font characteristics
     
     // Create rounded rectangle background
     ctx.fillStyle = backgroundColor;
@@ -58,17 +58,17 @@ function generateIcon(size, fileName) {
     ctx.roundRect(0, 0, size, size, radius);
     ctx.fill();
     
-    // Set text properties
+    // Set text properties - using serif fonts to match logo design
     ctx.fillStyle = textColor;
-    ctx.font = `bold ${baseFontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Playfair Display', serif`;
+    ctx.font = `bold ${baseFontSize}px 'Playfair Display', 'Times New Roman', serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
-    // Add subtle text shadow for better readability
+    // Add subtle text shadow to match the animated loading style
     ctx.shadowColor = 'rgba(255, 255, 255, 0.1)';
-    ctx.shadowBlur = size / 64;
+    ctx.shadowBlur = size / 48;
     ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = size / 192;
+    ctx.shadowOffsetY = size / 128;
     
     // Draw text
     ctx.fillText(text, size / 2, size / 2);
