@@ -57,10 +57,6 @@ export default function MobileArtDiscovery({
   const modalIsDragging = useRef<boolean>(false);
   const [modalSwipeDistance, setModalSwipeDistance] = useState(0);
   const [isModalAnimating, setIsModalAnimating] = useState(false);
-  const [actionFeedback, setActionFeedback] = useState<{
-    type: 'like' | 'dislike' | 'add' | null;
-    show: boolean;
-  }>({ type: null, show: false });
   
   // Add button animation states
   const [buttonStates, setButtonStates] = useState<{
@@ -656,7 +652,6 @@ export default function MobileArtDiscovery({
       if (currentX.current > 0) {
         // Swipe right - Like
         onLike(currentArtwork);
-        showActionFeedback('like');
         toast({
           title: "Liked! 👍",
           description: `Added "${currentArtwork.title}" to your liked artworks`,
@@ -664,7 +659,6 @@ export default function MobileArtDiscovery({
       } else {
         // Swipe left - Dislike
         onDislike(currentArtwork);
-        showActionFeedback('dislike');
         toast({
           title: "Disliked 👎",
           description: `We'll show you less art like "${currentArtwork.title}"`,
@@ -702,12 +696,6 @@ export default function MobileArtDiscovery({
     }
   };
 
-  const showActionFeedback = (type: 'like' | 'dislike' | 'add') => {
-    setActionFeedback({ type, show: true });
-    setTimeout(() => {
-      setActionFeedback({ type: null, show: false });
-    }, 1500);
-  };
 
   // Enhanced button action handler with micro-interactions
   const handleButtonAction = async (action: 'like' | 'dislike' | 'add' | 'info') => {
@@ -724,13 +712,6 @@ export default function MobileArtDiscovery({
       setButtonStates(prev => ({ ...prev, [action]: false }));
     }, 200);
 
-    // Action feedback
-    if (action !== 'info') {
-      setActionFeedback({ type: action, show: true });
-      setTimeout(() => {
-        setActionFeedback({ type: null, show: false });
-      }, 1000);
-    }
 
     switch (action) {
       case 'like':
@@ -854,22 +835,6 @@ export default function MobileArtDiscovery({
               </div>
             )}
 
-            {/* Action Feedback Overlays */}
-            {actionFeedback.show && (
-              <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
-                <div 
-                  className={`
-                    animate-pulse rounded-full p-6 transform transition-all duration-1000
-                    ${actionFeedback.type === 'like' ? 'bg-green-500' : 
-                      actionFeedback.type === 'dislike' ? 'bg-red-500' : 'bg-pink-500'}
-                  `}
-                >
-                  {actionFeedback.type === 'like' && <ThumbsUp className="w-12 h-12 text-white fill-white" />}
-                  {actionFeedback.type === 'dislike' && <ThumbsDown className="w-12 h-12 text-white fill-white" />}
-                  {actionFeedback.type === 'add' && <Heart className="w-12 h-12 text-white fill-white" />}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -926,39 +891,6 @@ export default function MobileArtDiscovery({
           </Button>
         </div>
         
-        {/* Action Feedback Overlay */}
-        {actionFeedback.show && (
-          <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-            <div className={`
-              px-6 py-4 rounded-2xl text-white font-serif text-lg shadow-2xl backdrop-blur-sm
-              transform animate-in fade-in-0 zoom-in-95 duration-300
-              ${actionFeedback.type === 'like' ? 'bg-green-500/90' : ''}
-              ${actionFeedback.type === 'dislike' ? 'bg-red-500/90' : ''}
-              ${actionFeedback.type === 'add' ? 'bg-pink-500/90' : ''}
-            `}>
-              <div className="flex items-center gap-3">
-                {actionFeedback.type === 'like' && (
-                  <>
-                    <ThumbsUp className="w-6 h-6" />
-                    <span>Liked</span>
-                  </>
-                )}
-                {actionFeedback.type === 'dislike' && (
-                  <>
-                    <ThumbsDown className="w-6 h-6" />
-                    <span>Disliked</span>
-                  </>
-                )}
-                {actionFeedback.type === 'add' && (
-                  <>
-                    <Heart className="w-6 h-6" />
-                    <span>Added to Collection</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Info Drawer for Discovery View */}
