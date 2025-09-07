@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Plus, Menu, Info, Search, Palette, Mail, User, ArrowLeft, Trash } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
+import { Heart, ThumbsUp, ThumbsDown, Plus, Menu, Info, Search, Palette, Mail, User, ArrowLeft, Trash, X } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -75,6 +75,10 @@ export default function MobileArtDiscovery({
     like: false
   });
   
+  // Full-screen artwork view state
+  const [showFullscreenArtwork, setShowFullscreenArtwork] = useState(false);
+  const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false);
+  
   const cardRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const startY = useRef(0);
@@ -83,6 +87,26 @@ export default function MobileArtDiscovery({
   const isDragging = useRef(false);
 
   const currentArtwork = artworks[currentIndex];
+
+  // Handle keyboard shortcuts for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showFullscreenArtwork) {
+        handleFullscreenClose();
+      }
+    };
+
+    if (showFullscreenArtwork) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Prevent body scroll when fullscreen is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [showFullscreenArtwork]);
 
   // Calculate optimal image dimensions based on orientation
   const getImageContainerStyle = () => {
@@ -226,15 +250,23 @@ export default function MobileArtDiscovery({
           ) : (
             <div className={`space-y-4 ${isLandscape ? 'grid grid-cols-2 gap-4 space-y-0' : ''}`}>
               {collection.map((artwork) => (
-                <div key={artwork.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                  <div className={`flex ${isLandscape ? 'flex-col' : ''}`}>
+                <div key={artwork.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200">
+                  <div className={`flex ${isLandscape ? 'flex-col' : ''}`} onClick={() => handleCollectionItemTap(artwork)}>
                     {/* Artwork Image */}
-                    <div className={`${isLandscape ? 'w-full aspect-square' : 'w-24 h-24'} flex-shrink-0`}>
+                    <div className={`${isLandscape ? 'w-full aspect-square' : 'w-24 h-24'} flex-shrink-0 relative`}>
                       <img
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
                         className="w-full h-full object-cover"
                       />
+                      {/* Tap indicator overlay for collection items */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-black/50 rounded-full p-2 backdrop-blur-sm">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                     
                     {/* Artwork Info */}
@@ -695,6 +727,35 @@ export default function MobileArtDiscovery({
     }
   };
 
+  // Handle artwork tap for full-screen view
+  const handleArtworkTap = () => {
+    if (currentArtwork && !isAnimating) {
+      setFullscreenImageLoaded(false);
+      setShowFullscreenArtwork(true);
+      // Haptic feedback for fullscreen
+      if (navigator.vibrate) {
+        navigator.vibrate(30);
+      }
+    }
+  };
+
+  // Handle fullscreen close
+  const handleFullscreenClose = () => {
+    setShowFullscreenArtwork(false);
+    setFullscreenImageLoaded(false);
+  };
+
+  // Handle collection item tap for full-screen view
+  const handleCollectionItemTap = (artwork: Artwork) => {
+    setSelectedArtwork(artwork);
+    setFullscreenImageLoaded(false);
+    setShowFullscreenArtwork(true);
+    // Haptic feedback for fullscreen
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
+  };
+
   return (
     <div className={getContainerClasses()}>
       {/* Header */}
@@ -714,10 +775,11 @@ export default function MobileArtDiscovery({
       <div className={getMainAreaClasses()}>
         <div
           ref={cardRef}
-          className={getCardClasses()}
+          className={`${getCardClasses()} cursor-pointer`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onClick={handleArtworkTap}
           style={{ 
             willChange: 'transform',
             ...getImageContainerStyle()
@@ -735,6 +797,15 @@ export default function MobileArtDiscovery({
               priority
               draggable={false}
             />
+            
+            {/* Tap indicator overlay */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+              <div className="bg-black/50 rounded-full p-3 backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+              </div>
+            </div>
             
             {/* Swipe Overlays */}
             {swipeDirection === 'right' && (
@@ -1043,6 +1114,67 @@ export default function MobileArtDiscovery({
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Full-Screen Artwork Overlay */}
+      {showFullscreenArtwork && (view === "discover" ? currentArtwork : selectedArtwork) && (
+        <div className="fixed inset-0 bg-black z-[200] flex items-center justify-center">
+          {/* Close button */}
+          <button
+            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 rounded-full p-3 backdrop-blur-sm transition-all duration-200 hover:scale-110"
+            onClick={handleFullscreenClose}
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+
+          {/* Artwork info overlay */}
+          <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-2xl p-4 text-white">
+            <h3 className="text-xl font-serif font-bold mb-1">{(view === "discover" ? currentArtwork : selectedArtwork)?.title}</h3>
+            <p className="text-lg opacity-90 mb-2">{(view === "discover" ? currentArtwork : selectedArtwork)?.artist}</p>
+            <div className="flex items-center justify-between text-sm opacity-75">
+              <span>{(view === "discover" ? currentArtwork : selectedArtwork)?.year}</span>
+              <span>{(view === "discover" ? currentArtwork : selectedArtwork)?.medium}</span>
+            </div>
+            {(view === "discover" ? currentArtwork : selectedArtwork)?.price && (
+              <div className="mt-2 text-lg font-semibold">
+                {(view === "discover" ? currentArtwork : selectedArtwork)?.price}
+              </div>
+            )}
+          </div>
+
+          {/* Full-screen image */}
+          <div className="relative w-full h-full flex items-center justify-center p-4">
+            {!fullscreenImageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+              </div>
+            )}
+            <img
+              src={(view === "discover" ? currentArtwork : selectedArtwork)?.artwork_image}
+              alt={(view === "discover" ? currentArtwork : selectedArtwork)?.title}
+              className={`max-w-full max-h-full object-contain transition-opacity duration-500 ${
+                fullscreenImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              onLoad={() => setFullscreenImageLoaded(true)}
+              onError={() => setFullscreenImageLoaded(true)}
+            />
+          </div>
+
+          {/* Tap to close hint */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <div className={`bg-white/20 rounded-full px-4 py-2 text-white text-sm backdrop-blur-sm transition-opacity duration-1000 ${
+              fullscreenImageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}>
+              Tap anywhere to close
+            </div>
+          </div>
+
+          {/* Tap anywhere to close */}
+          <div 
+            className="absolute inset-0 cursor-pointer" 
+            onClick={handleFullscreenClose}
+          />
         </div>
       )}
     </div>
