@@ -1,58 +1,71 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
-function PasswordResetContent() {
+export default function PasswordResetPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isValidSession, setIsValidSession] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Check if we have the necessary parameters for password reset (hash or query params)
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const queryParams = new URLSearchParams(window.location.search);
-    
-    // Try hash parameters first, then query parameters
-    const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
-    const type = hashParams.get('type') || queryParams.get('type');
+    const checkPasswordResetSession = async () => {
+      try {
+        console.log('Checking password reset session...');
+        console.log('Current URL:', window.location.href);
+        console.log('Hash:', window.location.hash);
+        console.log('Search:', window.location.search);
 
-    console.log('Password reset page loaded with:', {
-      type,
-      hasAccessToken: !!accessToken,
-      hasRefreshToken: !!refreshToken,
-      fullHash: window.location.hash,
-      fullSearch: window.location.search,
-      fullUrl: window.location.href
-    });
+        // Check if we have hash parameters for password reset
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const queryParams = new URLSearchParams(window.location.search);
+        
+        const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+        const type = hashParams.get('type') || queryParams.get('type');
 
-    if (type === 'recovery' && accessToken) {
-      // This is a valid password reset session
-      console.log('Valid password reset session detected');
-      
-      // Set the session with the tokens
-      if (accessToken && refreshToken) {
-        console.log('Setting session with tokens');
-        // The session should be automatically set by Supabase when the page loads
+        console.log('Tokens found:', {
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          type
+        });
+
+        if (type === 'recovery' && accessToken) {
+          console.log('Valid password reset session detected');
+          setIsValidSession(true);
+        } else {
+          console.log('No valid password reset session found');
+          toast({
+            title: "Invalid Reset Link",
+            description: "This password reset link is invalid or has expired. Please request a new one.",
+            variant: "destructive"
+          });
+          setTimeout(() => {
+            router.push('/forgot-password');
+          }, 3000);
+        }
+      } catch (err) {
+        console.error('Error checking session:', err);
+        toast({
+          title: "Error",
+          description: "An error occurred while checking your reset link.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsCheckingSession(false);
       }
-    } else {
-      console.log('No valid password reset session, redirecting to forgot password');
-      toast({
-        title: "Invalid Reset Link",
-        description: "This password reset link is invalid or has expired. Please request a new one.",
-        variant: "destructive"
-      });
-      router.push('/forgot-password');
-    }
+    };
+
+    checkPasswordResetSession();
   }, [router, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,6 +111,35 @@ function PasswordResetContent() {
       setLoading(false);
     }
   };
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Verifying reset link...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isValidSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold mb-4 text-red-600">Invalid Reset Link</h1>
+            <p className="mb-4 text-gray-600">
+              This password reset link is invalid or has expired.
+            </p>
+            <p className="mb-6 text-sm text-gray-500">
+              Redirecting to request a new reset link...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -163,8 +205,4 @@ function PasswordResetContent() {
       </div>
     </div>
   );
-}
-
-export default function PasswordResetPage() {
-  return <PasswordResetContent />;
 } 
