@@ -61,7 +61,7 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
             onClick={() => handleNav("discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
-            Discover Art
+            Discover
           </Button>
           
           <Button 
@@ -142,7 +142,7 @@ function AppHeaderContent({ view, setView, collectionCount }: { view?: "discover
               onClick={() => handleNav("discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
-              Discover Art
+              Discover
             </Button>
             
             <Button
