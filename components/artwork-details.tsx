@@ -47,57 +47,12 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
   );
 
   return (
-    <div className="p-6 space-y-4">
-      {/* Enhanced Typography Hierarchy */}
-      <div className="space-y-2">
-        <h1 className="text-xl font-serif font-bold leading-tight tracking-tight">{artwork.title}</h1>
-        <div className="flex items-center gap-2">
-          <span className="text-sm tracking-wider text-muted-foreground font-medium">by</span>
-          <p className="text-lg font-serif font-medium text-foreground">{artwork.artist}</p>
-        </div>
-      </div>
-
-      {/* Enhanced Price Display */}
-      {artwork.price && (
-        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-          {artwork.price.toLowerCase() === 'not for sale'
-            ? <div className="text-center">
-                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
-              </div>
-            : <div className="text-center">
-                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
-              </div>
-          }
-        </div>
-      )}
-
-      {/* Enhanced Description - Moved higher */}
+    <div className="p-6 space-y-6">
+      {/* Enhanced Description */}
       <div className="space-y-3">
         <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
         <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
       </div>
-
-      {/* Enhanced Metadata Grid - More compact */}
-      <div className="space-y-3">
-        <div className="grid gap-2">
-          <div className="flex justify-between items-center py-2 border-b border-gray-100">
-            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Medium</span>
-            <span className="text-base font-medium text-foreground">{artwork.medium}</span>
-          </div>
-
-          <div className="flex justify-between items-center py-2 border-b border-gray-100">
-            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Dimensions</span>
-            <span className="text-base font-medium text-foreground">{artwork.dimensions}</span>
-          </div>
-
-          <div className="flex justify-between items-center py-2 border-b border-gray-100">
-            <span className="text-sm tracking-wider text-muted-foreground font-semibold">Year</span>
-            <span className="text-base font-medium text-foreground">{artwork.year}</span>
-          </div>
-        </div>
-      </div>
-
-      <Separator className="my-6" />
 
       {/* Enhanced Tags */}
       <div className="space-y-4">
@@ -118,6 +73,20 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
           )}
         </div>
       </div>
+
+      {/* Enhanced Price Display / Sale Status */}
+      {artwork.price && (
+        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
+          {artwork.price.toLowerCase() === 'not for sale'
+            ? <div className="text-center">
+                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
+              </div>
+            : <div className="text-center">
+                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
+              </div>
+          }
+        </div>
+      )}
 
       {showShareButton && (
         <>

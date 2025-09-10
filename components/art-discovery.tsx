@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { ArrowLeft, Heart, Plus, Trash, X, Check, Menu, Search, Palette, Mail, User, Info, ThumbsDown, ThumbsUp } from "lucide-react"
 import Image from "next/image"
 import { Auth } from '@supabase/auth-ui-react'
@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
-import { AppHeader } from "@/components/app-header"
+import { AppHeader, type FilterState } from "@/components/app-header"
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
 import { ImageOverlay } from "@/components/image-overlay"
 import { ProfilePage } from "@/components/profile-page"
@@ -31,6 +31,7 @@ import { useViewContext } from "./ViewContext"
 import { useMobileDetection } from "@/hooks/use-mobile-detection"
 import MobileArtDiscovery from "./mobile-art-discovery"
 import ProgressiveImage from "./progressive-image"
+import CardStack from "./card-stack"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact"
@@ -89,7 +90,48 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     viewed_artworks: []
   });
 
-  const currentArtwork = artworks[currentIndex]
+  // Add state for filtered artworks and active filters
+  const [filteredArtworks, setFilteredArtworks] = useState<Artwork[]>([])
+  const [activeFilters, setActiveFilters] = useState<{
+    style: string;
+    subject: string;
+    colors: string;
+  }>({
+    style: '',
+    subject: '',
+    colors: ''
+  })
+  const [isFiltering, setIsFiltering] = useState(false)
+
+  // Use filtered artworks if filtering is active
+  const currentArtworkList = isFiltering ? filteredArtworks : artworks
+  const currentArtwork = currentArtworkList[currentIndex]
+
+  // Extract available tags from artworks for predictive text
+  const availableTags = useMemo(() => {
+    const styles = new Set<string>()
+    const subjects = new Set<string>()
+    const colors = new Set<string>()
+
+    artworks.forEach(artwork => {
+      if (artwork.style) styles.add(artwork.style)
+      if (artwork.genre) styles.add(artwork.genre)
+      if (artwork.subject) subjects.add(artwork.subject)
+      if (artwork.colour) {
+        // Split comma-separated colors
+        artwork.colour.split(',').forEach(color => {
+          const trimmed = color.trim()
+          if (trimmed) colors.add(trimmed)
+        })
+      }
+    })
+
+    return {
+      styles: Array.from(styles).sort(),
+      subjects: Array.from(subjects).sort(),
+      colors: Array.from(colors).sort()
+    }
+  }, [artworks])
 
   // Add new state for end of matches overlay
   const [showEndOfMatchesOverlay, setShowEndOfMatchesOverlay] = useState(false);
@@ -771,17 +813,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setCurrentIndex(newIndex);
   }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences]);
 
-  // Handle client-side initialization and data fetching
-  useEffect(() => {
-    setMounted(true)
-    fetchArtworks()
-  }, [])
-
   // Update fetchArtworks to use recommendations if user exists
-  const fetchArtworks = async () => {
+  const fetchArtworks = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('Starting to fetch artworks...');
       
       // First test the connection
       const { count, error: countError } = await supabase
@@ -793,7 +828,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         throw countError;
       }
       
-      console.log('Connected to Supabase successfully. Total artwork count:', count);
 
       // Fetch artworks with exact column names from Supabase
       const { data: artworksData, error } = await supabase
@@ -861,8 +895,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         };
       });
 
-      console.log('Transformed artworks:', transformedArtworks.length, 'items');
-      console.log('First transformed artwork:', JSON.stringify(transformedArtworks[0], null, 2));
       
       setArtworks(transformedArtworks);
 
@@ -893,6 +925,103 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     } finally {
       setLoading(false);
     }
+  }, [user, toast])
+
+  // Handle client-side initialization and data fetching
+  useEffect(() => {
+    setMounted(true)
+    fetchArtworks()
+  }, [fetchArtworks])
+
+  // Load more artworks for infinite scroll/prefetching
+  const loadMoreArtworks = useCallback(async () => {
+    if (loading) return
+    
+    try {
+      setLoading(true)
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // For demo purposes, add shuffled versions of existing artworks
+      const shuffledArtworks = [...artworks].sort(() => Math.random() - 0.5)
+      const newArtworks = shuffledArtworks.slice(0, 6).map(artwork => ({
+        ...artwork,
+        id: `${artwork.id}_${Date.now()}_${Math.random()}` // Ensure unique IDs
+      }))
+      
+      setArtworks(prev => [...prev, ...newArtworks])
+    } catch (error) {
+      console.error('Error loading more artworks:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [loading, artworks])
+
+  // Handle moving to the next artwork
+  const handleNext = () => {
+    const currentArtworkList = isFiltering ? filteredArtworks : artworks
+    if (currentIndex < currentArtworkList.length - 1) {
+      setCurrentIndex(currentIndex + 1)
+    }
+  }
+
+  // Handle filter changes
+  const handleFilterChange = (filters: FilterState) => {
+    setActiveFilters(filters)
+    setIsFiltering(true)
+    setCurrentIndex(0) // Reset to first artwork
+    
+    // Apply filters to artworks
+    const filtered = artworks.filter(artwork => {
+      let matches = true
+      
+      // Filter by style
+      if (filters.style.trim()) {
+        const styleKeywords = filters.style.toLowerCase().split(',').map(s => s.trim())
+        const artworkStyle = (artwork.style || '').toLowerCase()
+        const artworkGenre = (artwork.genre || '').toLowerCase()
+        matches = matches && styleKeywords.some(keyword => 
+          artworkStyle.includes(keyword) || artworkGenre.includes(keyword)
+        )
+      }
+      
+      // Filter by subject
+      if (filters.subject.trim()) {
+        const subjectKeywords = filters.subject.toLowerCase().split(',').map(s => s.trim())
+        const artworkSubject = (artwork.subject || '').toLowerCase()
+        const artworkTitle = artwork.title.toLowerCase()
+        matches = matches && subjectKeywords.some(keyword => 
+          artworkSubject.includes(keyword) || artworkTitle.includes(keyword)
+        )
+      }
+      
+      // Filter by colors
+      if (filters.colors.trim()) {
+        const colorKeywords = filters.colors.toLowerCase().split(',').map(s => s.trim())
+        const artworkColor = (artwork.colour || '').toLowerCase()
+        matches = matches && colorKeywords.some(keyword => 
+          artworkColor.includes(keyword)
+        )
+      }
+      
+      return matches
+    })
+    
+    setFilteredArtworks(filtered)
+  }
+
+  // Clear filters function
+  const clearFilters = () => {
+    setIsFiltering(false)
+    setActiveFilters({ style: '', subject: '', colors: '' })
+    setFilteredArtworks([])
+    setCurrentIndex(0)
+    
+    toast({
+      title: "Filters Cleared",
+      description: "Showing all artworks",
+    })
   }
 
   // Setup keyboard shortcuts only on the client side
@@ -1088,7 +1217,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Add an effect to update currentArtwork when index changes
   useEffect(() => {
-    console.log('State Update - Current Index:', currentIndex, 'Current Artwork:', artworks[currentIndex]?.title)
     
     // Track view analytics when artwork is displayed
     if (artworks[currentIndex]?.id) {
@@ -1099,15 +1227,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   // Force a re-render when currentIndex changes
   useEffect(() => {
     if (currentIndex >= 0 && currentIndex < artworks.length) {
-      console.log('Updating to artwork:', artworks[currentIndex]?.title)
     }
   }, [currentIndex, artworks])
 
-  // Add a debug effect to log artworks array changes
-  useEffect(() => {
-    console.log('Artworks array updated:', artworks.length, 'artworks')
-    console.log('Current artwork:', currentArtwork)
-  }, [artworks, currentArtwork])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -1303,7 +1425,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     <div className="flex flex-col min-h-screen">
       {/* Desktop Header - only show on desktop */}
       {!isMobile && !isTablet && (
-        <AppHeader view={view} setView={setView} collectionCount={collectionCount} />
+        <AppHeader 
+        view={view} 
+        setView={setView} 
+        collectionCount={collectionCount}
+        onFilterChange={handleFilterChange}
+        onClearFilters={clearFilters}
+        isFiltering={isFiltering}
+        availableTags={availableTags}
+      />
       )}
       
       {/* Auth Modal */}
@@ -1413,72 +1543,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             screenHeight={screenHeight}
           />
         ) : currentArtwork ? (
-          <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
-            {/* Enhanced Artwork Display Area with smooth transitions */}
-            <div className="w-full lg:w-[70%] flex-shrink-0 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 bg-white relative">
-              <div className="w-full max-w-2xl lg:max-w-none">
-                <div
-                  className="relative cursor-zoom-in rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 
-                    shadow-elegant hover:shadow-elegant-hover transition-all duration-500 hover:scale-[1.01] artwork-card"
-                  style={{ aspectRatio: '4/3' }}
-                  onClick={() => currentArtwork && openImageOverlay(currentArtwork.artwork_image, currentArtwork.title)}
-                >
-                  <ProgressiveImage
-                    src={currentArtwork.artwork_image || "/placeholder.svg"}
-                    alt={currentArtwork.title}
-                    className="w-full h-full p-4 transition-all duration-500"
-                    style={{ objectFit: 'contain' }}
-                    priority={true}
-                  />
-                  {/* Overlay only covers the artwork image area, not the whole page */}
-                  {showEndOfMatchesOverlay && (
-                    <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-30">
-                      <div className="bg-white bg-opacity-90 rounded-lg p-8 shadow-lg text-center max-w-md pointer-events-auto">
-                        <h2 className="text-xl font-semibold mb-4">You've seen all the matches for now!</h2>
-                        <p className="text-base text-muted-foreground">We're sourcing more art you'll love—check back soon for fresh discoveries.</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              {/* Enhanced Button Area with micro-interactions */}
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-8 w-full relative z-10">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleDislike}
-                className={"flex-1 sm:flex-none min-w-[120px] border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-600 hover:scale-105 button-bounce shadow-md hover:shadow-lg"}
-              >
-                <ThumbsDown className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="sm:hidden">👎</span>
-                  <span className="hidden sm:inline">Dislike</span>
-              </Button>
-                <Button 
-                  size="lg" 
-                  onClick={handleAddToCollection} 
-                  className={"flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 transition-all duration-200 hover:scale-105 button-bounce shadow-md hover:shadow-lg bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600"}
-                >
-                <Heart className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="sm:hidden">❤️</span>
-                  <span className="hidden sm:inline">Add to Collection</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleLike}
-                className={"flex-1 sm:flex-none min-w-[120px] border-green-200 transition-all duration-200 hover:bg-green-50 hover:text-green-600 hover:scale-105 button-bounce shadow-md hover:shadow-lg"}
-              >
-                <ThumbsUp className="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="sm:hidden">👍</span>
-                  <span className="hidden sm:inline">Like</span>
-              </Button>
-            </div>
-            </div>
-            {/* Artwork Details Panel (30% on desktop, full width on mobile) */}
-            <div className="w-full lg:w-[30%] border-t lg:border-t-0 lg:border-l overflow-y-auto bg-background">
-            <ArtworkDetails artwork={currentArtwork} />
-          </div>
-        </div>
+          <CardStack
+            artworks={currentArtworkList}
+            currentIndex={currentIndex}
+            onLike={handleLike}
+            onDislike={handleDislike}
+            onAddToCollection={handleAddToCollection}
+            onNext={handleNext}
+            onLoadMore={loadMoreArtworks}
+            onImageClick={openImageOverlay}
+            loading={loading}
+          />
         ) : null
       ) : view === "collection" ? (
         isMobile || isTablet ? (

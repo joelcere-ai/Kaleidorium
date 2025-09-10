@@ -1,0 +1,279 @@
+"use client"
+
+import React, { useState, useEffect, useRef } from 'react'
+import { Heart, ThumbsUp, ThumbsDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import type { Artwork } from "@/types/artwork"
+import ProgressiveImage from "./progressive-image"
+
+interface CardStackProps {
+  artworks: Artwork[]
+  currentIndex: number
+  onLike: (artwork: Artwork) => void
+  onDislike: (artwork: Artwork) => void
+  onAddToCollection: (artwork: Artwork) => void
+  onNext: () => void
+  onLoadMore: () => void
+  onImageClick: (url: string, alt: string) => void
+  loading: boolean
+}
+
+
+export default function CardStack({
+  artworks,
+  currentIndex,
+  onLike,
+  onDislike,
+  onAddToCollection,
+  onNext,
+  onLoadMore,
+  onImageClick,
+  loading
+}: CardStackProps) {
+  const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
+
+  // Get visible cards based on current count
+  const getVisibleCards = () => {
+    const cards = []
+    for (let i = 0; i < visibleCardCount; i++) {
+      const index = currentIndex + i
+      if (index < artworks.length) {
+        cards.push({
+          artwork: artworks[index],
+          index,
+          zIndex: 3 - i,
+          isTop: i === 0
+        })
+      }
+    }
+    return cards
+  }
+
+  const visibleCards = getVisibleCards()
+
+  // Prefetch more artworks when running low
+  useEffect(() => {
+    const remainingCards = artworks.length - currentIndex
+    if (remainingCards <= 3) {
+      onLoadMore()
+    }
+  }, [currentIndex, artworks.length, onLoadMore])
+
+  // Scroll-based card loading
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      
+      // Show 3 more cards when user is 80% down the page
+      if (scrollTop + windowHeight >= documentHeight * 0.8) {
+        const remainingCards = artworks.length - currentIndex - visibleCardCount
+        if (remainingCards > 0) {
+          setVisibleCardCount(prev => prev + 3) // Add 3 more cards
+        } else if (remainingCards <= 0 && !loading) {
+          // Load more artworks from API when we're running low
+          onLoadMore()
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [artworks.length, currentIndex, visibleCardCount, loading, onLoadMore])
+
+  // Reset visible card count when filters change or artworks change
+  useEffect(() => {
+    setVisibleCardCount(3)
+  }, [artworks.length, currentIndex])
+
+  const handleAction = (action: 'like' | 'dislike' | 'add', artwork: Artwork) => {
+    switch (action) {
+      case 'like':
+        onLike(artwork)
+        break
+      case 'dislike':
+        onDislike(artwork)
+        break
+      case 'add':
+        onAddToCollection(artwork)
+        break
+    }
+    onNext()
+  }
+
+
+  if (!visibleCards.length) {
+    return (
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-white relative">
+          <div className="flex items-center justify-center p-8">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold mb-4">No artworks available</h2>
+              <p className="text-muted-foreground">Check back later for more artworks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col flex-1 overflow-hidden">
+      {/* Main CardStack Area */}
+      <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-white relative">
+        
+
+        {/* Cards Stack - Vertical Layout */}
+        <div className="flex-1 max-w-7xl mx-auto w-full space-y-8">
+          {visibleCards.map(({ artwork, index }, cardIndex) => (
+            <div
+              key={artwork.id}
+              className="transition-all duration-300 ease-out"
+            >
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div className="flex flex-col lg:flex-row">
+                  {/* Artwork Image Section */}
+                  <div className="w-full lg:w-[70%] flex-shrink-0">
+                    <div
+                      className="relative h-[400px] lg:h-[500px] cursor-zoom-in bg-gray-50"
+                      onClick={() => onImageClick(artwork.artwork_image, artwork.title)}
+                    >
+                      <ProgressiveImage
+                        src={artwork.artwork_image || "/placeholder.svg"}
+                        alt={artwork.title}
+                        className="w-full h-full p-6"
+                        style={{ objectFit: 'contain' }}
+                        priority={cardIndex === 0}
+                      />
+                    </div>
+                    
+                    {/* Card Info Section */}
+                    <div className="p-6 border-t border-gray-100">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                        <div className="mb-4 sm:mb-0">
+                          <h3 className="font-serif text-2xl font-semibold mb-2">
+                            {artwork.title}
+                          </h3>
+                          <p className="text-lg text-gray-600 mb-2">by {artwork.artist}</p>
+                          
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span>{artwork.year}</span>
+                            <span>{artwork.medium}</span>
+                            {artwork.dimensions && <span>{artwork.dimensions}</span>}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex items-center justify-center gap-4 sm:gap-8">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => handleAction('dislike', artwork)}
+                          className="flex-1 sm:flex-none min-w-[120px] border-red-200 hover:bg-red-50 hover:text-red-600 hover:scale-105 transition-all duration-200"
+                        >
+                          <ThumbsDown className="w-5 h-5 mr-2" />
+                          <span className="sm:hidden">👎</span>
+                          <span className="hidden sm:inline">Dislike</span>
+                        </Button>
+                        
+                        <Button
+                          size="lg"
+                          onClick={() => handleAction('add', artwork)}
+                          className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 hover:scale-105 transition-all duration-200"
+                        >
+                          <Heart className="w-5 h-5 mr-2" />
+                          <span className="sm:hidden">❤️</span>
+                          <span className="hidden sm:inline">Add to Collection</span>
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={() => handleAction('like', artwork)}
+                          className="flex-1 sm:flex-none min-w-[120px] border-green-200 hover:bg-green-50 hover:text-green-600 hover:scale-105 transition-all duration-200"
+                        >
+                          <ThumbsUp className="w-5 h-5 mr-2" />
+                          <span className="sm:hidden">👍</span>
+                          <span className="hidden sm:inline">Like</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Integrated Information Panel */}
+                  <div className="w-full lg:w-[30%] border-t lg:border-t-0 lg:border-l bg-background">
+                    <div className="p-6 space-y-6">
+                      {/* Enhanced Description */}
+                      <div className="space-y-3">
+                        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
+                        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
+                      </div>
+
+                      {/* Enhanced Tags */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-serif font-semibold text-foreground">Style & Subject</h3>
+                        <div className="flex flex-wrap gap-3">
+                          {[artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
+                            .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
+                            .length > 0 ? (
+                            [artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
+                              .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
+                              .map((tag) => (
+                                <Badge 
+                                  key={tag} 
+                                  variant="outline" 
+                                  className="px-3 py-1 text-sm font-medium border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))
+                          ) : (
+                            <span className="text-muted-foreground text-sm italic">No tags available</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Enhanced Price Display / Sale Status */}
+                      {artwork.price && (
+                        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
+                          {artwork.price.toLowerCase() === 'not for sale'
+                            ? <div className="text-center">
+                                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
+                              </div>
+                            : <div className="text-center">
+                                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
+                              </div>
+                          }
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Loading indicator and end of cards message */}
+        {loading && (
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center gap-2 text-sm text-gray-500">
+              <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              Loading more artworks...
+            </div>
+          </div>
+        )}
+        
+        {!loading && visibleCardCount >= artworks.length - currentIndex && artworks.length > 0 && (
+          <div className="mt-8 text-center p-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-600 mb-2">You've seen all the artworks!</h3>
+            <p className="text-sm text-gray-500">Check back later for new additions to our collection</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
