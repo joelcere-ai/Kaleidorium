@@ -339,7 +339,7 @@ function AppHeaderContent({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Style Filter */}
               <div className="relative">
-                <label className="block text-sm font-medium mb-2">Style</label>
+                <label className="block text-xs font-normal mb-2">Style</label>
                 <Input
                   placeholder="e.g. Abstract, Portrait, Digital Art..."
                   value={filters.style}
@@ -369,7 +369,7 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-xs"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
                       onClick={() => addFilterTag('style', tag)}
                     >
                       {tag}
@@ -380,7 +380,7 @@ function AppHeaderContent({
 
               {/* Subject Filter */}
               <div className="relative">
-                <label className="block text-sm font-medium mb-2">Subject</label>
+                <label className="block text-xs font-normal mb-2">Subject</label>
                 <Input
                   placeholder="e.g. Nature, Urban, Portrait..."
                   value={filters.subject}
@@ -410,7 +410,7 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-xs"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
                       onClick={() => addFilterTag('subject', tag)}
                     >
                       {tag}
@@ -421,7 +421,7 @@ function AppHeaderContent({
 
               {/* Colors Filter */}
               <div className="relative">
-                <label className="block text-sm font-medium mb-2">Colors</label>
+                <label className="block text-xs font-normal mb-2">Colors</label>
                 <Input
                   placeholder="e.g. Black, Colorful, Warm tones..."
                   value={filters.colors}
@@ -451,7 +451,7 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-xs"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
                       onClick={() => addFilterTag('colors', tag)}
                     >
                       {tag}
