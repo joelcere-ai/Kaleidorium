@@ -1,0 +1,798 @@
+"use client"
+
+import React, { useState, useRef, useEffect, useCallback } from "react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User } from "lucide-react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
+import type { Artwork } from "@/types/artwork"
+
+interface MobileCardStackProps {
+  artworks: Artwork[]
+  onLike: (artwork: Artwork) => void
+  onDislike: (artwork: Artwork) => void
+  onAddToCollection: (artwork: Artwork) => void
+  onLoadMore: () => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void
+  view: "discover" | "collection"
+  collection: Artwork[]
+  onRemoveFromCollection: (id: string) => void
+  isLandscape?: boolean
+  isPortrait?: boolean
+  screenWidth?: number
+  screenHeight?: number
+}
+
+export default function MobileCardStack({
+  artworks,
+  onLike,
+  onDislike,
+  onAddToCollection,
+  onLoadMore,
+  setView,
+  view = "discover",
+  collection = [],
+  onRemoveFromCollection,
+  isLandscape = false,
+  isPortrait = true,
+  screenWidth = 0,
+  screenHeight = 0,
+}: MobileCardStackProps) {
+  const { toast } = useToast()
+  const [visibleCardCount, setVisibleCardCount] = useState(3)
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [showMenuModal, setShowMenuModal] = useState(false)
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null)
+  const [showFullscreenArtwork, setShowFullscreenArtwork] = useState(false)
+  const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
+  const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
+  
+  // Button animation states
+  const [buttonStates, setButtonStates] = useState<{
+    dislike: boolean
+    info: boolean
+    add: boolean
+    like: boolean
+  }>({
+    dislike: false,
+    info: false,
+    add: false,
+    like: false
+  })
+
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Handle scroll-based loading
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return
+
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current
+      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight
+
+      // Load more when user scrolls to 80% of the content
+      if (scrollPercentage > 0.8 && visibleCardCount < artworks.length) {
+        setVisibleCardCount(prev => Math.min(prev + 3, artworks.length))
+        
+        // If we're near the end of local artworks, trigger load more
+        if (visibleCardCount >= artworks.length - 3) {
+          onLoadMore()
+        }
+      }
+    }
+
+    const container = containerRef.current
+    if (container) {
+      container.addEventListener('scroll', handleScroll)
+      return () => container.removeEventListener('scroll', handleScroll)
+    }
+  }, [visibleCardCount, artworks.length, onLoadMore])
+
+  // Reset visible cards when artworks change (e.g., after filtering)
+  useEffect(() => {
+    setVisibleCardCount(3)
+  }, [artworks])
+
+  // Prevent pull-to-refresh when modal is open
+  useEffect(() => {
+    if (showInfoModal) {
+      document.body.style.overscrollBehavior = 'none'
+      document.body.style.touchAction = 'pan-x pan-y'
+      document.documentElement.style.overscrollBehavior = 'none'
+    } else {
+      document.body.style.overscrollBehavior = ''
+      document.body.style.touchAction = ''
+      document.documentElement.style.overscrollBehavior = ''
+    }
+    
+    return () => {
+      document.body.style.overscrollBehavior = ''
+      document.body.style.touchAction = ''
+      document.documentElement.style.overscrollBehavior = ''
+    }
+  }, [showInfoModal])
+
+  // Handle keyboard shortcuts for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showFullscreenArtwork) {
+        handleFullscreenClose()
+      }
+    }
+
+    if (showFullscreenArtwork) {
+      document.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [showFullscreenArtwork])
+
+  const visibleArtworks = artworks.slice(0, visibleCardCount)
+
+  // Get dynamic classes based on orientation
+  const getContainerClasses = () => {
+    if (isLandscape) {
+      return "fixed inset-0 bg-white z-50 flex flex-col overflow-hidden"
+    }
+    return "fixed inset-0 bg-white z-50 flex flex-col"
+  }
+
+  const getMainAreaClasses = () => {
+    if (isLandscape) {
+      return "flex-1 relative overflow-hidden bg-gray-50"
+    }
+    return "flex-1 relative overflow-hidden bg-gray-50"
+  }
+
+  // Enhanced button action handler with micro-interactions
+  const handleButtonAction = async (action: 'like' | 'dislike' | 'add' | 'info', artwork: Artwork) => {
+    // Trigger haptic feedback if available
+    if (navigator.vibrate) {
+      navigator.vibrate(50)
+    }
+
+    // Button animation
+    setButtonStates(prev => ({ ...prev, [action]: true }))
+    setTimeout(() => {
+      setButtonStates(prev => ({ ...prev, [action]: false }))
+    }, 200)
+
+    switch (action) {
+      case 'like':
+        onLike(artwork)
+        toast({
+          title: "Liked! 👍",
+          description: `Added "${artwork.title}" to your liked artworks`,
+        })
+        break
+      case 'dislike':
+        onDislike(artwork)
+        toast({
+          title: "Disliked 👎",
+          description: `We'll show you less art like "${artwork.title}"`,
+        })
+        break
+      case 'add':
+        onAddToCollection(artwork)
+        toast({
+          title: "Added to Collection! ❤️",
+          description: `"${artwork.title}" has been added to your collection`,
+        })
+        break
+      case 'info':
+        setSelectedArtwork(artwork)
+        setShowInfoModal(true)
+        break
+    }
+  }
+
+  // Handle artwork tap for full-screen view
+  const handleArtworkTap = (artwork: Artwork) => {
+    setSelectedArtwork(artwork)
+    setFullscreenImageLoaded(false)
+    setShowFullscreenArtwork(true)
+    // Haptic feedback for fullscreen
+    if (navigator.vibrate) {
+      navigator.vibrate(30)
+    }
+  }
+
+  // Handle fullscreen close
+  const handleFullscreenClose = () => {
+    setShowFullscreenArtwork(false)
+    setFullscreenImageLoaded(false)
+  }
+
+  // Collection View
+  if (view === "collection") {
+    return (
+      <div className={getContainerClasses()}>
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowMenuModal(true)}
+            className="text-black hover:bg-gray-100"
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+        </div>
+
+        {/* Collection Content */}
+        <div className="flex-1 overflow-y-auto p-4" ref={containerRef}>
+          {collection.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <Heart className="h-16 w-16 text-gray-300 mb-4" />
+              <h3 className="text-xl font-medium mb-2 text-black">Your collection is empty</h3>
+              <p className="text-gray-600 mb-6">Start discovering art and add pieces you love!</p>
+              <Button onClick={() => setView("discover")}>Start Discovering</Button>
+            </div>
+          ) : (
+            <div className={`space-y-4 ${isLandscape ? 'grid grid-cols-2 gap-4 space-y-0' : ''}`}>
+              {collection.map((artwork) => (
+                <div key={artwork.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200">
+                  <div className={`flex ${isLandscape ? 'flex-col' : ''}`} onClick={() => handleArtworkTap(artwork)}>
+                    {/* Artwork Image */}
+                    <div className={`${isLandscape ? 'w-full aspect-square' : 'w-24 h-24'} flex-shrink-0 relative`}>
+                      <img
+                        src={artwork.artwork_image || "/placeholder.svg"}
+                        alt={artwork.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    
+                    {/* Artwork Info */}
+                    <div className={`flex-1 p-4 flex flex-col justify-between ${isLandscape ? 'min-h-[120px]' : ''}`}>
+                      <div>
+                        <h3 className="font-semibold text-black text-lg leading-tight">{artwork.title}</h3>
+                        <p className="text-gray-600 text-sm">{artwork.artist}</p>
+                        <p className="text-black font-medium text-base mt-1">{artwork.price}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Info Button */}
+                    <div className={`p-4 flex items-center ${isLandscape ? 'justify-center' : ''}`}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-12 h-12 rounded-full border-gray-300 hover:bg-gray-50"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedArtwork(artwork)
+                          setShowInfoModal(true)
+                        }}
+                      >
+                        <Info className="w-6 h-6 text-black" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Menu Modal */}
+        {showMenuModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+            <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-black">Menu</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMenuModal(false)}
+                  className="text-black hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("discover")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Search className="mr-3 h-5 w-5" />
+                  Discover
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("collection")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Heart className="mr-3 h-5 w-5" />
+                  My Collection
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("for-artists")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Palette className="mr-3 h-5 w-5" />
+                  For Artists
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("about")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Info className="mr-3 h-5 w-5" />
+                  About
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("contact")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Mail className="mr-3 h-5 w-5" />
+                  Contact
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("profile")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <User className="mr-3 h-5 w-5" />
+                  Profile
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Artwork Info Modal */}
+        {showInfoModal && selectedArtwork && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+            <div className="bg-white rounded-lg w-full max-h-[90vh] overflow-y-auto max-w-md">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-black">{selectedArtwork.title}</h2>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowInfoModal(false)
+                      setSelectedArtwork(null)
+                    }}
+                    className="text-black hover:bg-gray-100"
+                  >
+                    ×
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <span className="font-semibold text-black">Artist:</span>
+                    <span className="ml-2 text-gray-700">{selectedArtwork.artist}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-black">Price:</span>
+                    <span className="ml-2 text-gray-700">{selectedArtwork.price}</span>
+                  </div>
+                  {selectedArtwork.medium && (
+                    <div>
+                      <span className="font-semibold text-black">Medium:</span>
+                      <span className="ml-2 text-gray-700">{selectedArtwork.medium}</span>
+                    </div>
+                  )}
+                  {selectedArtwork.dimensions && (
+                    <div>
+                      <span className="font-semibold text-black">Dimensions:</span>
+                      <span className="ml-2 text-gray-700">{selectedArtwork.dimensions}</span>
+                    </div>
+                  )}
+                  {selectedArtwork.description && (
+                    <div>
+                      <span className="font-semibold text-black">Description:</span>
+                      <p className="mt-1 text-gray-700">{selectedArtwork.description}</p>
+                    </div>
+                  )}
+                  
+                  {/* Tags Section */}
+                  {(() => {
+                    const allTags = [
+                      selectedArtwork.genre,
+                      selectedArtwork.style,
+                      selectedArtwork.subject,
+                      selectedArtwork.colour,
+                      ...(selectedArtwork.tags || [])
+                    ].filter(
+                      (tag, idx, arr) => tag && arr.indexOf(tag) === idx
+                    )
+                    
+                    return allTags.length > 0 && (
+                      <div>
+                        <span className="font-semibold text-black">Tags:</span>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {allTags.map((tag) => (
+                            <Badge key={tag} variant="secondary">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Discovery View - CardStack
+  if (visibleArtworks.length === 0) {
+    return (
+      <div className={getContainerClasses()}>
+        <div className="flex items-center justify-center h-full">
+          <p className="text-black text-xl">No more artworks to discover!</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className={getContainerClasses()}>
+      {/* Header */}
+      <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 z-10">
+        <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowMenuModal(true)}
+          className="text-black hover:bg-gray-100"
+        >
+          <Menu className="w-6 h-6" />
+        </Button>
+      </div>
+
+      {/* Main Artwork Area - Scrollable CardStack */}
+      <div className={getMainAreaClasses()}>
+        <div 
+          ref={containerRef}
+          className="h-full overflow-y-auto p-4 space-y-6"
+        >
+          {visibleArtworks.map((artwork, index) => (
+            <div
+              key={artwork.id}
+              className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] overflow-hidden"
+            >
+              {/* Artwork Image */}
+              <div 
+                className="relative w-full aspect-square cursor-pointer"
+                onClick={() => handleArtworkTap(artwork)}
+              >
+                <Image
+                  src={artwork.artwork_image}
+                  alt={artwork.title}
+                  fill
+                  className="object-cover transition-opacity duration-300"
+                  sizes="100vw"
+                  priority={index < 3}
+                />
+                
+                {/* Tap indicator overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-black/50 rounded-full p-3 backdrop-blur-sm">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Artwork Information */}
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-black mb-2">{artwork.title}</h2>
+                    <p className="text-lg text-gray-600 mb-1">{artwork.artist}</p>
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <span>{artwork.medium}</span>
+                      {artwork.dimensions && <span>• {artwork.dimensions}</span>}
+                      <span>• {artwork.year}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-black">{artwork.price}</p>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {[artwork.genre, artwork.style, artwork.subject, artwork.colour]
+                    .filter(Boolean)
+                    .map((tag) => (
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
+                    ))}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-center gap-6">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={`w-16 h-16 rounded-full border-red-300 hover:bg-red-50 hover:border-red-400 
+                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                      ${buttonStates.dislike ? 'scale-95 bg-red-50' : ''}`}
+                    onClick={() => handleButtonAction('dislike', artwork)}
+                  >
+                    <ThumbsDown className="w-7 h-7 text-red-600" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={`w-16 h-16 rounded-full border-blue-300 hover:bg-blue-50 hover:border-blue-400 
+                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                      ${buttonStates.info ? 'scale-95 bg-blue-50' : ''}`}
+                    onClick={() => handleButtonAction('info', artwork)}
+                  >
+                    <Info className="w-7 h-7 text-blue-600" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={`w-16 h-16 rounded-full border-pink-300 hover:bg-pink-50 hover:border-pink-400 
+                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                      ${buttonStates.add ? 'scale-95 bg-pink-50 animate-pulse' : ''}`}
+                    onClick={() => handleButtonAction('add', artwork)}
+                  >
+                    <Heart className="w-7 h-7 text-pink-600" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={`w-16 h-16 rounded-full border-green-300 hover:bg-green-50 hover:border-green-400 
+                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                      ${buttonStates.like ? 'scale-95 bg-green-50' : ''}`}
+                    onClick={() => handleButtonAction('like', artwork)}
+                  >
+                    <ThumbsUp className="w-7 h-7 text-green-600" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Loading indicator */}
+          {visibleCardCount < artworks.length && (
+            <div className="flex justify-center py-8">
+              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Menu Modal */}
+      {showMenuModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-black">Menu</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMenuModal(false)}
+                className="text-black hover:bg-gray-100"
+              >
+                ×
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("discover")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Search className="mr-3 h-5 w-5" />
+                Discover
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("collection")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Heart className="mr-3 h-5 w-5" />
+                My Collection
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("for-artists")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Palette className="mr-3 h-5 w-5" />
+                For Artists
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("about")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Info className="mr-3 h-5 w-5" />
+                About
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("contact")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Mail className="mr-3 h-5 w-5" />
+                Contact
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("profile")
+                  setShowMenuModal(false)
+                }}
+              >
+                <User className="mr-3 h-5 w-5" />
+                Profile
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Artwork Info Modal */}
+      {showInfoModal && selectedArtwork && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-lg w-full max-h-[90vh] overflow-y-auto max-w-md">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-black">{selectedArtwork.title}</h2>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowInfoModal(false)
+                    setSelectedArtwork(null)
+                  }}
+                  className="text-black hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <span className="font-semibold text-black">Artist:</span>
+                  <span className="ml-2 text-gray-700">{selectedArtwork.artist}</span>
+                </div>
+                <div>
+                  <span className="font-semibold text-black">Price:</span>
+                  <span className="ml-2 text-gray-700">{selectedArtwork.price}</span>
+                </div>
+                {selectedArtwork.medium && (
+                  <div>
+                    <span className="font-semibold text-black">Medium:</span>
+                    <span className="ml-2 text-gray-700">{selectedArtwork.medium}</span>
+                  </div>
+                )}
+                {selectedArtwork.dimensions && (
+                  <div>
+                    <span className="font-semibold text-black">Dimensions:</span>
+                    <span className="ml-2 text-gray-700">{selectedArtwork.dimensions}</span>
+                  </div>
+                )}
+                {selectedArtwork.description && (
+                  <div>
+                    <span className="font-semibold text-black">Description:</span>
+                    <p className="mt-1 text-gray-700">{selectedArtwork.description}</p>
+                  </div>
+                )}
+                
+                {/* Tags Section */}
+                {(() => {
+                  const allTags = [
+                    selectedArtwork.genre,
+                    selectedArtwork.style,
+                    selectedArtwork.subject,
+                    selectedArtwork.colour,
+                    ...(selectedArtwork.tags || [])
+                  ].filter(
+                    (tag, idx, arr) => tag && arr.indexOf(tag) === idx
+                  )
+                  
+                  return allTags.length > 0 && (
+                    <div>
+                      <span className="font-semibold text-black">Tags:</span>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {allTags.map((tag) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })()}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full-Screen Artwork Overlay */}
+      {showFullscreenArtwork && selectedArtwork && (
+        <div className="fixed inset-0 bg-black z-[200] flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
+            {!fullscreenImageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+              </div>
+            )}
+            <img
+              src={selectedArtwork.artwork_image}
+              alt={selectedArtwork.title}
+              className={`max-w-full max-h-full object-contain transition-opacity duration-500 ${
+                fullscreenImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              onLoad={() => setFullscreenImageLoaded(true)}
+              onError={() => setFullscreenImageLoaded(true)}
+            />
+          </div>
+
+          {/* Tap anywhere to close */}
+          <div 
+            className="absolute inset-0 cursor-pointer" 
+            onClick={handleFullscreenClose}
+          />
+        </div>
+      )}
+    </div>
+  )
+}

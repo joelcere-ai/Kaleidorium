@@ -1533,6 +1533,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             onLike={handleMobileLike}
             onDislike={handleMobileDislike}
             onAddToCollection={handleMobileAddToCollection}
+            onLoadMore={loadMoreArtworks}
             setView={setView}
             view={view}
             collection={dbCollection}
