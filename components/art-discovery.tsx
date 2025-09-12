@@ -103,6 +103,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     colors: ''
   })
   const [isFiltering, setIsFiltering] = useState(false)
+  const [showFallbackMessage, setShowFallbackMessage] = useState(false)
 
   // Use filtered artworks if filtering is active
   const currentArtworkList = isFiltering ? filteredArtworks : artworks
@@ -967,15 +968,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // Handle filter changes
+  // Handle filter changes with intelligent fallback
   const handleFilterChange = (filters: FilterState) => {
     console.log('Applying filters:', filters)
     setActiveFilters(filters)
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
     
-    // Apply filters to artworks
-    const filtered = artworks.filter(artwork => {
+    // Strategy 1: Try exact matching (all filters must match)
+    let filtered = artworks.filter(artwork => {
       let matches = true
       
       // Filter by style
@@ -1024,6 +1025,68 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       return matches
     })
     
+    // Strategy 2: If no exact matches, try partial matching (any filter can match)
+    if (filtered.length === 0) {
+      console.log('No exact matches found, trying partial matching...')
+      filtered = artworks.filter(artwork => {
+        let hasAnyMatch = false
+        
+        // Check style
+        if (filters.style.trim()) {
+          const styleKeywords = filters.style.toLowerCase().split(',').map(s => s.trim())
+          const artworkStyle = (artwork.style || '').toLowerCase()
+          const artworkGenre = (artwork.genre || '').toLowerCase()
+          const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+          
+          const styleMatch = styleKeywords.some(keyword => 
+            artworkStyle.includes(keyword) || 
+            artworkGenre.includes(keyword) ||
+            artworkTags.some(tag => tag.includes(keyword))
+          )
+          if (styleMatch) hasAnyMatch = true
+        }
+        
+        // Check subject
+        if (filters.subject.trim()) {
+          const subjectKeywords = filters.subject.toLowerCase().split(',').map(s => s.trim())
+          const artworkSubject = (artwork.subject || '').toLowerCase()
+          const artworkTitle = artwork.title.toLowerCase()
+          const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+          
+          const subjectMatch = subjectKeywords.some(keyword => 
+            artworkSubject.includes(keyword) || 
+            artworkTitle.includes(keyword) ||
+            artworkTags.some(tag => tag.includes(keyword))
+          )
+          if (subjectMatch) hasAnyMatch = true
+        }
+        
+        // Check colors
+        if (filters.colors.trim()) {
+          const colorKeywords = filters.colors.toLowerCase().split(',').map(s => s.trim())
+          const artworkColor = (artwork.colour || '').toLowerCase()
+          const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+          
+          const colorMatch = colorKeywords.some(keyword => 
+            artworkColor.includes(keyword) ||
+            artworkTags.some(tag => tag.includes(keyword))
+          )
+          if (colorMatch) hasAnyMatch = true
+        }
+        
+        return hasAnyMatch
+      })
+    }
+    
+    // Strategy 3: If still no matches, show all artworks with a message
+    if (filtered.length === 0) {
+      console.log('No partial matches found, showing all artworks with fallback message')
+      filtered = artworks
+      setShowFallbackMessage(true)
+    } else {
+      setShowFallbackMessage(false)
+    }
+    
     console.log(`Filtered ${filtered.length} artworks from ${artworks.length} total`)
     setFilteredArtworks(filtered)
   }
@@ -1034,6 +1097,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setActiveFilters({ style: '', subject: '', colors: '' })
     setFilteredArtworks([])
     setCurrentIndex(0)
+    setShowFallbackMessage(false)
     
     toast({
       title: "Filters Cleared",
@@ -1571,6 +1635,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             onRemoveFromCollection={handleRemoveFromCollection}
             onFilterChange={handleMobileFilterChange}
             onClearFilters={clearFilters}
+            showFallbackMessage={showFallbackMessage}
             isLandscape={isLandscape}
             isPortrait={isPortrait}
             screenWidth={screenWidth}
@@ -1587,6 +1652,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             onLoadMore={loadMoreArtworks}
             onImageClick={openImageOverlay}
             loading={loading}
+            showFallbackMessage={showFallbackMessage}
           />
         ) : null
       ) : view === "collection" ? (

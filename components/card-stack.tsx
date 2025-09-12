@@ -17,6 +17,7 @@ interface CardStackProps {
   onLoadMore: () => void
   onImageClick: (url: string, alt: string) => void
   loading: boolean
+  showFallbackMessage?: boolean
 }
 
 
@@ -29,7 +30,8 @@ export default function CardStack({
   onNext,
   onLoadMore,
   onImageClick,
-  loading
+  loading,
+  showFallbackMessage = false
 }: CardStackProps) {
   const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
 
@@ -271,6 +273,19 @@ export default function CardStack({
           <div className="mt-8 text-center p-6 border-t border-gray-200">
             <h3 className="text-lg font-semibold text-gray-600 mb-2">You've seen all the artworks!</h3>
             <p className="text-sm text-gray-500">Check back later for new additions to our collection</p>
+          </div>
+        )}
+        
+        {/* Fallback message when no filters match */}
+        {showFallbackMessage && (
+          <div className="mt-8 text-center p-6 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">No exact matches found</h3>
+            <p className="text-sm text-blue-600 mb-3">
+              We don't have artwork that matches all of your preferences at present, but feel free to explore other work.
+            </p>
+            <p className="text-xs text-blue-500">
+              Come back in a few days as we are adding new artwork frequently.
+            </p>
           </div>
         )}
       </div>
