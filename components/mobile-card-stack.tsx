@@ -611,7 +611,7 @@ export default function MobileCardStack({
             >
               {/* Artwork Image */}
               <div 
-                className="relative w-full aspect-[4/3] cursor-pointer"
+                className="relative w-full h-96 cursor-pointer"
                 onClick={() => handleArtworkTap(artwork)}
               >
                 <Image
