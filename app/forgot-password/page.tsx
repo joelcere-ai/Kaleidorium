@@ -38,9 +38,11 @@ export default function ForgotPasswordPage() {
       
       // Get the current origin for the redirect URL
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const redirectUrl = `${origin}/password-reset`;
+      const redirectUrl = `${origin}/auth/callback`;
       
       console.log('Using redirect URL:', redirectUrl);
+      console.log('Redirect URL length:', redirectUrl.length);
+      console.log('Redirect URL has spaces:', redirectUrl.includes(' '));
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
