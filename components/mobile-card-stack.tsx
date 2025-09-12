@@ -591,7 +591,9 @@ export default function MobileCardStack({
           {visibleArtworks.map((artwork, index) => (
             <div
               key={artwork.id}
-              ref={(el) => (cardRefs.current[artwork.id] = el)}
+              ref={(el) => {
+                cardRefs.current[artwork.id] = el
+              }}
               className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] overflow-hidden"
               onTouchStart={(e) => handleTouchStart(e, artwork.id)}
               onTouchMove={(e) => handleTouchMove(e, artwork.id)}
