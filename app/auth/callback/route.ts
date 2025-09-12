@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const accessToken = requestUrl.searchParams.get('access_token')
   const refreshToken = requestUrl.searchParams.get('refresh_token')
 
+  console.log('=== AUTH CALLBACK STARTED ===');
   console.log('Auth callback received:', {
     code: !!code,
     next,
@@ -23,6 +24,31 @@ export async function GET(request: NextRequest) {
     allParams: Object.fromEntries(requestUrl.searchParams.entries()),
     fullUrl: request.url
   });
+  console.log('Request headers:', Object.fromEntries(request.headers.entries()));
+
+  // For debugging - return a simple response to see if callback is working
+  if (process.env.NODE_ENV === 'development') {
+    console.log('=== DEVELOPMENT MODE - RETURNING DEBUG RESPONSE ===');
+    return new NextResponse(`
+      <html>
+        <body>
+          <h1>Auth Callback Debug</h1>
+          <p>Type: ${type}</p>
+          <p>Token: ${token ? 'Present' : 'Missing'}</p>
+          <p>Code: ${code ? 'Present' : 'Missing'}</p>
+          <p>Full URL: ${request.url}</p>
+          <p>All Params: ${JSON.stringify(Object.fromEntries(requestUrl.searchParams.entries()))}</p>
+          <script>
+            setTimeout(() => {
+              window.location.href = '/password-reset';
+            }, 3000);
+          </script>
+        </body>
+      </html>
+    `, {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
 
   // Handle password reset flow - Supabase sends 'token' parameter for password reset
   if (type === 'recovery' && token) {
@@ -59,17 +85,23 @@ export async function GET(request: NextRequest) {
       }
 
       if (error) {
-        console.error('Error verifying recovery token:', error);
+        console.error('=== ERROR VERIFYING RECOVERY TOKEN ===');
+        console.error('Error details:', error);
         console.error('Token value:', token.substring(0, 10) + '...');
+        console.error('Full token:', token);
         return NextResponse.redirect(`${requestUrl.origin}/forgot-password?error=invalid_token`);
       }
 
       if (session) {
-        console.log('Recovery session created successfully for user:', session.user?.email);
+        console.log('=== RECOVERY SESSION CREATED SUCCESSFULLY ===');
+        console.log('User email:', session.user?.email);
+        console.log('Session expires at:', session.expires_at);
+        console.log('Redirecting to password reset page...');
         // Redirect to password reset page with the session
         return NextResponse.redirect(`${requestUrl.origin}/password-reset`);
       } else {
-        console.log('No session created from recovery token');
+        console.log('=== NO SESSION CREATED ===');
+        console.log('verifyData:', verifyData);
         return NextResponse.redirect(`${requestUrl.origin}/forgot-password?error=no_session`);
       }
     } catch (err) {
@@ -94,5 +126,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Fallback redirect
+  console.log('=== FALLBACK REDIRECT ===');
+  console.log('No matching conditions found, redirecting to home');
   return NextResponse.redirect(requestUrl.origin);
 } 
