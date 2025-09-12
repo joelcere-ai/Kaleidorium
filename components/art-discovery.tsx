@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { ArrowLeft, Heart, Plus, Trash, X, Check, Menu, Search, Palette, Mail, User, Info, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -1552,7 +1553,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <div className="relative rounded-2xl shadow-2xl overflow-hidden bg-white">
                   <div 
                     className="relative cursor-pointer group"
-                    onClick={openImageOverlay}
+                    onClick={() => openImageOverlay(currentArtwork.artwork_image, currentArtwork.title)}
                   >
                     <ProgressiveImage
                       src={currentArtwork.artwork_image}
@@ -1577,14 +1578,103 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
             {/* Right Side Information Panel */}
             <div className="w-96 bg-white border-l border-gray-200 p-8 overflow-y-auto">
-              <ArtworkDetails 
-                artwork={currentArtwork}
-                onLike={handleLike}
-                onDislike={handleDislike}
-                onAddToCollection={handleAddToCollection}
-                onNext={handleNext}
-                loading={loading}
-              />
+              <div className="space-y-6">
+                {/* Artwork Title and Artist */}
+                <div>
+                  <h1 className="text-3xl font-bold text-black mb-2">{currentArtwork.title}</h1>
+                  <p className="text-xl text-gray-600">{currentArtwork.artist}</p>
+                </div>
+
+                {/* Artwork Details */}
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Medium:</span>
+                    <span className="text-black font-medium">{currentArtwork.medium}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Dimensions:</span>
+                    <span className="text-black font-medium">{currentArtwork.dimensions}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Year:</span>
+                    <span className="text-black font-medium">{currentArtwork.year}</span>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <h3 className="text-lg font-semibold text-black mb-3">About this artwork</h3>
+                  <p className="text-gray-700 leading-relaxed">{currentArtwork.description}</p>
+                </div>
+
+                {/* Style & Subject Tags */}
+                <div>
+                  <h3 className="text-lg font-semibold text-black mb-3">Style & Subject</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {currentArtwork.tags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-sm">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price/Sale Status */}
+                <div className="pt-4 border-t border-gray-200">
+                  <Button 
+                    className="w-full bg-black text-white hover:bg-gray-800"
+                    disabled={loading}
+                  >
+                    {currentArtwork.price}
+                  </Button>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 flex items-center gap-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600"
+                    onClick={handleDislike}
+                    disabled={loading}
+                  >
+                    <ThumbsDown className="w-5 h-5" />
+                    Dislike
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 flex items-center gap-2 hover:bg-green-50 hover:border-green-300 hover:text-green-600"
+                    onClick={handleLike}
+                    disabled={loading}
+                  >
+                    <ThumbsUp className="w-5 h-5" />
+                    Like
+                  </Button>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 flex items-center gap-2 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600"
+                    onClick={handleAddToCollection}
+                    disabled={loading}
+                  >
+                    <Heart className="w-5 h-5" />
+                    Add to Collection
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 flex items-center gap-2 hover:bg-gray-50"
+                    onClick={handleNext}
+                    disabled={loading}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         ) : null
