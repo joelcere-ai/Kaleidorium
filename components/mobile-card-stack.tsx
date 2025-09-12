@@ -43,10 +43,16 @@ export default function MobileCardStack({
   const [visibleCardCount, setVisibleCardCount] = useState(3)
   const [showInfoModal, setShowInfoModal] = useState(false)
   const [showMenuModal, setShowMenuModal] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null)
   const [showFullscreenArtwork, setShowFullscreenArtwork] = useState(false)
   const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
   const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
+  
+  // Swipe states
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
+  const [swipeDistance, setSwipeDistance] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
   
   // Button animation states
   const [buttonStates, setButtonStates] = useState<{
@@ -62,6 +68,10 @@ export default function MobileCardStack({
   })
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const startX = useRef(0)
+  const currentX = useRef(0)
+  const isDragging = useRef(false)
 
   // Handle scroll-based loading
   useEffect(() => {
@@ -147,6 +157,102 @@ export default function MobileCardStack({
       return "flex-1 relative overflow-hidden bg-gray-50"
     }
     return "flex-1 relative overflow-hidden bg-gray-50"
+  }
+
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent, artworkId: string) => {
+    if (showInfoModal || isAnimating) return
+    
+    const touch = e.touches[0]
+    startX.current = touch.clientX
+    isDragging.current = true
+  }
+
+  const handleTouchMove = (e: React.TouchEvent, artworkId: string) => {
+    if (!isDragging.current || showInfoModal || isAnimating) return
+    
+    const touch = e.touches[0]
+    currentX.current = touch.clientX - startX.current
+    
+    // Only handle horizontal swipes
+    if (Math.abs(currentX.current) > 10) {
+      e.preventDefault()
+      setSwipeDistance(currentX.current)
+      
+      if (currentX.current > 50) {
+        setSwipeDirection('right')
+      } else if (currentX.current < -50) {
+        setSwipeDirection('left')
+      } else {
+        setSwipeDirection(null)
+      }
+      
+      // Apply transform to card
+      const cardRef = cardRefs.current[artworkId]
+      if (cardRef) {
+        const rotation = currentX.current * 0.1
+        const opacity = 1 - Math.abs(currentX.current) / 300
+        cardRef.style.transform = `translateX(${currentX.current}px) rotate(${rotation}deg)`
+        cardRef.style.opacity = opacity.toString()
+      }
+    }
+  }
+
+  const handleTouchEnd = (artworkId: string, artwork: Artwork) => {
+    if (!isDragging.current || showInfoModal || isAnimating) return
+    
+    isDragging.current = false
+    const distance = Math.abs(currentX.current)
+    
+    if (distance > 100) {
+      // Horizontal swipe
+      setIsAnimating(true)
+      
+      if (currentX.current > 0) {
+        // Swipe right - Like
+        onLike(artwork)
+        toast({
+          title: "Liked! 👍",
+          description: `Added "${artwork.title}" to your liked artworks`,
+        })
+      } else {
+        // Swipe left - Dislike
+        onDislike(artwork)
+        toast({
+          title: "Disliked 👎",
+          description: `We'll show you less art like "${artwork.title}"`,
+        })
+      }
+      
+      // Animate card out
+      const cardRef = cardRefs.current[artworkId]
+      if (cardRef) {
+        const finalX = currentX.current > 0 ? (screenWidth || window.innerWidth) : -(screenWidth || window.innerWidth)
+        cardRef.style.transform = `translateX(${finalX}px) rotate(${currentX.current * 0.2}deg)`
+        cardRef.style.opacity = '0'
+      }
+      
+      // Reset after animation
+      setTimeout(() => {
+        resetCard(artworkId)
+        setIsAnimating(false)
+      }, 300)
+    } else {
+      // Snap back
+      resetCard(artworkId)
+    }
+    
+    setSwipeDirection(null)
+    setSwipeDistance(0)
+    currentX.current = 0
+  }
+
+  const resetCard = (artworkId: string) => {
+    const cardRef = cardRefs.current[artworkId]
+    if (cardRef) {
+      cardRef.style.transform = 'translateX(0px) rotate(0deg)'
+      cardRef.style.opacity = '1'
+    }
   }
 
   // Enhanced button action handler with micro-interactions
@@ -485,7 +591,12 @@ export default function MobileCardStack({
           {visibleArtworks.map((artwork, index) => (
             <div
               key={artwork.id}
+              ref={(el) => (cardRefs.current[artwork.id] = el)}
               className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] overflow-hidden"
+              onTouchStart={(e) => handleTouchStart(e, artwork.id)}
+              onTouchMove={(e) => handleTouchMove(e, artwork.id)}
+              onTouchEnd={() => handleTouchEnd(artwork.id, artwork)}
+              style={{ willChange: 'transform' }}
             >
               {/* Artwork Image */}
               <div 
@@ -509,34 +620,32 @@ export default function MobileCardStack({
                     </svg>
                   </div>
                 </div>
-              </div>
 
-              {/* Artwork Information */}
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-black mb-2">{artwork.title}</h2>
-                    <p className="text-lg text-gray-600 mb-1">{artwork.artist}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>{artwork.medium}</span>
-                      {artwork.dimensions && <span>• {artwork.dimensions}</span>}
-                      <span>• {artwork.year}</span>
+                {/* Swipe Overlays */}
+                {swipeDirection === 'right' && (
+                  <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                    <div className="bg-green-500 rounded-full p-4">
+                      <ThumbsUp className="w-8 h-8 text-white fill-white" />
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-black">{artwork.price}</p>
+                )}
+                
+                {swipeDirection === 'left' && (
+                  <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                    <div className="bg-red-500 rounded-full p-4">
+                      <ThumbsDown className="w-8 h-8 text-white fill-white" />
+                    </div>
                   </div>
-                </div>
+                )}
+              </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {[artwork.genre, artwork.style, artwork.subject, artwork.colour]
-                    .filter(Boolean)
-                    .map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
+              {/* Simplified Artwork Information */}
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-black mb-2">{artwork.title}</h2>
+                    <p className="text-lg text-gray-600">{artwork.artist}</p>
+                  </div>
                 </div>
 
                 {/* Action Buttons */}
@@ -548,6 +657,7 @@ export default function MobileCardStack({
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.dislike ? 'scale-95 bg-red-50' : ''}`}
                     onClick={() => handleButtonAction('dislike', artwork)}
+                    disabled={isAnimating}
                   >
                     <ThumbsDown className="w-7 h-7 text-red-600" />
                   </Button>
@@ -559,6 +669,7 @@ export default function MobileCardStack({
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.info ? 'scale-95 bg-blue-50' : ''}`}
                     onClick={() => handleButtonAction('info', artwork)}
+                    disabled={isAnimating}
                   >
                     <Info className="w-7 h-7 text-blue-600" />
                   </Button>
@@ -570,6 +681,7 @@ export default function MobileCardStack({
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.add ? 'scale-95 bg-pink-50 animate-pulse' : ''}`}
                     onClick={() => handleButtonAction('add', artwork)}
+                    disabled={isAnimating}
                   >
                     <Heart className="w-7 h-7 text-pink-600" />
                   </Button>
@@ -581,6 +693,7 @@ export default function MobileCardStack({
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.like ? 'scale-95 bg-green-50' : ''}`}
                     onClick={() => handleButtonAction('like', artwork)}
+                    disabled={isAnimating}
                   >
                     <ThumbsUp className="w-7 h-7 text-green-600" />
                   </Button>
@@ -597,6 +710,90 @@ export default function MobileCardStack({
           )}
         </div>
       </div>
+
+      {/* Mobile Filter Panel */}
+      {showFilters && (view === "discover" || (!view)) && (
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-end">
+          <div className="bg-white rounded-t-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-black">Filters</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(false)}
+                  className="text-black hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Style Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Style</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Abstract, Portrait, Digital Art..."
+                    className="w-full p-3 border border-gray-300 rounded-md mb-2"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {['Abstract', 'Portrait', 'Digital Art', 'Contemporary', 'Modern'].map((tag) => (
+                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Subject Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Subject</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Nature, Urban, Portrait..."
+                    className="w-full p-3 border border-gray-300 rounded-md mb-2"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape'].map((tag) => (
+                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Colors Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Colors</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Black, Colorful, Warm tones..."
+                    className="w-full p-3 border border-gray-300 rounded-md mb-2"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {['Black', 'Colorful', 'Warm', 'Cool', 'Monochrome'].map((tag) => (
+                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Filter Action Buttons */}
+              <div className="flex gap-4 mt-8">
+                <Button className="flex-1 bg-black text-white hover:bg-gray-800">
+                  Apply Filters
+                </Button>
+                <Button variant="outline" className="flex-1">
+                  Clear Filters
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Menu Modal */}
       {showMenuModal && (
@@ -625,6 +822,21 @@ export default function MobileCardStack({
                 <Search className="mr-3 h-5 w-5" />
                 Discover
               </Button>
+              
+              {/* Mobile Filter Button - Only show on discover page */}
+              {(view === "discover" || (!view)) && (
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setShowFilters(!showFilters)
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Search className="mr-3 h-5 w-5" />
+                  Filters
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
@@ -707,27 +919,33 @@ export default function MobileCardStack({
                 </Button>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
                   <span className="font-semibold text-black">Artist:</span>
                   <span className="ml-2 text-gray-700">{selectedArtwork.artist}</span>
                 </div>
-                <div>
-                  <span className="font-semibold text-black">Price:</span>
-                  <span className="ml-2 text-gray-700">{selectedArtwork.price}</span>
-                </div>
+                
                 {selectedArtwork.medium && (
                   <div>
                     <span className="font-semibold text-black">Medium:</span>
                     <span className="ml-2 text-gray-700">{selectedArtwork.medium}</span>
                   </div>
                 )}
+                
                 {selectedArtwork.dimensions && (
                   <div>
                     <span className="font-semibold text-black">Dimensions:</span>
                     <span className="ml-2 text-gray-700">{selectedArtwork.dimensions}</span>
                   </div>
                 )}
+                
+                {selectedArtwork.year && (
+                  <div>
+                    <span className="font-semibold text-black">Year:</span>
+                    <span className="ml-2 text-gray-700">{selectedArtwork.year}</span>
+                  </div>
+                )}
+                
                 {selectedArtwork.description && (
                   <div>
                     <span className="font-semibold text-black">Description:</span>
@@ -749,7 +967,7 @@ export default function MobileCardStack({
                   
                   return allTags.length > 0 && (
                     <div>
-                      <span className="font-semibold text-black">Tags:</span>
+                      <span className="font-semibold text-black">Style & Subject:</span>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {allTags.map((tag) => (
                           <Badge key={tag} variant="secondary">
@@ -760,6 +978,20 @@ export default function MobileCardStack({
                     </div>
                   )
                 })()}
+                
+                {/* Sale Status Button */}
+                <div className="pt-4">
+                  <Button 
+                    className="w-full bg-black text-white hover:bg-gray-800"
+                    onClick={() => {
+                      if (selectedArtwork.link) {
+                        window.open(selectedArtwork.link, '_blank')
+                      }
+                    }}
+                  >
+                    {selectedArtwork.price === 'Not for sale' ? 'Not for sale' : selectedArtwork.price}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
