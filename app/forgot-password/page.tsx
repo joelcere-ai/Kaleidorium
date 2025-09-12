@@ -84,6 +84,13 @@ export default function ForgotPasswordPage() {
         });
       } else {
         console.log('Password reset email sent successfully');
+        
+        // Store timestamp in session storage for security check
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('passwordResetRequested', Date.now().toString());
+          console.log('Password reset timestamp stored');
+        }
+        
         setEmailSent(true);
         toast({
           title: "Email Sent!",

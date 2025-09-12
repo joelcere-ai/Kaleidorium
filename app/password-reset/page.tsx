@@ -67,16 +67,39 @@ export default function PasswordResetPage() {
             // This might happen if Supabase redirect URLs aren't configured properly
             console.log('Checking if this is a direct password reset attempt...');
             
-            // For now, let's allow password reset if user came directly here
-            // This is a temporary workaround while we fix the Supabase configuration
-            console.log('Allowing password reset as fallback (temporary workaround)');
-            setIsValidSession(true);
+            // Check if user has a recent password reset request in session storage
+            const recentResetRequest = sessionStorage.getItem('passwordResetRequested');
+            const resetTimestamp = recentResetRequest ? parseInt(recentResetRequest) : 0;
+            const now = Date.now();
+            const timeDiff = now - resetTimestamp;
+            const isValidTimeframe = timeDiff < 300000; // 5 minutes
             
-            toast({
-              title: "Password Reset",
-              description: "You can now reset your password. This is a temporary workaround.",
-              variant: "default"
+            console.log('Recent reset check:', {
+              recentResetRequest: !!recentResetRequest,
+              timeDiff,
+              isValidTimeframe
             });
+            
+            if (isValidTimeframe) {
+              console.log('Allowing password reset - recent request within 5 minutes');
+              setIsValidSession(true);
+              
+              toast({
+                title: "Password Reset",
+                description: "You can reset your password. Please complete this within 5 minutes.",
+                variant: "default"
+              });
+            } else {
+              console.log('No recent password reset request found');
+              toast({
+                title: "Invalid Reset Link",
+                description: "This password reset link is invalid or has expired. Please request a new one.",
+                variant: "destructive"
+              });
+              setTimeout(() => {
+                router.push('/forgot-password');
+              }, 3000);
+            }
           }
         }
       } catch (err) {
@@ -124,6 +147,13 @@ export default function PasswordResetPage() {
         setError(error.message);
       } else {
         console.log('Password updated successfully');
+        
+        // Clear the password reset timestamp
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('passwordResetRequested');
+          console.log('Password reset timestamp cleared');
+        }
+        
         toast({
           title: "Success!",
           description: "Your password has been reset successfully. You can now sign in with your new password."
