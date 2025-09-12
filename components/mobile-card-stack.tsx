@@ -595,7 +595,7 @@ export default function MobileCardStack({
       <div className={getMainAreaClasses()}>
         <div 
           ref={containerRef}
-          className="h-full overflow-y-auto p-4 space-y-6"
+          className="h-full overflow-y-auto p-4 space-y-4"
         >
           {visibleArtworks.map((artwork, index) => (
             <div
@@ -611,7 +611,7 @@ export default function MobileCardStack({
             >
               {/* Artwork Image */}
               <div 
-                className="relative w-full aspect-square cursor-pointer"
+                className="relative w-full aspect-[4/3] cursor-pointer"
                 onClick={() => handleArtworkTap(artwork)}
               >
                 <Image
