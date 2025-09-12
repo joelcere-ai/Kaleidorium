@@ -47,8 +47,17 @@ export default function PasswordResetPage() {
           
           const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
           const type = hashParams.get('type') || queryParams.get('type');
+          const token = hashParams.get('token') || queryParams.get('token');
 
-          if (type === 'recovery' && accessToken) {
+          console.log('URL fallback check:', {
+            accessToken: !!accessToken,
+            type,
+            token: !!token,
+            hash: window.location.hash,
+            search: window.location.search
+          });
+
+          if ((type === 'recovery' && accessToken) || (type === 'recovery' && token)) {
             console.log('Found recovery tokens in URL, allowing password reset');
             setIsValidSession(true);
           } else {
@@ -145,6 +154,25 @@ export default function PasswordResetPage() {
             <p className="mb-6 text-sm text-gray-500">
               Redirecting to request a new reset link...
             </p>
+            
+            {/* Debug info for development */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-4 p-4 bg-gray-100 rounded text-left text-xs">
+                <p><strong>Debug Info:</strong></p>
+                <p>Current URL: {typeof window !== 'undefined' ? window.location.href : 'N/A'}</p>
+                <p>Hash: {typeof window !== 'undefined' ? window.location.hash : 'N/A'}</p>
+                <p>Search: {typeof window !== 'undefined' ? window.location.search : 'N/A'}</p>
+                <button 
+                  onClick={() => {
+                    console.log('Manual auth callback test...');
+                    window.location.href = '/auth/callback?token=test&type=recovery';
+                  }}
+                  className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-xs"
+                >
+                  Test Auth Callback
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

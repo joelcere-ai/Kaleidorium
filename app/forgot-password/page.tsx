@@ -43,10 +43,12 @@ export default function ForgotPasswordPage() {
       console.log('Using redirect URL:', redirectUrl);
       console.log('Redirect URL length:', redirectUrl.length);
       console.log('Redirect URL has spaces:', redirectUrl.includes(' '));
+      console.log('Redirect URL encoded:', encodeURIComponent(redirectUrl));
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
       
+      // Try URL encoding the redirect URL to prevent spaces
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl,
+        redirectTo: redirectUrl.trim(), // Remove any potential whitespace
       });
       
       if (error) {
