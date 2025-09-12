@@ -1545,138 +1545,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             screenHeight={screenHeight}
           />
         ) : currentArtwork ? (
-          // Desktop Discover Page - Original Layout
-          <div className="flex-1 flex">
-            {/* Main Artwork Area */}
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="relative max-w-4xl w-full">
-                <div className="relative rounded-2xl shadow-2xl overflow-hidden bg-white">
-                  <div 
-                    className="relative cursor-pointer group"
-                    onClick={() => openImageOverlay(currentArtwork.artwork_image, currentArtwork.title)}
-                  >
-                    <ProgressiveImage
-                      src={currentArtwork.artwork_image}
-                      alt={currentArtwork.title}
-                      className="w-full h-auto max-h-[70vh] object-contain transition-transform duration-300 group-hover:scale-105"
-                    />
-                    
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-white/90 rounded-full p-3 backdrop-blur-sm">
-                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side Information Panel */}
-            <div className="w-96 bg-white border-l border-gray-200 p-8 overflow-y-auto">
-              <div className="space-y-6">
-                {/* Artwork Title and Artist */}
-                <div>
-                  <h1 className="text-3xl font-bold text-black mb-2">{currentArtwork.title}</h1>
-                  <p className="text-xl text-gray-600">{currentArtwork.artist}</p>
-                </div>
-
-                {/* Artwork Details */}
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Medium:</span>
-                    <span className="text-black font-medium">{currentArtwork.medium}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Dimensions:</span>
-                    <span className="text-black font-medium">{currentArtwork.dimensions}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Year:</span>
-                    <span className="text-black font-medium">{currentArtwork.year}</span>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div>
-                  <h3 className="text-lg font-semibold text-black mb-3">About this artwork</h3>
-                  <p className="text-gray-700 leading-relaxed">{currentArtwork.description}</p>
-                </div>
-
-                {/* Style & Subject Tags */}
-                <div>
-                  <h3 className="text-lg font-semibold text-black mb-3">Style & Subject</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {currentArtwork.tags.map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-sm">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price/Sale Status */}
-                <div className="pt-4 border-t border-gray-200">
-                  <Button 
-                    className="w-full bg-black text-white hover:bg-gray-800"
-                    disabled={loading}
-                  >
-                    {currentArtwork.price}
-                  </Button>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 flex items-center gap-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600"
-                    onClick={handleDislike}
-                    disabled={loading}
-                  >
-                    <ThumbsDown className="w-5 h-5" />
-                    Dislike
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 flex items-center gap-2 hover:bg-green-50 hover:border-green-300 hover:text-green-600"
-                    onClick={handleLike}
-                    disabled={loading}
-                  >
-                    <ThumbsUp className="w-5 h-5" />
-                    Like
-                  </Button>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 flex items-center gap-2 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600"
-                    onClick={handleAddToCollection}
-                    disabled={loading}
-                  >
-                    <Heart className="w-5 h-5" />
-                    Add to Collection
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 flex items-center gap-2 hover:bg-gray-50"
-                    onClick={handleNext}
-                    disabled={loading}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CardStack
+            artworks={currentArtworkList}
+            currentIndex={currentIndex}
+            onLike={handleLike}
+            onDislike={handleDislike}
+            onAddToCollection={handleAddToCollection}
+            onNext={handleNext}
+            onLoadMore={loadMoreArtworks}
+            onImageClick={openImageOverlay}
+            loading={loading}
+          />
         ) : null
       ) : view === "collection" ? (
         isMobile || isTablet ? (
