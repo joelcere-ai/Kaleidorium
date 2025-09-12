@@ -159,12 +159,6 @@ export default function CardStack({
                             {artwork.title}
                           </h3>
                           <p className="text-lg text-gray-600 mb-2">by {artwork.artist}</p>
-                          
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span>{artwork.year}</span>
-                            <span>{artwork.medium}</span>
-                            {artwork.dimensions && <span>{artwork.dimensions}</span>}
-                          </div>
                         </div>
                       </div>
 
@@ -212,6 +206,15 @@ export default function CardStack({
                       <div className="space-y-3">
                         <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
                         <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
+                      </div>
+
+                      {/* Artwork Information */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          {artwork.year && <span>{artwork.year}</span>}
+                          {artwork.medium && <span>{artwork.medium}</span>}
+                          {artwork.dimensions && <span>{artwork.dimensions}</span>}
+                        </div>
                       </div>
 
                       {/* Enhanced Tags */}
