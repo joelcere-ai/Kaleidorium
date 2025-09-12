@@ -46,13 +46,9 @@ export default function ForgotPasswordPage() {
       console.log('Redirect URL encoded:', encodeURIComponent(redirectUrl));
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
       
-      // Use OTP verification instead of direct password reset for better security
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-          shouldCreateUser: false, // Don't create user if they don't exist
-          emailRedirectTo: `${origin}/verify-otp`
-        }
+      // Use password reset with proper redirect handling
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/verify-otp`
       });
       
       if (error) {
@@ -80,17 +76,17 @@ export default function ForgotPasswordPage() {
       } else {
         console.log('Password reset email sent successfully');
         
-        // Store email for OTP verification step
+        // Store email for password reset verification step
         if (typeof window !== 'undefined') {
-          sessionStorage.setItem('otpVerificationEmail', email);
-          sessionStorage.setItem('otpRequested', Date.now().toString());
-          console.log('OTP verification data stored');
+          sessionStorage.setItem('passwordResetEmail', email);
+          sessionStorage.setItem('passwordResetRequested', Date.now().toString());
+          console.log('Password reset verification data stored');
         }
         
         setEmailSent(true);
         toast({
-          title: "Verification Email Sent!",
-          description: "Please check your email and enter the verification code to reset your password."
+          title: "Password Reset Email Sent!",
+          description: "Please check your email and click the link to reset your password."
         });
         
         // Redirect to OTP verification page
@@ -123,7 +119,7 @@ export default function ForgotPasswordPage() {
               </div>
               <h1 className="text-2xl font-semibold mb-2">Check Your Email</h1>
               <p className="text-gray-600 mb-4">
-                If this email is registered with us, you'll receive a verification code shortly.
+                If this email is registered with us, you'll receive a password reset link shortly.
               </p>
               <p className="text-sm text-gray-500">
                 Redirecting to verification page...

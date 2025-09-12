@@ -17,58 +17,110 @@ export default function VerifyOTPPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkOTPRequest = () => {
+    const checkPasswordResetRequest = async () => {
       try {
-        console.log('Checking OTP verification request...');
+        console.log('Checking password reset request...');
+        console.log('Current URL:', window.location.href);
         
-        // Check if user has a recent OTP request
-        const otpEmail = sessionStorage.getItem('otpVerificationEmail');
-        const otpRequested = sessionStorage.getItem('otpRequested');
+        // Check URL parameters for password reset token
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const type = urlParams.get('type');
         
-        if (!otpEmail || !otpRequested) {
-          console.log('No OTP request found');
-          toast({
-            title: "Invalid Access",
-            description: "Please request a password reset first.",
-            variant: "destructive"
+        console.log('URL parameters:', { token: !!token, type });
+        
+        if (type === 'recovery' && token) {
+          console.log('Password reset token found in URL');
+          
+          // Verify the token with Supabase
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'recovery'
           });
-          router.push('/forgot-password');
-          return;
-        }
-        
-        const requestTime = parseInt(otpRequested);
-        const now = Date.now();
-        const timeDiff = now - requestTime;
-        const isValidTimeframe = timeDiff < 600000; // 10 minutes
-        
-        console.log('OTP request check:', {
-          email: otpEmail,
-          timeDiff,
-          isValidTimeframe
-        });
-        
-        if (!isValidTimeframe) {
-          console.log('OTP request expired');
-          sessionStorage.removeItem('otpVerificationEmail');
-          sessionStorage.removeItem('otpRequested');
-          toast({
-            title: "Request Expired",
-            description: "Your verification request has expired. Please request a new one.",
-            variant: "destructive"
+          
+          if (error) {
+            console.error('Token verification error:', error);
+            toast({
+              title: "Invalid Link",
+              description: "This password reset link is invalid or has expired.",
+              variant: "destructive"
+            });
+            router.push('/forgot-password');
+            return;
+          }
+          
+          if (data.session && data.user) {
+            console.log('Password reset token verified for user:', data.user.email);
+            setEmail(data.user.email || '');
+            setIsValidSession(true);
+            
+            // Store verification success
+            sessionStorage.setItem('passwordResetVerified', 'true');
+            sessionStorage.setItem('verifiedEmail', data.user.email || '');
+            
+            // Redirect to password reset page
+            setTimeout(() => {
+              router.push('/password-reset');
+            }, 2000);
+          } else {
+            console.log('Token verified but no session created');
+            toast({
+              title: "Verification Failed",
+              description: "Email verification failed. Please try again.",
+              variant: "destructive"
+            });
+            router.push('/forgot-password');
+          }
+        } else {
+          // Check if user has a recent password reset request
+          const resetEmail = sessionStorage.getItem('passwordResetEmail');
+          const resetRequested = sessionStorage.getItem('passwordResetRequested');
+          
+          if (!resetEmail || !resetRequested) {
+            console.log('No password reset request found');
+            toast({
+              title: "Invalid Access",
+              description: "Please request a password reset first.",
+              variant: "destructive"
+            });
+            router.push('/forgot-password');
+            return;
+          }
+          
+          const requestTime = parseInt(resetRequested);
+          const now = Date.now();
+          const timeDiff = now - requestTime;
+          const isValidTimeframe = timeDiff < 600000; // 10 minutes
+          
+          console.log('Password reset request check:', {
+            email: resetEmail,
+            timeDiff,
+            isValidTimeframe
           });
-          router.push('/forgot-password');
-          return;
+          
+          if (!isValidTimeframe) {
+            console.log('Password reset request expired');
+            sessionStorage.removeItem('passwordResetEmail');
+            sessionStorage.removeItem('passwordResetRequested');
+            toast({
+              title: "Request Expired",
+              description: "Your password reset request has expired. Please request a new one.",
+              variant: "destructive"
+            });
+            router.push('/forgot-password');
+            return;
+          }
+          
+          setEmail(resetEmail);
+          setIsValidSession(true);
+          console.log('Password reset session valid');
         }
-        
-        setEmail(otpEmail);
-        setIsValidSession(true);
-        console.log('OTP verification session valid');
         
       } catch (err) {
-        console.error('Error checking OTP request:', err);
+        console.error('Error checking password reset request:', err);
         toast({
           title: "Error",
-          description: "An error occurred while checking your verification request.",
+          description: "An error occurred while checking your password reset request.",
           variant: "destructive"
         });
         router.push('/forgot-password');
@@ -77,7 +129,7 @@ export default function VerifyOTPPage() {
       }
     };
 
-    checkOTPRequest();
+    checkPasswordResetRequest();
   }, [router, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -231,46 +283,19 @@ export default function VerifyOTPPage() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-semibold mb-2">Verify Your Email</h1>
+          <h1 className="text-2xl font-semibold mb-2">Password Reset Link Sent</h1>
           <p className="text-gray-600">
-            We've sent a 6-digit verification code to <strong>{email}</strong>
+            We've sent a password reset link to <strong>{email}</strong>
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            Please enter the code below to continue with your password reset.
+            Please check your email and click the link to continue with your password reset.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="otp" className="block mb-1 font-medium">
-              Verification Code
-            </label>
-            <Input
-              id="otp"
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              placeholder="Enter 6-digit code"
-              maxLength={6}
-              required
-              disabled={loading}
-              className="text-center text-lg tracking-widest"
-            />
-          </div>
-
-          <Button type="submit" className="w-full" disabled={loading || otp.length !== 6}>
-            {loading ? "Verifying..." : "Verify Code"}
-          </Button>
-
+        <div className="space-y-4">
           <div className="text-center">
-            <Button 
-              variant="link" 
-              onClick={handleResendOTP}
-              disabled={loading}
-              className="text-sm"
-            >
-              Didn't receive the code? Resend
-            </Button>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Waiting for you to click the email link...</p>
           </div>
 
           <div className="text-center">
@@ -279,10 +304,10 @@ export default function VerifyOTPPage() {
               onClick={() => router.push("/forgot-password")}
               className="text-sm"
             >
-              Back to Password Reset
+              Request New Reset Link
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
