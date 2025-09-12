@@ -30,16 +30,43 @@ export default function ForgotPasswordPage() {
 
     try {
       console.log('Sending password reset to:', email);
-      console.log('Using production URL for redirect');
+      
+      // Check if Supabase is properly initialized
+      if (!supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+      
+      // Get the current origin for the redirect URL
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const redirectUrl = `${origin}/password-reset`;
+      
+      console.log('Using redirect URL:', redirectUrl);
+      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://v0-kaleidorium-bnc8m0z24-joelcere-gmailcoms-projects.vercel.app/password-reset',
+        redirectTo: redirectUrl,
       });
       
       if (error) {
         console.error('Password reset error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          status: error.status
+        });
+        
+        // Provide more specific error messages
+        let errorMessage = error.message;
+        if (error.message.includes('Invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('rate limit')) {
+          errorMessage = 'Too many requests. Please wait a moment and try again.';
+        } else if (error.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        }
+        
         toast({
           title: "Error",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive"
         });
       } else {
