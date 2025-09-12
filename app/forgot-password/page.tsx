@@ -6,6 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { generateOTP, storeOTP, cleanupExpiredOTPs } from "@/lib/otp-service";
+import { sendPasswordResetOTP } from "@/lib/emailjs";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -29,71 +31,78 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      console.log('Sending password reset to:', email);
+      console.log('Sending OTP to:', email);
       
-      // Check if Supabase is properly initialized
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
-      }
-      
-      // Get the current origin for the redirect URL
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const redirectUrl = `${origin}/auth/callback`;
-      
-      console.log('Using redirect URL:', redirectUrl);
-      console.log('Redirect URL length:', redirectUrl.length);
-      console.log('Redirect URL has spaces:', redirectUrl.includes(' '));
-      console.log('Redirect URL encoded:', encodeURIComponent(redirectUrl));
-      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-      
-      // Use password reset with proper redirect handling
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/verify-otp`
-      });
-      
-      if (error) {
-        console.error('Password reset error:', error);
-        console.error('Error details:', {
-          message: error.message,
-          status: error.status
-        });
-        
-        // Provide more specific error messages
-        let errorMessage = error.message;
-        if (error.message.includes('Invalid email')) {
-          errorMessage = 'Please enter a valid email address.';
-        } else if (error.message.includes('rate limit')) {
-          errorMessage = 'Too many requests. Please wait a moment and try again.';
-        } else if (error.message.includes('network')) {
-          errorMessage = 'Network error. Please check your connection and try again.';
-        }
-        
+      // Check if email exists in our system
+      const { data: userData, error: userError } = await supabase
+        .from('collectors')
+        .select('email')
+        .eq('email', email)
+        .single();
+
+      if (userError && userError.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error checking user:', userError);
         toast({
           title: "Error",
-          description: errorMessage,
+          description: "An error occurred while checking your email. Please try again.",
           variant: "destructive"
         });
-      } else {
-        console.log('Password reset email sent successfully');
-        
-        // Store email for password reset verification step
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('passwordResetEmail', email);
-          sessionStorage.setItem('passwordResetRequested', Date.now().toString());
-          console.log('Password reset verification data stored');
-        }
-        
-        setEmailSent(true);
-        toast({
-          title: "Password Reset Email Sent!",
-          description: "Please check your email and click the link to reset your password."
-        });
-        
-        // Redirect to OTP verification page
-        setTimeout(() => {
-          router.push('/verify-otp');
-        }, 2000);
+        return;
       }
+
+      if (!userData) {
+        // Don't reveal if email exists or not for security
+        console.log('Email not found in system, but sending generic response');
+      }
+
+      // Generate and store OTP
+      const otp = generateOTP();
+      const otpStored = await storeOTP(email, otp);
+      
+      if (!otpStored) {
+        toast({
+          title: "Error",
+          description: "Failed to generate verification code. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Send OTP email using EmailJS
+      const emailSent = await sendPasswordResetOTP(email, otp);
+      
+      if (!emailSent) {
+        toast({
+          title: "Error",
+          description: "Failed to send verification email. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('OTP email sent successfully');
+      
+      // Store email for verification step
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('otpVerificationEmail', email);
+        sessionStorage.setItem('otpRequested', Date.now().toString());
+        console.log('OTP verification data stored');
+      }
+      
+      // Clean up expired OTPs
+      await cleanupExpiredOTPs();
+      
+      setEmailSent(true);
+      toast({
+        title: "Verification Code Sent!",
+        description: "Please check your email and enter the 6-digit verification code."
+      });
+      
+      // Redirect to OTP verification page
+      setTimeout(() => {
+        router.push('/verify-otp');
+      }, 2000);
+      
     } catch (err) {
       console.error('Unexpected error:', err);
       toast({
@@ -119,7 +128,7 @@ export default function ForgotPasswordPage() {
               </div>
               <h1 className="text-2xl font-semibold mb-2">Check Your Email</h1>
               <p className="text-gray-600 mb-4">
-                If this email is registered with us, you'll receive a password reset link shortly.
+                If this email is registered with us, you'll receive a 6-digit verification code shortly.
               </p>
               <p className="text-sm text-gray-500">
                 Redirecting to verification page...

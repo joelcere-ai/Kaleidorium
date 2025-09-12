@@ -130,4 +130,43 @@ export const sendWelcomeEmail = async (userData: {
     }
     throw new Error('Failed to send welcome email. Please try again later.');
   }
+};
+
+// Send password reset OTP email
+export const sendPasswordResetOTP = async (email: string, otp: string): Promise<boolean> => {
+  try {
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const otpTemplateId = process.env.NEXT_PUBLIC_EMAILJS_OTP_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !otpTemplateId || !publicKey) {
+      console.error('EmailJS OTP configuration is incomplete. Please check your environment variables.');
+      return false;
+    }
+
+    // Template parameters for OTP email
+    const templateParams = {
+      to_email: email,
+      otp_code: otp,
+      from_name: 'Kaleidorium Team',
+      from_email: 'kurator@kaleidorium.com',
+      app_name: 'Kaleidorium',
+      expiry_minutes: '10'
+    };
+
+    console.log('Sending OTP email to:', email);
+    
+    const response = await send(
+      serviceId,
+      otpTemplateId,
+      templateParams,
+      publicKey
+    );
+    
+    console.log('OTP email sent successfully:', response.status);
+    return true;
+  } catch (error) {
+    console.error('Error sending OTP email:', error);
+    return false;
+  }
 }; 
