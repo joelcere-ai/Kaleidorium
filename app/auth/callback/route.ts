@@ -128,5 +128,13 @@ export async function GET(request: NextRequest) {
   // Fallback redirect
   console.log('=== FALLBACK REDIRECT ===');
   console.log('No matching conditions found, redirecting to home');
+  console.log('All parameters received:', Object.fromEntries(requestUrl.searchParams.entries()));
+  
+  // If we have any auth-related parameters, try to redirect to password reset
+  if (token || code || accessToken) {
+    console.log('Auth parameters found, redirecting to password reset');
+    return NextResponse.redirect(`${requestUrl.origin}/password-reset`);
+  }
+  
   return NextResponse.redirect(requestUrl.origin);
 } 

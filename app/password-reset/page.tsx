@@ -140,6 +140,47 @@ export default function PasswordResetPage() {
 
     try {
       console.log('Attempting to update password...');
+      
+      // Check if we have a valid session first
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        setError('Session error. Please try requesting a new password reset link.');
+        return;
+      }
+      
+      if (!session) {
+        console.log('No session found, trying to create one...');
+        
+        // Try to sign in with email to create a session
+        // This is a workaround for when auth callback doesn't work
+        const email = sessionStorage.getItem('passwordResetEmail') || '';
+        if (email) {
+          console.log('Attempting to sign in with email:', email);
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithOtp({
+            email: email,
+            options: {
+              shouldCreateUser: false
+            }
+          });
+          
+          if (signInError) {
+            console.error('Sign in error:', signInError);
+            setError('Unable to verify your identity. Please request a new password reset link.');
+            return;
+          }
+          
+          console.log('OTP sent for verification');
+          setError('Please check your email for a verification code and try again.');
+          return;
+        } else {
+          setError('Unable to verify your identity. Please request a new password reset link.');
+          return;
+        }
+      }
+      
+      console.log('Session found, updating password...');
       const { error } = await supabase.auth.updateUser({ password });
       
       if (error) {
@@ -148,10 +189,11 @@ export default function PasswordResetPage() {
       } else {
         console.log('Password updated successfully');
         
-        // Clear the password reset timestamp
+        // Clear the password reset timestamp and email
         if (typeof window !== 'undefined') {
           sessionStorage.removeItem('passwordResetRequested');
-          console.log('Password reset timestamp cleared');
+          sessionStorage.removeItem('passwordResetEmail');
+          console.log('Password reset data cleared');
         }
         
         toast({
