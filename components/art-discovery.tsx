@@ -969,8 +969,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle filter changes
   const handleFilterChange = (filters: FilterState) => {
-    console.log('Filter change called with:', filters)
-    console.log('Total artworks before filtering:', artworks.length)
+    console.log('Applying filters:', filters)
     setActiveFilters(filters)
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
@@ -991,7 +990,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           artworkGenre.includes(keyword) ||
           artworkTags.some(tag => tag.includes(keyword))
         )
-        console.log(`Style filter: keywords=${styleKeywords}, artworkStyle=${artworkStyle}, artworkGenre=${artworkGenre}, artworkTags=${artworkTags}, matches=${styleMatch}`)
         matches = matches && styleMatch
       }
       
@@ -1007,7 +1005,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           artworkTitle.includes(keyword) ||
           artworkTags.some(tag => tag.includes(keyword))
         )
-        console.log(`Subject filter: keywords=${subjectKeywords}, artworkSubject=${artworkSubject}, artworkTitle=${artworkTitle}, artworkTags=${artworkTags}, matches=${subjectMatch}`)
         matches = matches && subjectMatch
       }
       
@@ -1021,15 +1018,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           artworkColor.includes(keyword) ||
           artworkTags.some(tag => tag.includes(keyword))
         )
-        console.log(`Color filter: keywords=${colorKeywords}, artworkColor=${artworkColor}, artworkTags=${artworkTags}, matches=${colorMatch}`)
         matches = matches && colorMatch
       }
       
       return matches
     })
     
-    console.log('Filtered artworks count:', filtered.length)
-    console.log('First few filtered artworks:', filtered.slice(0, 3).map(a => ({ title: a.title, style: a.style, genre: a.genre, subject: a.subject, colour: a.colour })))
+    console.log(`Filtered ${filtered.length} artworks from ${artworks.length} total`)
     setFilteredArtworks(filtered)
   }
 
@@ -1048,13 +1043,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle mobile filter changes (convert array format to string format)
   const handleMobileFilterChange = (filters: { style: string[], subject: string[], colors: string[] }) => {
-    console.log('Mobile filter change:', filters)
     const filterState = {
       style: filters.style.join(', '),
       subject: filters.subject.join(', '),
       colors: filters.colors.join(', ')
     }
-    console.log('Converted filter state:', filterState)
     handleFilterChange(filterState)
   }
 
@@ -1414,8 +1407,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [desktopModalSwipeDistance, setDesktopModalSwipeDistance] = useState(0);
   const [isDesktopModalAnimating, setIsDesktopModalAnimating] = useState(false);
 
-  // Helper function to track analytics
+  // Helper function to track analytics (temporarily disabled due to API errors)
   const trackAnalytics = async (artworkId: string, action: 'view' | 'lead' | 'like' | 'dislike' | 'add_to_collection', userId?: string) => {
+    // Temporarily disabled to prevent 500 errors
+    console.log(`Analytics tracking disabled: ${action} for artwork ${artworkId}`)
+    return
+    
     try {
       await fetch('/api/artwork-analytics', {
         method: 'POST',
