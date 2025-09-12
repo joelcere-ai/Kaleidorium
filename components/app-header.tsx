@@ -339,7 +339,7 @@ function AppHeaderContent({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Style Filter */}
               <div className="relative">
-                <label className="block text-xs font-normal mb-2">Style</label>
+                <label className="block text-xs font-bold mb-2">Style</label>
                 <Input
                   placeholder="e.g. Abstract, Portrait, Digital Art..."
                   value={filters.style}
@@ -380,7 +380,7 @@ function AppHeaderContent({
 
               {/* Subject Filter */}
               <div className="relative">
-                <label className="block text-xs font-normal mb-2">Subject</label>
+                <label className="block text-xs font-bold mb-2">Subject</label>
                 <Input
                   placeholder="e.g. Nature, Urban, Portrait..."
                   value={filters.subject}
@@ -421,7 +421,7 @@ function AppHeaderContent({
 
               {/* Colors Filter */}
               <div className="relative">
-                <label className="block text-xs font-normal mb-2">Colors</label>
+                <label className="block text-xs font-bold mb-2">Colors</label>
                 <Input
                   placeholder="e.g. Black, Colorful, Warm tones..."
                   value={filters.colors}
