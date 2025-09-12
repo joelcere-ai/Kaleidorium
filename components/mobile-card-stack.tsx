@@ -642,11 +642,11 @@ export default function MobileCardStack({
               </div>
 
               {/* Simplified Artwork Information */}
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
+              <div className="p-4">
+                <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-black mb-2">{artwork.title}</h2>
-                    <p className="text-lg text-gray-600">{artwork.artist}</p>
+                    <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
+                    <p className="text-sm text-gray-600">{artwork.artist}</p>
                   </div>
                 </div>
 
