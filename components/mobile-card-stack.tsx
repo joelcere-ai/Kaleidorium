@@ -49,16 +49,21 @@ export default function MobileCardStack({
   const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
   const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
   
-  // Filter states
+  // Filter states - now arrays for multiple tags
   const [filters, setFilters] = useState({
-    style: '',
-    subject: '',
-    colors: ''
+    style: [] as string[],
+    subject: [] as string[],
+    colors: [] as string[]
   })
   const [showAutocomplete, setShowAutocomplete] = useState({
     style: false,
     subject: false,
     colors: false
+  })
+  const [inputValues, setInputValues] = useState({
+    style: '',
+    subject: '',
+    colors: ''
   })
   
   // Swipe states
@@ -175,26 +180,41 @@ export default function MobileCardStack({
   const getFilteredSuggestions = (type: keyof typeof filters, query: string) => {
     if (!query.trim()) return []
     const tags = EXAMPLE_TAGS[type]
+    const currentTags = filters[type]
     return tags.filter(tag => 
-      tag.toLowerCase().includes(query.toLowerCase())
+      tag.toLowerCase().includes(query.toLowerCase()) && 
+      !currentTags.includes(tag)
     ).slice(0, 5)
   }
 
   const handleInputChange = (type: keyof typeof filters, value: string) => {
-    setFilters(prev => ({ ...prev, [type]: value }))
+    setInputValues(prev => ({ ...prev, [type]: value }))
   }
 
   const selectSuggestion = (type: keyof typeof filters, suggestion: string) => {
-    setFilters(prev => ({ ...prev, [type]: suggestion }))
+    if (!filters[type].includes(suggestion)) {
+      setFilters(prev => ({ ...prev, [type]: [...prev[type], suggestion] }))
+    }
+    setInputValues(prev => ({ ...prev, [type]: '' }))
     setShowAutocomplete(prev => ({ ...prev, [type]: false }))
   }
 
   const addFilterTag = (type: keyof typeof filters, tag: string) => {
-    setFilters(prev => ({ ...prev, [type]: tag }))
+    if (!filters[type].includes(tag)) {
+      setFilters(prev => ({ ...prev, [type]: [...prev[type], tag] }))
+    }
+  }
+
+  const removeFilterTag = (type: keyof typeof filters, tagToRemove: string) => {
+    setFilters(prev => ({ 
+      ...prev, 
+      [type]: prev[type].filter(tag => tag !== tagToRemove) 
+    }))
   }
 
   const clearFilters = () => {
-    setFilters({ style: '', subject: '', colors: '' })
+    setFilters({ style: [], subject: [], colors: [] })
+    setInputValues({ style: '', subject: '', colors: '' })
   }
 
   const applyFilters = () => {
@@ -793,10 +813,27 @@ export default function MobileCardStack({
                 {/* Style Filter */}
                 <div className="relative">
                   <label className="block text-sm font-bold mb-2">Style</label>
+                  
+                  {/* Selected tags display */}
+                  {filters.style.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {filters.style.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          onClick={() => removeFilterTag('style', tag)}
+                        >
+                          {tag} ×
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
                   <input
                     type="text"
                     placeholder="e.g. Abstract, Portrait, Digital Art..."
-                    value={filters.style}
+                    value={inputValues.style}
                     onChange={(e) => handleInputChange('style', e.target.value)}
                     onFocus={() => setShowAutocomplete(prev => ({ ...prev, style: true }))}
                     onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, style: false })), 200)}
@@ -806,7 +843,7 @@ export default function MobileCardStack({
                   {/* Autocomplete dropdown */}
                   {showAutocomplete.style && (
                     <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
-                      {getFilteredSuggestions('style', filters.style).map((suggestion: string) => (
+                      {getFilteredSuggestions('style', inputValues.style).map((suggestion: string) => (
                         <div
                           key={suggestion}
                           className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
@@ -823,7 +860,9 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                          filters.style.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                        }`}
                         onClick={() => addFilterTag('style', tag)}
                       >
                         {tag}
@@ -835,10 +874,27 @@ export default function MobileCardStack({
                 {/* Subject Filter */}
                 <div className="relative">
                   <label className="block text-sm font-bold mb-2">Subject</label>
+                  
+                  {/* Selected tags display */}
+                  {filters.subject.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {filters.subject.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          onClick={() => removeFilterTag('subject', tag)}
+                        >
+                          {tag} ×
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
                   <input
                     type="text"
                     placeholder="e.g. Nature, Urban, Portrait..."
-                    value={filters.subject}
+                    value={inputValues.subject}
                     onChange={(e) => handleInputChange('subject', e.target.value)}
                     onFocus={() => setShowAutocomplete(prev => ({ ...prev, subject: true }))}
                     onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, subject: false })), 200)}
@@ -848,7 +904,7 @@ export default function MobileCardStack({
                   {/* Autocomplete dropdown */}
                   {showAutocomplete.subject && (
                     <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
-                      {getFilteredSuggestions('subject', filters.subject).map((suggestion: string) => (
+                      {getFilteredSuggestions('subject', inputValues.subject).map((suggestion: string) => (
                         <div
                           key={suggestion}
                           className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
@@ -865,7 +921,9 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                          filters.subject.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                        }`}
                         onClick={() => addFilterTag('subject', tag)}
                       >
                         {tag}
@@ -877,10 +935,27 @@ export default function MobileCardStack({
                 {/* Colors Filter */}
                 <div className="relative">
                   <label className="block text-sm font-bold mb-2">Colors</label>
+                  
+                  {/* Selected tags display */}
+                  {filters.colors.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {filters.colors.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          onClick={() => removeFilterTag('colors', tag)}
+                        >
+                          {tag} ×
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
                   <input
                     type="text"
                     placeholder="e.g. Black, Colorful, Warm tones..."
-                    value={filters.colors}
+                    value={inputValues.colors}
                     onChange={(e) => handleInputChange('colors', e.target.value)}
                     onFocus={() => setShowAutocomplete(prev => ({ ...prev, colors: true }))}
                     onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, colors: false })), 200)}
@@ -890,7 +965,7 @@ export default function MobileCardStack({
                   {/* Autocomplete dropdown */}
                   {showAutocomplete.colors && (
                     <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
-                      {getFilteredSuggestions('colors', filters.colors).map((suggestion: string) => (
+                      {getFilteredSuggestions('colors', inputValues.colors).map((suggestion: string) => (
                         <div
                           key={suggestion}
                           className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
@@ -907,7 +982,9 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                          filters.colors.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                        }`}
                         onClick={() => addFilterTag('colors', tag)}
                       >
                         {tag}
