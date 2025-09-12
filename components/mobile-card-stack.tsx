@@ -49,6 +49,18 @@ export default function MobileCardStack({
   const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
   const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
   
+  // Filter states
+  const [filters, setFilters] = useState({
+    style: '',
+    subject: '',
+    colors: ''
+  })
+  const [showAutocomplete, setShowAutocomplete] = useState({
+    style: false,
+    subject: false,
+    colors: false
+  })
+  
   // Swipe states
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null)
   const [swipeDistance, setSwipeDistance] = useState(0)
@@ -152,6 +164,44 @@ export default function MobileCardStack({
       document.body.style.overflow = ''
     }
   }, [showFullscreenArtwork])
+
+  // Filter functionality
+  const EXAMPLE_TAGS = {
+    style: ['Abstract', 'Portrait', 'Digital Art', 'Contemporary', 'Modern', 'Realism', 'Impressionism', 'Cubism', 'Surrealism', 'Minimalism'],
+    subject: ['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape', 'Still Life', 'Architecture', 'Animals', 'People', 'City'],
+    colors: ['Black', 'Colorful', 'Warm', 'Cool', 'Monochrome', 'Blue', 'Red', 'Green', 'Yellow', 'Purple']
+  }
+
+  const getFilteredSuggestions = (type: keyof typeof filters, query: string) => {
+    if (!query.trim()) return []
+    const tags = EXAMPLE_TAGS[type]
+    return tags.filter(tag => 
+      tag.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 5)
+  }
+
+  const handleInputChange = (type: keyof typeof filters, value: string) => {
+    setFilters(prev => ({ ...prev, [type]: value }))
+  }
+
+  const selectSuggestion = (type: keyof typeof filters, suggestion: string) => {
+    setFilters(prev => ({ ...prev, [type]: suggestion }))
+    setShowAutocomplete(prev => ({ ...prev, [type]: false }))
+  }
+
+  const addFilterTag = (type: keyof typeof filters, tag: string) => {
+    setFilters(prev => ({ ...prev, [type]: tag }))
+  }
+
+  const clearFilters = () => {
+    setFilters({ style: '', subject: '', colors: '' })
+  }
+
+  const applyFilters = () => {
+    // This would trigger the parent component to apply filters
+    // For now, just close the filter panel
+    setShowFilters(false)
+  }
 
   const visibleArtworks = artworks.slice(0, visibleCardCount)
 
@@ -741,16 +791,41 @@ export default function MobileCardStack({
               
               <div className="space-y-6">
                 {/* Style Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Style</label>
+                <div className="relative">
+                  <label className="block text-sm font-bold mb-2">Style</label>
                   <input
                     type="text"
                     placeholder="e.g. Abstract, Portrait, Digital Art..."
+                    value={filters.style}
+                    onChange={(e) => handleInputChange('style', e.target.value)}
+                    onFocus={() => setShowAutocomplete(prev => ({ ...prev, style: true }))}
+                    onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, style: false })), 200)}
                     className="w-full p-3 border border-gray-300 rounded-md mb-2"
                   />
+                  
+                  {/* Autocomplete dropdown */}
+                  {showAutocomplete.style && (
+                    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                      {getFilteredSuggestions('style', filters.style).map((suggestion: string) => (
+                        <div
+                          key={suggestion}
+                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          onMouseDown={() => selectSuggestion('style', suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <div className="flex flex-wrap gap-2">
-                    {['Abstract', 'Portrait', 'Digital Art', 'Contemporary', 'Modern'].map((tag) => (
-                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                    {EXAMPLE_TAGS.style.slice(0, 5).map((tag: string) => (
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        onClick={() => addFilterTag('style', tag)}
+                      >
                         {tag}
                       </Badge>
                     ))}
@@ -758,16 +833,41 @@ export default function MobileCardStack({
                 </div>
 
                 {/* Subject Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Subject</label>
+                <div className="relative">
+                  <label className="block text-sm font-bold mb-2">Subject</label>
                   <input
                     type="text"
                     placeholder="e.g. Nature, Urban, Portrait..."
+                    value={filters.subject}
+                    onChange={(e) => handleInputChange('subject', e.target.value)}
+                    onFocus={() => setShowAutocomplete(prev => ({ ...prev, subject: true }))}
+                    onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, subject: false })), 200)}
                     className="w-full p-3 border border-gray-300 rounded-md mb-2"
                   />
+                  
+                  {/* Autocomplete dropdown */}
+                  {showAutocomplete.subject && (
+                    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                      {getFilteredSuggestions('subject', filters.subject).map((suggestion: string) => (
+                        <div
+                          key={suggestion}
+                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          onMouseDown={() => selectSuggestion('subject', suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <div className="flex flex-wrap gap-2">
-                    {['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape'].map((tag) => (
-                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                    {EXAMPLE_TAGS.subject.slice(0, 5).map((tag: string) => (
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        onClick={() => addFilterTag('subject', tag)}
+                      >
                         {tag}
                       </Badge>
                     ))}
@@ -775,16 +875,41 @@ export default function MobileCardStack({
                 </div>
 
                 {/* Colors Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Colors</label>
+                <div className="relative">
+                  <label className="block text-sm font-bold mb-2">Colors</label>
                   <input
                     type="text"
                     placeholder="e.g. Black, Colorful, Warm tones..."
+                    value={filters.colors}
+                    onChange={(e) => handleInputChange('colors', e.target.value)}
+                    onFocus={() => setShowAutocomplete(prev => ({ ...prev, colors: true }))}
+                    onBlur={() => setTimeout(() => setShowAutocomplete(prev => ({ ...prev, colors: false })), 200)}
                     className="w-full p-3 border border-gray-300 rounded-md mb-2"
                   />
+                  
+                  {/* Autocomplete dropdown */}
+                  {showAutocomplete.colors && (
+                    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                      {getFilteredSuggestions('colors', filters.colors).map((suggestion: string) => (
+                        <div
+                          key={suggestion}
+                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          onMouseDown={() => selectSuggestion('colors', suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <div className="flex flex-wrap gap-2">
-                    {['Black', 'Colorful', 'Warm', 'Cool', 'Monochrome'].map((tag) => (
-                      <Badge key={tag} variant="outline" className="cursor-pointer hover:bg-gray-200 text-xs">
+                    {EXAMPLE_TAGS.colors.slice(0, 5).map((tag: string) => (
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-gray-200 text-xs font-medium"
+                        onClick={() => addFilterTag('colors', tag)}
+                      >
                         {tag}
                       </Badge>
                     ))}
@@ -794,10 +919,17 @@ export default function MobileCardStack({
 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
-                <Button className="flex-1 bg-black text-white hover:bg-gray-800">
+                <Button 
+                  className="flex-1 bg-black text-white hover:bg-gray-800"
+                  onClick={applyFilters}
+                >
                   Apply Filters
                 </Button>
-                <Button variant="outline" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={clearFilters}
+                >
                   Clear Filters
                 </Button>
               </div>
