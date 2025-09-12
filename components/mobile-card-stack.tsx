@@ -176,9 +176,9 @@ export default function MobileCardStack({
 
   // Filter functionality
   const EXAMPLE_TAGS = {
-    style: ['Abstract', 'Portrait', 'Digital Art', 'Contemporary', 'Modern', 'Realism', 'Impressionism', 'Cubism', 'Surrealism', 'Minimalism'],
-    subject: ['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape', 'Still Life', 'Architecture', 'Animals', 'People', 'City'],
-    colors: ['Black', 'Colorful', 'Warm', 'Cool', 'Monochrome', 'Blue', 'Red', 'Green', 'Yellow', 'Purple']
+    style: ['Digital Art', 'Abstract', 'Portrait', 'Contemporary', 'Modern', 'Realism', 'Impressionism', 'Cubism', 'Surrealism', 'Minimalism', 'Digital'],
+    subject: ['portrait', 'Nature', 'Urban', 'Abstract', 'Landscape', 'Still Life', 'Architecture', 'Animals', 'People', 'City', 'consciousness'],
+    colors: ['grey', 'pink', 'Black', 'Colorful', 'Warm', 'Cool', 'Monochrome', 'Blue', 'Red', 'Green', 'Yellow', 'Purple']
   }
 
   const getFilteredSuggestions = (type: keyof typeof filters, query: string) => {

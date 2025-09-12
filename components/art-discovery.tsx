@@ -969,6 +969,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle filter changes
   const handleFilterChange = (filters: FilterState) => {
+    console.log('Filter change called with:', filters)
+    console.log('Total artworks before filtering:', artworks.length)
     setActiveFilters(filters)
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
@@ -982,9 +984,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         const styleKeywords = filters.style.toLowerCase().split(',').map(s => s.trim())
         const artworkStyle = (artwork.style || '').toLowerCase()
         const artworkGenre = (artwork.genre || '').toLowerCase()
-        matches = matches && styleKeywords.some(keyword => 
-          artworkStyle.includes(keyword) || artworkGenre.includes(keyword)
+        const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+        
+        const styleMatch = styleKeywords.some(keyword => 
+          artworkStyle.includes(keyword) || 
+          artworkGenre.includes(keyword) ||
+          artworkTags.some(tag => tag.includes(keyword))
         )
+        console.log(`Style filter: keywords=${styleKeywords}, artworkStyle=${artworkStyle}, artworkGenre=${artworkGenre}, artworkTags=${artworkTags}, matches=${styleMatch}`)
+        matches = matches && styleMatch
       }
       
       // Filter by subject
@@ -992,23 +1000,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         const subjectKeywords = filters.subject.toLowerCase().split(',').map(s => s.trim())
         const artworkSubject = (artwork.subject || '').toLowerCase()
         const artworkTitle = artwork.title.toLowerCase()
-        matches = matches && subjectKeywords.some(keyword => 
-          artworkSubject.includes(keyword) || artworkTitle.includes(keyword)
+        const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+        
+        const subjectMatch = subjectKeywords.some(keyword => 
+          artworkSubject.includes(keyword) || 
+          artworkTitle.includes(keyword) ||
+          artworkTags.some(tag => tag.includes(keyword))
         )
+        console.log(`Subject filter: keywords=${subjectKeywords}, artworkSubject=${artworkSubject}, artworkTitle=${artworkTitle}, artworkTags=${artworkTags}, matches=${subjectMatch}`)
+        matches = matches && subjectMatch
       }
       
       // Filter by colors
       if (filters.colors.trim()) {
         const colorKeywords = filters.colors.toLowerCase().split(',').map(s => s.trim())
         const artworkColor = (artwork.colour || '').toLowerCase()
-        matches = matches && colorKeywords.some(keyword => 
-          artworkColor.includes(keyword)
+        const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
+        
+        const colorMatch = colorKeywords.some(keyword => 
+          artworkColor.includes(keyword) ||
+          artworkTags.some(tag => tag.includes(keyword))
         )
+        console.log(`Color filter: keywords=${colorKeywords}, artworkColor=${artworkColor}, artworkTags=${artworkTags}, matches=${colorMatch}`)
+        matches = matches && colorMatch
       }
       
       return matches
     })
     
+    console.log('Filtered artworks count:', filtered.length)
+    console.log('First few filtered artworks:', filtered.slice(0, 3).map(a => ({ title: a.title, style: a.style, genre: a.genre, subject: a.subject, colour: a.colour })))
     setFilteredArtworks(filtered)
   }
 
@@ -1027,11 +1048,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle mobile filter changes (convert array format to string format)
   const handleMobileFilterChange = (filters: { style: string[], subject: string[], colors: string[] }) => {
+    console.log('Mobile filter change:', filters)
     const filterState = {
       style: filters.style.join(', '),
       subject: filters.subject.join(', '),
       colors: filters.colors.join(', ')
     }
+    console.log('Converted filter state:', filterState)
     handleFilterChange(filterState)
   }
 
