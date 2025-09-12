@@ -14,6 +14,7 @@ export default function PasswordResetPage() {
   const [error, setError] = useState("");
   const [isValidSession, setIsValidSession] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [verifiedEmail, setVerifiedEmail] = useState("");
   const router = useRouter();
   const { toast } = useToast();
 
@@ -23,92 +24,47 @@ export default function PasswordResetPage() {
         console.log('Checking password reset session...');
         console.log('Current URL:', window.location.href);
 
-        // Wait a moment for the session to be set by the auth callback
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Check if we have an active Supabase session (set by auth callback)
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // Check if user has completed email verification
+        const isVerified = sessionStorage.getItem('passwordResetVerified');
+        const email = sessionStorage.getItem('verifiedEmail');
         
-        console.log('Session check:', {
-          hasSession: !!session,
-          sessionError: error?.message,
-          user: session?.user?.email
+        console.log('Verification check:', {
+          isVerified,
+          email
         });
 
-        if (session && session.user) {
-          console.log('Valid password reset session detected for user:', session.user.email);
+        if (isVerified === 'true' && email) {
+          console.log('Email verification completed, allowing password reset');
+          setVerifiedEmail(email);
           setIsValidSession(true);
-        } else {
-          console.log('No valid session found - checking URL parameters as fallback...');
           
-          // Fallback: check for tokens in URL (hash or query params)
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const queryParams = new URLSearchParams(window.location.search);
+          // Check if we have a valid session
+          const { data: { session }, error } = await supabase.auth.getSession();
           
-          const accessToken = hashParams.get('access_token') || queryParams.get('access_token');
-          const type = hashParams.get('type') || queryParams.get('type');
-          const token = hashParams.get('token') || queryParams.get('token');
-
-          console.log('URL fallback check:', {
-            accessToken: !!accessToken,
-            type,
-            token: !!token,
-            hash: window.location.hash,
-            search: window.location.search
-          });
-
-          if ((type === 'recovery' && accessToken) || (type === 'recovery' && token)) {
-            console.log('Found recovery tokens in URL, allowing password reset');
-            setIsValidSession(true);
+          if (session && session.user) {
+            console.log('Valid session found for user:', session.user.email);
           } else {
-            console.log('No valid password reset session or tokens found');
-            
-            // Check if we're on the password-reset page directly (bypassing auth callback)
-            // This might happen if Supabase redirect URLs aren't configured properly
-            console.log('Checking if this is a direct password reset attempt...');
-            
-            // Check if user has a recent password reset request in session storage
-            const recentResetRequest = sessionStorage.getItem('passwordResetRequested');
-            const resetTimestamp = recentResetRequest ? parseInt(recentResetRequest) : 0;
-            const now = Date.now();
-            const timeDiff = now - resetTimestamp;
-            const isValidTimeframe = timeDiff < 300000; // 5 minutes
-            
-            console.log('Recent reset check:', {
-              recentResetRequest: !!recentResetRequest,
-              timeDiff,
-              isValidTimeframe
-            });
-            
-            if (isValidTimeframe) {
-              console.log('Allowing password reset - recent request within 5 minutes');
-              setIsValidSession(true);
-              
-              toast({
-                title: "Password Reset",
-                description: "You can reset your password. Please complete this within 5 minutes.",
-                variant: "default"
-              });
-            } else {
-              console.log('No recent password reset request found');
-              toast({
-                title: "Invalid Reset Link",
-                description: "This password reset link is invalid or has expired. Please request a new one.",
-                variant: "destructive"
-              });
-              setTimeout(() => {
-                router.push('/forgot-password');
-              }, 3000);
-            }
+            console.log('No session found, but email is verified - allowing password reset');
           }
+        } else {
+          console.log('No email verification found');
+          toast({
+            title: "Email Verification Required",
+            description: "Please verify your email address first before resetting your password.",
+            variant: "destructive"
+          });
+          setTimeout(() => {
+            router.push('/forgot-password');
+          }, 3000);
         }
       } catch (err) {
         console.error('Error checking session:', err);
         toast({
           title: "Error",
-          description: "An error occurred while checking your reset link.",
+          description: "An error occurred while checking your verification status.",
           variant: "destructive"
         });
+        router.push('/forgot-password');
       } finally {
         setIsCheckingSession(false);
       }
@@ -119,24 +75,24 @@ export default function PasswordResetPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    if (!password || !confirmPassword) {
-      setError("Please enter and confirm your new password.");
+    
+    if (!password) {
+      setError("Please enter a new password.");
       return;
     }
-
+    
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+    
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      return;
-    }
-
     setLoading(true);
+    setError("");
 
     try {
       console.log('Attempting to update password...');
@@ -146,7 +102,7 @@ export default function PasswordResetPage() {
       
       if (sessionError) {
         console.error('Session error:', sessionError);
-        setError('Session error. Please try requesting a new password reset link.');
+        setError('Session error. Please try requesting a new password reset.');
         return;
       }
       
@@ -155,7 +111,7 @@ export default function PasswordResetPage() {
         
         // Try to sign in with email to create a session
         // This is a workaround for when auth callback doesn't work
-        const email = sessionStorage.getItem('passwordResetEmail') || '';
+        const email = verifiedEmail || sessionStorage.getItem('verifiedEmail') || '';
         if (email) {
           console.log('Attempting to sign in with email:', email);
           const { data: signInData, error: signInError } = await supabase.auth.signInWithOtp({
@@ -167,7 +123,7 @@ export default function PasswordResetPage() {
           
           if (signInError) {
             console.error('Sign in error:', signInError);
-            setError('Unable to verify your identity. Please request a new password reset link.');
+            setError('Unable to verify your identity. Please request a new password reset.');
             return;
           }
           
@@ -175,7 +131,7 @@ export default function PasswordResetPage() {
           setError('Please check your email for a verification code and try again.');
           return;
         } else {
-          setError('Unable to verify your identity. Please request a new password reset link.');
+          setError('Unable to verify your identity. Please request a new password reset.');
           return;
         }
       }
@@ -189,10 +145,12 @@ export default function PasswordResetPage() {
       } else {
         console.log('Password updated successfully');
         
-        // Clear the password reset timestamp and email
+        // Clear the verification data
         if (typeof window !== 'undefined') {
-          sessionStorage.removeItem('passwordResetRequested');
-          sessionStorage.removeItem('passwordResetEmail');
+          sessionStorage.removeItem('passwordResetVerified');
+          sessionStorage.removeItem('verifiedEmail');
+          sessionStorage.removeItem('otpVerificationEmail');
+          sessionStorage.removeItem('otpRequested');
           console.log('Password reset data cleared');
         }
         
@@ -213,9 +171,11 @@ export default function PasswordResetPage() {
   if (isCheckingSession) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Verifying reset link...</p>
+        <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Checking verification status...</p>
+          </div>
         </div>
       </div>
     );
@@ -226,32 +186,13 @@ export default function PasswordResetPage() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold mb-4 text-red-600">Invalid Reset Link</h1>
+            <h1 className="text-2xl font-semibold mb-4 text-red-600">Email Verification Required</h1>
             <p className="mb-4 text-gray-600">
-              This password reset link is invalid or has expired.
+              Please verify your email address first before resetting your password.
             </p>
             <p className="mb-6 text-sm text-gray-500">
-              Redirecting to request a new reset link...
+              Redirecting to password reset request...
             </p>
-            
-            {/* Debug info for development */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="mt-4 p-4 bg-gray-100 rounded text-left text-xs">
-                <p><strong>Debug Info:</strong></p>
-                <p>Current URL: {typeof window !== 'undefined' ? window.location.href : 'N/A'}</p>
-                <p>Hash: {typeof window !== 'undefined' ? window.location.hash : 'N/A'}</p>
-                <p>Search: {typeof window !== 'undefined' ? window.location.search : 'N/A'}</p>
-                <button 
-                  onClick={() => {
-                    console.log('Manual auth callback test...');
-                    window.location.href = '/auth/callback?token=test&type=recovery';
-                  }}
-                  className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-xs"
-                >
-                  Test Auth Callback
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -266,6 +207,11 @@ export default function PasswordResetPage() {
           <p className="text-gray-600">
             Please enter your new password below.
           </p>
+          {verifiedEmail && (
+            <p className="text-sm text-gray-500 mt-2">
+              Resetting password for: <strong>{verifiedEmail}</strong>
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -280,7 +226,6 @@ export default function PasswordResetPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter new password"
               required
-              minLength={6}
               disabled={loading}
             />
           </div>
@@ -296,13 +241,14 @@ export default function PasswordResetPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm new password"
               required
-              minLength={6}
               disabled={loading}
             />
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm">{error}</div>
+            <div className="text-red-600 text-sm text-center">
+              {error}
+            </div>
           )}
 
           <Button type="submit" className="w-full" disabled={loading}>
@@ -322,4 +268,4 @@ export default function PasswordResetPage() {
       </div>
     </div>
   );
-} 
+}

@@ -46,18 +46,13 @@ export default function ForgotPasswordPage() {
       console.log('Redirect URL encoded:', encodeURIComponent(redirectUrl));
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
       
-      // Try different redirect URL formats to see which one works
-      const redirectOptions = [
-        redirectUrl.trim(),
-        `${origin}/auth/callback`,
-        `${origin}/password-reset`, // Fallback to direct password reset
-      ];
-      
-      console.log('Trying redirect options:', redirectOptions);
-      
-      // Try URL encoding the redirect URL to prevent spaces
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl.trim(), // Remove any potential whitespace
+      // Use OTP verification instead of direct password reset for better security
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          shouldCreateUser: false, // Don't create user if they don't exist
+          emailRedirectTo: `${origin}/verify-otp`
+        }
       });
       
       if (error) {
@@ -85,22 +80,22 @@ export default function ForgotPasswordPage() {
       } else {
         console.log('Password reset email sent successfully');
         
-        // Store timestamp and email in session storage for security check
+        // Store email for OTP verification step
         if (typeof window !== 'undefined') {
-          sessionStorage.setItem('passwordResetRequested', Date.now().toString());
-          sessionStorage.setItem('passwordResetEmail', email);
-          console.log('Password reset timestamp and email stored');
+          sessionStorage.setItem('otpVerificationEmail', email);
+          sessionStorage.setItem('otpRequested', Date.now().toString());
+          console.log('OTP verification data stored');
         }
         
         setEmailSent(true);
         toast({
-          title: "Email Sent!",
-          description: "If this email is registered with us, you'll receive a password reset link shortly."
+          title: "Verification Email Sent!",
+          description: "Please check your email and enter the verification code to reset your password."
         });
         
-        // Redirect to password reset page after 2 seconds
+        // Redirect to OTP verification page
         setTimeout(() => {
-          router.push('/password-reset');
+          router.push('/verify-otp');
         }, 2000);
       }
     } catch (err) {
@@ -128,10 +123,10 @@ export default function ForgotPasswordPage() {
               </div>
               <h1 className="text-2xl font-semibold mb-2">Check Your Email</h1>
               <p className="text-gray-600 mb-4">
-                If this email is registered with us, you'll receive a password reset link shortly.
+                If this email is registered with us, you'll receive a verification code shortly.
               </p>
               <p className="text-sm text-gray-500">
-                Redirecting to password reset page...
+                Redirecting to verification page...
               </p>
             </div>
           </div>
