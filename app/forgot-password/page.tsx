@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
       
       // Check if email exists in our system
       const { data: userData, error: userError } = await supabase
-        .from('collectors')
+        .from('Collectors')
         .select('email')
         .eq('email', email)
         .single();
