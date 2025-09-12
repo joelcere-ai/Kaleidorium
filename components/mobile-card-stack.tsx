@@ -73,29 +73,40 @@ export default function MobileCardStack({
   const currentX = useRef(0)
   const isDragging = useRef(false)
 
-  // Handle scroll-based loading
+  // Handle scroll-based loading with throttling
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null
+    
     const handleScroll = () => {
       if (!containerRef.current) return
 
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight
+      // Throttle scroll events
+      if (timeoutId) return
+      
+      timeoutId = setTimeout(() => {
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current!
+        const scrollPercentage = (scrollTop + clientHeight) / scrollHeight
 
-      // Load more when user scrolls to 80% of the content
-      if (scrollPercentage > 0.8 && visibleCardCount < artworks.length) {
-        setVisibleCardCount(prev => Math.min(prev + 3, artworks.length))
-        
-        // If we're near the end of local artworks, trigger load more
-        if (visibleCardCount >= artworks.length - 3) {
-          onLoadMore()
+        // Load more when user scrolls to 80% of the content
+        if (scrollPercentage > 0.8 && visibleCardCount < artworks.length) {
+          setVisibleCardCount(prev => Math.min(prev + 3, artworks.length))
+          
+          // If we're near the end of local artworks, trigger load more
+          if (visibleCardCount >= artworks.length - 3) {
+            onLoadMore()
+          }
         }
-      }
+        timeoutId = null
+      }, 100) // Throttle to 100ms
     }
 
     const container = containerRef.current
     if (container) {
-      container.addEventListener('scroll', handleScroll)
-      return () => container.removeEventListener('scroll', handleScroll)
+      container.addEventListener('scroll', handleScroll, { passive: true })
+      return () => {
+        container.removeEventListener('scroll', handleScroll)
+        if (timeoutId) clearTimeout(timeoutId)
+      }
     }
   }, [visibleCardCount, artworks.length, onLoadMore])
 
@@ -176,7 +187,10 @@ export default function MobileCardStack({
     
     // Only handle horizontal swipes
     if (Math.abs(currentX.current) > 10) {
-      e.preventDefault()
+      // Only prevent default for significant horizontal movement
+      if (Math.abs(currentX.current) > 20) {
+        e.preventDefault()
+      }
       setSwipeDistance(currentX.current)
       
       if (currentX.current > 50) {
@@ -205,40 +219,34 @@ export default function MobileCardStack({
     const distance = Math.abs(currentX.current)
     
     if (distance > 100) {
-      // Horizontal swipe
+      // Horizontal swipe - execute action immediately for better UX
       setIsAnimating(true)
       
+      // Execute action immediately without waiting for animation
       if (currentX.current > 0) {
         // Swipe right - Like
         onLike(artwork)
-        toast({
-          title: "Liked! 👍",
-          description: `Added "${artwork.title}" to your liked artworks`,
-        })
       } else {
         // Swipe left - Dislike
         onDislike(artwork)
-        toast({
-          title: "Disliked 👎",
-          description: `We'll show you less art like "${artwork.title}"`,
-        })
       }
       
-      // Animate card out
+      // Animate card out quickly
       const cardRef = cardRefs.current[artworkId]
       if (cardRef) {
         const finalX = currentX.current > 0 ? (screenWidth || window.innerWidth) : -(screenWidth || window.innerWidth)
+        cardRef.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out'
         cardRef.style.transform = `translateX(${finalX}px) rotate(${currentX.current * 0.2}deg)`
         cardRef.style.opacity = '0'
       }
       
-      // Reset after animation
+      // Reset quickly
       setTimeout(() => {
         resetCard(artworkId)
         setIsAnimating(false)
-      }, 300)
+      }, 200)
     } else {
-      // Snap back
+      // Snap back quickly
       resetCard(artworkId)
     }
     
@@ -250,8 +258,15 @@ export default function MobileCardStack({
   const resetCard = (artworkId: string) => {
     const cardRef = cardRefs.current[artworkId]
     if (cardRef) {
+      cardRef.style.transition = 'none'
       cardRef.style.transform = 'translateX(0px) rotate(0deg)'
       cardRef.style.opacity = '1'
+      // Restore transition after reset
+      setTimeout(() => {
+        if (cardRef) {
+          cardRef.style.transition = ''
+        }
+      }, 50)
     }
   }
 
@@ -271,17 +286,11 @@ export default function MobileCardStack({
     switch (action) {
       case 'like':
         onLike(artwork)
-        toast({
-          title: "Liked! 👍",
-          description: `Added "${artwork.title}" to your liked artworks`,
-        })
+        // Remove toast for better performance
         break
       case 'dislike':
         onDislike(artwork)
-        toast({
-          title: "Disliked 👎",
-          description: `We'll show you less art like "${artwork.title}"`,
-        })
+        // Remove toast for better performance
         break
       case 'add':
         onAddToCollection(artwork)
