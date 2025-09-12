@@ -29,21 +29,44 @@ export async function GET(request: NextRequest) {
     console.log('Password reset detected with token, processing...');
     
     try {
-      // Exchange the token for session tokens
       const supabase = createRouteHandlerClient<Database>({ cookies })
-      const { data, error } = await supabase.auth.verifyOtp({
+      
+      // Try different approaches for password reset token verification
+      let session = null;
+      let error = null;
+      
+      // Method 1: Try verifyOtp with token_hash
+      const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
         token_hash: token,
         type: 'recovery'
       });
+      
+      if (verifyData.session) {
+        session = verifyData.session;
+        console.log('Recovery session created via verifyOtp for user:', session.user?.email);
+      } else {
+        console.log('verifyOtp failed, trying alternative method...');
+        
+        // Method 2: Try using the token directly as a code
+        const { data: exchangeData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(token);
+        
+        if (exchangeData.session) {
+          session = exchangeData.session;
+          console.log('Recovery session created via exchangeCodeForSession for user:', session.user?.email);
+        } else {
+          error = exchangeError || verifyError;
+        }
+      }
 
       if (error) {
         console.error('Error verifying recovery token:', error);
+        console.error('Token value:', token.substring(0, 10) + '...');
         return NextResponse.redirect(`${requestUrl.origin}/forgot-password?error=invalid_token`);
       }
 
-      if (data.session) {
-        console.log('Recovery session created successfully');
-        // Redirect to password reset page - the session will be automatically available
+      if (session) {
+        console.log('Recovery session created successfully for user:', session.user?.email);
+        // Redirect to password reset page with the session
         return NextResponse.redirect(`${requestUrl.origin}/password-reset`);
       } else {
         console.log('No session created from recovery token');

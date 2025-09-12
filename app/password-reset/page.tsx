@@ -23,6 +23,9 @@ export default function PasswordResetPage() {
         console.log('Checking password reset session...');
         console.log('Current URL:', window.location.href);
 
+        // Wait a moment for the session to be set by the auth callback
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         // Check if we have an active Supabase session (set by auth callback)
         const { data: { session }, error } = await supabase.auth.getSession();
         
