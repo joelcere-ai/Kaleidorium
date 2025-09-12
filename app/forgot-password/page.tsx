@@ -46,6 +46,15 @@ export default function ForgotPasswordPage() {
       console.log('Redirect URL encoded:', encodeURIComponent(redirectUrl));
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
       
+      // Try different redirect URL formats to see which one works
+      const redirectOptions = [
+        redirectUrl.trim(),
+        `${origin}/auth/callback`,
+        `${origin}/password-reset`, // Fallback to direct password reset
+      ];
+      
+      console.log('Trying redirect options:', redirectOptions);
+      
       // Try URL encoding the redirect URL to prevent spaces
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl.trim(), // Remove any potential whitespace
