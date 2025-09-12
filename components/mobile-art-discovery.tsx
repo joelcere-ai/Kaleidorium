@@ -21,6 +21,8 @@ interface MobileArtDiscoveryProps {
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
+  onFilterChange?: (filters: { style: string[], subject: string[], colors: string[] }) => void
+  onClearFilters?: () => void
   isLandscape?: boolean
   isPortrait?: boolean
   screenWidth?: number
@@ -39,6 +41,8 @@ export default function MobileArtDiscovery({
   view = "discover",
   collection = [],
   onRemoveFromCollection,
+  onFilterChange,
+  onClearFilters,
   isLandscape = false,
   isPortrait = true,
   screenWidth = 0,
@@ -55,6 +59,8 @@ export default function MobileArtDiscovery({
       view={view}
       collection={collection}
       onRemoveFromCollection={onRemoveFromCollection}
+      onFilterChange={onFilterChange}
+      onClearFilters={onClearFilters}
       isLandscape={isLandscape}
       isPortrait={isPortrait}
       screenWidth={screenWidth}

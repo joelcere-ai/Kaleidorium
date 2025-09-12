@@ -18,6 +18,8 @@ interface MobileCardStackProps {
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
+  onFilterChange?: (filters: { style: string[], subject: string[], colors: string[] }) => void
+  onClearFilters?: () => void
   isLandscape?: boolean
   isPortrait?: boolean
   screenWidth?: number
@@ -34,6 +36,8 @@ export default function MobileCardStack({
   view = "discover",
   collection = [],
   onRemoveFromCollection,
+  onFilterChange,
+  onClearFilters,
   isLandscape = false,
   isPortrait = true,
   screenWidth = 0,
@@ -215,11 +219,27 @@ export default function MobileCardStack({
   const clearFilters = () => {
     setFilters({ style: [], subject: [], colors: [] })
     setInputValues({ style: '', subject: '', colors: '' })
+    
+    // Call parent's clear handler if provided
+    if (onClearFilters) {
+      onClearFilters()
+    }
   }
 
   const applyFilters = () => {
-    // This would trigger the parent component to apply filters
-    // For now, just close the filter panel
+    // Convert array filters to comma-separated strings for compatibility with desktop filter system
+    const filterState = {
+      style: filters.style.join(', '),
+      subject: filters.subject.join(', '),
+      colors: filters.colors.join(', ')
+    }
+    
+    // Call parent's filter handler if provided
+    if (onFilterChange) {
+      onFilterChange(filters)
+    }
+    
+    // Close the filter panel
     setShowFilters(false)
   }
 

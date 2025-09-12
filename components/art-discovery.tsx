@@ -1025,6 +1025,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     })
   }
 
+  // Handle mobile filter changes (convert array format to string format)
+  const handleMobileFilterChange = (filters: { style: string[], subject: string[], colors: string[] }) => {
+    const filterState = {
+      style: filters.style.join(', '),
+      subject: filters.subject.join(', '),
+      colors: filters.colors.join(', ')
+    }
+    handleFilterChange(filterState)
+  }
+
   // Setup keyboard shortcuts only on the client side
   useEffect(() => {
     if (!mounted) return
@@ -1539,6 +1549,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             view={view}
             collection={dbCollection}
             onRemoveFromCollection={handleRemoveFromCollection}
+            onFilterChange={handleMobileFilterChange}
+            onClearFilters={clearFilters}
             isLandscape={isLandscape}
             isPortrait={isPortrait}
             screenWidth={screenWidth}
