@@ -146,7 +146,7 @@ export const sendPasswordResetOTP = async (email: string, otp: string): Promise<
 
     // Template parameters for OTP email
     const templateParams = {
-      to_email: email,
+      email: email,  // Changed from to_email to email to match template
       otp_code: otp,
       from_name: 'Kaleidorium Team',
       from_email: 'kurator@kaleidorium.com',
