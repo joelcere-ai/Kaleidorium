@@ -35,8 +35,8 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <Separator className="my-12" />
 
       <div className="space-y-8">
-        <h2 className="text-3xl font-serif text-center">Frequently Asked Questions</h2>
-        <p className="text-center text-gray-600 mb-8">
+        <h2 className="font-serif text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
+        <p className="text-gray-600 mb-8">
           We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
         </p>
         
