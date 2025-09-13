@@ -459,8 +459,8 @@ export default function MobileCardStack({
                     <div className={`flex-1 p-4 flex flex-col justify-between ${isLandscape ? 'min-h-[120px]' : ''}`}>
                       <div>
                         <h3 className="font-semibold text-black text-lg leading-tight">{artwork.title}</h3>
-                        <p className="text-gray-600 text-sm">{artwork.artist}</p>
-                        <p className="text-black font-medium text-base mt-1">{artwork.price}</p>
+                        <p className="text-gray-600 text-base">{artwork.artist}</p>
+                        <p className="text-black font-medium text-sm mt-1">{artwork.price}</p>
                       </div>
                     </div>
                     
@@ -747,7 +747,7 @@ export default function MobileCardStack({
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
-                    <p className="text-sm text-gray-600">{artwork.artist}</p>
+                    <p className="text-base text-gray-600">{artwork.artist}</p>
                   </div>
                 </div>
 

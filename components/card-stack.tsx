@@ -155,10 +155,10 @@ export default function CardStack({
                     <div className="p-6 border-t border-gray-100">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <div className="mb-4 sm:mb-0">
-                          <h3 className="font-serif text-2xl font-semibold mb-2">
+                          <h3 className="text-lg font-serif font-semibold mb-2">
                             {artwork.title}
                           </h3>
-                          <p className="text-lg text-gray-600 mb-2">by {artwork.artist}</p>
+                          <p className="text-base text-gray-600 mb-2">by {artwork.artist}</p>
                         </div>
                       </div>
 
@@ -210,7 +210,7 @@ export default function CardStack({
 
                       {/* Artwork Information */}
                       <div className="space-y-3">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-4 text-base text-muted-foreground">
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
                           {artwork.dimensions && <span>{artwork.dimensions}</span>}
@@ -230,7 +230,7 @@ export default function CardStack({
                                 <Badge 
                                   key={tag} 
                                   variant="outline" 
-                                  className="px-3 py-1 text-sm font-medium border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                                  className="px-3 py-1 text-base font-normal border-gray-300 hover:bg-gray-50 transition-colors duration-200"
                                 >
                                   {tag}
                                 </Badge>
@@ -246,7 +246,7 @@ export default function CardStack({
                         <div className="py-4 px-6 bg-gray-50 rounded-xl border">
                           {artwork.price.toLowerCase() === 'not for sale'
                             ? <div className="text-center">
-                                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
+                                <span className="text-sm font-medium text-muted-foreground">Not for sale</span>
                               </div>
                             : <div className="text-center">
                                 <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
