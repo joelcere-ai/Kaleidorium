@@ -2134,8 +2134,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <div className="flex-1 overflow-y-auto">
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
-                  <h1 className="font-serif text-2xl font-semibold leading-tight mb-4">For Artists</h1>
-                  <p className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</p>
+                  <h1 className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</h1>
                   <p className="text-base mb-4">
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
@@ -2259,8 +2258,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop For Artists Page
           <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">
-                  <h1 className="font-serif text-2xl font-semibold leading-tight mb-4">For Artists</h1>
-                  <p className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</p>
+                  <h1 className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</h1>
                   <p className="text-base mb-4">
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
