@@ -145,9 +145,9 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md bg-white rounded-lg shadow p-8">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-semibold mb-2">Reset Your Password</h1>
-          <p className="text-gray-600">
-            Enter your email address and we'll send you a link to reset your password.
-          </p>
+                      <p className="text-gray-600">
+                        Enter your email address and we'll send you a 6-digit verification code to reset your password.
+                      </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -166,9 +166,9 @@ export default function ForgotPasswordPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Sending..." : "Send Reset Link"}
-          </Button>
+                      <Button type="submit" className="w-full" disabled={loading}>
+                        {loading ? "Sending..." : "Send Verification Code"}
+                      </Button>
 
           <div className="text-center">
             <Button 
