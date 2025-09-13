@@ -2135,11 +2135,28 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
                   <h1 className="font-serif text-2xl font-semibold leading-tight mb-4">For Artists</h1>
+                  <p className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</p>
                   <p className="text-base mb-4">
-                    Submit your portfolio for review. If selected, you will be invited to register and feature your art on our platform, so that we can recommend it to collectors who have relevant taste and interest.
+                    You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
                   <p className="text-base mb-4">
-                    We are in beta mode. There is no charges, fees or commissions. You can delete your registration and remove your artwork at anytime.
+                    We're not a gallery, marketplace, or agent.
+                  </p>
+                  <p className="text-base mb-4">
+                    We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
+                  </p>
+                  <p className="text-base font-semibold mb-2">Here's how it works:</p>
+                  <ul className="text-base mb-4 space-y-2">
+                    <li>• Upload your artwork and description</li>
+                    <li>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  </ul>
+                  <p className="text-base mb-4">
+                    Early access artists get 12 months of free uploads.
+                  </p>
+                  <p className="text-base mb-4">
+                    Submit your portfolio and join our curated artist community
                   </p>
                 </div>
 
@@ -2242,13 +2259,30 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop For Artists Page
           <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">
-              <h1 className="font-serif text-2xl font-semibold leading-tight mb-4">For Artists</h1>
-              <p className="text-base mb-4">
-                Submit your portfolio for review. If selected, you will be invited to register and feature your art on our platform, so that we can recommend it to collectors who have relevant taste and interest.
-              </p>
-              <p className="text-base mb-4">
-                We are in beta mode. There is no charges, fees or commissions. You can delete your registration and remove your artwork at anytime. For more details, <a href="#faq-section" className="text-blue-600 hover:text-blue-800 underline">check out our FAQs</a>.
-              </p>
+                  <h1 className="font-serif text-2xl font-semibold leading-tight mb-4">For Artists</h1>
+                  <p className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</p>
+                  <p className="text-base mb-4">
+                    You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                  </p>
+                  <p className="text-base mb-4">
+                    We're not a gallery, marketplace, or agent.
+                  </p>
+                  <p className="text-base mb-4">
+                    We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
+                  </p>
+                  <p className="text-base font-semibold mb-2">Here's how it works:</p>
+                  <ul className="text-base mb-4 space-y-2">
+                    <li>• Upload your artwork and description</li>
+                    <li>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  </ul>
+                  <p className="text-base mb-4">
+                    Early access artists get 12 months of free uploads.
+                  </p>
+                  <p className="text-base mb-4">
+                    Submit your portfolio and join our curated artist community
+                  </p>
             </div>
 
             <Card className="mb-8">
@@ -2348,14 +2382,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <Card id="faq-section" className="mb-8">
               <CardHeader>
                 <CardTitle>Frequently Asked Questions</CardTitle>
+                <p className="text-gray-600 text-sm leading-relaxed mt-2">
+                  We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
+                </p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   
                   <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Are you a marketplace or a gallery?</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors—we're not part of any conversation or transaction that follows.
+                    </p>
+                  </div>
+
+                  <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Is there a fee to join or submit my work?</h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      No. Kaleidorium is currently in beta and completely free for artists. There are no commissions, no submission fees, and no hidden charges. Once we've reached a healthy community size, we may introduce a subscription model, but you'll get plenty of advance notice. If you ever wish to remove your work, you can do so in one click.
+                      No. Kaleidorium is currently in beta and completely free for artists. There are no commissions, no submission fees, and no hidden charges. In 2026, once we've reached a healthy community size, we may introduce a modest subscription and commission model for artists, with plenty of notice and the option to opt out. Collectors will always enjoy free access. If you ever wish to remove your work, you can do so in one click.
                     </p>
                   </div>
 

@@ -184,7 +184,7 @@ function AppHeaderContent({
             onClick={() => handleNav("about")}
           >
             <Info className="w-4 h-4 mr-1" />
-            About
+            For Collectors
           </Button>
 
           <Link href="/contact">
@@ -291,7 +291,7 @@ function AppHeaderContent({
               onClick={() => handleNav("about")}
             >
               <Info className="w-4 h-4 mr-2" />
-              About
+              For Collectors
             </Button>
 
             <Link href="/contact">
