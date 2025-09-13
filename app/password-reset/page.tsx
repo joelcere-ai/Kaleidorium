@@ -107,28 +107,46 @@ export default function PasswordResetPage() {
       }
       
       if (!session) {
-        console.log('No session found, trying to create one...');
+        console.log('No session found, but email is verified allowing password reset');
         
-        // Try to sign in with email to create a session
-        // This is a workaround for when auth callback doesn't work
+        // Since we've verified the email through our custom OTP system,
+        // use our API route to update the password
         const email = verifiedEmail || sessionStorage.getItem('verifiedEmail') || '';
         if (email) {
-          console.log('Attempting to sign in with email:', email);
-          const { data: signInData, error: signInError } = await supabase.auth.signInWithOtp({
-            email: email,
-            options: {
-              shouldCreateUser: false
-            }
-          });
+          console.log('Using verified email for password reset:', email);
           
-          if (signInError) {
-            console.error('Sign in error:', signInError);
-            setError('Unable to verify your identity. Please request a new password reset.');
+          const response = await fetch('/api/reset-password', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            console.error('Password reset error:', result.error);
+            setError(result.error || 'Unable to reset password. Please try again.');
             return;
           }
+
+          console.log('Password updated successfully via API');
           
-          console.log('OTP sent for verification');
-          setError('Please check your email for a verification code and try again.');
+          // Clear verification data
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('passwordResetVerified');
+            sessionStorage.removeItem('verifiedEmail');
+            sessionStorage.removeItem('otpVerificationEmail');
+            sessionStorage.removeItem('otpRequested');
+            console.log('Password reset data cleared');
+          }
+          
+          toast({
+            title: "Success!",
+            description: "Your password has been reset successfully. You can now sign in with your new password."
+          });
+          router.push("/login");
           return;
         } else {
           setError('Unable to verify your identity. Please request a new password reset.');
