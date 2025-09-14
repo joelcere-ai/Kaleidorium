@@ -712,11 +712,9 @@ export default function MobileCardStack({
                 cardRefs.current[artwork.id] = el
               }}
               className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] overflow-hidden"
-              {...(index === 0 ? {
-                onTouchStart: (e) => handleTouchStart(e, artwork.id),
-                onTouchMove: (e) => handleTouchMove(e, artwork.id),
-                onTouchEnd: () => handleTouchEnd(artwork.id, artwork)
-              } : {})}
+              onTouchStart={(e) => handleTouchStart(e, artwork.id)}
+              onTouchMove={(e) => handleTouchMove(e, artwork.id)}
+              onTouchEnd={() => handleTouchEnd(artwork.id, artwork)}
               style={{ willChange: 'transform' }}
             >
               {/* Artwork Image */}
