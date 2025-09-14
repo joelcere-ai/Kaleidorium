@@ -560,7 +560,7 @@ export default function MobileCardStack({
                   }}
                 >
                   <Info className="mr-3 h-5 w-5" />
-                  About
+                  For Collectors
                 </Button>
                 <Button
                   variant="ghost"
@@ -1139,7 +1139,7 @@ export default function MobileCardStack({
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
-                About
+                For Collectors
               </Button>
               <Button
                 variant="ghost"
