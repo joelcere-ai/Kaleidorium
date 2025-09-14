@@ -42,9 +42,17 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
     <div className="fixed inset-0 bg-black z-[1000] flex items-center justify-center overflow-hidden">
       {/* Kaleidorium Logo - Optimized for mobile */}
       <div className="flex items-center justify-center px-6 max-w-full">
-        {/* Always show text logo for now to ensure it's visible */}
+        {/* Always show text logo with enhanced visibility */}
         <div className="text-white text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-wide animate-pulse">
+          <h1 
+            className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-wide animate-pulse"
+            style={{
+              color: 'white',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              WebkitTextStroke: '1px rgba(255,255,255,0.3)',
+              filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))'
+            }}
+          >
             Kaleidorium
           </h1>
         </div>
@@ -74,9 +82,10 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 sm:w-3 sm:h-3 bg-white/70 rounded-full loading-dot"
+              className="w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full loading-dot"
               style={{
-                animationDelay: `${i * 0.4}s`
+                animationDelay: `${i * 0.4}s`,
+                boxShadow: '0 0 10px rgba(255,255,255,0.8)'
               }}
             />
           ))}
@@ -85,11 +94,15 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
 
       {/* Elegant tagline */}
       <div className="absolute bottom-10 sm:bottom-14 left-1/2 transform -translate-x-1/2 px-4">
-        <p className="text-white/80 text-xs sm:text-sm md:text-base font-light tracking-widest text-center transition-all duration-1000 select-none opacity-100"
-        style={{
-          WebkitFontSmoothing: 'antialiased',
-          MozOsxFontSmoothing: 'grayscale'
-        }}>
+        <p 
+          className="text-white text-xs sm:text-sm md:text-base font-light tracking-widest text-center transition-all duration-1000 select-none opacity-100"
+          style={{
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            color: 'white',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
+          }}
+        >
           Curated Art Discovery
         </p>
       </div>
