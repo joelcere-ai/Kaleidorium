@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 export function AboutContent({ setView }: { setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void }) {
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
-      <h1 className="font-serif text-2xl font-semibold mb-8">Swipe. Discover. Fall in Love (with Art).</h1>
+      <h1 className="text-lg font-semibold mb-8">Swipe. Discover. Fall in Love (with Art).</h1>
 
       <p className="mb-4">Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.</p>
 
@@ -35,7 +35,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <Separator className="my-12" />
 
       <div className="space-y-8">
-        <h2 className="font-serif text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
+        <h2 className="text-lg font-semibold mb-4">Frequently Asked Questions</h2>
         <p className="text-gray-600 mb-8">
           We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
         </p>

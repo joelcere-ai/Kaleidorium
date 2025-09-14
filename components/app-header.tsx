@@ -253,18 +253,16 @@ function AppHeaderContent({
               Discover
             </Button>
 
-            {/* Mobile Filter Button - Only show on discover page */}
-            {(view === "discover" || (!view && isSelected("discover"))) && (
-              <Button 
-                variant="ghost" 
-                className={`justify-start ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
-                onClick={toggleFilters}
-              >
-                <Search className="w-4 h-4 mr-2" />
-                Filters
-                {isFiltering && <span className="ml-2 w-2 h-2 bg-blue-600 rounded-full"></span>}
-              </Button>
-            )}
+            {/* Mobile Filter Button - Always visible */}
+            <Button 
+              variant="ghost" 
+              className={`justify-start ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+              onClick={toggleFilters}
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Filters
+              {isFiltering && <span className="ml-2 w-2 h-2 bg-blue-600 rounded-full"></span>}
+            </Button>
             
             <Button
               variant="ghost"
