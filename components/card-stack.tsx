@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Heart, ThumbsUp, ThumbsDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
 
@@ -33,6 +34,7 @@ export default function CardStack({
   loading,
   showFallbackMessage = false
 }: CardStackProps) {
+  const { toast } = useToast()
   const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
 
   // Get visible cards based on current count
