@@ -60,7 +60,7 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
         <h1 
           style={{
             color: 'white',
-            fontSize: '48px',
+            fontSize: '34px',
             fontWeight: 'bold',
             fontFamily: 'serif',
             margin: 0,
@@ -107,15 +107,15 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
       <p 
         style={{
           color: 'white',
-          fontSize: '14px',
+          fontSize: '10px',
           fontWeight: '300',
-          letterSpacing: '3px',
+          letterSpacing: '2px',
           textAlign: 'center',
           margin: 0,
           textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
         }}
       >
-        CURATED ART DISCOVERY
+        YOUR PERSONAL ART CURATOR
       </p>
 
       {/* CSS Animation */}
