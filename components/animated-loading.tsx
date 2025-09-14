@@ -61,11 +61,7 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
 
       {/* Elegant tagline */}
       <div className="absolute bottom-10 sm:bottom-14 left-1/2 transform -translate-x-1/2 px-4">
-        <p className={`
-          text-white/80 text-xs sm:text-sm md:text-base font-light tracking-widest text-center
-          transition-all duration-1000 select-none
-          ${visibleLetters >= letters.length ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
-        `}
+        <p className="text-white/80 text-xs sm:text-sm md:text-base font-light tracking-widest text-center transition-all duration-1000 select-none opacity-100"
         style={{
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale'
