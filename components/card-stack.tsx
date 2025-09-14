@@ -94,15 +94,27 @@ export default function CardStack({
     switch (action) {
       case 'like':
         onLike(artwork)
+        toast({
+          title: "Liked! 👍",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
         break
       case 'dislike':
         onDislike(artwork)
+        toast({
+          title: "Disliked! 👎",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
         break
       case 'add':
         onAddToCollection(artwork)
+        toast({
+          title: "Added to Collection! ❤️",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
         break
     }
-    onNext()
+    // Don't call onNext() - keep current card visible, only upcoming cards will refresh
   }
 
 

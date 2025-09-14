@@ -318,25 +318,25 @@ export default function MobileCardStack({
       if (currentX.current > 0) {
         // Swipe right - Like
         onLike(artwork)
+        toast({
+          title: "Liked! 👍",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
       } else {
         // Swipe left - Dislike
         onDislike(artwork)
+        toast({
+          title: "Disliked! 👎",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
       }
       
-      // Animate card out quickly
-      const cardRef = cardRefs.current[artworkId]
-      if (cardRef) {
-        const finalX = currentX.current > 0 ? (screenWidth || window.innerWidth) : -(screenWidth || window.innerWidth)
-        cardRef.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out'
-        cardRef.style.transform = `translateX(${finalX}px) rotate(${currentX.current * 0.2}deg)`
-        cardRef.style.opacity = '0'
-      }
-      
-      // Reset quickly
+      // Don't animate card out - keep it visible
+      // Just snap back to original position
       setTimeout(() => {
         resetCard(artworkId)
         setIsAnimating(false)
-      }, 200)
+      }, 100)
     } else {
       // Snap back quickly
       resetCard(artworkId)
@@ -378,17 +378,23 @@ export default function MobileCardStack({
     switch (action) {
       case 'like':
         onLike(artwork)
-        // Remove toast for better performance
+        toast({
+          title: "Liked! 👍",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
         break
       case 'dislike':
         onDislike(artwork)
-        // Remove toast for better performance
+        toast({
+          title: "Disliked! 👎",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
         break
       case 'add':
         onAddToCollection(artwork)
         toast({
           title: "Added to Collection! ❤️",
-          description: `"${artwork.title}" has been added to your collection`,
+          description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'info':
