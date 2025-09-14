@@ -2161,7 +2161,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle>Submit Your Portfolio</CardTitle>
+                    <CardTitle className="text-lg font-semibold">Submit Your Portfolio</CardTitle>
                     <CardDescription>
                       Please fill out the form below to submit your portfolio for review.
                     </CardDescription>
@@ -2227,7 +2227,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 {/* Invitation Section */}
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle>Have you received your invitation?</CardTitle>
+                    <CardTitle className="text-lg font-semibold">Have you received your invitation?</CardTitle>
                     <CardDescription>
                       If you've received an invitation email with a token, click below to register.
                     </CardDescription>
@@ -2285,7 +2285,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Submit Your Portfolio</CardTitle>
+                <CardTitle className="text-lg font-semibold">Submit Your Portfolio</CardTitle>
                 <CardDescription>
                   Please fill out the form below to submit your portfolio for review.
                 </CardDescription>
@@ -2351,7 +2351,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* Invitation Section */}
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Have you received your invitation?</CardTitle>
+                <CardTitle className="text-lg font-semibold">Have you received your invitation?</CardTitle>
                 <CardDescription>
                   If you've received an invitation email with a token, click below to register.
                 </CardDescription>
