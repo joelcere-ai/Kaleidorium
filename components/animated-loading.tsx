@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 interface AnimatedLoadingProps {
   onComplete?: () => void
@@ -9,6 +10,8 @@ interface AnimatedLoadingProps {
 
 export default function AnimatedLoading({ onComplete, duration = 3000 }: AnimatedLoadingProps) {
   const [isComplete, setIsComplete] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
   
   // Show logo for the specified duration, then complete
   useEffect(() => {
@@ -30,18 +33,40 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
     <div className="fixed inset-0 bg-black z-[1000] flex items-center justify-center overflow-hidden">
       {/* Kaleidorium Logo - Optimized for mobile */}
       <div className="flex items-center justify-center px-6 max-w-full">
-        <img
-          src="/kaleidorium-logo.jpg"
-          alt="Kaleidorium"
-          className="max-w-[80%] max-h-[60%] object-contain animate-pulse"
-          style={{
-            filter: 'brightness(1.1) contrast(1.1)',
-            // Ensure crisp rendering on all devices
-            WebkitFontSmoothing: 'antialiased',
-            MozOsxFontSmoothing: 'grayscale',
-            textRendering: 'optimizeLegibility'
-          }}
-        />
+        {!imageError ? (
+          <Image
+            src="/kaleidorium-logo.jpg"
+            alt="Kaleidorium"
+            width={400}
+            height={200}
+            className={`max-w-[80%] max-h-[60%] object-contain animate-pulse transition-opacity duration-500 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              filter: 'brightness(1.1) contrast(1.1)',
+              // Ensure crisp rendering on all devices
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textRendering: 'optimizeLegibility'
+            }}
+            onLoad={() => {
+              console.log('Kaleidorium logo loaded successfully')
+              setImageLoaded(true)
+            }}
+            onError={() => {
+              console.error('Failed to load Kaleidorium logo')
+              setImageError(true)
+            }}
+            priority
+          />
+        ) : (
+          /* Fallback text logo if image fails to load */
+          <div className="text-white text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-wide animate-pulse">
+              Kaleidorium
+            </h1>
+          </div>
+        )}
       </div>
 
       {/* Enhanced loading indicator */}
