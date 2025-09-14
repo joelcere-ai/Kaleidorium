@@ -331,12 +331,22 @@ export default function MobileCardStack({
         })
       }
       
-      // Don't animate card out - keep it visible
-      // Just snap back to original position
+      // Animate card out and advance to next card (mobile behavior)
+      const cardRef = cardRefs.current[artworkId]
+      if (cardRef) {
+        const finalX = currentX.current > 0 ? (screenWidth || window.innerWidth) : -(screenWidth || window.innerWidth)
+        cardRef.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out'
+        cardRef.style.transform = `translateX(${finalX}px) rotate(${currentX.current * 0.2}deg)`
+        cardRef.style.opacity = '0'
+      }
+      
+      // Reset and advance to next card
       setTimeout(() => {
         resetCard(artworkId)
         setIsAnimating(false)
-      }, 100)
+        // Advance to next card by incrementing visible card count
+        setVisibleCardCount(prev => Math.min(prev + 1, artworks.length))
+      }, 200)
     } else {
       // Snap back quickly
       resetCard(artworkId)
