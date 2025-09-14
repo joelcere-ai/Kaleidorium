@@ -13,9 +13,16 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   
+  // Debug logging
+  useEffect(() => {
+    console.log('AnimatedLoading component mounted')
+  }, [])
+  
   // Show logo for the specified duration, then complete
   useEffect(() => {
+    console.log('Setting up loading timer...')
     const timer = setTimeout(() => {
+      console.log('Loading timer completed')
       setIsComplete(true)
       if (onComplete) {
         onComplete()
@@ -26,9 +33,11 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
   }, [duration, onComplete])
 
   if (isComplete) {
+    console.log('AnimatedLoading completed, returning null')
     return null
   }
 
+  console.log('AnimatedLoading rendering...')
   return (
     <div className="fixed inset-0 bg-black z-[1000] flex items-center justify-center overflow-hidden">
       {/* Kaleidorium Logo - Optimized for mobile */}

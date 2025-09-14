@@ -35,8 +35,9 @@ function HomeContent() {
     sessionStorage.setItem('kaleidorium-loading-shown', 'true');
   };
 
-  // Show animated loading screen only on first visit in session
-  if (isAppLoading && !hasShownLoading) {
+  // Show animated loading screen (simplified for testing)
+  if (isAppLoading) {
+    console.log('Showing loading screen...')
     return <AnimatedLoading onComplete={handleLoadingComplete} />;
   }
 
