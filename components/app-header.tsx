@@ -160,6 +160,17 @@ function AppHeaderContent({
             Discover
           </Button>
           
+          {/* Filter Button - Always visible on desktop */}
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+            onClick={toggleFilters}
+          >
+            <Search className="w-4 h-4 mr-1" />
+            Filters
+            {isFiltering && <span className="ml-1 w-2 h-2 bg-blue-600 rounded-full"></span>}
+          </Button>
+          
           <Button 
             variant="ghost" 
             className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
@@ -197,18 +208,6 @@ function AppHeaderContent({
             </Button>
           </Link>
 
-          {/* Filter Button - Only show on discover page */}
-          {(view === "discover" || (!view && isSelected("discover"))) && (
-            <Button 
-              variant="ghost" 
-              className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
-              onClick={toggleFilters}
-            >
-              <Search className="w-4 h-4 mr-1" />
-              Filters
-              {isFiltering && <span className="ml-1 w-2 h-2 bg-blue-600 rounded-full"></span>}
-            </Button>
-          )}
 
           {user ? (
             <Link href="/profile">
@@ -333,7 +332,7 @@ function AppHeaderContent({
       )}
 
       {/* Filter Panel */}
-      {showFilters && (view === "discover" || (!view && isSelected("discover"))) && (
+      {showFilters && (
         <div className="border-t bg-gray-50 absolute w-full z-40 shadow-lg">
           <div className="p-6 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
