@@ -584,6 +584,30 @@ export default function MobileCardStack({
                   <User className="mr-3 h-5 w-5" />
                   Profile
                 </Button>
+                
+                {/* Footer Links */}
+                <div className="border-t border-gray-200 mt-4 pt-4">
+                  <div className="space-y-2">
+                    <button
+                      className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                      onClick={() => {
+                        window.open('/terms-of-service', '_blank');
+                        setShowMenuModal(false);
+                      }}
+                    >
+                      Terms of Service
+                    </button>
+                    <button
+                      className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                      onClick={() => {
+                        window.open('/privacy-policy', '_blank');
+                        setShowMenuModal(false);
+                      }}
+                    >
+                      Privacy & Data Policy
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1163,6 +1187,30 @@ export default function MobileCardStack({
                 <User className="mr-3 h-5 w-5" />
                 Profile
               </Button>
+              
+              {/* Footer Links */}
+              <div className="border-t border-gray-200 mt-4 pt-4">
+                <div className="space-y-2">
+                  <button
+                    className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                    onClick={() => {
+                      window.open('/terms-of-service', '_blank');
+                      setShowMenuModal(false);
+                    }}
+                  >
+                    Terms of Service
+                  </button>
+                  <button
+                    className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                    onClick={() => {
+                      window.open('/privacy-policy', '_blank');
+                      setShowMenuModal(false);
+                    }}
+                  >
+                    Privacy & Data Policy
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

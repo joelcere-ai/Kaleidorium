@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Heart, ThumbsUp, ThumbsDown } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Twitter, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
@@ -270,47 +270,58 @@ export default function CardStack({
                         </div>
                       )}
 
-                      {/* Social Media Share Buttons */}
-                      <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-                        <div className="text-center">
-                          <p className="text-sm font-sans text-gray-600 mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Share this artwork</p>
-                          <div className="flex justify-center gap-3">
-                            <button 
-                              className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-sans hover:bg-blue-700 transition-colors"
-                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                              onClick={() => {
-                                const url = encodeURIComponent(window.location.href);
-                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-                              }}
-                            >
-                              Twitter
-                            </button>
-                            <button 
-                              className="px-4 py-2 bg-blue-800 text-white rounded text-sm font-sans hover:bg-blue-900 transition-colors"
-                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                              onClick={() => {
-                                const url = encodeURIComponent(window.location.href);
-                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
-                              }}
-                            >
-                              Facebook
-                            </button>
-                            <button 
-                              className="px-4 py-2 bg-pink-600 text-white rounded text-sm font-sans hover:bg-pink-700 transition-colors"
-                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                              onClick={() => {
-                                const url = encodeURIComponent(window.location.href);
-                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                                window.open(`https://www.instagram.com/`, '_blank');
-                              }}
-                            >
-                              Instagram
-                            </button>
-                          </div>
+                    {/* Social Media Share Buttons */}
+                    <div className="py-4 px-6 bg-gray-50 rounded-xl border">
+                      <div className="text-center">
+                        <p className="text-sm font-sans text-gray-600 mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Share this artwork</p>
+                        <div className="flex justify-center gap-2">
+                          <button 
+                            className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                            onClick={() => {
+                              const url = encodeURIComponent(window.location.href);
+                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                              window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                            }}
+                            title="Share on Twitter"
+                          >
+                            <Twitter className="w-4 h-4" />
+                          </button>
+                          <button 
+                            className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                            onClick={() => {
+                              const url = encodeURIComponent(window.location.href);
+                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+                            }}
+                            title="Share on Facebook"
+                          >
+                            <Facebook className="w-4 h-4" />
+                          </button>
+                          <button 
+                            className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                            onClick={() => {
+                              const url = encodeURIComponent(window.location.href);
+                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                              window.open(`https://www.instagram.com/`, '_blank');
+                            }}
+                            title="Share on Instagram"
+                          >
+                            <Instagram className="w-4 h-4" />
+                          </button>
+                          <button 
+                            className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                            onClick={() => {
+                              const url = encodeURIComponent(window.location.href);
+                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                              window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                            }}
+                            title="Share on WhatsApp"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
+                    </div>
                     </div>
                   </div>
                 </div>
