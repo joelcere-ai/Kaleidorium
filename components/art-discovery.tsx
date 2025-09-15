@@ -1373,8 +1373,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       // Show success message
       toast({
-        title: "Thank you for your submission",
-        description: "Our curators will review your work and we will come back to you in a few days. We may ask you some questions by email as a follow-up. To manage expectations, we accept less than 5% of submissions.",
+        title: "Thank you!",
+        description: "Our curators will review your portfolio and get back to you within a few days.",
         variant: "default"
       })
       
