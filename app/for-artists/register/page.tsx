@@ -524,11 +524,11 @@ function ArtistRegisterPage() {
       <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-background">
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
-            <h1 className="text-3xl font-bold text-center mb-8">Artist Registration</h1>
+            <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold mb-3">Verify Your Invitation</h2>
-                <p className="text-gray-600 mb-4">
+                <h2 className="text-sm font-serif font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Verify Your Invitation</h2>
+                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Please enter your email and the invitation token we sent you to begin registration.
                 </p>
               </div>
@@ -569,8 +569,8 @@ function ArtistRegisterPage() {
                 </Button>
               </form>
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-                <h3 className="font-semibold text-blue-800 mb-2">Need Help?</h3>
-                <div className="text-blue-700 text-sm space-y-2">
+                <h3 className="text-sm font-serif font-bold text-blue-800 mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Need Help?</h3>
+                <div className="text-sm font-sans text-blue-700 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   <p>
                     <strong>Don't have a token?</strong> Artist registration requires an invitation from our team. 
                     Submit your portfolio on the "For Artists" page to be considered.
@@ -594,7 +594,7 @@ function ArtistRegisterPage() {
           </div>
         ) : (
           <div className="w-full max-w-2xl">
-            <h1 className="text-3xl font-bold text-center mb-8">Register as an Artist</h1>
+            <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Register as an Artist</h1>
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded">
               <p className="text-green-700 text-sm">
                 ✓ Invitation verified for: <strong>{inviteEmail}</strong>

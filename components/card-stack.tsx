@@ -169,10 +169,10 @@ export default function CardStack({
                     <div className="p-6 border-t border-gray-100">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <div className="mb-4 sm:mb-0">
-                          <h3 className="text-lg font-serif font-semibold mb-2">
+                          <h3 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
                             {artwork.title}
                           </h3>
-                          <p className="text-base text-gray-600 mb-2">by {artwork.artist}</p>
+                          <p className="text-base font-serif text-gray-600 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>by {artwork.artist}</p>
                         </div>
                       </div>
 
@@ -218,13 +218,13 @@ export default function CardStack({
                     <div className="p-6 space-y-6">
                       {/* Enhanced Description */}
                       <div className="space-y-3">
-                        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
-                        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
+                        <h3 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About this artwork</h3>
+                        <p className="text-sm font-sans text-gray-600 leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.description}</p>
                       </div>
 
                       {/* Artwork Information */}
                       <div className="space-y-3">
-                        <div className="flex items-center gap-4 text-base text-muted-foreground">
+                        <div className="flex items-center gap-4 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
                           {artwork.dimensions && <span>{artwork.dimensions}</span>}
@@ -233,7 +233,7 @@ export default function CardStack({
 
                       {/* Enhanced Tags */}
                       <div className="space-y-4">
-                        <h3 className="text-lg font-serif font-semibold text-foreground">Style & Subject</h3>
+                        <h3 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Style & Subject</h3>
                         <div className="flex flex-wrap gap-3">
                           {[artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
                             .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
@@ -244,7 +244,8 @@ export default function CardStack({
                                 <Badge 
                                   key={tag} 
                                   variant="outline" 
-                                  className="px-3 py-1 text-base font-normal border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                                  className="px-3 py-1 text-sm font-sans text-black border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                                 >
                                   {tag}
                                 </Badge>
@@ -260,7 +261,7 @@ export default function CardStack({
                         <div className="py-4 px-6 bg-gray-50 rounded-xl border">
                           {artwork.price.toLowerCase() === 'not for sale'
                             ? <div className="text-center">
-                                <span className="text-sm font-medium text-muted-foreground">Not for sale</span>
+                                <span className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Not for sale</span>
                               </div>
                             : <div className="text-center">
                                 <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
@@ -268,6 +269,48 @@ export default function CardStack({
                           }
                         </div>
                       )}
+
+                      {/* Social Media Share Buttons */}
+                      <div className="py-4 px-6 bg-gray-50 rounded-xl border">
+                        <div className="text-center">
+                          <p className="text-sm font-sans text-gray-600 mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Share this artwork</p>
+                          <div className="flex justify-center gap-3">
+                            <button 
+                              className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-sans hover:bg-blue-700 transition-colors"
+                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                              onClick={() => {
+                                const url = encodeURIComponent(window.location.href);
+                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                              }}
+                            >
+                              Twitter
+                            </button>
+                            <button 
+                              className="px-4 py-2 bg-blue-800 text-white rounded text-sm font-sans hover:bg-blue-900 transition-colors"
+                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                              onClick={() => {
+                                const url = encodeURIComponent(window.location.href);
+                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+                              }}
+                            >
+                              Facebook
+                            </button>
+                            <button 
+                              className="px-4 py-2 bg-pink-600 text-white rounded text-sm font-sans hover:bg-pink-700 transition-colors"
+                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                              onClick={() => {
+                                const url = encodeURIComponent(window.location.href);
+                                const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
+                                window.open(`https://www.instagram.com/`, '_blank');
+                              }}
+                            >
+                              Instagram
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

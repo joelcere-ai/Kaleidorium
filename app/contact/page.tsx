@@ -68,7 +68,6 @@ export default function ContactPage() {
     <div>
       <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
       <div className="container mx-auto px-4 py-12 max-w-lg">
-        <h1 className="font-serif text-2xl font-semibold mb-8">Contact</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 font-medium">Your Email</label>
@@ -104,8 +103,9 @@ export default function ContactPage() {
           </div>
           <button
             type="submit"
-            className="bg-black text-white px-4 py-2 rounded font-semibold"
+            className="bg-black text-white px-4 py-2 rounded"
             disabled={loading}
+            style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           >
             {loading ? "Sending..." : "Submit"}
           </button>

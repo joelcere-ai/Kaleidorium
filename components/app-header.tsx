@@ -65,6 +65,29 @@ function AppHeaderContent({
     return () => subscription.unsubscribe();
   }, []);
 
+  // Handle click outside filter panel to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showFilters) {
+        const filterPanel = document.querySelector('[data-filter-panel]');
+        const filterButton = document.querySelector('[data-filter-button]');
+        
+        if (filterPanel && !filterPanel.contains(event.target as Node) && 
+            filterButton && !filterButton.contains(event.target as Node)) {
+          setShowFilters(false);
+        }
+      }
+    };
+
+    if (showFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFilters]);
+
   const handleNav = (target: "discover" | "collection" | "for-artists" | "about") => {
     if (pathname === "/" && setView) {
       setView(target);
@@ -165,6 +188,7 @@ function AppHeaderContent({
             variant="ghost" 
             className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
             onClick={toggleFilters}
+            data-filter-button
           >
             <Search className="w-4 h-4 mr-1" />
             Filters
@@ -258,6 +282,7 @@ function AppHeaderContent({
               variant="ghost" 
               className={`justify-start ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
               onClick={toggleFilters}
+              data-filter-button
             >
               <Search className="w-4 h-4 mr-2" />
               Filters
@@ -331,12 +356,12 @@ function AppHeaderContent({
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="border-t bg-gray-50 absolute w-full z-40 shadow-lg">
+        <div className="border-t bg-gray-50 absolute w-full z-40 shadow-lg" data-filter-panel>
           <div className="p-6 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Style Filter */}
               <div className="relative">
-                <label className="block text-xs font-bold mb-2">Style</label>
+                <label className="block text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Style</label>
                 <Input
                   placeholder="e.g. Abstract, Portrait, Digital Art..."
                   value={filters.style}
@@ -366,7 +391,8 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-sans text-black"
+                      style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                       onClick={() => addFilterTag('style', tag)}
                     >
                       {tag}
@@ -377,7 +403,7 @@ function AppHeaderContent({
 
               {/* Subject Filter */}
               <div className="relative">
-                <label className="block text-xs font-bold mb-2">Subject</label>
+                <label className="block text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Subject</label>
                 <Input
                   placeholder="e.g. Nature, Urban, Portrait..."
                   value={filters.subject}
@@ -407,7 +433,8 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-sans text-black"
+                      style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                       onClick={() => addFilterTag('subject', tag)}
                     >
                       {tag}
@@ -418,7 +445,7 @@ function AppHeaderContent({
 
               {/* Colors Filter */}
               <div className="relative">
-                <label className="block text-xs font-bold mb-2">Colors</label>
+                <label className="block text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Colors</label>
                 <Input
                   placeholder="e.g. Black, Colorful, Warm tones..."
                   value={filters.colors}
@@ -448,7 +475,8 @@ function AppHeaderContent({
                     <Badge
                       key={tag}
                       variant="outline"
-                      className="cursor-pointer hover:bg-gray-200 text-sm font-medium"
+                      className="cursor-pointer hover:bg-gray-200 text-sm font-sans text-black"
+                      style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                       onClick={() => addFilterTag('colors', tag)}
                     >
                       {tag}

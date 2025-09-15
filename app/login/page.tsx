@@ -74,10 +74,10 @@ export default function LoginPage() {
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-semibold tracking-tight mb-2">
+            <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
               Welcome back
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
               Sign in to continue exploring and collecting art specially curated for you.
             </p>
           </div>
