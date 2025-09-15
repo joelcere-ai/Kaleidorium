@@ -2434,8 +2434,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Is the service also free for collectors?</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Is the service also free for collectors?</h3>
+                    <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                       Yes. Kaleidorium is free for collectors to browse, swipe, and discover work they love. This encourages more engagement and visibility for your art.
                     </p>
                   </div>
