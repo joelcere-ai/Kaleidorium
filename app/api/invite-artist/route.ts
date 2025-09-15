@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const { data: collectorData } = await supabase
       .from('Collectors')
       .select('role')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (collectorData?.role === 'admin') {
