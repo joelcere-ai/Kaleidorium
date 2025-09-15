@@ -896,7 +896,7 @@ export default function MobileCardStack({
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          className="text-xs font-normal cursor-pointer hover:bg-red-100"
                           onClick={() => removeFilterTag('style', tag)}
                         >
                           {tag} ×
@@ -935,7 +935,7 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
                           filters.style.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
                         }`}
                         onClick={() => addFilterTag('style', tag)}
@@ -957,7 +957,7 @@ export default function MobileCardStack({
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          className="text-xs font-normal cursor-pointer hover:bg-red-100"
                           onClick={() => removeFilterTag('subject', tag)}
                         >
                           {tag} ×
@@ -996,7 +996,7 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
                           filters.subject.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
                         }`}
                         onClick={() => addFilterTag('subject', tag)}
@@ -1018,7 +1018,7 @@ export default function MobileCardStack({
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="text-xs font-medium cursor-pointer hover:bg-red-100"
+                          className="text-xs font-normal cursor-pointer hover:bg-red-100"
                           onClick={() => removeFilterTag('colors', tag)}
                         >
                           {tag} ×
@@ -1057,7 +1057,7 @@ export default function MobileCardStack({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className={`cursor-pointer hover:bg-gray-200 text-xs font-medium ${
+                        className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
                           filters.colors.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
                         }`}
                         onClick={() => addFilterTag('colors', tag)}

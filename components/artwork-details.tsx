@@ -63,7 +63,7 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
               <Badge 
                 key={tag} 
                 variant="outline" 
-                className="px-3 py-1 text-sm font-medium border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+                className="px-3 py-1 text-sm font-normal border-gray-300 hover:bg-gray-50 transition-colors duration-200"
               >
                 {tag}
               </Badge>
