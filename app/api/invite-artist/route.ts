@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const { data: collectorData } = await supabase
       .from('Collectors')
       .select('role')
-      .eq('user_id', user.id)
+      .eq('id', user.id)
       .single();
 
     if (collectorData?.role === 'admin') {
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       dbVerified = true;
     } else {
       // Fallback to email check for legacy admin
-      isAdmin = user.email === 'joel.cere@blockmeister.com';
+      isAdmin = user.email === 'joel.cere@hypehack.sg';
       dbVerified = false;
     }
 
