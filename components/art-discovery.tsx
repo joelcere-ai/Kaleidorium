@@ -648,11 +648,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
-    toast({
-      title: "Artwork disliked",
-        description: `You disliked \"${currentArtwork.title}\" by ${currentArtwork.artist}`,
-      variant: "destructive",
-      });
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, currentArtwork.id])) {
         setShowEndOfMatchesOverlay(true);
@@ -671,11 +666,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-    toast({
-      title: "Artwork disliked",
-      description: `You disliked \"${currentArtwork.title}\" by ${currentArtwork.artist}`,
-      variant: "destructive",
-    });
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences]);
 
   // Refactored handleLike
@@ -691,10 +681,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
-    toast({
-      title: "Artwork liked",
-        description: `You liked \"${currentArtwork.title}\" by ${currentArtwork.artist}`,
-      });
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, currentArtwork.id])) {
         setShowEndOfMatchesOverlay(true);
@@ -713,10 +699,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-    toast({
-      title: "Artwork liked",
-      description: `You liked \"${currentArtwork.title}\" by ${currentArtwork.artist}`,
-    });
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences]);
 
   // Enhanced handleAddToCollection with localStorage persistence
