@@ -12,9 +12,9 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Our algorithm refines your preferences and shows you art you're more likely to love—across styles, mediums, and geographies.</p>
 
       <h2 className="text-sm font-sans font-bold text-black mb-4 mt-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Save what speaks to you</h2>
-      <ul className="list-disc pl-6 mb-4 text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-        <li>Build your own visual album</li>
-        <li>Click to explore the artist's site (we don't sell or take commissions)</li>
+      <ul className="list-disc pl-6 mb-4">
+        <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Build your own visual album</li>
+        <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Click to explore the artist's site (we don't sell or take commissions)</li>
       </ul>
 
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>No spam. No pressure. Just discovery.</p>
@@ -22,7 +22,8 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <p className="text-sm font-sans text-black mb-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
         <a
           href="/register"
-          className="underline text-blue-700 hover:text-blue-900 cursor-pointer"
+          className="underline text-blue-700 hover:text-blue-900 cursor-pointer font-bold"
+          style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           onClick={e => {
             e.preventDefault();
             window.location.href = "/register";
@@ -83,15 +84,15 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
         </div>
 
         <div>
-          <h3 className="font-semibold text-lg mb-2">How does the recommendation engine work?</h3>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How does the recommendation engine work?</h3>
+          <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
             We combine a trained AI assistant with a custom-built taxonomy and feedback loops. The more you interact, the smarter the matching becomes, helping the right collectors find the right artists.
           </p>
         </div>
 
         <div>
-          <h3 className="font-semibold text-lg mb-2">Do you accept all artwork submissions?</h3>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Do you accept all artwork submissions?</h3>
+          <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
             We review each portfolio manually. We're not looking for a specific style. We welcome diversity, from abstract to figurative, classic to digital. But we do assess for originality, craft, and commercial potential (even if niche). Our goal is to maintain a high-quality, artistically-intentional experience.
           </p>
         </div>
