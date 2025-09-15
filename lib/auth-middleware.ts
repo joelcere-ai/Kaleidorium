@@ -48,7 +48,7 @@ async function verifyUserRole(supabase: any, userId: string, userEmail: string):
     }
 
     // Final fallback: Admin email check (legacy support)
-    if (userEmail === 'joel.cere@blockmeister.com') {
+    if (userEmail === 'joel.cere@hypehack.sg') {
       secureLog('warn', 'Admin role verified by email fallback', { userEmail });
       return { role: 'admin', dbVerified: false };
     }

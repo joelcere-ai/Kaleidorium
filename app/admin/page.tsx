@@ -51,7 +51,7 @@ export default function AdminPage() {
       
       // Check if user is admin
       const user = session.user
-      const adminCheck = user.email === 'joel.cere@blockmeister.com' || 
+      const adminCheck = user.email === 'joel.cere@hypehack.sg' || 
                         user.user_metadata?.role === 'admin' ||
                         user.app_metadata?.role === 'admin'
       
