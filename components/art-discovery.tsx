@@ -2473,7 +2473,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <Menu className="w-6 h-6" />
               </Button>
               <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-              <div className="w-10 h-10"></div> {/* Spacer for centering */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setView("profile")}
+                className="text-black hover:bg-gray-100"
+              >
+                <User className="w-6 h-6" />
+              </Button>
             </div>
             
             {/* Profile Content */}
