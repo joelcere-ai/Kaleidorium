@@ -102,8 +102,9 @@ export function SecureArtworkUpload({
       setIsUploading(true);
       setUploadProgress(25);
 
-      // Upload to secure endpoint
-      const response = await fetch('/api/upload-artwork', {
+      // Upload to appropriate endpoint (simplified for temp uploads)
+      const uploadEndpoint = tempUpload ? '/api/upload-temp-artwork' : '/api/upload-artwork';
+      const response = await fetch(uploadEndpoint, {
         method: 'POST',
         body: formData,
       });
