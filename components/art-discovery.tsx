@@ -1102,6 +1102,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!mounted) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts on non-discover pages
+      if (view !== "discover") return
+      
+      // Don't trigger shortcuts when user is typing in form inputs
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return
+      }
+      
       if (e.key === "ArrowLeft") {
         handleDislike()
       } else if (e.key === "ArrowRight") {
@@ -1114,7 +1123,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [mounted, handleDislike, handleLike, handleAddToCollection])
+  }, [mounted, view, handleDislike, handleLike, handleAddToCollection])
 
   const handleRemoveFromCollection = async (id: string) => {
     if (!user) {
