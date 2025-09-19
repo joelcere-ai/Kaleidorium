@@ -36,7 +36,16 @@ interface KuratorTags {
 
 export async function POST(request: Request) {
   try {
+    console.log("[KURATOR] API called, parsing request...");
+    
     const { description, imageUrl } = await request.json();
+    
+    console.log("[KURATOR] Request parsed successfully", {
+      hasDescription: !!description,
+      imageUrlLength: imageUrl?.length || 0,
+      imageUrlStart: imageUrl?.substring(0, 100) || 'none'
+    });
+    
     if (!imageUrl) {
       return NextResponse.json(
         { error: "Image URL is required" },
