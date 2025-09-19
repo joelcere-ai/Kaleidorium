@@ -602,7 +602,7 @@ function ArtistRegisterPage() {
             </div>
             <form className="space-y-8" onSubmit={handleSubmit}>
               <div>
-                <h2 className="text-lg md:text-xl font-bold mb-4">About You</h2>
+                <h2 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About You</h2>
               
               <div className="flex justify-center mb-6">
                 <ProfilePictureUpload 
@@ -671,7 +671,7 @@ function ArtistRegisterPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-bold mb-4">About Your Artwork</h2>
+              <h2 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About Your Artwork</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Title of Artwork</label>

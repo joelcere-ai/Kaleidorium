@@ -499,10 +499,10 @@ export default function RegisterPage() {
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-lg md:text-2xl font-semibold tracking-tight mb-2">
+            <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
               Join Kaleidorium
             </h1>
-            <p className="text-sm md:text-base text-muted-foreground max-w-[600px]">
+            <p className="text-sm font-sans text-gray-600 max-w-[600px]" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
               Create an account to save your preferences, get personalized artwork recommendations,
               and build your digital art collection.
             </p>
@@ -588,7 +588,7 @@ export default function RegisterPage() {
               <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
             )}
             <div>
-              <label className="block mb-1 font-medium">What mediums of art do you enjoy the most?</label>
+              <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>What mediums of art do you enjoy the most?</label>
               <div className="flex flex-wrap gap-2 mb-1">
                 {artTypes.map((tag, idx) => (
                   <span key={tag+idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
@@ -648,7 +648,7 @@ export default function RegisterPage() {
               </div>
             </div>
             <div>
-              <label className="block mb-1 font-medium">What styles of art resonate with you the most?</label>
+              <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>What styles of art resonate with you the most?</label>
               <div className="flex flex-wrap gap-2 mb-1">
                 {artStyles.map((tag, idx) => (
                   <span key={tag+idx} className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center">
@@ -708,7 +708,7 @@ export default function RegisterPage() {
               </div>
             </div>
             <div>
-              <label className="block mb-1 font-medium">What's your typical budget when buying an artwork?</label>
+              <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>What's your typical budget when buying an artwork?</label>
               <select
                 value={artSpendingRange}
                 onChange={e => setArtSpendingRange(e.target.value as ArtSpendingRange)}
