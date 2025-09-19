@@ -5,6 +5,69 @@ import { Camera, X, Shield, AlertTriangle, Upload, FileImage, CheckCircle } from
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 
+// Helper function to resize image for AI analysis
+async function resizeImageForAI(file: File): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    if (!ctx) {
+      reject(new Error('Canvas not supported'));
+      return;
+    }
+    
+    img.onload = () => {
+      // Calculate new dimensions (max 800px on longest side for AI analysis)
+      const maxSize = 800;
+      let { width, height } = img;
+      
+      if (width > height) {
+        if (width > maxSize) {
+          height = (height * maxSize) / width;
+          width = maxSize;
+        }
+      } else {
+        if (height > maxSize) {
+          width = (width * maxSize) / height;
+          height = maxSize;
+        }
+      }
+      
+      // Set canvas size
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Draw resized image
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Convert to blob with reduced quality for AI analysis
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const resizedFile = new File([blob], `ai_${file.name}`, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(resizedFile);
+        } else {
+          reject(new Error('Failed to resize image'));
+        }
+      }, 'image/jpeg', 0.8); // 80% quality for good AI analysis
+    };
+    
+    img.onerror = () => {
+      reject(new Error('Failed to load image'));
+    };
+    
+    // Load image from file
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 interface ArtworkMetadata {
   dimensions?: { width: number; height: number };
   fileSize: number;
@@ -116,11 +179,18 @@ export function SecureArtworkUpload({
           throw new Error(`File size must be less than ${maxFileSize || 20}MB`);
         }
         
-        // For AI analysis, we need a real URL, so use the simplified API
+        // For AI analysis, we need a real URL, so resize and upload a smaller version
         try {
+          // Create a smaller version for AI analysis
+          const resizedFile = await resizeImageForAI(file);
+          const aiFormData = new FormData();
+          aiFormData.append('file', resizedFile);
+          aiFormData.append('title', formData.get('title') as string);
+          aiFormData.append('tempUpload', 'true');
+          
           const response = await fetch('/api/upload-temp-artwork', {
             method: 'POST',
-            body: formData,
+            body: aiFormData,
           });
           
           setUploadProgress(75);

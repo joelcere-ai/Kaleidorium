@@ -60,12 +60,13 @@ export async function POST(request: Request) {
 
     console.log("[KURATOR] Starting tag generation for image:", imageUrl.substring(0, 50) + "...");
 
-    // Reject data URLs - we only work with real URLs for the Kurator assistant
+    // Handle data URLs by converting them for OpenAI
+    let imageForAnalysis = imageUrl;
     if (imageUrl.startsWith('data:')) {
-      console.error("[KURATOR] Data URLs not supported - upload must provide real URL");
-      return NextResponse.json({ 
-        error: "Data URLs not supported. Please upload the image to get a real URL for Kurator analysis." 
-      }, { status: 400 });
+      console.log("[KURATOR] Processing data URL for analysis");
+      // For data URLs, we'll send them directly to OpenAI Vision API
+      // OpenAI can handle base64 images directly
+      imageForAnalysis = imageUrl;
     }
 
     // Use the Kurator assistant API for all URLs
