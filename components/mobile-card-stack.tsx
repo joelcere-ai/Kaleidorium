@@ -806,51 +806,47 @@ export default function MobileCardStack({
                 {/* Action Buttons */}
                 <div className="flex items-center justify-center gap-6">
                   <Button
-                    variant="outline"
                     size="icon"
-                    className={`w-16 h-16 rounded-full border-red-300 hover:bg-red-50 hover:border-red-400 
+                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.dislike ? 'scale-95 bg-red-50' : ''}`}
+                      ${buttonStates.dislike ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('dislike', artwork)}
                     disabled={isAnimating}
                   >
-                    <ThumbsDown className="w-7 h-7 text-red-600" />
+                    <ThumbsDown className="w-7 h-7 text-white" />
                   </Button>
                   
                   <Button
-                    variant="outline"
                     size="icon"
-                    className={`w-16 h-16 rounded-full border-blue-300 hover:bg-blue-50 hover:border-blue-400 
+                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.info ? 'scale-95 bg-blue-50' : ''}`}
+                      ${buttonStates.info ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('info', artwork)}
                     disabled={isAnimating}
                   >
-                    <Info className="w-7 h-7 text-blue-600" />
+                    <Info className="w-7 h-7 text-white" />
                   </Button>
                   
                   <Button
-                    variant="outline"
                     size="icon"
-                    className={`w-16 h-16 rounded-full border-pink-300 hover:bg-pink-50 hover:border-pink-400 
+                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.add ? 'scale-95 bg-pink-50 animate-pulse' : ''}`}
+                      ${buttonStates.add ? 'scale-95 animate-pulse' : ''}`}
                     onClick={() => handleButtonAction('add', artwork)}
                     disabled={isAnimating}
                   >
-                    <Heart className="w-7 h-7 text-pink-600" />
+                    <Heart className="w-7 h-7 text-white" />
                   </Button>
                   
                   <Button
-                    variant="outline"
                     size="icon"
-                    className={`w-16 h-16 rounded-full border-green-300 hover:bg-green-50 hover:border-green-400 
+                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.like ? 'scale-95 bg-green-50' : ''}`}
+                      ${buttonStates.like ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('like', artwork)}
                     disabled={isAnimating}
                   >
-                    <ThumbsUp className="w-7 h-7 text-green-600" />
+                    <ThumbsUp className="w-7 h-7 text-white" />
                   </Button>
                 </div>
               </div>
