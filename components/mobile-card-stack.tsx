@@ -807,7 +807,7 @@ export default function MobileCardStack({
                 <div className="flex items-center justify-center gap-6">
                   <Button
                     size="icon"
-                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
+                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.dislike ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('dislike', artwork)}
@@ -818,7 +818,7 @@ export default function MobileCardStack({
                   
                   <Button
                     size="icon"
-                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
+                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.info ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('info', artwork)}
@@ -829,7 +829,7 @@ export default function MobileCardStack({
                   
                   <Button
                     size="icon"
-                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
+                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.add ? 'scale-95 animate-pulse' : ''}`}
                     onClick={() => handleButtonAction('add', artwork)}
@@ -840,7 +840,7 @@ export default function MobileCardStack({
                   
                   <Button
                     size="icon"
-                    className={`w-16 h-16 rounded-full bg-black hover:bg-gray-800 border-0
+                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
                       transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
                       ${buttonStates.like ? 'scale-95' : ''}`}
                     onClick={() => handleButtonAction('like', artwork)}
