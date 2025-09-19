@@ -208,35 +208,35 @@ export default function CardStack({
 
                       {/* Action Buttons */}
                       <div className="flex items-center justify-center gap-4 sm:gap-8">
-                        <Button
-                          size="lg"
-                          onClick={() => handleAction('dislike', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
-                        >
-                          <ThumbsDown className="w-5 h-5 mr-2" />
-                          <span className="sm:hidden">👎</span>
-                          <span className="hidden sm:inline">Dislike</span>
-                        </Button>
-                        
-                        <Button
-                          size="lg"
-                          onClick={() => handleAction('add', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
-                        >
-                          <Heart className="w-5 h-5 mr-2" />
-                          <span className="sm:hidden">❤️</span>
-                          <span className="hidden sm:inline">Add to Collection</span>
-                        </Button>
-                        
-                        <Button
-                          size="lg"
-                          onClick={() => handleAction('like', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
-                        >
-                          <ThumbsUp className="w-5 h-5 mr-2" />
-                          <span className="sm:hidden">👍</span>
-                          <span className="hidden sm:inline">Like</span>
-                        </Button>
+            <Button
+              size="lg"
+              onClick={() => handleAction('dislike', artwork)}
+              className="flex-1 sm:flex-none min-w-[120px] border-2 border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
+            >
+              <ThumbsDown className="w-5 h-5 mr-2" />
+              <span className="sm:hidden">👎</span>
+              <span className="hidden sm:inline">Dislike</span>
+            </Button>
+            
+            <Button
+              size="lg"
+              onClick={() => handleAction('add', artwork)}
+              className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 border-2 border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
+            >
+              <Heart className="w-5 h-5 mr-2" />
+              <span className="sm:hidden">❤️</span>
+              <span className="hidden sm:inline">Add to Collection</span>
+            </Button>
+            
+            <Button
+              size="lg"
+              onClick={() => handleAction('like', artwork)}
+              className="flex-1 sm:flex-none min-w-[120px] border-2 border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
+            >
+              <ThumbsUp className="w-5 h-5 mr-2" />
+              <span className="sm:hidden">👍</span>
+              <span className="hidden sm:inline">Like</span>
+            </Button>
                       </div>
                     </div>
                   </div>

@@ -811,49 +811,49 @@ export default function MobileCardStack({
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-center gap-6">
-                  <Button
-                    size="icon"
-                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.dislike ? 'scale-95' : ''}`}
-                    onClick={() => handleButtonAction('dislike', artwork)}
-                    disabled={isAnimating}
-                  >
-                    <ThumbsDown className="w-7 h-7 text-white" />
-                  </Button>
-                  
-                  <Button
-                    size="icon"
-                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.info ? 'scale-95' : ''}`}
-                    onClick={() => handleButtonAction('info', artwork)}
-                    disabled={isAnimating}
-                  >
-                    <Info className="w-7 h-7 text-white" />
-                  </Button>
-                  
-                  <Button
-                    size="icon"
-                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.add ? 'scale-95 animate-pulse' : ''}`}
-                    onClick={() => handleButtonAction('add', artwork)}
-                    disabled={isAnimating}
-                  >
-                    <Heart className="w-7 h-7 text-white" />
-                  </Button>
-                  
-                  <Button
-                    size="icon"
-                    className={`w-16 h-16 min-w-16 min-h-16 rounded-full bg-black hover:bg-gray-800 border-0 p-0 aspect-square flex items-center justify-center
-                      transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                      ${buttonStates.like ? 'scale-95' : ''}`}
-                    onClick={() => handleButtonAction('like', artwork)}
-                    disabled={isAnimating}
-                  >
-                    <ThumbsUp className="w-7 h-7 text-white" />
-                  </Button>
+            <Button
+              size="icon"
+              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border-2 border-black bg-white hover:bg-black p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                ${buttonStates.dislike ? 'scale-95' : ''}`}
+              onClick={() => handleButtonAction('dislike', artwork)}
+              disabled={isAnimating}
+            >
+              <ThumbsDown className="w-7 h-7 text-black group-hover:text-white transition-colors duration-200" />
+            </Button>
+            
+            <Button
+              size="icon"
+              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border-2 border-black bg-white hover:bg-black p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                ${buttonStates.info ? 'scale-95' : ''}`}
+              onClick={() => handleButtonAction('info', artwork)}
+              disabled={isAnimating}
+            >
+              <Info className="w-7 h-7 text-black group-hover:text-white transition-colors duration-200" />
+            </Button>
+            
+            <Button
+              size="icon"
+              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border-2 border-black bg-white hover:bg-black p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                ${buttonStates.add ? 'scale-95 animate-pulse' : ''}`}
+              onClick={() => handleButtonAction('add', artwork)}
+              disabled={isAnimating}
+            >
+              <Heart className="w-7 h-7 text-black group-hover:text-white transition-colors duration-200" />
+            </Button>
+            
+            <Button
+              size="icon"
+              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border-2 border-black bg-white hover:bg-black p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+                ${buttonStates.like ? 'scale-95' : ''}`}
+              onClick={() => handleButtonAction('like', artwork)}
+              disabled={isAnimating}
+            >
+              <ThumbsUp className="w-7 h-7 text-black group-hover:text-white transition-colors duration-200" />
+            </Button>
                 </div>
               </div>
             </div>
