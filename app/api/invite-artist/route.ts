@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { randomUUID } from 'crypto';
 import { verifyAdmin } from '@/lib/auth-middleware';
@@ -96,9 +97,15 @@ export async function POST(req: NextRequest) {
       return SecureErrors.validation('Email is required', { field: 'email' });
     }
 
+    // Create admin client with service role key for database operations
+    const adminSupabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     // Check if email is already registered as an artist
     try {
-      const { data: existingArtist, error: artistCheckError } = await supabase
+      const { data: existingArtist, error: artistCheckError } = await adminSupabase
         .from('Artists')
         .select('email')
         .eq('email', email.toLowerCase().trim())
@@ -117,7 +124,7 @@ export async function POST(req: NextRequest) {
 
     // Check if email already has a pending invitation
     try {
-      const { data: existingInvite, error: inviteCheckError } = await supabase
+      const { data: existingInvite, error: inviteCheckError } = await adminSupabase
         .from('Invitations')
         .select('email, used, created_at')
         .eq('email', email.toLowerCase().trim())
@@ -155,10 +162,10 @@ export async function POST(req: NextRequest) {
       return SecureErrors.server({ operation: 'token_generation' });
     }
     
-    // Insert into invitations table
+    // Insert into invitations table using service role key to bypass RLS
     try {
-      const { data: insertData, error: insertError } = await supabase.from('Invitations').insert({
-        email,
+      const { data: insertData, error: insertError } = await adminSupabase.from('Invitations').insert({
+        email: email.toLowerCase().trim(),
         token: inviteToken,
         created_at: new Date().toISOString()
       });
