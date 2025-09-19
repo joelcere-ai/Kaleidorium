@@ -116,35 +116,101 @@ export function SecureArtworkUpload({
           throw new Error(`File size must be less than ${maxFileSize || 20}MB`);
         }
         
-        // Convert to data URL for immediate use
-        const arrayBuffer = await file.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
-        
-        setUploadProgress(100);
-        setSecurityStatus('safe');
-        
-        const tempMetadata = {
-          dimensions: { width: 1920, height: 1080 },
-          fileSize: file.size,
-          format: file.type,
-          hasEXIF: false,
-          securityFlags: []
-        };
-        
-        setLastUploadMetadata(tempMetadata);
-        
-        // Return client-side processed image
-        onArtworkSelect({
-          url: dataUrl,
-          metadata: tempMetadata,
-          tempFile: {
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            dataUrl: dataUrl
+        // For AI analysis, we need a real URL, so use the simplified API
+        try {
+          const response = await fetch('/api/upload-temp-artwork', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          setUploadProgress(75);
+          
+          if (response.ok) {
+            const result = await response.json();
+            setUploadProgress(100);
+            setSecurityStatus('safe');
+            
+            const tempMetadata = {
+              dimensions: { width: 1920, height: 1080 },
+              fileSize: file.size,
+              format: file.type,
+              hasEXIF: false,
+              securityFlags: []
+            };
+            
+            setLastUploadMetadata(tempMetadata);
+            
+            // Return server URL for AI analysis
+            onArtworkSelect({
+              url: result.url,
+              metadata: tempMetadata,
+              tempFile: {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                dataUrl: result.url
+              }
+            });
+          } else {
+            // Fallback to client-side processing if server fails
+            const arrayBuffer = await file.arrayBuffer();
+            const base64 = Buffer.from(arrayBuffer).toString('base64');
+            const dataUrl = `data:${file.type};base64,${base64}`;
+            
+            setUploadProgress(100);
+            setSecurityStatus('safe');
+            
+            const tempMetadata = {
+              dimensions: { width: 1920, height: 1080 },
+              fileSize: file.size,
+              format: file.type,
+              hasEXIF: false,
+              securityFlags: []
+            };
+            
+            setLastUploadMetadata(tempMetadata);
+            
+            onArtworkSelect({
+              url: dataUrl,
+              metadata: tempMetadata,
+              tempFile: {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                dataUrl: dataUrl
+              }
+            });
           }
-        });
+        } catch (uploadError) {
+          // Final fallback to client-side processing
+          const arrayBuffer = await file.arrayBuffer();
+          const base64 = Buffer.from(arrayBuffer).toString('base64');
+          const dataUrl = `data:${file.type};base64,${base64}`;
+          
+          setUploadProgress(100);
+          setSecurityStatus('safe');
+          
+          const tempMetadata = {
+            dimensions: { width: 1920, height: 1080 },
+            fileSize: file.size,
+            format: file.type,
+            hasEXIF: false,
+            securityFlags: []
+          };
+          
+          setLastUploadMetadata(tempMetadata);
+          
+          onArtworkSelect({
+            url: dataUrl,
+            metadata: tempMetadata,
+            tempFile: {
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              dataUrl: dataUrl
+            }
+          });
+        }
         
       } else {
         // For permanent uploads, use the API endpoint
