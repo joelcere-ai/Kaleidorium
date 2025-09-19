@@ -449,7 +449,6 @@ export default function MobileCardStack({
       <div className={getContainerClasses()}>
         {/* Header */}
         <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
           <Button
             variant="ghost"
             size="icon"
@@ -457,6 +456,15 @@ export default function MobileCardStack({
             className="text-black hover:bg-gray-100"
           >
             <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setView("profile")}
+            className="text-black hover:bg-gray-100"
+          >
+            <User className="w-6 h-6" />
           </Button>
         </div>
 
@@ -585,18 +593,6 @@ export default function MobileCardStack({
                   <Mail className="mr-3 h-5 w-5" />
                   Contact
                 </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
-                    setView("profile")
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <User className="mr-3 h-5 w-5" />
-                  Profile
-                </Button>
-                
                 {/* Footer Links */}
                 <div className="border-t border-gray-200 mt-4 pt-4">
                   <div className="space-y-2">
@@ -724,7 +720,6 @@ export default function MobileCardStack({
     <div className={getContainerClasses()}>
       {/* Header */}
       <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 z-10">
-        <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
         <Button
           variant="ghost"
           size="icon"
@@ -732,6 +727,15 @@ export default function MobileCardStack({
           className="text-black hover:bg-gray-100"
         >
           <Menu className="w-6 h-6" />
+        </Button>
+        <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setView("profile")}
+          className="text-black hover:bg-gray-100"
+        >
+          <User className="w-6 h-6" />
         </Button>
       </div>
 
@@ -1184,18 +1188,6 @@ export default function MobileCardStack({
                 <Mail className="mr-3 h-5 w-5" />
                 Contact
               </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  setView("profile")
-                  setShowMenuModal(false)
-                }}
-              >
-                <User className="mr-3 h-5 w-5" />
-                Profile
-              </Button>
-              
               {/* Footer Links */}
               <div className="border-t border-gray-200 mt-4 pt-4">
                 <div className="space-y-2">
