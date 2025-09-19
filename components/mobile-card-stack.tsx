@@ -8,6 +8,24 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 
+// Helper function to format dimensions with units
+const formatDimensions = (dimensions: string): string => {
+  if (!dimensions) return '';
+  
+  // If dimensions already include units (contains letters), return as is
+  if (/[a-zA-Z]/.test(dimensions)) {
+    return dimensions;
+  }
+  
+  // If dimensions are just numbers and 'x' (like "1920x1080"), add default unit
+  if (/^\d+x\d+$/.test(dimensions)) {
+    return `${dimensions} px`;
+  }
+  
+  // Return as is for any other format
+  return dimensions;
+};
+
 // Custom X (formerly Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
   <svg
@@ -661,7 +679,7 @@ export default function MobileCardStack({
                   {selectedArtwork.dimensions && (
                     <div>
                       <span className="font-semibold text-black">Dimensions:</span>
-                      <span className="ml-2 text-gray-700">{selectedArtwork.dimensions}</span>
+                      <span className="ml-2 text-gray-700">{formatDimensions(selectedArtwork.dimensions)}</span>
                     </div>
                   )}
                   {selectedArtwork.description && (

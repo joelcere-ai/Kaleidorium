@@ -8,6 +8,24 @@ import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
 
+// Helper function to format dimensions with units
+const formatDimensions = (dimensions: string): string => {
+  if (!dimensions) return '';
+  
+  // If dimensions already include units (contains letters), return as is
+  if (/[a-zA-Z]/.test(dimensions)) {
+    return dimensions;
+  }
+  
+  // If dimensions are just numbers and 'x' (like "1920x1080"), add default unit
+  if (/^\d+x\d+$/.test(dimensions)) {
+    return `${dimensions} px`;
+  }
+  
+  // Return as is for any other format
+  return dimensions;
+};
+
 // Custom X (formerly Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
   <svg
@@ -237,7 +255,7 @@ export default function CardStack({
                         <div className="flex items-center gap-4 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
-                          {artwork.dimensions && <span>{artwork.dimensions}</span>}
+                          {artwork.dimensions && <span>{formatDimensions(artwork.dimensions)}</span>}
                         </div>
                       </div>
 
