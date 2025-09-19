@@ -96,6 +96,51 @@ export async function POST(req: NextRequest) {
       return SecureErrors.validation('Email is required', { field: 'email' });
     }
 
+    // Check if email is already registered as an artist
+    try {
+      const { data: existingArtist, error: artistCheckError } = await supabase
+        .from('Artists')
+        .select('email')
+        .eq('email', email.toLowerCase().trim())
+        .single();
+
+      if (!artistCheckError && existingArtist) {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'This email address is already registered as an artist. Artists can only be invited once.' 
+        }, { status: 400 });
+      }
+    } catch (err) {
+      // Continue if table doesn't exist or other non-critical error
+      secureLog('warn', 'Could not check existing artists', { email, error: err });
+    }
+
+    // Check if email already has a pending invitation
+    try {
+      const { data: existingInvite, error: inviteCheckError } = await supabase
+        .from('Invitations')
+        .select('email, used, created_at')
+        .eq('email', email.toLowerCase().trim())
+        .eq('used', false)
+        .single();
+
+      if (!inviteCheckError && existingInvite) {
+        const inviteDate = new Date(existingInvite.created_at);
+        const now = new Date();
+        const hoursDiff = (now.getTime() - inviteDate.getTime()) / (1000 * 60 * 60);
+        
+        if (hoursDiff <= 36) { // Invitation still valid
+          return NextResponse.json({ 
+            success: false, 
+            error: 'This email address already has a pending invitation. Please check your email or wait for the current invitation to expire.' 
+          }, { status: 400 });
+        }
+      }
+    } catch (err) {
+      // Continue if check fails
+      secureLog('warn', 'Could not check existing invitations', { email, error: err });
+    }
+
     // Use the already initialized authenticated client
     
     // Generate a secure random token
@@ -125,6 +170,15 @@ export async function POST(req: NextRequest) {
           adminEmail: user.email,
           dbVerified
         });
+        
+        // Handle specific database errors with user-friendly messages
+        if (insertError.code === '23505') { // Unique constraint violation
+          return NextResponse.json({ 
+            success: false, 
+            error: 'An invitation for this email address already exists. Please check existing invitations or wait for the current one to expire.' 
+          }, { status: 400 });
+        }
+        
         return handleSupabaseError(insertError, 'invitation_insert');
       }
       
@@ -139,7 +193,12 @@ export async function POST(req: NextRequest) {
         email,
         adminEmail: user.email 
       });
-      return handleSupabaseError(err, 'invitation_insert');
+      
+      // Return a more specific error message
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Database error occurred while creating invitation. Please try again or contact support.' 
+      }, { status: 500 });
     }
     
     // Return token for admin to copy
