@@ -111,8 +111,9 @@ export function SecureArtworkUpload({
           throw new Error('Please upload an image file');
         }
         
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error('File size must be less than 5MB');
+        const maxSizeBytes = (maxFileSize || 20) * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
+          throw new Error(`File size must be less than ${maxFileSize || 20}MB`);
         }
         
         // Convert to data URL for immediate use

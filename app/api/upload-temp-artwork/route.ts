@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // File size check (5MB for temp uploads)
-    if (file.size > 5 * 1024 * 1024) {
+    // File size check (10MB for temp uploads)
+    if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json({
         success: false,
-        error: 'File size must be less than 5MB'
+        error: 'File size must be less than 10MB'
       }, { status: 400 });
     }
 
