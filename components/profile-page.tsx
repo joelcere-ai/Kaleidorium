@@ -797,7 +797,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
   if (!user) {
     return (
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+      <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center" style={{minHeight: 'calc(100vh - 80px)'}}>
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Access Your Profile</CardTitle>
