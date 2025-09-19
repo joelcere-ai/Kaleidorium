@@ -524,11 +524,11 @@ function ArtistRegisterPage() {
       <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-background">
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
-            <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
+            <h1 className="text-sm font-serif font-bold text-black text-center mb-8" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="text-center mb-6">
-                <h2 className="text-sm font-serif font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Verify Your Invitation</h2>
-                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <h2 className="text-xs font-serif font-bold text-black mb-3" style={{fontSize: '12px', fontFamily: 'Times New Roman, serif'}}>Verify Your Invitation</h2>
+                <p className="text-xs font-sans text-black mb-4" style={{fontSize: '11px', fontFamily: 'Arial, sans-serif'}}>
                   Please enter your email and the invitation token we sent you to begin registration.
                 </p>
               </div>
@@ -602,7 +602,7 @@ function ArtistRegisterPage() {
             </div>
             <form className="space-y-8" onSubmit={handleSubmit}>
               <div>
-                <h2 className="text-xl font-bold mb-4">About You</h2>
+                <h2 className="text-lg md:text-xl font-bold mb-4">About You</h2>
               
               <div className="flex justify-center mb-6">
                 <ProfilePictureUpload 

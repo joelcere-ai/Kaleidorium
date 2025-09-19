@@ -2116,35 +2116,35 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <div className="flex-1 overflow-y-auto">
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
-                  <h1 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Be Discovered. Not Buried.</h1>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <h1 className="text-sm font-serif font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Be Discovered. Not Buried.</h1>
+                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
                   </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                  <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-xs font-sans font-bold text-black mb-2" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
+                  <ul className="text-xs font-sans text-black mb-4 space-y-2" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     <li>• Upload your artwork and description</li>
                     <li>• Our algorithm shows it to collectors whose tastes match your style</li>
                     <li>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
                     <li>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
                   </p>
                 </div>
 
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
-                    <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                    <CardTitle className="text-sm font-serif font-bold text-black" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
+                    <CardDescription className="text-xs font-sans text-black" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
                       Please fill out the form below to submit your portfolio for review.
                     </CardDescription>
                   </CardHeader>

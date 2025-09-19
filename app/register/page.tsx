@@ -499,10 +499,10 @@ export default function RegisterPage() {
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-semibold tracking-tight mb-2">
+            <h1 className="text-lg md:text-2xl font-semibold tracking-tight mb-2">
               Join Kaleidorium
             </h1>
-            <p className="text-muted-foreground max-w-[600px]">
+            <p className="text-sm md:text-base text-muted-foreground max-w-[600px]">
               Create an account to save your preferences, get personalized artwork recommendations,
               and build your digital art collection.
             </p>
