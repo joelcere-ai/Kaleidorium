@@ -1,12 +1,24 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
+
+// Custom X (formerly Twitter) icon component
+const XIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+)
 
 interface MobileCardStackProps {
   artworks: Artwork[]
@@ -1310,6 +1322,59 @@ export default function MobileCardStack({
                   >
                     {selectedArtwork.price === 'Not for sale' ? 'Not for sale' : selectedArtwork.price}
                   </Button>
+                </div>
+                
+                {/* Social Media Share Buttons */}
+                <div className="pt-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
+                    <div className="flex justify-center gap-2">
+                      <button 
+                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                        }}
+                        title="Share on X"
+                      >
+                        <XIcon className="w-4 h-4" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+                        }}
+                        title="Share on Facebook"
+                      >
+                        <Facebook className="w-4 h-4" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://www.instagram.com/`, '_blank');
+                        }}
+                        title="Share on Instagram"
+                      >
+                        <Instagram className="w-4 h-4" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                        }}
+                        title="Share on WhatsApp"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
