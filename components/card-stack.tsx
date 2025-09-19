@@ -191,10 +191,9 @@ export default function CardStack({
                       {/* Action Buttons */}
                       <div className="flex items-center justify-center gap-4 sm:gap-8">
                         <Button
-                          variant="outline"
                           size="lg"
                           onClick={() => handleAction('dislike', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] border-red-200 hover:bg-red-50 hover:text-red-600 hover:scale-105 transition-all duration-200"
+                          className="flex-1 sm:flex-none min-w-[120px] bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
                         >
                           <ThumbsDown className="w-5 h-5 mr-2" />
                           <span className="sm:hidden">👎</span>
@@ -204,7 +203,7 @@ export default function CardStack({
                         <Button
                           size="lg"
                           onClick={() => handleAction('add', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 hover:scale-105 transition-all duration-200"
+                          className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
                         >
                           <Heart className="w-5 h-5 mr-2" />
                           <span className="sm:hidden">❤️</span>
@@ -212,10 +211,9 @@ export default function CardStack({
                         </Button>
                         
                         <Button
-                          variant="outline"
                           size="lg"
                           onClick={() => handleAction('like', artwork)}
-                          className="flex-1 sm:flex-none min-w-[120px] border-green-200 hover:bg-green-50 hover:text-green-600 hover:scale-105 transition-all duration-200"
+                          className="flex-1 sm:flex-none min-w-[120px] bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
                         >
                           <ThumbsUp className="w-5 h-5 mr-2" />
                           <span className="sm:hidden">👍</span>
@@ -273,7 +271,22 @@ export default function CardStack({
                         <div className="py-4 px-6 bg-gray-50 rounded-xl border">
                           {artwork.price.toLowerCase() === 'not for sale'
                             ? <div className="text-center">
-                                <span className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Not for sale</span>
+                                <Button
+                                  size="lg"
+                                  onClick={() => {
+                                    if (artwork.link) {
+                                      window.open(artwork.link, '_blank');
+                                    }
+                                  }}
+                                  className={`min-w-[120px] ${
+                                    artwork.link 
+                                      ? 'bg-black text-white hover:bg-gray-800' 
+                                      : 'bg-gray-200 text-black hover:bg-gray-300'
+                                  } transition-all duration-200`}
+                                  style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                                >
+                                  Not for sale
+                                </Button>
                               </div>
                             : <div className="text-center">
                                 <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
