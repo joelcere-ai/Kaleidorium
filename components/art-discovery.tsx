@@ -19,6 +19,9 @@ import { AppHeader, type FilterState } from "@/components/app-header"
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
 import { ImageOverlay } from "@/components/image-overlay"
 import { ProfilePage } from "@/components/profile-page"
+import { WelcomeBackOverlay } from "@/components/welcome-back-overlay"
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt"
+import { useUserEngagement } from "@/hooks/use-user-engagement"
 import { supabase } from "@/lib/supabase"
 import type { Artwork } from "@/types/artwork"
 import { v4 as uuidv4 } from 'uuid'
@@ -57,6 +60,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [user, setUser] = useState<{ id: string } | null>(null)
   const { toast } = useToast()
   const router = useRouter()
+  
+  // User engagement features
+  const {
+    showWelcomeBack,
+    newArtworkCount,
+    showInstallPrompt,
+    dismissWelcomeBack,
+    dismissInstallPrompt,
+    loading: engagementLoading
+  } = useUserEngagement()
 
   // State for image overlay
   const [overlayImage, setOverlayImage] = useState<{ url: string; alt: string } | null>(null)
@@ -2587,6 +2600,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           </div>
         </div>
       )}
+
+      {/* User Engagement Overlays */}
+      <WelcomeBackOverlay
+        show={showWelcomeBack}
+        newArtworkCount={newArtworkCount}
+        onDismiss={dismissWelcomeBack}
+      />
+      
+      <PWAInstallPrompt
+        show={showInstallPrompt}
+        onDismiss={dismissInstallPrompt}
+      />
     </div>
   )
 }

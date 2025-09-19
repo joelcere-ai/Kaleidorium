@@ -10,6 +10,22 @@
   "scope": "/",
   "lang": "en",
   "categories": ["art", "lifestyle", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Discover Art",
+      "short_name": "Discover",
+      "description": "Start discovering new artwork",
+      "url": "/?view=discover",
+      "icons": [{"src": "/android-chrome-192x192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "My Collection", 
+      "short_name": "Collection",
+      "description": "View your art collection",
+      "url": "/?view=collection",
+      "icons": [{"src": "/android-chrome-192x192.png", "sizes": "192x192"}]
+    }
+  ],
   "icons": [
     {
       "src": "/favicon-32x32.png",
