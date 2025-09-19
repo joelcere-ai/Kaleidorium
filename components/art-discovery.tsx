@@ -2459,7 +2459,32 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         )
       ) : (
         // Profile view
-        <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
+        isMobile || isTablet ? (
+          // Mobile Profile Page with Header
+          <div className="fixed inset-0 bg-white z-50 flex flex-col">
+            {/* Mobile Header */}
+            <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowMenuModal(true)}
+                className="text-black hover:bg-gray-100"
+              >
+                <Menu className="w-6 h-6" />
+              </Button>
+              <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+              <div className="w-10 h-10"></div> {/* Spacer for centering */}
+            </div>
+            
+            {/* Profile Content */}
+            <div className="flex-1 overflow-y-auto">
+              <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
+            </div>
+          </div>
+        ) : (
+          // Desktop Profile Page
+          <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
+        )
       )}
 
       {/* Mobile Menu Modal for About Page */}
