@@ -109,21 +109,21 @@ export default function CardStack({
       case 'like':
         onLike(artwork)
         toast({
-          title: "Liked! 👍",
+          title: "Liked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'dislike':
         onDislike(artwork)
         toast({
-          title: "Disliked! 👎",
+          title: "Disliked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'add':
         onAddToCollection(artwork)
         toast({
-          title: "Added to Collection! ❤️",
+          title: "Added to Collection!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break

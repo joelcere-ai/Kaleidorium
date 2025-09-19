@@ -331,14 +331,14 @@ export default function MobileCardStack({
         // Swipe right - Like
         onLike(artwork)
         toast({
-          title: "Liked! 👍",
+          title: "Liked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
       } else {
         // Swipe left - Dislike
         onDislike(artwork)
         toast({
-          title: "Disliked! 👎",
+          title: "Disliked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
       }
@@ -401,21 +401,21 @@ export default function MobileCardStack({
       case 'like':
         onLike(artwork)
         toast({
-          title: "Liked! 👍",
+          title: "Liked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'dislike':
         onDislike(artwork)
         toast({
-          title: "Disliked! 👎",
+          title: "Disliked!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'add':
         onAddToCollection(artwork)
         toast({
-          title: "Added to Collection! ❤️",
+          title: "Added to Collection!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
@@ -780,22 +780,6 @@ export default function MobileCardStack({
                   </div>
                 </div>
 
-                {/* Swipe Overlays */}
-                {swipeDirection === 'right' && (
-                  <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                    <div className="bg-green-500 rounded-full p-4">
-                      <ThumbsUp className="w-8 h-8 text-white fill-white" />
-                    </div>
-                  </div>
-                )}
-                
-                {swipeDirection === 'left' && (
-                  <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
-                    <div className="bg-red-500 rounded-full p-4">
-                      <ThumbsDown className="w-8 h-8 text-white fill-white" />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Simplified Artwork Information */}
