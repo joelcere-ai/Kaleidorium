@@ -20,7 +20,7 @@ function ProfileContent() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
       <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
     </div>

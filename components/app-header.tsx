@@ -165,7 +165,7 @@ function AppHeaderContent({
   };
 
   return (
-    <header className="border-b bg-background relative app-header">
+    <header className="border-b bg-background relative app-header z-10">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
         <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
