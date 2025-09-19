@@ -524,11 +524,11 @@ function ArtistRegisterPage() {
       <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-background">
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
-            <h1 className="text-sm font-serif font-bold text-black text-center mb-8" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
+            <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
             <div className="bg-white p-8 rounded-lg shadow-md">
               <div className="text-center mb-6">
-                <h2 className="text-xs font-serif font-bold text-black mb-3" style={{fontSize: '12px', fontFamily: 'Times New Roman, serif'}}>Verify Your Invitation</h2>
-                <p className="text-xs font-sans text-black mb-4" style={{fontSize: '11px', fontFamily: 'Arial, sans-serif'}}>
+                <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Verify Your Invitation</h2>
+                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Please enter your email and the invitation token we sent you to begin registration.
                 </p>
               </div>
@@ -569,14 +569,14 @@ function ArtistRegisterPage() {
                 </Button>
               </form>
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-                <h3 className="text-sm font-serif font-bold text-blue-800 mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Need Help?</h3>
+                <h3 className="text-base font-serif font-bold text-blue-800 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Need Help?</h3>
                 <div className="text-sm font-sans text-blue-700 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   <p>
-                    <strong>Don't have a token?</strong> Artist registration requires an invitation from our team. 
+                    <span className="font-bold">Don't have a token?</span> Artist registration requires an invitation from our team. 
                     Submit your portfolio on the "For Artists" page to be considered.
                   </p>
                   <p>
-                    <strong>Lost your token?</strong> Check your email (including spam folder) for the invitation message, 
+                    <span className="font-bold">Lost your token?</span> Check your email (including spam folder) for the invitation message, 
                     or contact us for assistance.
                   </p>
                 </div>
