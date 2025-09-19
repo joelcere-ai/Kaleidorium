@@ -1,12 +1,24 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Heart, ThumbsUp, ThumbsDown, Twitter, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
+
+// Custom X (formerly Twitter) icon component
+const XIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+)
 
 interface CardStackProps {
   artworks: Artwork[]
@@ -282,9 +294,9 @@ export default function CardStack({
                               const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
                               window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
                             }}
-                            title="Share on Twitter"
+                            title="Share on X"
                           >
-                            <Twitter className="w-4 h-4" />
+                            <XIcon className="w-4 h-4" />
                           </button>
                           <button 
                             className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
