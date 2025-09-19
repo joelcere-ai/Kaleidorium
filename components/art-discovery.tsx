@@ -1669,7 +1669,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4">
               <div className="mb-6 flex flex-col justify-between items-start gap-4">
-                <h2 className="font-serif text-[28px] leading-tight">My Collection ({(user ? dbCollection : collection).length})</h2>
+                <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
                 <Button onClick={() => setView("discover")}>Return to Discovery</Button>
               </div>
 
@@ -1857,7 +1857,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop Collection Page
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="font-serif text-[28px] leading-tight">My Collection ({(user ? dbCollection : collection).length})</h2>
+              <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
               <Button onClick={() => setView("discover")}>Return to Discovery</Button>
             </div>
 
@@ -2125,27 +2125,27 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <div className="flex-1 overflow-y-auto">
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
-                  <h1 className="text-sm font-serif font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Be Discovered. Not Buried.</h1>
-                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <h1 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Be Discovered. Not Buried.</h1>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
-                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
                   </p>
-                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="text-xs font-sans font-bold text-black mb-2" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                  <ul className="text-xs font-sans text-black mb-4 space-y-2" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
+                  <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <li>• Upload your artwork and description</li>
                     <li>• Our algorithm shows it to collectors whose tastes match your style</li>
                     <li>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
                     <li>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
-                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
-                  <p className="text-xs font-sans text-black mb-4" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
                   </p>
                 </div>
@@ -2246,27 +2246,27 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop For Artists Page
           <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">
-                  <h1 className="text-lg font-semibold mb-4">Be Discovered. Not Buried.</h1>
-                  <p className="text-base mb-4">
+                  <h1 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Be Discovered. Not Buried.</h1>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
-                  <p className="text-base mb-4">
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
                   </p>
-                  <p className="text-base mb-4">
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="text-base font-semibold mb-2">Here's how it works:</p>
-                  <ul className="text-base mb-4 space-y-2">
+                  <p className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
+                  <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <li>• Upload your artwork and description</li>
                     <li>• Our algorithm shows it to collectors whose tastes match your style</li>
                     <li>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
                     <li>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
-                  <p className="text-base mb-4">
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
-                  <p className="text-base mb-4">
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
                   </p>
             </div>

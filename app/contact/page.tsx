@@ -70,7 +70,7 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 py-12 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">Your Email</label>
+            <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Email</label>
             <input
               type="email"
               className="border rounded px-3 py-2 w-full"
@@ -81,7 +81,7 @@ export default function ContactPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Subject</label>
+            <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Subject</label>
             <input
               className="border rounded px-3 py-2 w-full"
               value={subject}
@@ -91,7 +91,7 @@ export default function ContactPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium">Message</label>
+            <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Message</label>
             <textarea
               className="border rounded px-3 py-2 w-full"
               value={message}
