@@ -909,7 +909,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       disabled={isUploading}
                     />
                 </div>
-                <h2 className="text-xl font-semibold">{collector?.username || user?.email}</h2>
+                <h2 className="text-lg font-semibold">{collector?.username || user?.email}</h2>
                 <p className="text-sm text-muted-foreground">{isArtist ? 'Artist' : (collector?.role || 'Collector')}</p>
                 <Button variant="outline" className="mt-4 w-full" onClick={handleLogout}>
                   Logout
@@ -931,10 +931,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Your Art Preferences</CardTitle>
-                    <CardDescription>AI-generated insights based on your collection</CardDescription>
+                    <CardTitle className="text-lg">Your Art Preferences</CardTitle>
                   </div>
-                  <Button variant="outline" size="sm" onClick={generateInsights} disabled={isGenerating}>
+                  <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
                     <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
                     Refresh Insights
                   </Button>
@@ -1124,7 +1123,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
             <TabsContent value="account" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Personal Information</CardTitle>
+                  <CardTitle className="text-lg">Personal Information</CardTitle>
                   <CardDescription>Update your account details here.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1296,7 +1295,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
               <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle>Account Management</CardTitle>
+                  <CardTitle className="text-lg">Account Management</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <div className="border border-red-500 bg-red-50 rounded p-4">
