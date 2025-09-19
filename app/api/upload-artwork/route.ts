@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { Database } from '@/lib/supabase-types';
 import { uploadRateLimit } from '@/lib/rate-limit';
@@ -36,6 +37,12 @@ export async function POST(request: NextRequest) {
     
     let userId: string;
     const supabase = createRouteHandlerClient<Database>({ cookies });
+    
+    // For temporary uploads during registration, use service role key to bypass RLS
+    const adminSupabase = tempUpload ? createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    ) : supabase;
 
     if (!file) {
       return SecureErrors.validation('No artwork file provided');
@@ -121,7 +128,7 @@ export async function POST(request: NextRequest) {
         const fileName = `temp/temp-${Date.now()}-${secureValidation.sanitizedFile.name}`;
         const arrayBuffer = await secureValidation.sanitizedFile.arrayBuffer();
         
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await adminSupabase.storage
           .from('artwork-images')
           .upload(fileName, arrayBuffer, {
             contentType: secureValidation.sanitizedFile.type,
@@ -151,7 +158,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Get public URL if storage worked
-        const { data: publicUrlData } = supabase.storage
+        const { data: publicUrlData } = adminSupabase.storage
           .from('artwork-images')
           .getPublicUrl(fileName);
 
@@ -194,7 +201,7 @@ export async function POST(request: NextRequest) {
 
     // PERMANENT UPLOAD LOGIC (only for authenticated artists)
     const uploadResult = await uploadSecureArtwork(
-      supabase, 
+      adminSupabase, 
       userId, 
       secureValidation.sanitizedFile, 
       titleValidation.sanitized!
