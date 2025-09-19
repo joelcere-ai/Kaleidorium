@@ -45,17 +45,26 @@ export async function POST(request: NextRequest) {
     ) : supabase;
 
     if (!file) {
-      return SecureErrors.validation('No artwork file provided');
+      return NextResponse.json({
+        success: false,
+        error: 'No artwork file provided'
+      }, { status: 400 });
     }
 
     if (!artworkTitle) {
-      return SecureErrors.validation('Artwork title is required');
+      return NextResponse.json({
+        success: false,
+        error: 'Artwork title is required'
+      }, { status: 400 });
     }
 
     // Validate artwork title
     const titleValidation = validateName(artworkTitle, 'Artwork title');
     if (!titleValidation.valid) {
-      return SecureErrors.validation(titleValidation.error || 'Invalid artwork title');
+      return NextResponse.json({
+        success: false,
+        error: titleValidation.error || 'Invalid artwork title'
+      }, { status: 400 });
     }
 
     // SIMPLIFIED AUTHENTICATION LOGIC
@@ -95,12 +104,12 @@ export async function POST(request: NextRequest) {
     let secureValidation;
     
     if (tempUpload) {
-      // Use simple validation for temporary uploads
-      secureValidation = await validateProfilePictureOnly(file);
-      logger.info('Using simple validation for temp upload');
+      // Use minimal validation for temporary uploads during registration
+      secureValidation = await validateFileUploadSimple(file, true);
+      logger.info('Using minimal validation for temp upload');
     } else {
       // Use comprehensive validation for permanent uploads
-      secureValidation = await validateFileUploadSimple(file, false);
+      secureValidation = await validateSecureArtworkUpload(file, false);
       logger.info('Using comprehensive validation for permanent upload');
     }
     
@@ -111,7 +120,10 @@ export async function POST(request: NextRequest) {
         artworkTitle: titleValidation.sanitized,
         error: secureValidation.error
       });
-      return SecureErrors.validation(secureValidation.error || 'Artwork validation failed');
+      return NextResponse.json({
+        success: false,
+        error: secureValidation.error || 'Artwork validation failed'
+      }, { status: 400 });
     }
 
     // HANDLE TEMPORARY VS PERMANENT UPLOADS
