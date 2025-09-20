@@ -303,7 +303,7 @@ export default function CardStack({
                                   } transition-all duration-200`}
                                   style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                                 >
-                                  Not for sale
+                                  {artwork.link ? 'View on artist\'s website' : 'Not for sale'}
                                 </Button>
                               </div>
                             : <div className="text-center">

@@ -1318,7 +1318,10 @@ export default function MobileCardStack({
                       }
                     }}
                   >
-                    {selectedArtwork.price === 'Not for sale' ? 'Not for sale' : selectedArtwork.price}
+                    {selectedArtwork.price === 'Not for sale' 
+                      ? (selectedArtwork.link ? 'View on artist\'s website' : 'Not for sale')
+                      : selectedArtwork.price
+                    }
                   </Button>
                 </div>
                 
