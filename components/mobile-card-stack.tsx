@@ -1335,44 +1335,44 @@ export default function MobileCardStack({
                     <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
                     <div className="flex justify-center gap-2">
                       <button 
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        className="w-10 h-10 border border-black bg-white text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
-                          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
                         }}
                         title="Share on X"
                       >
                         <XIcon className="w-4 h-4" />
                       </button>
                       <button 
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        className="w-10 h-10 border border-black bg-white text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
-                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'noopener,noreferrer');
                         }}
                         title="Share on Facebook"
                       >
                         <Facebook className="w-4 h-4" />
                       </button>
                       <button 
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        className="w-10 h-10 border border-black bg-white text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
-                          window.open(`https://www.instagram.com/`, '_blank');
+                          window.open(`https://www.instagram.com/`, '_blank', 'noopener,noreferrer');
                         }}
                         title="Share on Instagram"
                       >
                         <Instagram className="w-4 h-4" />
                       </button>
                       <button 
-                        className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                        className="w-10 h-10 border border-black bg-white text-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
-                          window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                          window.open(`https://wa.me/?text=${text}%20${url}`, '_blank', 'noopener,noreferrer');
                         }}
                         title="Share on WhatsApp"
                       >
