@@ -293,12 +293,12 @@ export default function CardStack({
                                   size="lg"
                                   onClick={() => {
                                     if (artwork.link) {
-                                      window.open(artwork.link, '_blank');
+                                      window.open(artwork.link, '_blank', 'noopener,noreferrer');
                                     }
                                   }}
                                   className={`min-w-[120px] ${
                                     artwork.link 
-                                      ? 'bg-black text-white hover:bg-gray-800' 
+                                      ? 'border border-black bg-white text-black hover:bg-black hover:text-white' 
                                       : 'bg-gray-200 text-black hover:bg-gray-300'
                                   } transition-all duration-200`}
                                   style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}

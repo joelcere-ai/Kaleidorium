@@ -1311,10 +1311,14 @@ export default function MobileCardStack({
                 {/* Sale Status Button */}
                 <div className="pt-4">
                   <Button 
-                    className="w-full bg-black text-white hover:bg-gray-800"
+                    className={`w-full py-3 text-sm font-medium ${
+                      selectedArtwork.link
+                        ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
+                        : 'bg-gray-200 text-gray-600 cursor-not-allowed'
+                    } transition-all duration-200`}
                     onClick={() => {
                       if (selectedArtwork.link) {
-                        window.open(selectedArtwork.link, '_blank')
+                        window.open(selectedArtwork.link, '_blank', 'noopener,noreferrer')
                       }
                     }}
                   >

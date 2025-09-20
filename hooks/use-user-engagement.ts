@@ -194,14 +194,40 @@ export function useUserEngagement() {
   }
 
   useEffect(() => {
-    initializeEngagement()
+    let mounted = true
+    let hasInitialized = false
     
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      initializeEngagement()
+    const runInitialization = async () => {
+      if (mounted && !hasInitialized) {
+        hasInitialized = true
+        await initializeEngagement()
+      }
+    }
+    
+    runInitialization()
+    
+    // Listen for auth changes only
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (mounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT')) {
+        await initializeEngagement()
+      }
     })
     
-    return () => subscription.unsubscribe()
+    // Prevent reload on page visibility change (returning from external links)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && hasInitialized) {
+        // Don't reinitialize when returning from external links
+        console.log('Page became visible - skipping reinitialize to prevent reload')
+      }
+    }
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 
   // Update app badge when new artwork count changes
