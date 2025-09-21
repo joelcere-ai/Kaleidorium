@@ -1344,7 +1344,7 @@ export default function MobileCardStack({
                         title="Share on X"
                       >
                         <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <XIcon className="w-3 h-3 text-white" style={{filter: 'drop-shadow(0 0 1px white)'}} />
+                          <XIcon className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
                         </div>
                       </button>
                       <button 
@@ -1357,7 +1357,7 @@ export default function MobileCardStack({
                         title="Share on Facebook"
                       >
                         <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <Facebook className="w-3 h-3 text-white" style={{filter: 'drop-shadow(0 0 1px white)'}} />
+                          <Facebook className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
                         </div>
                       </button>
                       <button 
@@ -1370,7 +1370,7 @@ export default function MobileCardStack({
                         title="Share on Instagram"
                       >
                         <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <Instagram className="w-3 h-3 text-white" style={{filter: 'drop-shadow(0 0 1px white)'}} />
+                          <Instagram className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
                         </div>
                       </button>
                       <button 
@@ -1383,7 +1383,7 @@ export default function MobileCardStack({
                         title="Share on WhatsApp"
                       >
                         <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <MessageCircle className="w-3 h-3 text-white" style={{filter: 'drop-shadow(0 0 1px white)'}} />
+                          <MessageCircle className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
                         </div>
                       </button>
                     </div>
