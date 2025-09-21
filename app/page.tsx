@@ -21,11 +21,10 @@ function HomeContent() {
   // Check if we've already shown the loading screen in this session
   useEffect(() => {
     const hasShown = sessionStorage.getItem('kaleidorium-loading-shown');
-    // Temporarily disable sessionStorage check for testing
-    // if (hasShown) {
-    //   setIsAppLoading(false);
-    //   setHasShownLoading(true);
-    // }
+    if (hasShown) {
+      setIsAppLoading(false);
+      setHasShownLoading(true);
+    }
   }, []);
 
   // Handle app loading completion

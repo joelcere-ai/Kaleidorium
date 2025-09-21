@@ -924,13 +924,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     } finally {
       setLoading(false);
     }
-  }, [user, toast])
+  }, [user?.id]) // Only depend on user ID, not the entire user object or toast
 
   // Handle client-side initialization and data fetching
   useEffect(() => {
-    setMounted(true)
-    fetchArtworks()
-  }, [fetchArtworks])
+    if (mounted) {
+      fetchArtworks()
+    }
+  }, [mounted, user?.id]) // Only depend on mounted state and user ID, not the entire fetchArtworks function
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
