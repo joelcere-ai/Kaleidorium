@@ -20,12 +20,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['sharp'],
   },
-  // Increase body size limits for artwork uploads
-  api: {
-    bodyParser: {
-      sizeLimit: '25mb',
-    },
-  },
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig
