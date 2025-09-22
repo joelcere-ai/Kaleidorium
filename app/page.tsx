@@ -2,7 +2,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
-import AnimatedLoading from "@/components/animated-loading";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -19,24 +18,28 @@ function HomeContent() {
     }
   }, [searchParams, view]);
 
-  // Simplified loading - just show app after 3 seconds
+  // ULTRA SIMPLE: Show app after 2 seconds, no loading screen
   useEffect(() => {
-    console.log('Page.tsx: Starting simplified loading...');
+    console.log('Page.tsx: Starting ultra-simple loading...');
     const timer = setTimeout(() => {
-      console.log('Page.tsx: Loading complete, showing app');
+      console.log('Page.tsx: Showing app directly');
       setShowApp(true);
-    }, 3000);
+    }, 2000);
     
     return () => clearTimeout(timer);
   }, []);
 
-  // Show loading screen for 3 seconds, then show app
+  // Show blank screen for 2 seconds, then show app directly
   if (!showApp) {
-    console.log('Page.tsx: Showing loading screen...');
-    return <AnimatedLoading />;
+    console.log('Page.tsx: Waiting to show app...');
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
   }
 
-  console.log('Page.tsx: Showing main app with view =', view);
+  console.log('Page.tsx: Showing main app directly with view =', view);
 
   return (
     <main className="min-h-screen bg-background">
