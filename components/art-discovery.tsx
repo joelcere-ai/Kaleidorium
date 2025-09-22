@@ -2283,8 +2283,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle className="text-sm font-serif font-bold text-black" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
-                    <CardDescription className="text-xs font-sans text-black" style={{fontSize: '12px', fontFamily: 'Arial, sans-serif'}}>
+                    <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
+                    <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                       Please fill out the form below to submit your portfolio for review.
                     </CardDescription>
                   </CardHeader>
@@ -2364,7 +2364,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                       </Button>
                     </div>
                     <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                      <p className="text-blue-700">
+                      <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                         <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
                       </p>
                     </div>
