@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { supabase } from '@/lib/supabase'
 
 export default function SimpleTest() {
   const [status, setStatus] = useState('Testing...')
@@ -14,8 +14,7 @@ export default function SimpleTest() {
 
   const testConnection = async () => {
     try {
-      setStatus('Creating Supabase client...')
-      const supabase = createClient()
+      setStatus('Using existing Supabase client...')
       
       setStatus('Testing basic connection...')
       const { data, error } = await supabase
