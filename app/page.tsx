@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 import AnimatedLoading from "@/components/animated-loading";
+import SimpleTest from "@/components/simple-test";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -47,11 +48,8 @@ function HomeContent() {
     return <AnimatedLoading onComplete={handleLoadingComplete} />;
   }
 
-  return (
-    <main className="min-h-screen bg-background">
-      <ArtDiscovery view={view} setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} />
-    </main>
-  );
+  // Temporary: Use SimpleTest to diagnose connection issues
+  return <SimpleTest />;
 }
 
 export default function Home() {
