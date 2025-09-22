@@ -957,6 +957,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Simplified initialization with tab visibility handling
   useEffect(() => {
+    console.log('ArtDiscovery: Component mounting...');
     setMounted(true)
     
     // Handle page visibility changes to prevent reload on tab switch
