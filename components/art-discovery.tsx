@@ -967,12 +967,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         console.log('Current artworks count:', artworks.length);
         console.log('Current loading state:', loading);
         
-        // If we already have artworks loaded, just ensure we're not stuck loading
+        // AGGRESSIVE FIX: Always force loading to false when tab becomes visible
+        console.log('Forcing loading state to false on tab visibility');
+        setLoading(false);
+        
+        // If we already have artworks loaded, skip all other logic
         if (artworks.length > 0) {
-          console.log('Already have artworks, ensuring loading is false');
-          if (loading) {
-            setLoading(false);
-          }
+          console.log('Already have artworks, skipping session checks');
           return; // Skip all the session checking if we already have data
         }
         
@@ -1607,7 +1608,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  if (!mounted || loading) {
+  // AGGRESSIVE FIX: Don't show loading screen if we have any artworks
+  if (!mounted || (loading && artworks.length === 0)) {
     return (
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 flex items-center justify-center">
@@ -1627,6 +1629,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         onClick={() => {
                           setLoadingError(null);
                           fetchingRef.current = false;
+                          setLoading(false); // Force loading to false
                           fetchArtworks();
                         }}
                         variant="outline"
@@ -1636,6 +1639,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                       </Button>
                       <Button 
                         onClick={() => {
+                          setLoading(false); // Force loading to false before reload
                           window.location.reload();
                         }}
                         variant="outline"
