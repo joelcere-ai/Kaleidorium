@@ -122,6 +122,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google Analytics removed to fix CSP issues - will reinstall later */}
+        {/* 🚨 CACHE BUST: Force browser refresh */}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
+        <meta name="build-version" content="v4-force-refresh-2024-09-22-1140" />
       </head>
       <body className={`${playfair.variable} font-sans antialiased`}>
         <ThemeProvider
