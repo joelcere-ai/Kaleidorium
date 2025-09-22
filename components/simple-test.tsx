@@ -48,9 +48,10 @@ export default function SimpleTest() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="max-w-md w-full p-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">Connection Test</h1>
-        <p className="mb-4">{status}</p>
+      <div className="max-w-md w-full p-8 text-center border-4 border-blue-500">
+        <h1 className="text-2xl font-bold mb-4 text-blue-600">🔍 DIAGNOSTIC MODE</h1>
+        <h2 className="text-xl font-bold mb-4">Connection Test</h2>
+        <p className="mb-4 font-semibold">{status}</p>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

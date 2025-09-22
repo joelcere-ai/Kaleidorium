@@ -21,42 +21,26 @@ function HomeContent() {
     }
   }, [searchParams, view]);
 
-  // Simple loading screen check
+  // DIAGNOSTIC MODE: Skip all loading logic
   useEffect(() => {
-    const hasShown = sessionStorage.getItem('kaleidorium-loading-shown');
-    if (hasShown) {
-      setIsAppLoading(false);
-      setHasShownLoading(true);
-    } else {
-      // Auto-complete loading after 3 seconds
-      const timer = setTimeout(() => {
-        handleLoadingComplete();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
+    // Force disable loading immediately
+    setIsAppLoading(false);
+    setHasShownLoading(true);
   }, []);
 
-  // Handle app loading completion
+  // Handle app loading completion (kept for compatibility)
   const handleLoadingComplete = () => {
     setIsAppLoading(false);
     setHasShownLoading(true);
     sessionStorage.setItem('kaleidorium-loading-shown', 'true');
   };
 
-  // Show simple loading screen
-  if (isAppLoading) {
-    return <AnimatedLoading onComplete={handleLoadingComplete} />;
-  }
-
-  // Temporary: Use SimpleTest to diagnose connection issues
+  // DIAGNOSTIC: Always show SimpleTest, no loading screen
   return <SimpleTest />;
 }
 
 export default function Home() {
-  return (
-    <Suspense fallback={<AnimatedLoading />}>
-      <HomeContent />
-    </Suspense>
-  );
+  // DIAGNOSTIC: Skip Suspense to avoid any loading delays
+  return <HomeContent />;
 }
 
