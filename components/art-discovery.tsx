@@ -2256,7 +2256,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <div className="flex-1 overflow-y-auto">
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
-                  <h1 className="main-title mb-4">Be Discovered. Not Buried.</h1>
+                  <h1 
+                    className="mb-4"
+                    style={{
+                      fontSize: '16px',
+                      fontFamily: 'Times New Roman, serif',
+                      fontWeight: 'bold',
+                      color: 'black',
+                      lineHeight: '1.2'
+                    }}
+                  >
+                    Be Discovered. Not Buried.
+                  </h1>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
@@ -2266,7 +2277,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="faq-question mb-2">How it works:</p>
+                  <p className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How it works:</p>
                   <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <li>• Upload your artwork and description</li>
                     <li>• Our algorithm shows it to collectors whose tastes match your style</li>
@@ -2283,8 +2294,25 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle className="card-title">Submit Your Portfolio</CardTitle>
-                    <CardDescription className="card-description">
+                    <CardTitle 
+                      style={{
+                        fontSize: '16px',
+                        fontFamily: 'Times New Roman, serif',
+                        fontWeight: 'bold',
+                        color: 'black',
+                        lineHeight: '1.2'
+                      }}
+                    >
+                      Submit Your Portfolio
+                    </CardTitle>
+                    <CardDescription 
+                      style={{
+                        fontSize: '14px',
+                        fontFamily: 'Arial, sans-serif',
+                        color: 'black',
+                        lineHeight: '1.4'
+                      }}
+                    >
                       Please fill out the form below to submit your portfolio for review.
                     </CardDescription>
                   </CardHeader>
@@ -2349,8 +2377,25 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 {/* Invitation Section */}
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle className="card-title">Have you received your invitation?</CardTitle>
-                    <CardDescription className="card-description">
+                    <CardTitle 
+                      style={{
+                        fontSize: '16px',
+                        fontFamily: 'Times New Roman, serif',
+                        fontWeight: 'bold',
+                        color: 'black',
+                        lineHeight: '1.2'
+                      }}
+                    >
+                      Have you received your invitation?
+                    </CardTitle>
+                    <CardDescription 
+                      style={{
+                        fontSize: '14px',
+                        fontFamily: 'Arial, sans-serif',
+                        color: 'black',
+                        lineHeight: '1.4'
+                      }}
+                    >
                       If you've received an invitation email with a token, click below to register.
                     </CardDescription>
                   </CardHeader>
@@ -2377,7 +2422,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop For Artists Page
           <div className="container mx-auto px-4 py-8 max-w-3xl for-artists-page">
             <div className="mb-8">
-                  <h1 className="main-title mb-4">Be Discovered. Not Buried.</h1>
+                  <h1 
+                    className="mb-4"
+                    style={{
+                      fontSize: '16px',
+                      fontFamily: 'Times New Roman, serif',
+                      fontWeight: 'bold',
+                      color: 'black',
+                      lineHeight: '1.2'
+                    }}
+                  >
+                    Be Discovered. Not Buried.
+                  </h1>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
@@ -2387,7 +2443,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="faq-question mb-2">How it works:</p>
+                  <p className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How it works:</p>
                   <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <li>• Upload your artwork and description</li>
                     <li>• Our algorithm shows it to collectors whose tastes match your style</li>
@@ -2498,7 +2554,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* FAQ Section */}
             <Card id="faq-section" className="mb-8">
               <CardHeader>
-                <CardTitle className="card-title">Frequently Asked Questions</CardTitle>
+                    <CardTitle 
+                      style={{
+                        fontSize: '16px',
+                        fontFamily: 'Times New Roman, serif',
+                        fontWeight: 'bold',
+                        color: 'black',
+                        lineHeight: '1.2'
+                      }}
+                    >
+                      Frequently Asked Questions
+                    </CardTitle>
                 <p className="text-sm font-sans text-gray-600 leading-relaxed mt-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
                 </p>
@@ -2507,78 +2573,97 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <div className="space-y-6">
                   
                   <div>
-                    <h3 className="faq-question mb-2">Are you a marketplace or a gallery?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 
+                      className="mb-2"
+                      style={{
+                        fontSize: '14px',
+                        fontFamily: 'Arial, sans-serif',
+                        fontWeight: 'bold',
+                        color: 'black',
+                        lineHeight: '1.4'
+                      }}
+                    >
+                      Are you a marketplace or a gallery?
+                    </h3>
+                    <p 
+                      className="leading-relaxed"
+                      style={{
+                        fontSize: '14px',
+                        fontFamily: 'Arial, sans-serif',
+                        color: 'black',
+                        lineHeight: '1.5'
+                      }}
+                    >
                       No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors—we're not part of any conversation or transaction that follows.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Is there a fee to join or submit my work?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Is there a fee to join or submit my work?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       No. Kaleidorium is currently in beta and completely free for artists. There are no commissions, no submission fees, and no hidden charges. In 2026, once we've reached a healthy community size, we may introduce a modest subscription and commission model for artists, with plenty of notice and the option to opt out. Collectors will always enjoy free access. If you ever wish to remove your work, you can do so in one click.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">How will my artwork be shown to collectors?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How will my artwork be shown to collectors?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       Your work is not displayed side-by-side in a crowded feed. Instead, it's shown individually to collectors whose preferences suggest they'll genuinely appreciate it. We use a personalized matching approach, more like a curator than a catalogue.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">What happens when collectors are interested?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>What happens when collectors are interested?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       Each artwork links directly to your own website, online store, or gallery page. Kaleidorium does not handle transactions. We simply bring qualified, interested collectors to you. If you're represented by a gallery, you can set your redirect link to point there instead.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Why did you create Kaleidorium?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Why did you create Kaleidorium?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       We've seen too many brilliant artists struggle to get noticed. In a world overflowing with content, being good is no longer enough, you also need to be found. Kaleidorium helps solve this by curating artwork to match each collector's taste, increasing the chance of discovery and appreciation.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Is this just another algorithm that narrows people's view?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Is this just another algorithm that narrows people's view?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       Not at all. While we use AI to recommend art, we deliberately include moments of serendipity and surprise. Think of it like a trusted friend who knows your taste, but also knows how to stretch it thoughtfully.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Who owns the rights to my artwork and data?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Who owns the rights to my artwork and data?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       You do. Always. We make no claim on your images, metadata, or portfolio. You retain full control and copyright.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Is the service also free for collectors?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Is the service also free for collectors?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       Yes. Kaleidorium is free for collectors to browse, swipe, and discover work they love. This encourages more engagement and visibility for your art.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">How does the recommendation engine work?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How does the recommendation engine work?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       We combine a trained AI assistant with a custom-built taxonomy and feedback loops. The more users interact, the smarter the matching becomes, helping the right collectors find the right artists.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Do you accept all submissions?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Do you accept all submissions?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       We review each portfolio manually. We're not looking for a specific style. We welcome diversity, from abstract to figurative, classic to digital. But we do assess for originality, craft, and commercial potential (even if niche). Our goal is to maintain a high-quality, artistically-intentional experience.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="faq-question mb-2">Who reviews the portfolios, and what happens after I submit?</h3>
-                    <p className="faq-answer leading-relaxed">
+                    <h3 className="mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>Who reviews the portfolios, and what happens after I submit?</h3>
+                    <p className="leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
                       All submissions are reviewed by a small collective of people involved in the arts - including curators, artists, and collectors - who help us maintain artistic integrity and variety. If your portfolio isn't selected right away, don't worry, you can always refine and resubmit at a later stage. If your work is selected, you'll receive an official invitation with a unique token to create your account. Registration is fast, intuitive, and once complete, you can start uploading your artwork immediately.
                     </p>
                   </div>
