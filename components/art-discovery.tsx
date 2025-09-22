@@ -964,6 +964,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
         console.log('Page became visible - checking session state');
+        console.log('Current artworks count:', artworks.length);
+        console.log('Current loading state:', loading);
+        
+        // If we already have artworks loaded, just ensure we're not stuck loading
+        if (artworks.length > 0) {
+          console.log('Already have artworks, ensuring loading is false');
+          if (loading) {
+            setLoading(false);
+          }
+          return; // Skip all the session checking if we already have data
+        }
         
         // Check if session is still valid
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -995,6 +1006,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           if (session?.user && artworks.length === 0 && !loading) {
             console.log('Have session but no artworks, triggering recovery fetch');
             fetchArtworks();
+          }
+          
+          // If we're stuck loading with no progress, force reset
+          if (loading && artworks.length === 0) {
+            console.log('Stuck in loading state, forcing reset');
+            setLoading(false);
+            if (artworks.length === 0) {
+              // Try to fetch again after reset
+              setTimeout(() => {
+                fetchArtworks();
+              }, 1000);
+            }
           }
         }
         return;
