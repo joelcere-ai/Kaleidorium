@@ -827,12 +827,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     try {
       console.log('fetchArtworks: Starting fetch');
+      console.log('fetchArtworks: User:', user?.id || 'anonymous');
+      console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
       // Simplified fetch - no timeout, let browser handle naturally
-      console.log('fetchArtworks: Fetching artworks...');
+      console.log('fetchArtworks: Fetching artworks from Supabase...');
       
       const { data: artworksData, error } = await supabase
         .from('Artwork')
@@ -947,16 +949,57 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [user?.id]) // Only depend on user ID
 
-  // Simplified initialization - fetch once when component mounts
+  // Emergency simplified initialization
   useEffect(() => {
     setMounted(true)
+    
+    // Emergency fallback - if loading takes too long, force load basic artworks
+    const emergencyTimer = setTimeout(async () => {
+      if (loading && artworks.length === 0) {
+        console.log('Emergency fallback: Force loading basic artworks');
+        try {
+          const { data: basicArtworks } = await supabase
+            .from('Artwork')
+            .select('id, artwork_title, artist, artwork_image, price')
+            .limit(10);
+          
+          if (basicArtworks && basicArtworks.length > 0) {
+            const simpleArtworks = basicArtworks.map((artwork: any) => ({
+              id: artwork.id?.toString() || Math.random().toString(),
+              title: artwork.artwork_title || 'Untitled',
+              artist: artwork.artist || 'Unknown Artist',
+              image: artwork.artwork_image || '/placeholder.svg',
+              artwork_image: artwork.artwork_image || '/placeholder.svg',
+              price: artwork.price || 'Price on request',
+              medium: 'Digital Art',
+              dimensions: '1920x1080',
+              year: '2024',
+              description: 'Artwork description',
+              tags: ['Digital'],
+              link: undefined,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }));
+            
+            setArtworks(simpleArtworks);
+            setLoading(false);
+            console.log('Emergency fallback: Loaded', simpleArtworks.length, 'artworks');
+          }
+        } catch (error) {
+          console.error('Emergency fallback failed:', error);
+          setLoading(false);
+        }
+      }
+    }, 5000); // 5 second emergency fallback
+    
+    return () => clearTimeout(emergencyTimer);
   }, [])
   
   useEffect(() => {
-    if (mounted && artworks.length === 0) {
+    if (mounted && artworks.length === 0 && !loading) {
       fetchArtworks()
     }
-  }, [mounted]) // Only fetch when mounted, not on user changes
+  }, [mounted]) // Only fetch when mounted and not already loading
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
@@ -1531,28 +1574,43 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     return (
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+          <div className="text-center max-w-md">
             {loading ? (
               <div>
                 <p className="mb-4">Loading artworks...</p>
+                <div className="text-sm text-gray-600 mb-4">
+                  <p>Connecting to database...</p>
+                  <p className="mt-2">If this takes more than 10 seconds, try refreshing the page</p>
+                </div>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>
-                    <Button 
-                      onClick={() => {
-                        setLoadingError(null);
-                        fetchingRef.current = false;
-                        fetchArtworks();
-                      }}
-                      variant="outline"
-                    >
-                      Try Again
-                    </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => {
+                          setLoadingError(null);
+                          fetchingRef.current = false;
+                          fetchArtworks();
+                        }}
+                        variant="outline"
+                        className="mr-2"
+                      >
+                        Try Again
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          window.location.reload();
+                        }}
+                        variant="outline"
+                      >
+                        Refresh Page
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
-              "Loading..."
+              "Initializing..."
             )}
           </div>
         </div>
