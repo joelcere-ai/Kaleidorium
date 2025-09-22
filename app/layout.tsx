@@ -126,7 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="build-version" content="v5-font-fix-2024-09-22-1520" />
+            <meta name="build-version" content="v6-force-deploy-2024-09-22-2120" />
       </head>
       <body className={`${playfair.variable} font-sans antialiased`}>
         <ThemeProvider
