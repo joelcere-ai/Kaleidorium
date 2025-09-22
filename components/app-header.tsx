@@ -172,8 +172,10 @@ function AppHeaderContent({
           <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
             <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
           </Link>
-          {/* Explicit spacer div */}
-          <div className="w-8 md:w-16"></div>
+          {/* White square - desktop only */}
+          <div className="hidden md:block w-10 h-10 bg-white border border-gray-200 ml-4"></div>
+          {/* Remaining spacer div */}
+          <div className="w-8 md:w-6"></div>
         </div>
 
         {/* Desktop Navigation */}
