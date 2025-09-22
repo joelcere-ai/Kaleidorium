@@ -20,9 +20,9 @@ function HomeContent() {
 
   // ULTRA SIMPLE: Show app after 2 seconds, no loading screen
   useEffect(() => {
-    console.log('Page.tsx: Starting ultra-simple loading...');
+    console.log('🚨 CACHE BUST v3: Page.tsx ultra-simple loading starting...');
     const timer = setTimeout(() => {
-      console.log('Page.tsx: Showing app directly');
+      console.log('🚨 CACHE BUST v3: Page.tsx showing app directly');
       setShowApp(true);
     }, 2000);
     

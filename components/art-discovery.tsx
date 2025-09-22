@@ -825,14 +825,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       return;
     }
     
-    // Don't fetch if page is hidden (prevents tab switching issues)
-    if (document.visibilityState === 'hidden') {
-      console.log('fetchArtworks: Page is hidden, skipping fetch');
-      return;
-    }
+    // NO VISIBILITY CHECKS - this was causing tab switch issues
+    console.log('🚨 SIMPLE: fetchArtworks proceeding without visibility checks');
     
     try {
-      console.log('🚨 EMERGENCY: fetchArtworks starting with 10s timeout');
+      console.log('🚨 CACHE BUST v3: EMERGENCY fetchArtworks starting with 10s timeout');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
       console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
@@ -978,78 +975,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Simplified initialization with tab visibility handling
   useEffect(() => {
-    console.log('ArtDiscovery: Component mounting...');
-    setMounted(true)
+    console.log('🚨 SIMPLE: ArtDiscovery component mounting...');
+    setMounted(true);
     
-    // Handle page visibility changes to prevent reload on tab switch
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === 'visible') {
-        console.log('Page became visible - checking session state [AGGRESSIVE FIX v2]');
-        console.log('Current artworks count:', artworks.length);
-        console.log('Current loading state:', loading);
-        
-        // AGGRESSIVE FIX: Always force loading to false when tab becomes visible
-        console.log('Forcing loading state to false on tab visibility');
-        setLoading(false);
-        
-        // If we already have artworks loaded, skip all other logic
-        if (artworks.length > 0) {
-          console.log('Already have artworks, skipping session checks');
-          return; // Skip all the session checking if we already have data
-        }
-        
-        // Check if session is still valid
-        const { data: { session }, error } = await supabase.auth.getSession();
-        console.log('Current session on visibility change:', session?.user?.id || 'no session');
-        console.log('Previous user state:', user?.id || 'no user');
-        
-        // If session changed, we might need to update user state
-        if (session?.user?.id !== user?.id) {
-          console.log('Session changed! Previous:', user?.id, 'Current:', session?.user?.id);
-          
-          if (session?.user) {
-            console.log('Updating user state with new session');
-            setUser(session.user);
-            await ensureCollectorProfile(session.user);
-          } else {
-            console.log('No session found, setting user to null');
-            setUser(null);
-          }
-          
-          // Force refetch artworks with new user state
-          if (artworks.length === 0) {
-            console.log('No artworks loaded, triggering fetch');
-            fetchArtworks();
-          }
-        } else {
-          console.log('Session maintained - skipping reinitialize to prevent reload');
-          
-          // If we have a session but no artworks, something went wrong
-          if (session?.user && artworks.length === 0 && !loading) {
-            console.log('Have session but no artworks, triggering recovery fetch');
-            fetchArtworks();
-          }
-          
-          // If we're stuck loading with no progress, force reset
-          if (loading && artworks.length === 0) {
-            console.log('Stuck in loading state, forcing reset');
-            setLoading(false);
-            if (artworks.length === 0) {
-              // Try to fetch again after reset
-              setTimeout(() => {
-                fetchArtworks();
-              }, 1000);
-            }
-          }
-        }
-        return;
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // NO VISIBILITY CHANGE HANDLING - this was causing tab switch reloads
+    console.log('🚨 SIMPLE: No visibility change handler - preventing tab switch issues');
     
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      // No cleanup needed
     };
   }, [])
   
