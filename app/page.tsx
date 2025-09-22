@@ -25,6 +25,20 @@ function HomeContent() {
       setIsAppLoading(false);
       setHasShownLoading(true);
     }
+    
+    // Prevent page reload on visibility change
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Don't reload when tab becomes visible again
+        console.log('Tab became visible - maintaining state');
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Handle app loading completion

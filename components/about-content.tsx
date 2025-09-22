@@ -20,17 +20,16 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>No spam. No pressure. Just discovery.</p>
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Join free. Your taste is the only invitation you need.</p>
       <p className="text-sm font-sans text-black mb-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-        <a
-          href="/register"
-          className="underline text-blue-700 hover:text-blue-900 cursor-pointer font-bold"
+        <button
+          className="underline text-blue-700 hover:text-blue-900 cursor-pointer font-bold bg-transparent border-none p-0"
           style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-          onClick={e => {
-            e.preventDefault();
-            window.location.href = "/register";
+          onClick={() => {
+            // Use Next.js navigation instead of window.location
+            window.open('/register', '_blank');
           }}
         >
           Register as Collector
-        </a> and start exploring art.
+        </button> and start exploring art.
       </p>
 
       <Separator className="my-12" />

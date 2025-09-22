@@ -928,7 +928,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle client-side initialization and data fetching
   useEffect(() => {
-    if (mounted) {
+    if (!mounted) {
+      setMounted(true)
+      return
+    }
+    
+    // Only fetch artworks if we haven't already or if user changed
+    const shouldFetch = artworks.length === 0 || (user?.id && !artworks.some(a => a.id))
+    if (shouldFetch) {
       fetchArtworks()
     }
   }, [mounted, user?.id]) // Only depend on mounted state and user ID, not the entire fetchArtworks function
@@ -2581,7 +2588,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 className="w-full justify-start gap-3 h-12 text-left border-gray-200 hover:bg-gray-50"
                 onClick={() => {
                   setShowMenuModal(false);
-                  window.location.href = '/contact';
+                  router.push('/contact');
                 }}
               >
                 <Mail className="w-5 h-5 text-black" />
@@ -2593,7 +2600,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 className="w-full justify-start gap-3 h-12 text-left border-gray-200 hover:bg-gray-50"
                 onClick={() => {
                   setShowMenuModal(false);
-                  window.location.href = '/profile';
+                  router.push('/profile');
                 }}
               >
                 <User className="w-5 h-5 text-black" />
