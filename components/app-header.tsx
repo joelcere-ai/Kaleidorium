@@ -166,14 +166,18 @@ function AppHeaderContent({
 
   return (
     <header className="border-b bg-background relative app-header z-10">
-      <div className="flex items-center justify-between p-4 md:p-6">
-        {/* Logo with improved spacing */}
-        <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0 md:mr-12">
-          <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
-        </Link>
+      <div className="flex items-center p-4 md:p-6">
+        {/* Logo with explicit right spacing */}
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
+            <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
+          </Link>
+          {/* Explicit spacer div */}
+          <div className="w-8 md:w-16"></div>
+        </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8 flex-1 justify-end">
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
