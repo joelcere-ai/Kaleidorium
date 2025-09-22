@@ -829,20 +829,20 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: fetchArtworks proceeding without visibility checks');
     
     try {
-      console.log('🚨 CACHE BUST v3: EMERGENCY fetchArtworks starting with 10s timeout');
+      console.log('🚨 CACHE BUST v4: EMERGENCY fetchArtworks starting with 10s timeout - FORCE REFRESH');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
       console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // 🚨 EMERGENCY: Force loading to complete after 10 seconds
+      // 🚨 EMERGENCY: Force loading to complete after 5 seconds (reduced for faster recovery)
       const emergencyTimeout = setTimeout(() => {
-        console.log('🚨 EMERGENCY: 10s timeout reached, forcing app to load with empty artworks');
+        console.log('🚨 EMERGENCY: 5s timeout reached, forcing app to load with empty artworks');
         setArtworks([]);
         setLoading(false);
         fetchingRef.current = false;
-      }, 10000);
+      }, 5000);
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
@@ -923,6 +923,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         console.log('Fetching collector preferences for user:', user.id);
         try {
           // Try to get collector data - if this fails, just continue with default artworks
+          console.log('🔍 DEBUG: Attempting to fetch collector preferences for user:', user.id);
           const { data: collector, error: collectorError } = await supabase
             .from('Collectors')
             .select('id, preferences')
@@ -930,7 +931,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             .maybeSingle();
 
           if (collectorError) {
-            console.error('Error fetching collector preferences (continuing with defaults):', collectorError);
+            console.error('🚨 API ERROR: Error fetching collector preferences:', collectorError);
+            console.error('🚨 API ERROR: Error details:', JSON.stringify(collectorError, null, 2));
             // Don't let this error block the app - just use default artworks
           } else if (collector?.preferences) {
             console.log('Found collector preferences, getting recommendations...');
@@ -1562,14 +1564,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // 🚨 EMERGENCY: Add fallback timer to force app to show after 15 seconds
+  // 🚨 EMERGENCY: Add fallback timer to force app to show after 10 seconds (reduced)
   useEffect(() => {
     const emergencyFallback = setTimeout(() => {
-      console.log('🚨 EMERGENCY: 15s fallback - forcing app to show regardless of state');
+      console.log('🚨 EMERGENCY: 10s fallback - forcing app to show regardless of state');
       setMounted(true);
       setLoading(false);
       fetchingRef.current = false;
-    }, 15000);
+    }, 10000);
     
     return () => clearTimeout(emergencyFallback);
   }, []);
