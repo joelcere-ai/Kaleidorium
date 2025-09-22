@@ -825,6 +825,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       return;
     }
     
+    // Don't fetch if page is hidden (prevents tab switching issues)
+    if (document.visibilityState === 'hidden') {
+      console.log('fetchArtworks: Page is hidden, skipping fetch');
+      return;
+    }
+    
     try {
       console.log('fetchArtworks: Starting fetch');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
@@ -949,57 +955,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [user?.id]) // Only depend on user ID
 
-  // Emergency simplified initialization
+  // Simplified initialization with tab visibility handling
   useEffect(() => {
     setMounted(true)
     
-    // Emergency fallback - if loading takes too long, force load basic artworks
-    const emergencyTimer = setTimeout(async () => {
-      if (loading && artworks.length === 0) {
-        console.log('Emergency fallback: Force loading basic artworks');
-        try {
-          const { data: basicArtworks } = await supabase
-            .from('Artwork')
-            .select('id, artwork_title, artist, artwork_image, price')
-            .limit(10);
-          
-          if (basicArtworks && basicArtworks.length > 0) {
-            const simpleArtworks = basicArtworks.map((artwork: any) => ({
-              id: artwork.id?.toString() || Math.random().toString(),
-              title: artwork.artwork_title || 'Untitled',
-              artist: artwork.artist || 'Unknown Artist',
-              image: artwork.artwork_image || '/placeholder.svg',
-              artwork_image: artwork.artwork_image || '/placeholder.svg',
-              price: artwork.price || 'Price on request',
-              medium: 'Digital Art',
-              dimensions: '1920x1080',
-              year: '2024',
-              description: 'Artwork description',
-              tags: ['Digital'],
-              link: undefined,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }));
-            
-            setArtworks(simpleArtworks);
-            setLoading(false);
-            console.log('Emergency fallback: Loaded', simpleArtworks.length, 'artworks');
-          }
-        } catch (error) {
-          console.error('Emergency fallback failed:', error);
-          setLoading(false);
-        }
+    // Handle page visibility changes to prevent reload on tab switch
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Page became visible - skipping reinitialize to prevent reload');
+        // Don't reinitialize when tab becomes visible
+        return;
       }
-    }, 5000); // 5 second emergency fallback
+    };
     
-    return () => clearTimeout(emergencyTimer);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [])
   
   useEffect(() => {
-    if (mounted && artworks.length === 0 && !loading) {
+    if (mounted && artworks.length === 0) {
       fetchArtworks()
     }
-  }, [mounted]) // Only fetch when mounted and not already loading
+  }, [mounted, fetchArtworks]) // Include fetchArtworks in dependencies
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
