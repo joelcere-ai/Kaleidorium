@@ -54,6 +54,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [loadingError, setLoadingError] = useState<string | null>(null)
   const fetchingRef = useRef(false)
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -823,20 +824,30 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('fetchArtworks: Starting fetch');
       fetchingRef.current = true;
       setLoading(true);
+      setLoadingError(null); // Clear any previous errors
       
-      // First test the connection
-      const { count, error: countError } = await supabase
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
+      });
+      
+      // First test the connection with timeout
+      const connectionTest = supabase
         .from('Artwork')
         .select('*', { count: 'exact', head: true });
+      
+      const { count, error: countError } = await Promise.race([connectionTest, timeoutPromise]) as any;
       
       if (countError) {
         console.error('Error testing Supabase connection:', countError);
         throw countError;
       }
       
+      console.log('fetchArtworks: Connection test passed, found', count, 'artworks');
+      
 
-      // Fetch artworks with exact column names from Supabase
-      const { data: artworksData, error } = await supabase
+      // Fetch artworks with timeout
+      const artworkFetch = supabase
         .from('Artwork')
         .select(`
           id,
@@ -852,6 +863,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           medium,
           colour
         `);
+
+      const { data: artworksData, error } = await Promise.race([artworkFetch, timeoutPromise]) as any;
 
       console.log('Raw Supabase response:', { artworksData, error });
 
@@ -869,7 +882,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('Received artwork data:', artworksData.length, 'items');
       console.log('First artwork sample:', JSON.stringify(artworksData[0], null, 2));
 
-      const transformedArtworks = artworksData.map(artwork => {
+      const transformedArtworks = artworksData.map((artwork: any) => {
         // Format price with currency if available
         let formattedPrice = artwork.price || 'Price on request';
         if (artwork.price && 'currency' in artwork && artwork.currency) {
@@ -924,11 +937,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       }
     } catch (error) {
       console.error('Detailed error in fetchArtworks:', error);
+      
+      const errorMessage = (error as Error)?.message === 'Request timeout' ? "Connection timeout. Please try refreshing the page." : "Failed to load artworks. Please try refreshing the page.";
+      
+      setLoadingError(errorMessage);
+      
+      // Show error message but also provide fallback
       toast({
         title: "Error loading artworks",
-        description: "Failed to load artworks. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
+      
+      // Set empty artworks array and ensure loading is stopped
       setArtworks([]);
     } finally {
       console.log('fetchArtworks: Finished, setting loading to false');
@@ -1518,10 +1539,33 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }
 
   if (!mounted || loading) {
-  return (
+    return (
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 flex items-center justify-center">
-          {loading ? "Loading artworks..." : "Loading..."}
+          <div className="text-center">
+            {loading ? (
+              <div>
+                <p className="mb-4">Loading artworks...</p>
+                {loadingError && (
+                  <div className="mt-4">
+                    <p className="text-red-600 mb-2">{loadingError}</p>
+                    <Button 
+                      onClick={() => {
+                        setLoadingError(null);
+                        fetchingRef.current = false;
+                        fetchArtworks();
+                      }}
+                      variant="outline"
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              "Loading..."
+            )}
+          </div>
         </div>
       </div>
     );
