@@ -54,6 +54,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const fetchingRef = useRef(false)
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [collection, setCollection] = useState<Artwork[]>([])
@@ -812,7 +813,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Update fetchArtworks to use recommendations if user exists
   const fetchArtworks = useCallback(async () => {
+    // Prevent multiple simultaneous fetch calls
+    if (fetchingRef.current) {
+      console.log('fetchArtworks: Already fetching, skipping');
+      return;
+    }
+    
     try {
+      console.log('fetchArtworks: Starting fetch');
+      fetchingRef.current = true;
       setLoading(true);
       
       // First test the connection
@@ -922,9 +931,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       });
       setArtworks([]);
     } finally {
+      console.log('fetchArtworks: Finished, setting loading to false');
+      fetchingRef.current = false;
       setLoading(false);
     }
-  }, [user?.id]) // Only depend on user ID, not the entire user object or toast
+  }, [user?.id]) // Only depend on user ID
 
   // Handle client-side initialization and data fetching
   useEffect(() => {
@@ -933,12 +944,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       return
     }
     
-    // Only fetch artworks if we haven't already or if user changed
-    const shouldFetch = artworks.length === 0 || (user?.id && !artworks.some(a => a.id))
-    if (shouldFetch) {
-      fetchArtworks()
-    }
-  }, [mounted, user?.id]) // Only depend on mounted state and user ID, not the entire fetchArtworks function
+    // Always fetch artworks when component mounts or user changes
+    fetchArtworks()
+  }, [mounted, user?.id]) // Only depend on mounted state and user ID
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
