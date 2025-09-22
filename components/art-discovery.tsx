@@ -915,24 +915,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (user) {
         console.log('Fetching collector preferences for user:', user.id);
         try {
+          // Try to get collector data - if this fails, just continue with default artworks
           const { data: collector, error: collectorError } = await supabase
             .from('Collectors')
-            .select('preferences')
+            .select('id, preferences')
             .eq('user_id', user.id)
-            .maybeSingle(); // Use maybeSingle instead of single to handle no rows
+            .maybeSingle();
 
           if (collectorError) {
-            console.error('Error fetching collector preferences:', collectorError);
+            console.error('Error fetching collector preferences (continuing with defaults):', collectorError);
+            // Don't let this error block the app - just use default artworks
           } else if (collector?.preferences) {
             console.log('Found collector preferences, getting recommendations...');
-            const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
-            setArtworks(recommendedArtworks);
+            try {
+              const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
+              setArtworks(recommendedArtworks);
+            } catch (recError) {
+              console.error('Error getting recommendations, using default artworks:', recError);
+              // Keep default artworks if recommendations fail
+            }
           } else {
             console.log('No collector preferences found, using default artworks');
           }
         } catch (prefError) {
-          console.error('Error in preferences fetch:', prefError);
-          // Continue with default artworks
+          console.error('Error in preferences fetch (continuing with defaults):', prefError);
+          // Continue with default artworks - don't let this block the app
         }
       }
     } catch (error) {
@@ -963,7 +970,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     // Handle page visibility changes to prevent reload on tab switch
     const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
-        console.log('Page became visible - checking session state');
+        console.log('Page became visible - checking session state [AGGRESSIVE FIX v2]');
         console.log('Current artworks count:', artworks.length);
         console.log('Current loading state:', loading);
         
