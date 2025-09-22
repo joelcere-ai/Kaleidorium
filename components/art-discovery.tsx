@@ -832,14 +832,21 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     
     try {
-      console.log('fetchArtworks: Starting fetch');
+      console.log('🚨 EMERGENCY: fetchArtworks starting with 10s timeout');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
       console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // Simplified fetch - no timeout, let browser handle naturally
+      // 🚨 EMERGENCY: Force loading to complete after 10 seconds
+      const emergencyTimeout = setTimeout(() => {
+        console.log('🚨 EMERGENCY: 10s timeout reached, forcing app to load with empty artworks');
+        setArtworks([]);
+        setLoading(false);
+        fetchingRef.current = false;
+      }, 10000);
+      
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
       const { data: artworksData, error } = await supabase
@@ -859,6 +866,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           colour
         `);
 
+      // Clear the emergency timeout if we got here
+      clearTimeout(emergencyTimeout);
+      console.log('✅ Supabase query completed, clearing emergency timeout');
       console.log('Raw Supabase response:', { artworksData, error });
 
       if (error) {
@@ -943,9 +953,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         }
       }
     } catch (error) {
-      console.error('Error in fetchArtworks:', error);
+      console.error('🚨 EMERGENCY: Error in fetchArtworks:', error);
       
-      const errorMessage = "Failed to load artworks. Please try refreshing the page.";
+      // Force app to load even with error
+      console.log('🚨 EMERGENCY: Forcing app to load despite error');
+      setArtworks([]);
+      setLoading(false);
+      fetchingRef.current = false;
+      
+      const errorMessage = "Failed to load artworks. The app will continue with limited functionality.";
       setLoadingError(errorMessage);
       
       toast({
@@ -953,10 +969,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         description: errorMessage,
         variant: "destructive",
       });
-      
-      setArtworks([]);
     } finally {
-      console.log('fetchArtworks: Finished');
+      console.log('🚨 EMERGENCY: fetchArtworks finished - forcing loading off');
       fetchingRef.current = false;
       setLoading(false);
     }
@@ -1615,6 +1629,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
+  // 🚨 EMERGENCY: Add fallback timer to force app to show after 15 seconds
+  useEffect(() => {
+    const emergencyFallback = setTimeout(() => {
+      console.log('🚨 EMERGENCY: 15s fallback - forcing app to show regardless of state');
+      setMounted(true);
+      setLoading(false);
+      fetchingRef.current = false;
+    }, 15000);
+    
+    return () => clearTimeout(emergencyFallback);
+  }, []);
+
   // AGGRESSIVE FIX: Don't show loading screen if we have any artworks
   if (!mounted || (loading && artworks.length === 0)) {
     return (
@@ -1625,8 +1651,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <div>
                 <p className="mb-4">Loading artworks...</p>
                 <div className="text-sm text-gray-600 mb-4">
-                  <p>Connecting to database...</p>
-                  <p className="mt-2">If this takes more than 10 seconds, try refreshing the page</p>
+                  <p>🚨 Emergency timeout: 10s for data, 15s total</p>
+                  <p className="mt-2">If this takes more than 15 seconds, something is wrong</p>
                 </div>
                 {loadingError && (
                   <div className="mt-4">
