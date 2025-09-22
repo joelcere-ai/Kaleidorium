@@ -960,10 +960,42 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setMounted(true)
     
     // Handle page visibility changes to prevent reload on tab switch
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
-        console.log('Page became visible - skipping reinitialize to prevent reload');
-        // Don't reinitialize when tab becomes visible
+        console.log('Page became visible - checking session state');
+        
+        // Check if session is still valid
+        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('Current session on visibility change:', session?.user?.id || 'no session');
+        console.log('Previous user state:', user?.id || 'no user');
+        
+        // If session changed, we might need to update user state
+        if (session?.user?.id !== user?.id) {
+          console.log('Session changed! Previous:', user?.id, 'Current:', session?.user?.id);
+          
+          if (session?.user) {
+            console.log('Updating user state with new session');
+            setUser(session.user);
+            await ensureCollectorProfile(session.user);
+          } else {
+            console.log('No session found, setting user to null');
+            setUser(null);
+          }
+          
+          // Force refetch artworks with new user state
+          if (artworks.length === 0) {
+            console.log('No artworks loaded, triggering fetch');
+            fetchArtworks();
+          }
+        } else {
+          console.log('Session maintained - skipping reinitialize to prevent reload');
+          
+          // If we have a session but no artworks, something went wrong
+          if (session?.user && artworks.length === 0 && !loading) {
+            console.log('Have session but no artworks, triggering recovery fetch');
+            fetchArtworks();
+          }
+        }
         return;
       }
     };
@@ -977,6 +1009,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   
   useEffect(() => {
     if (mounted && artworks.length === 0) {
+      console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
   }, [mounted, fetchArtworks]) // Include fetchArtworks in dependencies
