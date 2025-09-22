@@ -2404,8 +2404,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">Submit Your Portfolio</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
+                <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Please fill out the form below to submit your portfolio for review.
                 </CardDescription>
               </CardHeader>
@@ -2470,14 +2470,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* Invitation Section */}
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">Have you received your invitation?</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardTitle>
+                <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   If you've received an invitation email with a token, click below to register.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Already have your invitation token? Complete your artist registration now.
                   </p>
                   <Button 
@@ -2488,7 +2488,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </Button>
                 </div>
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                  <p className="text-blue-700">
+                  <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
                   </p>
                 </div>
@@ -2563,22 +2563,22 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">How does the recommendation engine work?</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How does the recommendation engine work?</h3>
+                    <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                       We combine a trained AI assistant with a custom-built taxonomy and feedback loops. The more users interact, the smarter the matching becomes, helping the right collectors find the right artists.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Do you accept all submissions?</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Do you accept all submissions?</h3>
+                    <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                       We review each portfolio manually. We're not looking for a specific style. We welcome diversity, from abstract to figurative, classic to digital. But we do assess for originality, craft, and commercial potential (even if niche). Our goal is to maintain a high-quality, artistically-intentional experience.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Who reviews the portfolios, and what happens after I submit?</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Who reviews the portfolios, and what happens after I submit?</h3>
+                    <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                       All submissions are reviewed by a small collective of people involved in the arts - including curators, artists, and collectors - who help us maintain artistic integrity and variety. If your portfolio isn't selected right away, don't worry, you can always refine and resubmit at a later stage. If your work is selected, you'll receive an official invitation with a unique token to create your account. Registration is fast, intuitive, and once complete, you can start uploading your artwork immediately.
                     </p>
                   </div>
