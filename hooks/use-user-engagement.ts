@@ -213,20 +213,13 @@ export function useUserEngagement() {
       }
     })
     
-    // Prevent reload on page visibility change (returning from external links)
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && hasInitialized) {
-        // Don't reinitialize when returning from external links
-        console.log('Page became visible - skipping reinitialize to prevent reload')
-      }
-    }
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    // NO VISIBILITY CHANGE HANDLING - this was causing tab switch reload issues
+    console.log('🚨 SIMPLE: useUserEngagement - no visibility change handler')
     
     return () => {
       mounted = false
       subscription.unsubscribe()
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      // No visibility change handler to remove
     }
   }, [])
 
