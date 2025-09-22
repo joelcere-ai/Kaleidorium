@@ -958,16 +958,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [user?.id]) // Only depend on user ID
 
-  // Handle client-side initialization and data fetching
+  // Simplified initialization - fetch once when component mounts
   useEffect(() => {
-    if (!mounted) {
-      setMounted(true)
-      return
+    setMounted(true)
+  }, [])
+  
+  useEffect(() => {
+    if (mounted && artworks.length === 0) {
+      fetchArtworks()
     }
-    
-    // Always fetch artworks when component mounts or user changes
-    fetchArtworks()
-  }, [mounted, user?.id]) // Only depend on mounted state and user ID
+  }, [mounted]) // Only fetch when mounted, not on user changes
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {

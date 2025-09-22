@@ -15,16 +15,16 @@ function HomeContent() {
   // Update view if query param changes (e.g., via navigation)
   useEffect(() => {
     const paramView = (searchParams.get("view") as typeof view) || "discover";
-    setView(paramView);
-  }, [searchParams]);
-
-  // Check if we've already shown the loading screen in this session
-  useEffect(() => {
-    const hasShown = sessionStorage.getItem('kaleidorium-loading-shown');
-    if (hasShown) {
-      setIsAppLoading(false);
-      setHasShownLoading(true);
+    if (paramView !== view) {
+      setView(paramView);
     }
+  }, [searchParams, view]);
+
+  // Temporarily disable loading screen to test tab switching
+  useEffect(() => {
+    // Always skip loading screen for now
+    setIsAppLoading(false);
+    setHasShownLoading(true);
   }, []);
 
   // Handle app loading completion
@@ -34,11 +34,11 @@ function HomeContent() {
     sessionStorage.setItem('kaleidorium-loading-shown', 'true');
   };
 
-  // Show animated loading screen (simplified for testing)
-  if (isAppLoading) {
-    console.log('Showing loading screen...')
-    return <AnimatedLoading onComplete={handleLoadingComplete} />;
-  }
+  // Temporarily disable loading screen
+  // if (isAppLoading) {
+  //   console.log('Showing loading screen...')
+  //   return <AnimatedLoading onComplete={handleLoadingComplete} />;
+  // }
 
   return (
     <main className="min-h-screen bg-background">
