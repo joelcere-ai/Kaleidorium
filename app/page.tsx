@@ -20,11 +20,19 @@ function HomeContent() {
     }
   }, [searchParams, view]);
 
-  // Temporarily disable loading screen to test tab switching
+  // Simple loading screen check
   useEffect(() => {
-    // Always skip loading screen for now
-    setIsAppLoading(false);
-    setHasShownLoading(true);
+    const hasShown = sessionStorage.getItem('kaleidorium-loading-shown');
+    if (hasShown) {
+      setIsAppLoading(false);
+      setHasShownLoading(true);
+    } else {
+      // Auto-complete loading after 3 seconds
+      const timer = setTimeout(() => {
+        handleLoadingComplete();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Handle app loading completion
@@ -34,11 +42,10 @@ function HomeContent() {
     sessionStorage.setItem('kaleidorium-loading-shown', 'true');
   };
 
-  // Temporarily disable loading screen
-  // if (isAppLoading) {
-  //   console.log('Showing loading screen...')
-  //   return <AnimatedLoading onComplete={handleLoadingComplete} />;
-  // }
+  // Show simple loading screen
+  if (isAppLoading) {
+    return <AnimatedLoading onComplete={handleLoadingComplete} />;
+  }
 
   return (
     <main className="min-h-screen bg-background">

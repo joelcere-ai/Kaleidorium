@@ -233,7 +233,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         .from('Collectors')
         .select('*')
         .eq('user_id', userId)
-        .single()
+        .maybeSingle()
 
       if (fetchError && fetchError.code !== 'PGRST116') {
         console.error('Error fetching collector:', fetchError)
@@ -326,10 +326,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         .from('Collectors')
         .select('*')
         .eq('user_id', userId)
-        .single()
+        .maybeSingle()
 
       if (fetchError) {
         console.error('Error fetching collector preferences:', fetchError)
+        return artworks
+      }
+
+      if (!collector) {
+        console.log('No collector found for recommendations')
         return artworks
       }
 
@@ -493,7 +498,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       .from('Collectors')
       .select('id')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (!collector) {
       await supabase
@@ -528,7 +533,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         .from('UserProfile')
         .select('*')
         .eq('id', tempId)
-        .single()
+        .maybeSingle()
 
       if (!tempProfile) {
         // Create temporary profile
@@ -826,28 +831,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
-      });
+      // Simplified fetch - no timeout, let browser handle naturally
+      console.log('fetchArtworks: Fetching artworks...');
       
-      // First test the connection with timeout
-      const connectionTest = supabase
-        .from('Artwork')
-        .select('*', { count: 'exact', head: true });
-      
-      const { count, error: countError } = await Promise.race([connectionTest, timeoutPromise]) as any;
-      
-      if (countError) {
-        console.error('Error testing Supabase connection:', countError);
-        throw countError;
-      }
-      
-      console.log('fetchArtworks: Connection test passed, found', count, 'artworks');
-      
-
-      // Fetch artworks with timeout
-      const artworkFetch = supabase
+      const { data: artworksData, error } = await supabase
         .from('Artwork')
         .select(`
           id,
@@ -863,8 +850,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           medium,
           colour
         `);
-
-      const { data: artworksData, error } = await Promise.race([artworkFetch, timeoutPromise]) as any;
 
       console.log('Raw Supabase response:', { artworksData, error });
 
@@ -921,38 +906,42 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       if (user) {
         console.log('Fetching collector preferences for user:', user.id);
-        const { data: collector, error: collectorError } = await supabase
-          .from('Collectors')
-          .select('preferences')
-          .eq('user_id', user.id)
-          .single();
+        try {
+          const { data: collector, error: collectorError } = await supabase
+            .from('Collectors')
+            .select('preferences')
+            .eq('user_id', user.id)
+            .maybeSingle(); // Use maybeSingle instead of single to handle no rows
 
-        if (collectorError) {
-          console.error('Error fetching collector preferences:', collectorError);
-        } else if (collector?.preferences) {
-          console.log('Found collector preferences, getting recommendations...');
-          const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
-          setArtworks(recommendedArtworks);
+          if (collectorError) {
+            console.error('Error fetching collector preferences:', collectorError);
+          } else if (collector?.preferences) {
+            console.log('Found collector preferences, getting recommendations...');
+            const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
+            setArtworks(recommendedArtworks);
+          } else {
+            console.log('No collector preferences found, using default artworks');
+          }
+        } catch (prefError) {
+          console.error('Error in preferences fetch:', prefError);
+          // Continue with default artworks
         }
       }
     } catch (error) {
-      console.error('Detailed error in fetchArtworks:', error);
+      console.error('Error in fetchArtworks:', error);
       
-      const errorMessage = (error as Error)?.message === 'Request timeout' ? "Connection timeout. Please try refreshing the page." : "Failed to load artworks. Please try refreshing the page.";
-      
+      const errorMessage = "Failed to load artworks. Please try refreshing the page.";
       setLoadingError(errorMessage);
       
-      // Show error message but also provide fallback
       toast({
         title: "Error loading artworks",
         description: errorMessage,
         variant: "destructive",
       });
       
-      // Set empty artworks array and ensure loading is stopped
       setArtworks([]);
     } finally {
-      console.log('fetchArtworks: Finished, setting loading to false');
+      console.log('fetchArtworks: Finished');
       fetchingRef.current = false;
       setLoading(false);
     }
