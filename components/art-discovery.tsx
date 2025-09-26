@@ -2319,37 +2319,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
                   <h1 
-                    style={{
-                      fontSize: '16px',
-                      fontFamily: 'Times New Roman, serif',
-                      fontWeight: 'bold',
-                      color: 'black',
-                      lineHeight: '1.2',
-                      marginBottom: '16px'
-                    }}
+                    className="text-base font-serif font-bold text-black mb-8"
+                    style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}
                   >
                     Be Discovered. Not Buried.
                   </h1>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>How it works:</p>
-                  <ul style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', listStyle: 'none', padding: 0, margin: 0, marginBottom: '16px'}}>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• Upload your artwork and description</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
+                  <ul className="list-disc pl-6 mb-4">
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Upload your artwork and description</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
                   </p>
                 </div>
@@ -2485,37 +2479,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           <div className="container mx-auto px-4 py-8 max-w-3xl for-artists-page" data-view="for-artists">
             <div className="mb-8">
                   <h1 
-                    style={{
-                      fontSize: '16px',
-                      fontFamily: 'Times New Roman, serif',
-                      fontWeight: 'bold',
-                      color: 'black',
-                      lineHeight: '1.2',
-                      marginBottom: '16px'
-                    }}
+                    className="text-base font-serif font-bold text-black mb-8"
+                    style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}
                   >
                     Be Discovered. Not Buried.
                   </h1>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>How it works:</p>
-                  <ul style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', listStyle: 'none', padding: 0, margin: 0, marginBottom: '16px'}}>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• Upload your artwork and description</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '8px'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
+                  <ul className="list-disc pl-6 mb-4">
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Upload your artwork and description</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
                   </p>
             </div>
@@ -2595,7 +2583,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', marginBottom: '16px'}}>
+                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Already have your invitation token? Complete your artist registration now.
                   </p>
                   <Button 
