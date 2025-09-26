@@ -62,6 +62,65 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [user, setUser] = useState<{ id: string } | null>(null)
   const { toast } = useToast()
   const router = useRouter()
+
+  // 🔥 FORCE FONT STYLES WITH JAVASCRIPT DOM MANIPULATION
+  useEffect(() => {
+    if (view === "for-artists") {
+      const forceStyles = () => {
+        // Force main titles to 16px Times New Roman Bold
+        const titles = document.querySelectorAll('[data-view="for-artists"] h1, [data-view="for-artists"] h2, [data-view="for-artists"] h3')
+        titles.forEach((el: Element) => {
+          const htmlEl = el as HTMLElement
+          htmlEl.style.fontSize = '16px'
+          htmlEl.style.fontFamily = '"Times New Roman", Times, serif'
+          htmlEl.style.fontWeight = 'bold'
+          htmlEl.style.color = 'black'
+          htmlEl.style.lineHeight = '1.2'
+        })
+
+        // Force body text to 14px Arial
+        const bodyText = document.querySelectorAll('[data-view="for-artists"] p, [data-view="for-artists"] li')
+        bodyText.forEach((el: Element) => {
+          const htmlEl = el as HTMLElement
+          htmlEl.style.fontSize = '14px'
+          htmlEl.style.fontFamily = 'Arial, sans-serif'
+          htmlEl.style.color = 'black'
+          htmlEl.style.fontWeight = 'normal'
+          htmlEl.style.lineHeight = '1.4'
+        })
+
+        // Force FAQ questions to be 14px Arial Bold
+        const faqQuestions = document.querySelectorAll('[data-view="for-artists"] .for-artists-faq-question')
+        faqQuestions.forEach((el: Element) => {
+          const htmlEl = el as HTMLElement
+          htmlEl.style.fontSize = '14px'
+          htmlEl.style.fontFamily = 'Arial, sans-serif'
+          htmlEl.style.fontWeight = 'bold'
+          htmlEl.style.color = 'black'
+          htmlEl.style.lineHeight = '1.4'
+        })
+
+        // Force FAQ answers to be 14px Arial Normal
+        const faqAnswers = document.querySelectorAll('[data-view="for-artists"] .for-artists-faq-answer')
+        faqAnswers.forEach((el: Element) => {
+          const htmlEl = el as HTMLElement
+          htmlEl.style.fontSize = '14px'
+          htmlEl.style.fontFamily = 'Arial, sans-serif'
+          htmlEl.style.fontWeight = 'normal'
+          htmlEl.style.color = 'black'
+          htmlEl.style.lineHeight = '1.5'
+        })
+
+        console.log('🔥 FORCE APPLIED: DOM font styles applied to For Artists page')
+      }
+
+      // Apply styles immediately and after a short delay to catch dynamic content
+      forceStyles()
+      setTimeout(forceStyles, 100)
+      setTimeout(forceStyles, 500)
+    }
+  }, [view])
+  
   
   // User engagement features
   const {
