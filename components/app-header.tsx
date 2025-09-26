@@ -168,73 +168,73 @@ function AppHeaderContent({
 
   return (
     <header className="border-b bg-background relative app-header z-10">
-      <div className="flex items-center justify-between p-4 md:p-6 min-h-[60px]">
-        {/* Logo - flexible width with minimum space */}
-        <div className="flex items-center justify-start flex-shrink-0 mr-4">
+      <div className="grid grid-cols-3 items-center p-4 md:p-6 gap-8">
+        {/* Logo - fixed left column */}
+        <div className="flex items-center justify-start">
           <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
-            <span className="font-serif text-base sm:text-lg md:text-xl lg:text-2xl font-semibold tracking-wide">Kaleidorium</span>
+            <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
           </Link>
         </div>
 
-        {/* Desktop Navigation - flexible width with responsive sizing */}
-        <nav className="hidden md:flex items-center flex-wrap justify-end gap-1 lg:gap-2 xl:gap-4 min-w-0">
+        {/* Empty middle column for spacing */}
+        <div></div>
+
+        {/* Desktop Navigation - fixed right column */}
+        <nav className="hidden md:flex items-center space-x-8 justify-end">
           <Button 
             variant="ghost" 
-            className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${isSelected("discover") ? "bg-gray-100" : ""}`}
+            className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
             onClick={() => handleNav("discover")}
           >
-            <Palette className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+            <Palette className="w-4 h-4 mr-1" />
             Discover
           </Button>
           
           {/* Filter Button - Always visible on desktop */}
           <Button 
             variant="ghost" 
-            className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+            className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
             onClick={toggleFilters}
             data-filter-button
           >
-            <Search className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+            <Search className="w-4 h-4 mr-1" />
             Filters
             {isFiltering && <span className="ml-1 w-2 h-2 bg-blue-600 rounded-full"></span>}
           </Button>
           
           <Button 
             variant="ghost" 
-            className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
+            className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
             onClick={() => handleNav("collection")}
           >
-            <Heart className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
-            <span className="hidden lg:inline">Collection</span>
-            <span className="lg:hidden">Collect</span>
+            <Heart className="w-4 h-4 mr-1" />
+            Collection
           </Button>
           
           <Button 
             variant="ghost" 
-            className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
+            className={`text-sm ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
             onClick={() => handleNav("for-artists")}
           >
-            <Palette className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
-            <span className="hidden lg:inline">For Artists</span>
-            <span className="lg:hidden">Artists</span>
+            <Palette className="w-4 h-4 mr-1" />
+            For Artists
           </Button>
           
           <Button 
             variant="ghost" 
-            className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${isSelected("about") ? "bg-gray-100" : ""}`}
+            className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
             onClick={() => handleNav("about")}
           >
-            <Info className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
-            <span className="hidden lg:inline">For Collectors</span>
-            <span className="lg:hidden">Collectors</span>
+            <Info className="w-4 h-4 mr-1" />
+            For Collectors
           </Button>
 
           <Link href="/contact">
             <Button 
               variant="ghost" 
-              className={`text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${isSelected("contact") ? "bg-gray-100" : ""}`}
+              className={`text-sm ${isSelected("contact") ? "bg-gray-100" : ""}`}
             >
-              <AtSign className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+              <AtSign className="w-4 h-4 mr-1" />
               Contact
             </Button>
           </Link>
