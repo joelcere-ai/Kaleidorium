@@ -63,61 +63,64 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const { toast } = useToast()
   const router = useRouter()
 
-  // 🔥 FORCE FONT STYLES WITH JAVASCRIPT DOM MANIPULATION
+  // 🚨 AGGRESSIVE DOM MANIPULATION FOR FONT CONSISTENCY
   useEffect(() => {
     if (view === "for-artists") {
-      const forceStyles = () => {
-        // Force main titles to 16px Times New Roman Bold
-        const titles = document.querySelectorAll('[data-view="for-artists"] h1, [data-view="for-artists"] h2, [data-view="for-artists"] h3')
-        titles.forEach((el: Element) => {
+      const aggressiveForceStyles = () => {
+        // Target ALL elements in the for-artists view
+        const allElements = document.querySelectorAll('[data-view="for-artists"] *')
+        
+        allElements.forEach((el: Element) => {
           const htmlEl = el as HTMLElement
-          htmlEl.style.fontSize = '16px'
-          htmlEl.style.fontFamily = '"Times New Roman", Times, serif'
-          htmlEl.style.fontWeight = 'bold'
-          htmlEl.style.color = 'black'
-          htmlEl.style.lineHeight = '1.2'
+          const tagName = htmlEl.tagName.toLowerCase()
+          
+          // Force titles (h1, h2, h3) to 16px Times New Roman Bold
+          if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3') {
+            htmlEl.style.fontSize = '16px !important'
+            htmlEl.style.fontFamily = '"Times New Roman", Times, serif !important'
+            htmlEl.style.fontWeight = 'bold !important'
+            htmlEl.style.color = 'black !important'
+            htmlEl.style.lineHeight = '1.2 !important'
+          }
+          
+          // Force paragraphs and list items to 14px Arial
+          else if (tagName === 'p' || tagName === 'li') {
+            htmlEl.style.fontSize = '14px !important'
+            htmlEl.style.fontFamily = 'Arial, sans-serif !important'
+            htmlEl.style.color = 'black !important'
+            htmlEl.style.fontWeight = 'normal !important'
+            htmlEl.style.lineHeight = '1.4 !important'
+          }
+          
+          // Force ul elements
+          else if (tagName === 'ul') {
+            htmlEl.style.fontSize = '14px !important'
+            htmlEl.style.fontFamily = 'Arial, sans-serif !important'
+            htmlEl.style.color = 'black !important'
+          }
         })
 
-        // Force body text to 14px Arial
-        const bodyText = document.querySelectorAll('[data-view="for-artists"] p, [data-view="for-artists"] li')
-        bodyText.forEach((el: Element) => {
+        // Extra aggressive targeting for bullet points
+        const bulletPoints = document.querySelectorAll('[data-view="for-artists"] ul li')
+        bulletPoints.forEach((el: Element) => {
           const htmlEl = el as HTMLElement
-          htmlEl.style.fontSize = '14px'
-          htmlEl.style.fontFamily = 'Arial, sans-serif'
-          htmlEl.style.color = 'black'
-          htmlEl.style.fontWeight = 'normal'
-          htmlEl.style.lineHeight = '1.4'
+          htmlEl.style.setProperty('font-size', '14px', 'important')
+          htmlEl.style.setProperty('font-family', 'Arial, sans-serif', 'important')
+          htmlEl.style.setProperty('color', 'black', 'important')
+          htmlEl.style.setProperty('font-weight', 'normal', 'important')
+          htmlEl.style.setProperty('line-height', '1.4', 'important')
         })
 
-        // Force FAQ questions to be 14px Arial Bold
-        const faqQuestions = document.querySelectorAll('[data-view="for-artists"] .for-artists-faq-question')
-        faqQuestions.forEach((el: Element) => {
-          const htmlEl = el as HTMLElement
-          htmlEl.style.fontSize = '14px'
-          htmlEl.style.fontFamily = 'Arial, sans-serif'
-          htmlEl.style.fontWeight = 'bold'
-          htmlEl.style.color = 'black'
-          htmlEl.style.lineHeight = '1.4'
-        })
-
-        // Force FAQ answers to be 14px Arial Normal
-        const faqAnswers = document.querySelectorAll('[data-view="for-artists"] .for-artists-faq-answer')
-        faqAnswers.forEach((el: Element) => {
-          const htmlEl = el as HTMLElement
-          htmlEl.style.fontSize = '14px'
-          htmlEl.style.fontFamily = 'Arial, sans-serif'
-          htmlEl.style.fontWeight = 'normal'
-          htmlEl.style.color = 'black'
-          htmlEl.style.lineHeight = '1.5'
-        })
-
-        console.log('🔥 FORCE APPLIED: DOM font styles applied to For Artists page')
+        console.log('🚨 AGGRESSIVE FORCE: All DOM elements styled for For Artists page')
       }
 
-      // Apply styles immediately and after a short delay to catch dynamic content
-      forceStyles()
-      setTimeout(forceStyles, 100)
-      setTimeout(forceStyles, 500)
+      // Apply multiple times with different delays
+      aggressiveForceStyles()
+      setTimeout(aggressiveForceStyles, 50)
+      setTimeout(aggressiveForceStyles, 100)
+      setTimeout(aggressiveForceStyles, 200)
+      setTimeout(aggressiveForceStyles, 500)
+      setTimeout(aggressiveForceStyles, 1000)
     }
   }, [view])
   
