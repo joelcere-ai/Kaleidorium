@@ -42,7 +42,7 @@ export default function LoginPage() {
           description: "You have successfully logged in.",
         })
 
-        router.push("/")
+        router.push("/?view=discover")
       }
     } catch (error) {
       toast({
@@ -66,7 +66,7 @@ export default function LoginPage() {
         <Button
           variant="ghost"
           className="mb-8"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/?view=discover", { scroll: false })}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Discovery

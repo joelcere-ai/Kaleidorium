@@ -509,7 +509,7 @@ function ArtistRegisterPage() {
 
   // Handler for finishing submission
   const handleFinish = () => {
-    router.push("/");
+    router.push("/?view=discover");
   };
 
   useEffect(() => {

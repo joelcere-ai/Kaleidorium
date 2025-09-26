@@ -491,7 +491,7 @@ export default function RegisterPage() {
         <Button
           variant="ghost"
           className="mb-8"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/?view=discover")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Discovery

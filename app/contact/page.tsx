@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   const handleNavigate = (nextView: typeof view) => {
     if (nextView === "contact") return;
-    router.push(`/?view=${nextView}`);
+    router.push(`/?view=${nextView}`, { scroll: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
