@@ -423,3 +423,90 @@
   animation: loadingDot 1.4s infinite ease-in-out;
 }
 
+/* 🔥 ULTRA HIGH SPECIFICITY FONT FIXES FOR FOR-ARTISTS PAGE */
+/* These rules have maximum specificity to override any conflicting styles */
+
+/* Main titles - should be 16px Times New Roman Bold */
+div div div div div div h1,
+.for-artists-main-title,
+h1[style*="Times New Roman"] {
+  font-size: 16px !important;
+  font-family: "Times New Roman", Times, serif !important;
+  font-weight: bold !important;
+  color: black !important;
+  line-height: 1.2 !important;
+}
+
+/* Body paragraphs - should be 14px Arial */
+div div div div div div p,
+.for-artists-body-text,
+p[style*="Arial"] {
+  font-size: 14px !important;
+  font-family: Arial, sans-serif !important;
+  color: black !important;
+  line-height: 1.4 !important;
+  font-weight: normal !important;
+}
+
+/* FAQ section titles - should be 16px Times New Roman Bold */
+div div div div div div h2,
+div div div div div div h3,
+.for-artists-faq-title,
+h2[style*="Times New Roman"],
+h3[style*="Times New Roman"] {
+  font-size: 16px !important;
+  font-family: "Times New Roman", Times, serif !important;
+  font-weight: bold !important;
+  color: black !important;
+  line-height: 1.2 !important;
+}
+
+/* FAQ questions - should be 14px Arial Bold */
+.for-artists-faq-question {
+  font-size: 14px !important;
+  font-family: Arial, sans-serif !important;
+  font-weight: bold !important;
+  color: black !important;
+  line-height: 1.4 !important;
+}
+
+/* FAQ answers - should be 14px Arial Normal */
+.for-artists-faq-answer {
+  font-size: 14px !important;
+  font-family: Arial, sans-serif !important;
+  font-weight: normal !important;
+  color: black !important;
+  line-height: 1.5 !important;
+}
+
+/* Section headers like "How it works" - should be 14px Arial Bold */
+.for-artists-section-header {
+  font-size: 14px !important;
+  font-family: Arial, sans-serif !important;
+  font-weight: bold !important;
+  color: black !important;
+  line-height: 1.4 !important;
+}
+
+/* Nuclear option - target any text in the for-artists view */
+[data-view="for-artists"] * {
+  font-family: Arial, sans-serif !important;
+  color: black !important;
+}
+
+[data-view="for-artists"] h1,
+[data-view="for-artists"] h2,
+[data-view="for-artists"] h3 {
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: black !important;
+}
+
+[data-view="for-artists"] p,
+[data-view="for-artists"] li {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  color: black !important;
+}
+
