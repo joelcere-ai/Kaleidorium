@@ -89,11 +89,14 @@ function AppHeaderContent({
   }, [showFilters]);
 
   const handleNav = (target: "discover" | "collection" | "for-artists" | "about") => {
+    console.log('🔧 handleNav called:', target, 'setView exists:', !!setView);
     if (setView) {
       // If we have setView, use it (we're in the main app)
+      console.log('🔧 Using setView to navigate to:', target);
       setView(target);
     } else {
       // Otherwise navigate to the main page with the view
+      console.log('🔧 Using router.push to navigate to:', target);
       router.push(`/?view=${target}`);
     }
     setIsMobileMenuOpen(false);
@@ -184,7 +187,10 @@ function AppHeaderContent({
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNav("discover")}
+            onClick={(e) => {
+              console.log('🔧 Discover button clicked', e);
+              handleNav("discover");
+            }}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -205,7 +211,10 @@ function AppHeaderContent({
           <Button 
             variant="ghost" 
             className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNav("collection")}
+            onClick={(e) => {
+              console.log('🔧 Collection button clicked', e);
+              handleNav("collection");
+            }}
           >
             <Heart className="w-4 h-4 mr-1" />
             Collection
