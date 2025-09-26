@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
-import { Button } from "@/components/ui/button";
-import { Menu, User } from "lucide-react";
+import { MobileHeader } from "@/components/mobile-header";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">("contact");
@@ -80,26 +79,7 @@ export default function ContactPage() {
   return (
     <div>
       {isMobile ? (
-        // Mobile Navigation Header
-        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/?view=discover")}
-            className="text-black hover:bg-gray-100"
-          >
-            <Menu className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/?view=profile")}
-            className="text-black hover:bg-gray-100"
-          >
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
+        <MobileHeader currentPage="contact" />
       ) : (
         <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
       )}

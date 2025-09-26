@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Menu, User } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
 import { AppHeader } from "@/components/app-header"
+import { MobileHeader } from "@/components/mobile-header"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -73,26 +74,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background">
       {isMobile ? (
-        // Mobile Navigation Header
-        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/?view=discover")}
-            className="text-black hover:bg-gray-100"
-          >
-            <Menu className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/?view=profile")}
-            className="text-black hover:bg-gray-100"
-          >
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
+        <MobileHeader currentPage="login" />
       ) : (
         <AppHeader />
       )}
