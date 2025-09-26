@@ -2337,11 +2337,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
                   <p className="mb-2 for-artists-section-header" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How it works:</p>
-                  <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• Upload your artwork and description</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  <ul className="mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', listStyle: 'none', padding: 0}}>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• Upload your artwork and description</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
                   <p className="text-sm font-sans text-black mb-4 for-artists-body-text" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
@@ -2503,11 +2503,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
                   <p className="mb-2 for-artists-section-header" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', fontWeight: 'bold', color: 'black', lineHeight: '1.4'}}>How it works:</p>
-                  <ul className="text-sm font-sans text-black mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• Upload your artwork and description</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
+                  <ul className="mb-4 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4', listStyle: 'none', padding: 0}}>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• Upload your artwork and description</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
+                    <li style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.4'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
                   </ul>
                   <p className="text-sm font-sans text-black mb-4 for-artists-body-text" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
