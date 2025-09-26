@@ -18,19 +18,19 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       </ul>
 
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>No spam. No pressure. Just discovery.</p>
-      <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Join free. Your taste is the only invitation you need.</p>
-      <p className="text-sm font-sans text-black mb-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+      <p className="text-sm font-sans text-black mb-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Join free. Your taste is the only invitation you need to start exploring art.</p>
+      <div className="mb-8">
         <button
-          className="underline text-blue-700 hover:text-blue-900 cursor-pointer font-bold bg-transparent border-none p-0"
+          className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors font-medium"
           style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           onClick={() => {
             // Use Next.js navigation instead of window.location
             window.open('/register', '_blank');
           }}
         >
-          Register as Collector
-        </button> and start exploring art.
-      </p>
+          Register as a Collector
+        </button>
+      </div>
 
       <Separator className="my-12" />
 

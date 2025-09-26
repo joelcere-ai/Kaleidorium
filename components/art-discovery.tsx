@@ -986,21 +986,21 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         try {
           // Try to get collector data - if this fails, just continue with default artworks
           console.log('🔍 DEBUG: Attempting to fetch collector preferences for user:', user.id);
-          const { data: collector, error: collectorError } = await supabase
-            .from('Collectors')
+        const { data: collector, error: collectorError } = await supabase
+          .from('Collectors')
             .select('id, preferences')
-            .eq('user_id', user.id)
+          .eq('user_id', user.id)
             .maybeSingle();
 
-          if (collectorError) {
+        if (collectorError) {
             console.error('🚨 API ERROR: Error fetching collector preferences:', collectorError);
             console.error('🚨 API ERROR: Error details:', JSON.stringify(collectorError, null, 2));
             // Don't let this error block the app - just use default artworks
-          } else if (collector?.preferences) {
-            console.log('Found collector preferences, getting recommendations...');
+        } else if (collector?.preferences) {
+          console.log('Found collector preferences, getting recommendations...');
             try {
-              const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
-              setArtworks(recommendedArtworks);
+          const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
+          setArtworks(recommendedArtworks);
             } catch (recError) {
               console.error('Error getting recommendations, using default artworks:', recError);
               // Keep default artworks if recommendations fail
@@ -1640,7 +1640,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // AGGRESSIVE FIX: Don't show loading screen if we have any artworks
   if (!mounted || (loading && artworks.length === 0)) {
-    return (
+  return (
       <div className="flex flex-col min-h-screen">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
@@ -1862,7 +1862,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4">
               <div className="mb-6 flex flex-col justify-between items-start gap-4">
-                <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
+                <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
                 <Button onClick={() => setView("discover")}>Return to Discovery</Button>
               </div>
 
@@ -2050,7 +2050,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           // Desktop Collection Page
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
+              <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
               <Button onClick={() => setView("discover")}>Return to Discovery</Button>
             </div>
 
@@ -2063,7 +2063,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <Heart className="h-5 w-5 text-blue-600" />
                   <span className="font-semibold">Save Your Collection!</span>
                 </div>
-                <span className="text-sm">
+                <span className="text-sm" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   You've collected {collection.length} artwork{collection.length !== 1 ? 's' : ''}! Register now to save your collection permanently and get personalized recommendations.
                 </span>
                 <div className="flex gap-2">
@@ -2082,8 +2082,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded text-yellow-900 flex flex-col items-start gap-2 font-sans"
                 style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
               >
-                <span>Register to save your collection and preferences as you discover art.</span>
-                <Button onClick={() => router.push('/register')} variant="default" size="sm">Register</Button>
+                <span style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register to save your collection and preferences as you discover art.</span>
+                <Button onClick={() => router.push('/register')} variant="default" size="sm" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register</Button>
               </div>
             )}
             {(user ? dbCollection.length === 0 : collection.length === 0) ? (
@@ -2091,11 +2091,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 <div className="w-20 h-20 sm:w-24 sm:h-24 mb-6 rounded-full bg-muted flex items-center justify-center">
                   <Heart className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-medium mb-2">Your collection is empty</h3>
-                <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base">
+                <h3 className="text-lg sm:text-xl font-medium mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
+                <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.
                 </p>
-                <Button onClick={() => setView("discover")}>Discover Artwork</Button>
+                <Button onClick={() => setView("discover")} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Discover Artwork</Button>
               </div>
             ) : selectedCollectionArtwork ? (
               // Desktop detailed view of selected artwork
@@ -2276,8 +2276,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     <CardContent className="p-3 sm:p-4">
                       <div className="flex justify-between items-start gap-2">
                         <div className="min-w-0">
-                          <h3 className="font-medium font-serif text-base sm:text-lg truncate">{artwork.title}</h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground truncate">{artwork.artist}</p>
+                          <h3 className="font-medium font-serif text-base sm:text-lg truncate" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>{artwork.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground truncate" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.artist}</p>
                         </div>
                         <Tooltip content={artwork.link ? "You will be redirected to the artwork page on the artist's website." : "No artwork URL provided."}>
                           <span>
@@ -2509,7 +2509,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Submit your portfolio and join our curated artist community
-                  </p>
+              </p>
             </div>
 
             <Card className="mb-8">
@@ -2760,7 +2760,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             
             {/* Profile Content */}
             <div className="flex-1 overflow-y-auto">
-              <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
+        <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
             </div>
           </div>
         ) : (
