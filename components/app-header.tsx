@@ -89,9 +89,18 @@ function AppHeaderContent({
   }, [showFilters]);
 
   const handleNav = (target: "discover" | "collection" | "for-artists" | "about") => {
+    console.log('🔧 handleNav DEBUG:', {
+      target,
+      pathname,
+      hasSetView: !!setView,
+      searchParams: searchParams.toString()
+    });
+    
     if (pathname === "/" && setView) {
+      console.log('🔧 Using setView for:', target);
       setView(target);
     } else {
+      console.log('🔧 Using router.push for:', target);
       router.push(`/?view=${target}`);
     }
     setIsMobileMenuOpen(false);
