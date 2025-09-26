@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
+import { Button } from "@/components/ui/button";
+import { Menu, User } from "lucide-react";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">("contact");
@@ -11,7 +13,18 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleNavigate = (nextView: typeof view) => {
     if (nextView === "contact") return;
@@ -66,7 +79,30 @@ export default function ContactPage() {
 
   return (
     <div>
-      <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
+      {isMobile ? (
+        // Mobile Navigation Header
+        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/?view=discover")}
+            className="text-black hover:bg-gray-100"
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/?view=profile")}
+            className="text-black hover:bg-gray-100"
+          >
+            <User className="w-6 h-6" />
+          </Button>
+        </div>
+      ) : (
+        <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
+      )}
       <div className="container mx-auto px-4 py-12 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

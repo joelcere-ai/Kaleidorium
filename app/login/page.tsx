@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Menu, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,9 +14,20 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const { toast } = useToast()
   const router = useRouter()
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,16 +72,41 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      {isMobile ? (
+        // Mobile Navigation Header
+        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/?view=discover")}
+            className="text-black hover:bg-gray-100"
+          >
+            <Menu className="w-6 h-6" />
+          </Button>
+          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/?view=profile")}
+            className="text-black hover:bg-gray-100"
+          >
+            <User className="w-6 h-6" />
+          </Button>
+        </div>
+      ) : (
+        <AppHeader />
+      )}
       <div className="container max-w-[800px] py-10">
-        <Button
-          variant="ghost"
-          className="mb-8"
-          onClick={() => router.push("/?view=discover", { scroll: false })}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Discovery
-        </Button>
+        {!isMobile && (
+          <Button
+            variant="ghost"
+            className="mb-8"
+            onClick={() => router.push("/?view=discover", { scroll: false })}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Discovery
+          </Button>
+        )}
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
