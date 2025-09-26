@@ -503,10 +503,38 @@ h3[style*="Times New Roman"] {
   color: black !important;
 }
 
-[data-view="for-artists"] p,
-[data-view="for-artists"] li {
+/* 🔥 OVERRIDE GLOBAL STYLES FOR FOR-ARTISTS PAGE */
+[data-view="for-artists"] ul,
+[data-view="for-artists"] ol,
+[data-view="for-artists"] li,
+[data-view="for-artists"] p {
   font-family: Arial, sans-serif !important;
   font-size: 14px !important;
   color: black !important;
+  line-height: 1.4 !important;
+  font-weight: normal !important;
+}
+
+[data-view="for-artists"] h1,
+[data-view="for-artists"] h2,
+[data-view="for-artists"] h3 {
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: black !important;
+  line-height: 1.2 !important;
+}
+
+/* Force override of Tailwind @apply directives */
+[data-view="for-artists"] ul[style*="font-size"],
+[data-view="for-artists"] li[style*="font-size"],
+[data-view="for-artists"] p[style*="font-size"] {
+  font-size: 14px !important;
+}
+
+[data-view="for-artists"] h1[style*="font-size"],
+[data-view="for-artists"] h2[style*="font-size"], 
+[data-view="for-artists"] h3[style*="font-size"] {
+  font-size: 16px !important;
 }
 
