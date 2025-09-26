@@ -89,14 +89,9 @@ function AppHeaderContent({
   }, [showFilters]);
 
   const handleNav = (target: "discover" | "collection" | "for-artists" | "about") => {
-    console.log('🔧 handleNav called:', target, 'setView exists:', !!setView);
-    if (setView) {
-      // If we have setView, use it (we're in the main app)
-      console.log('🔧 Using setView to navigate to:', target);
+    if (pathname === "/" && setView) {
       setView(target);
     } else {
-      // Otherwise navigate to the main page with the view
-      console.log('🔧 Using router.push to navigate to:', target);
       router.push(`/?view=${target}`);
     }
     setIsMobileMenuOpen(false);
@@ -171,26 +166,18 @@ function AppHeaderContent({
 
   return (
     <header className="border-b bg-background relative app-header z-10">
-      <div className="grid grid-cols-3 items-center p-4 md:p-6 gap-8">
-        {/* Logo - fixed left column */}
-        <div className="flex items-center justify-start">
-          <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
-            <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
-          </Link>
-        </div>
+      <div className="flex items-center justify-between p-4 md:p-6">
+        {/* Logo with improved mobile spacing */}
+        <Link href="/" className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0">
+          <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
+        </Link>
 
-        {/* Empty middle column for spacing */}
-        <div></div>
-
-        {/* Desktop Navigation - fixed right column */}
-        <nav className="hidden md:flex items-center space-x-8 justify-end">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-8">
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={(e) => {
-              console.log('🔧 Discover button clicked', e);
-              handleNav("discover");
-            }}
+            onClick={() => handleNav("discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -211,10 +198,7 @@ function AppHeaderContent({
           <Button 
             variant="ghost" 
             className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
-            onClick={(e) => {
-              console.log('🔧 Collection button clicked', e);
-              handleNav("collection");
-            }}
+            onClick={() => handleNav("collection")}
           >
             <Heart className="w-4 h-4 mr-1" />
             Collection
