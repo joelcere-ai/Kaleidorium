@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase"
 import type { ArtSpendingRange } from "@/lib/supabase-types"
 import { ProfilePictureUpload } from "@/components/profile-picture-upload"
 import { uploadProfilePicture, type OptimizedImage } from "@/lib/image-utils"
+import { MobileHeader } from "@/components/mobile-header"
 
 const spendingRanges: { value: ArtSpendingRange; label: string }[] = [
   { value: "0-999", label: "$0 - $999" },
@@ -326,6 +327,7 @@ export default function RegisterPage() {
   const [artTypes, setArtTypes] = useState<string[]>([])
   const [artStyles, setArtStyles] = useState<string[]>([])
   const [artTypeInput, setArtTypeInput] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
   const [artStyleInput, setArtStyleInput] = useState("")
   const [artSpendingRange, setArtSpendingRange] = useState<ArtSpendingRange>("0-999")
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -335,6 +337,16 @@ export default function RegisterPage() {
   const [artTypeSuggestionIdx, setArtTypeSuggestionIdx] = useState(-1);
   const [artStyleSuggestionIdx, setArtStyleSuggestionIdx] = useState(-1);
   const [profileImage, setProfileImage] = useState<OptimizedImage | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -487,15 +499,20 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {isMobile ? (
+        <MobileHeader currentPage="register" />
+      ) : null}
       <div className="container max-w-[800px] py-10">
-        <Button
-          variant="ghost"
-          className="mb-8"
-          onClick={() => router.push("/?view=discover")}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Discovery
-        </Button>
+        {!isMobile && (
+          <Button
+            variant="ghost"
+            className="mb-8"
+            onClick={() => router.push("/?view=discover")}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Discovery
+          </Button>
+        )}
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">

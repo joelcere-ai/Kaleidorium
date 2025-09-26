@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, Search, Heart, Palette, Info, Mail, LogIn } from "lucide-react";
 
 interface MobileHeaderProps {
-  currentPage?: "discover" | "collection" | "for-artists" | "about" | "contact" | "login" | "profile";
+  currentPage?: "discover" | "collection" | "for-artists" | "about" | "contact" | "login" | "profile" | "register";
 }
 
 export function MobileHeader({ currentPage }: MobileHeaderProps) {
