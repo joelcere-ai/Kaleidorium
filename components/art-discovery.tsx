@@ -13,6 +13,7 @@ import { initEmailJS, sendArtistSubmission } from "@/lib/emailjs"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { MobileHeader } from "@/components/mobile-header"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
 import { AppHeader, type FilterState } from "@/components/app-header"
@@ -1777,21 +1778,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile About Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            {/* Mobile Header */}
-            <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-              <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  console.log('Mobile hamburger menu clicked!');
-                  setShowMenuModal(true);
-                }}
-                className="text-black hover:bg-gray-100"
-              >
-                <Menu className="w-6 h-6" />
-              </Button>
-            </div>
+            <MobileHeader currentPage="about" />
             
             {/* About Content */}
             <div className="flex-1 overflow-y-auto">
@@ -1843,21 +1830,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Collection Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            {/* Mobile Header */}
-            <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-              <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  console.log('Mobile hamburger menu clicked!');
-                  setShowMenuModal(true);
-                }}
-                className="text-black hover:bg-gray-100"
-              >
-                <Menu className="w-6 h-6" />
-              </Button>
-            </div>
+            <MobileHeader currentPage="collection" />
             
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4">
@@ -2298,21 +2271,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile For Artists Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col for-artists-page" data-view="for-artists">
-            {/* Mobile Header */}
-            <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
-              <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  console.log('Mobile hamburger menu clicked!');
-                  setShowMenuModal(true);
-                }}
-                className="text-black hover:bg-gray-100"
-              >
-                <Menu className="w-6 h-6" />
-              </Button>
-            </div>
+            <MobileHeader currentPage="for-artists" />
             
             {/* For Artists Content */}
             <div className="flex-1 overflow-y-auto">
