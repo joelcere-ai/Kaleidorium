@@ -2593,9 +2593,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <Button 
                     onClick={() => router.push('/for-artists/register')}
                     className="w-full bg-black text-white hover:bg-gray-800"
-                    style={{color: 'white', backgroundColor: 'black'}}
+                    style={{
+                      color: 'white !important', 
+                      backgroundColor: 'black !important',
+                      borderColor: 'black !important'
+                    }}
                   >
-                    Register as an Artist
+                    <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as an Artist</span>
                   </Button>
                 </div>
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">

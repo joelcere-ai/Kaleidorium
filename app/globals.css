@@ -577,3 +577,18 @@ h3[style*="Times New Roman"] {
   display: list-item !important;
 }
 
+/* 🚨 FORCE REGISTER BUTTON TEXT TO WHITE */
+[data-view="for-artists"] button,
+[data-view="for-artists"] .w-full button,
+[data-view="for-artists"] button span {
+  color: white !important;
+  background-color: black !important;
+}
+
+/* Target Register as Artist button specifically */
+button:contains("Register as an Artist"),
+button[class*="w-full"] {
+  color: white !important;
+  background-color: black !important;
+}
+
