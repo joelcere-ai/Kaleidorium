@@ -74,6 +74,7 @@ export default function ContactPage() {
             <input
               type="email"
               className="border rounded px-3 py-2 w-full"
+              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -84,6 +85,7 @@ export default function ContactPage() {
             <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Subject</label>
             <input
               className="border rounded px-3 py-2 w-full"
+              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
               value={subject}
               onChange={e => setSubject(e.target.value)}
               required
@@ -94,6 +96,7 @@ export default function ContactPage() {
             <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Message</label>
             <textarea
               className="border rounded px-3 py-2 w-full"
+              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
               value={message}
               onChange={e => setMessage(e.target.value)}
               required
@@ -110,7 +113,7 @@ export default function ContactPage() {
             {loading ? "Sending..." : "Submit"}
           </button>
         </form>
-        {status && <div className="mt-4 text-center text-blue-700">{status}</div>}
+        {status && <div className="mt-4 text-center text-blue-700" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{status}</div>}
       </div>
     </div>
   );
