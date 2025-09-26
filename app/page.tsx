@@ -1,20 +1,29 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 
 function HomeContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialView = (searchParams.get("view") as "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") || "discover";
-  const [view, setView] = useState<typeof initialView>(initialView);
+  const [view, setViewState] = useState<typeof initialView>(initialView);
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
+
+  // Create a setView function that updates both state and URL
+  const setView = (newView: typeof initialView) => {
+    console.log('🔧 setView called with:', newView);
+    setViewState(newView);
+    router.push(`/?view=${newView}`, { scroll: false });
+  };
 
   // Update view if query param changes (e.g., via navigation)
   useEffect(() => {
     const paramView = (searchParams.get("view") as typeof view) || "discover";
     if (paramView !== view) {
-      setView(paramView);
+      console.log('🔧 URL param changed, updating view from', view, 'to', paramView);
+      setViewState(paramView);
     }
   }, [searchParams, view]);
 
