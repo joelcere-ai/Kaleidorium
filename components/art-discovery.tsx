@@ -2333,13 +2333,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                  <ul className="list-disc pl-6 mb-4">
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Upload your artwork and description</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
-                  </ul>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
@@ -2493,13 +2486,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                   </p>
-                  <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                  <ul className="list-disc pl-6 mb-4">
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Upload your artwork and description</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>• You keep control. No commissions. No middlemen. No gatekeeping.</li>
-                  </ul>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     Early access artists get 12 months of free uploads.
                   </p>
