@@ -161,7 +161,7 @@ export function UniversalAppHeader({
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-background absolute w-full z-50 shadow-lg">
+        <div className="md:hidden border-t bg-background absolute w-full z-[60] shadow-lg">
           <div className="flex flex-col space-y-2 p-4">
             <Button
               variant="ghost"
