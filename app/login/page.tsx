@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
-import { AppHeader } from "@/components/app-header"
-import { MobileHeader } from "@/components/mobile-header"
+import { UniversalAppHeader } from "@/components/universal-app-header"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -73,11 +72,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {isMobile ? (
-        <MobileHeader currentPage="login" />
-      ) : (
-        <AppHeader />
-      )}
+      <UniversalAppHeader currentPage="login" />
       <div className="container max-w-[800px] py-10">
         {!isMobile && (
           <Button

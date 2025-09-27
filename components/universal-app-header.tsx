@@ -7,7 +7,7 @@ import { Menu, X, User, Search, Heart, Palette, Info, Mail, AtSign } from "lucid
 import { supabase } from "@/lib/supabase";
 
 interface UniversalAppHeaderProps {
-  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact";
+  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register";
   collectionCount?: number;
   onFilterChange?: (filters: any) => void;
   onClearFilters?: () => void;
