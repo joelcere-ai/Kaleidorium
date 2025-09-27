@@ -1337,7 +1337,7 @@ export default function MobileCardStack({
                     <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
                     <div className="flex justify-center gap-2">
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black transition-all duration-200"
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
@@ -1350,7 +1350,7 @@ export default function MobileCardStack({
                         </div>
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black transition-all duration-200"
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
@@ -1363,7 +1363,7 @@ export default function MobileCardStack({
                         </div>
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black transition-all duration-200"
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
@@ -1376,7 +1376,7 @@ export default function MobileCardStack({
                         </div>
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black transition-all duration-200"
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                         onClick={() => {
                           const url = encodeURIComponent(window.location.href);
                           const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);

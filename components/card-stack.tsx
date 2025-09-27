@@ -319,7 +319,7 @@ export default function CardStack({
                         <p className="text-sm font-sans text-gray-600 mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Share this artwork</p>
                         <div className="flex justify-center gap-2">
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-all duration-200"
+                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
                               const url = encodeURIComponent(window.location.href);
                               const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
@@ -330,7 +330,7 @@ export default function CardStack({
                             <XIcon className="w-5 h-5 text-black" />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-all duration-200"
+                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
                               const url = encodeURIComponent(window.location.href);
                               const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
@@ -341,7 +341,7 @@ export default function CardStack({
                             <Facebook className="w-5 h-5 text-black" />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-all duration-200"
+                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
                               const url = encodeURIComponent(window.location.href);
                               const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
@@ -352,7 +352,7 @@ export default function CardStack({
                             <Instagram className="w-5 h-5 text-black" />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-all duration-200"
+                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
                               const url = encodeURIComponent(window.location.href);
                               const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);

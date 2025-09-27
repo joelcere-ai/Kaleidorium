@@ -29,7 +29,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           <div className="flex-shrink-0">
             <Button
               variant="ghost"
-              className="text-xl font-bold text-black hover:text-gray-600"
+              className="font-serif text-xl font-semibold tracking-wide text-black hover:text-gray-600"
               onClick={() => handleNavigation("/?view=discover")}
             >
               Kaleidorium
@@ -40,9 +40,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           <nav className="hidden md:flex space-x-8">
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("discover") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/?view=discover")}
             >
               <Search className="mr-2 h-4 w-4" />
@@ -51,9 +49,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("collection") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("collection") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/collection")}
             >
               <Heart className="mr-2 h-4 w-4" />
@@ -62,9 +58,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("for-artists") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/for-artists")}
             >
               <Palette className="mr-2 h-4 w-4" />
@@ -73,9 +67,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("about") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/?view=about")}
             >
               <Info className="mr-2 h-4 w-4" />
@@ -84,9 +76,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("contact") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("contact") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/contact")}
             >
               <Mail className="mr-2 h-4 w-4" />
@@ -98,9 +88,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
-              className={`text-sm font-medium hover:text-gray-600 ${
-                isSelected("profile") ? "text-black font-semibold" : "text-gray-700"
-              }`}
+              className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
               onClick={() => handleNavigation("/profile")}
             >
               <User className="mr-2 h-4 w-4" />

@@ -94,7 +94,7 @@ function CollectionContent() {
         </div>
 
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">My Collection ({collectionCount})</h1>
+          <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
         </div>
 
         {collection.length === 0 ? (
