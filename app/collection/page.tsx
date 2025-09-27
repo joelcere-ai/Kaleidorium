@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
 import { MobileHeader } from "@/components/mobile-header";
-import { MobileCardStack } from "@/components/mobile-card-stack";
+import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
