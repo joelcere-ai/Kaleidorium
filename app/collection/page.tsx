@@ -86,8 +86,6 @@ function CollectionContent() {
         <div className="flex-1 overflow-y-auto">
           <MobileCardStack
             artworks={[]}
-            currentIndex={0}
-            onNext={() => {}}
             onLike={() => {}}
             onDislike={() => {}}
             onAddToCollection={() => {}}
