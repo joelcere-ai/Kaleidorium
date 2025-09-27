@@ -1749,8 +1749,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             </div>
           </div>
         ) : (
-          // Desktop About Page
-          <AboutContent setView={setView} />
+          // Desktop About Page - header is already rendered above
+          <div className="flex-1">
+            <AboutContent setView={setView} />
+          </div>
         )
       ) : view === "discover" ? (
         // Mobile vs Desktop conditional rendering
