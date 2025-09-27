@@ -48,10 +48,10 @@ function ProfileContent() {
 export default function Profile() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
-          <p className="text-lg text-gray-700">Your Personal Art Curator</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
+          <p className="text-lg text-white">Your Personal Art Curator</p>
         </div>
       </div>
     }>

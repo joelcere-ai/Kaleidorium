@@ -1644,16 +1644,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   // AGGRESSIVE FIX: Don't show loading screen if we have any artworks
   if (!mounted || (loading && artworks.length === 0)) {
   return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-black">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
             {loading ? (
               <div>
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
-                  <p className="text-lg text-gray-700">Your Personal Art Curator</p>
+                  <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
+                  <p className="text-lg text-white">Your Personal Art Curator</p>
                 </div>
-                <div className="text-sm text-gray-600 mb-4">
+                <div className="text-sm text-gray-300 mb-4">
                   <p>🚨 Emergency timeout: 10s for data, 15s total</p>
                   <p className="mt-2">If this takes more than 15 seconds, something is wrong</p>
                 </div>
