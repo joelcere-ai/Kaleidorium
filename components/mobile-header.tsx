@@ -29,7 +29,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/?view=profile")}
+          onClick={() => router.push("/profile")}
           className="text-black hover:bg-gray-100"
         >
           <User className="w-6 h-6" />
@@ -111,7 +111,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/?view=profile");
+                  router.push("/profile");
                   setShowMenuModal(false);
                 }}
               >
