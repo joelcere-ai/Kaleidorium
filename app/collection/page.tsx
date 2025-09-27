@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { NewMobileHeader } from "@/components/new-mobile-header";
+import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -79,7 +80,12 @@ function CollectionContent() {
 
   return (
     <div className="min-h-screen">
-      <NewMobileHeader currentPage="collection" collectionCount={collectionCount} />
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="collection" collectionCount={collectionCount} />
+      ) : (
+        <DesktopHeader currentPage="collection" collectionCount={collectionCount} />
+      )}
       <div className="container mx-auto px-4 py-16">
         <div className="mb-6">
           <Button variant="ghost" onClick={handleReturnToDiscover}>

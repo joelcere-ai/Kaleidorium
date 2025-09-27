@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { NewMobileHeader } from "@/components/new-mobile-header";
+import { DesktopHeader } from "@/components/desktop-header";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("about");
@@ -76,7 +77,12 @@ export default function ContactPage() {
 
   return (
     <div>
-      <NewMobileHeader currentPage="contact" collectionCount={collectionCount} />
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="contact" collectionCount={collectionCount} />
+      ) : (
+        <DesktopHeader currentPage="contact" collectionCount={collectionCount} />
+      )}
       <div className="container mx-auto px-4 py-16 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

@@ -3,6 +3,7 @@
 import { ProfilePage } from '@/components/profile-page';
 import { useRouter } from 'next/navigation';
 import { NewMobileHeader } from '@/components/new-mobile-header';
+import { DesktopHeader } from '@/components/desktop-header';
 import { useState, Suspense, useEffect } from 'react';
 
 function ProfileContent() {
@@ -37,7 +38,12 @@ function ProfileContent() {
   
   return (
     <div className="min-h-screen">
-      <NewMobileHeader currentPage="profile" collectionCount={collectionCount} />
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="profile" collectionCount={collectionCount} />
+      ) : (
+        <DesktopHeader currentPage="profile" collectionCount={collectionCount} />
+      )}
       <div className="flex-1 overflow-y-auto pt-16">
         <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
       </div>

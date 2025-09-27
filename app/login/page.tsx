@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
 import { NewMobileHeader } from "@/components/new-mobile-header"
+import { DesktopHeader } from "@/components/desktop-header"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -72,18 +73,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <NewMobileHeader currentPage="login" />
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="login" />
+      ) : (
+        <DesktopHeader currentPage="login" />
+      )}
+      
       <div className="container max-w-[800px] py-20">
-        {!isMobile && (
-          <Button
-            variant="ghost"
-            className="mb-8"
-            onClick={() => router.push("/?view=discover", { scroll: false })}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Discovery
-          </Button>
-        )}
 
         <div className="grid gap-6">
           <div className="flex flex-col items-center text-center">
