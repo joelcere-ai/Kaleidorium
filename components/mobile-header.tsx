@@ -67,7 +67,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/?view=collection");
+                  router.push("/collection");
                   setShowMenuModal(false);
                 }}
               >
