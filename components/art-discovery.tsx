@@ -13,7 +13,7 @@ import { initEmailJS, sendArtistSubmission } from "@/lib/emailjs"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { MobileHeader } from "@/components/mobile-header"
+import { UnifiedMobileHeader } from "@/components/unified-mobile-header"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
 import { AppHeader, type FilterState } from "@/components/app-header"
@@ -39,14 +39,14 @@ import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
 
 interface AppHeaderProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact"
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void
+  view: "discover" | "collection" | "profile" | "for-artists" | "about"
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void
   collectionCount: number
 }
 
 interface ArtDiscoveryProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact";
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
+  view: "discover" | "collection" | "profile" | "for-artists" | "about";
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
 }
@@ -1778,7 +1778,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile About Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <MobileHeader currentPage="about" />
+            <UnifiedMobileHeader currentPage="about" />
             
             {/* About Content */}
             <div className="flex-1 overflow-y-auto">
@@ -1830,7 +1830,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Collection Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <MobileHeader currentPage="collection" />
+            <UnifiedMobileHeader currentPage="collection" />
             
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4">
@@ -2271,7 +2271,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile For Artists Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col for-artists-page" data-view="for-artists">
-            <MobileHeader currentPage="for-artists" />
+            <UnifiedMobileHeader currentPage="for-artists" />
             
             {/* For Artists Content */}
             <div className="flex-1 overflow-y-auto">
@@ -2696,7 +2696,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Profile Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <MobileHeader currentPage="profile" />
+            <UnifiedMobileHeader currentPage="profile" />
             
             {/* Profile Content */}
             <div className="flex-1 overflow-y-auto">

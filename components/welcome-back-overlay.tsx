@@ -104,3 +104,4 @@ export function WelcomeBackOverlay({ show, newArtworkCount, onDismiss }: Welcome
     </div>
   )
 }
+

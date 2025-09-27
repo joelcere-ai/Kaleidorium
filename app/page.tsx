@@ -6,7 +6,7 @@ import ArtDiscovery from "@/components/art-discovery";
 function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialView = (searchParams.get("view") as "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") || "discover";
+  const initialView = (searchParams.get("view") as "discover" | "collection" | "profile" | "for-artists" | "about") || "discover";
   const [view, setViewState] = useState<typeof initialView>(initialView);
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);

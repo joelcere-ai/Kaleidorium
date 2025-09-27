@@ -34,3 +34,4 @@ WITH CHECK (
 -- Grant necessary permissions
 GRANT ALL ON "public"."Invitations" TO authenticated;
 GRANT ALL ON "public"."Invitations" TO service_role;
+

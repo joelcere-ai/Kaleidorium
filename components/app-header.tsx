@@ -25,8 +25,8 @@ function AppHeaderContent({
   isFiltering = false,
   availableTags
 }: { 
-  view?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact", 
-  setView?: (v: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void, 
+  view?: "discover" | "collection" | "profile" | "for-artists" | "about", 
+  setView?: (v: "discover" | "collection" | "profile" | "for-artists" | "about") => void, 
   collectionCount?: number,
   onFilterChange?: (filters: FilterState) => void,
   onClearFilters?: () => void,
@@ -532,8 +532,8 @@ function AppHeaderContent({
 }
 
 export function AppHeader(props: { 
-  view?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact", 
-  setView?: (v: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void, 
+  view?: "discover" | "collection" | "profile" | "for-artists" | "about", 
+  setView?: (v: "discover" | "collection" | "profile" | "for-artists" | "about") => void, 
   collectionCount?: number,
   onFilterChange?: (filters: FilterState) => void,
   onClearFilters?: () => void,

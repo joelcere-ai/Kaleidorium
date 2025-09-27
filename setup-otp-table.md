@@ -73,3 +73,4 @@ After setting up the table and EmailJS template:
 5. Set your new password
 
 The system will now work without Supabase magic links!
+

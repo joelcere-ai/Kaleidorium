@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
-import { MobileHeader } from "@/components/mobile-header";
+import { UnifiedMobileHeader } from "@/components/unified-mobile-header";
 
 export default function ContactPage() {
-  const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">("contact");
+  const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("about");
   const [collectionCount, setCollectionCount] = useState(0);
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -26,7 +26,6 @@ export default function ContactPage() {
   }, []);
 
   const handleNavigate = (nextView: typeof view) => {
-    if (nextView === "contact") return;
     router.push(`/?view=${nextView}`, { scroll: false });
   };
 
@@ -79,7 +78,7 @@ export default function ContactPage() {
   return (
     <div>
       {isMobile ? (
-        <MobileHeader currentPage="contact" />
+        <UnifiedMobileHeader currentPage="contact" />
       ) : (
         <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
       )}

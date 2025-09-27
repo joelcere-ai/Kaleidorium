@@ -22,3 +22,4 @@ CREATE POLICY "Allow OTP creation" ON password_reset_otps
 -- Allow anyone to read and update OTPs (for verification)
 CREATE POLICY "Allow OTP verification" ON password_reset_otps
   FOR ALL USING (true);
+

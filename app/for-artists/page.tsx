@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
-import { MobileHeader } from "@/components/mobile-header";
+import { UnifiedMobileHeader } from "@/components/unified-mobile-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -91,7 +91,7 @@ function ForArtistsContent() {
   if (isMobile) {
     return (
       <div className="min-h-screen">
-        <MobileHeader currentPage="for-artists" />
+        <UnifiedMobileHeader currentPage="for-artists" />
         <div className="flex-1 overflow-y-auto">
           <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">

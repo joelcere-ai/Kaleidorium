@@ -3,7 +3,7 @@
 import { ProfilePage } from '@/components/profile-page';
 import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
-import { MobileHeader } from '@/components/mobile-header';
+import { UnifiedMobileHeader } from '@/components/unified-mobile-header';
 import { useState, Suspense, useEffect } from 'react';
 
 function ProfileContent() {
@@ -40,7 +40,7 @@ function ProfileContent() {
   if (isMobile) {
     return (
       <div className="min-h-screen">
-        <MobileHeader currentPage="profile" />
+        <UnifiedMobileHeader currentPage="profile" />
         <div className="flex-1 overflow-y-auto">
           <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
         </div>
