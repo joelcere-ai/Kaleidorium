@@ -1649,7 +1649,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           <div className="text-center max-w-md">
             {loading ? (
               <div>
-                <p className="mb-4">Loading artworks...</p>
+                <div className="mb-8">
+                  <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
+                  <p className="text-lg text-gray-700">Your Personal Art Curator</p>
+                </div>
                 <div className="text-sm text-gray-600 mb-4">
                   <p>🚨 Emergency timeout: 10s for data, 15s total</p>
                   <p className="mt-2">If this takes more than 15 seconds, something is wrong</p>
