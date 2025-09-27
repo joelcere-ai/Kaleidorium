@@ -60,7 +60,7 @@ export function UniversalAppHeader({
   };
 
   return (
-    <header className="border-b bg-background sticky top-0 z-50">
+    <header className="border-b bg-background sticky top-0 z-50 relative">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <div className="flex items-center">
