@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
-import { UnifiedMobileHeader } from "@/components/unified-mobile-header";
+import { UniversalAppHeader } from "@/components/universal-app-header";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("about");
@@ -77,11 +76,7 @@ export default function ContactPage() {
 
   return (
     <div>
-      {isMobile ? (
-        <UnifiedMobileHeader currentPage="contact" />
-      ) : (
-        <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
-      )}
+      <UniversalAppHeader currentPage="contact" collectionCount={collectionCount} />
       <div className="container mx-auto px-4 py-12 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

@@ -2,8 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
-import { UnifiedMobileHeader } from "@/components/unified-mobile-header";
+import { UniversalAppHeader } from "@/components/universal-app-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,39 +77,9 @@ function CollectionContent() {
     router.push(`/?view=${newView}`);
   };
 
-  // Render mobile version with MobileHeader and MobileCardStack
-  if (isMobile) {
-    return (
-      <div className="min-h-screen">
-        <UnifiedMobileHeader currentPage="collection" />
-        <div className="flex-1 overflow-y-auto">
-          <MobileCardStack
-            artworks={[]}
-            onLike={() => {}}
-            onDislike={() => {}}
-            onAddToCollection={() => {}}
-            onLoadMore={() => {}}
-            setView={handleSetView}
-            view="collection"
-            collection={collection}
-            onRemoveFromCollection={handleRemoveFromCollection}
-            onFilterChange={() => {}}
-            onClearFilters={() => {}}
-            showFallbackMessage={false}
-            isLandscape={false}
-            isPortrait={true}
-            screenWidth={0}
-            screenHeight={0}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Desktop version
   return (
     <div className="min-h-screen">
-      <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
+      <UniversalAppHeader currentPage="collection" collectionCount={collectionCount} />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Button variant="ghost" onClick={handleReturnToDiscover}>

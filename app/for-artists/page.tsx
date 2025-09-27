@@ -2,8 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/app-header";
-import { UnifiedMobileHeader } from "@/components/unified-mobile-header";
+import { UniversalAppHeader } from "@/components/universal-app-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -87,13 +86,11 @@ function ForArtistsContent() {
     });
   };
 
-  // Render mobile version with MobileHeader
-  if (isMobile) {
-    return (
-      <div className="min-h-screen">
-        <UnifiedMobileHeader currentPage="for-artists" />
-        <div className="flex-1 overflow-y-auto">
-          <div className="container mx-auto px-4 py-8 max-w-3xl">
+  return (
+    <div className="min-h-screen">
+      <UniversalAppHeader currentPage="for-artists" collectionCount={collectionCount} />
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">
               <h1 
                 className="text-base font-serif font-bold text-black mb-8"
@@ -192,116 +189,6 @@ function ForArtistsContent() {
         </div>
       </div>
     );
-  }
-
-  // Desktop version
-  return (
-    <div className="min-h-screen">
-      <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <div className="mb-6">
-          <Button variant="ghost" onClick={handleReturnToDiscover}>
-            ← Back to Discovery
-          </Button>
-        </div>
-
-        <div className="mb-8">
-          <h1 
-            className="text-3xl font-serif font-bold text-black mb-8"
-            style={{fontFamily: 'Times New Roman, serif'}}
-          >
-            Be Discovered. Not Buried.
-          </h1>
-          <p className="text-lg font-sans text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
-            You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
-          </p>
-          <p className="text-lg font-sans text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
-            We're not a gallery, marketplace, or agent.
-          </p>
-          <p className="text-lg font-sans text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
-            We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
-          </p>
-          
-          <p className="text-lg font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-          <ul className="list-disc pl-6 mb-4">
-            <li className="text-lg font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>Upload your artwork and description</li>
-            <li className="text-lg font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>Our algorithm shows it to collectors whose tastes match your style</li>
-            <li className="text-lg font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-            <li className="text-lg font-sans text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>You keep control. No commissions. No middlemen. No gatekeeping.</li>
-          </ul>
-          
-          <p className="text-lg font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>Early access artists get 12 months of free uploads.</p>
-          <p className="text-lg font-sans font-bold text-black mb-8" style={{fontFamily: 'Arial, sans-serif'}}>Submit your portfolio and join our curated artist community</p>
-        </div>
-
-        <Card>
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-black mb-4">Submit Your Portfolio</h2>
-            <p className="text-gray-600 mb-6">Please fill out the form below to submit your portfolio for review.</p>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">Portfolio Link</label>
-                <input
-                  type="url"
-                  name="portfolioLink"
-                  value={formData.portfolioLink}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                  placeholder="https://yourportfolio.com"
-                  required
-                />
-              </div>
-              
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-black text-white hover:bg-gray-800 py-3 text-lg"
-              >
-                {isSubmitting ? "Submitting..." : "Submit Portfolio"}
-              </Button>
-            </form>
-            
-            {submitStatus && (
-              <div className={`mt-6 p-4 rounded-md text-lg ${
-                submitStatus.includes("Thank you") 
-                  ? "bg-green-100 text-green-800" 
-                  : "bg-red-100 text-red-800"
-              }`}>
-                {submitStatus}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
 }
 
 export default function ForArtists() {

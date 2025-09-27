@@ -2,8 +2,7 @@
 
 import { ProfilePage } from '@/components/profile-page';
 import { useRouter } from 'next/navigation';
-import { AppHeader } from '@/components/app-header';
-import { UnifiedMobileHeader } from '@/components/unified-mobile-header';
+import { UniversalAppHeader } from '@/components/universal-app-header';
 import { useState, Suspense, useEffect } from 'react';
 
 function ProfileContent() {
@@ -36,22 +35,12 @@ function ProfileContent() {
     router.push(`/?view=${nextView}`);
   };
   
-  // Render mobile version with MobileHeader
-  if (isMobile) {
-    return (
-      <div className="min-h-screen">
-        <UnifiedMobileHeader currentPage="profile" />
-        <div className="flex-1 overflow-y-auto">
-          <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen">
-      <AppHeader view={view} setView={handleNavigate} collectionCount={collectionCount} />
-      <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
+      <UniversalAppHeader currentPage="profile" collectionCount={collectionCount} />
+      <div className="flex-1 overflow-y-auto">
+        <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
+      </div>
     </div>
   );
 }
