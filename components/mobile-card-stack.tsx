@@ -606,8 +606,8 @@ export default function MobileCardStack({
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
-                    setView("contact")
-                    setShowMenuModal(false)
+                    router.push("/contact");
+                    setShowMenuModal(false);
                   }}
                 >
                   <Mail className="mr-3 h-5 w-5" />
