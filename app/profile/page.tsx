@@ -27,8 +27,12 @@ function ProfileContent() {
     router.push('/');
   };
 
-  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about") => {
+  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
     if (nextView === "profile") return;
+    if (nextView === "contact") {
+      router.push("/contact");
+      return;
+    }
     router.push(`/?view=${nextView}`);
   };
   
