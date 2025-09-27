@@ -25,7 +25,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
     if (page === "collection" && pathname === "/collection") return true;
     if (page === "profile" && pathname === "/profile") return true;
     if (page === "for-artists" && pathname === "/for-artists") return true;
-    if (page === "about" && pathname === "/" && new URLSearchParams(window.location.search).get("view") === "about") return true;
+    if (page === "about" && pathname === "/about") return true;
     if (page === "contact" && pathname === "/contact") return true;
     return false;
   };
@@ -122,7 +122,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("about") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("/?view=about")}
+                onClick={() => handleNavigation("/about")}
               >
                 <Info className="mr-3 h-5 w-5" />
                 For Collectors

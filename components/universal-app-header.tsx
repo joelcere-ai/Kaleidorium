@@ -54,7 +54,7 @@ export function UniversalAppHeader({
     if (pathname === "/collection") return page === "collection";
     if (pathname === "/profile") return page === "profile";
     if (pathname === "/for-artists") return page === "for-artists";
-    if (pathname.includes("?view=about")) return page === "about";
+    if (pathname === "/about") return page === "about";
     if (pathname === "/contact") return page === "contact";
     return false;
   };
@@ -112,7 +112,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=about")}
+            onClick={() => handleNavigation("/about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
@@ -206,7 +206,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("about") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=about")}
+              onClick={() => handleNavigation("/about")}
             >
               <Info className="w-4 h-4 mr-2" />
               For Collectors
