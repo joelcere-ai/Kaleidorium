@@ -381,7 +381,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // Function to get artwork recommendations
+  // Function to get artwork recommendations using OpenAI API
   const getRecommendations = async (userId: string, artworks: Artwork[]) => {
     try {
       console.log('getRecommendations: called', { userId, artworksLength: artworks.length });
@@ -420,109 +420,72 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         return artworks
       }
 
-      // Get user's collection for additional matching
-      const { data: collectionData } = await supabase
-        .from('Collection')
-        .select('artwork_id')
-        .eq('user_id', userId)
-
-      const collectionArtworkIds = collectionData?.map(item => item.artwork_id) || []
-      const collectionArtworks = artworks.filter(artwork => collectionArtworkIds.includes(artwork.id))
-      
-      // Create a map of preferred attributes from collection items
-      interface PreferenceMap {
-        [key: string]: number
-      }
-
-      interface CollectionPreferences {
-        artists: PreferenceMap
-        genres: PreferenceMap
-        styles: PreferenceMap
-        subjects: PreferenceMap
-        colors: PreferenceMap
-        priceRanges: PreferenceMap
-        [key: string]: PreferenceMap // Allow string indexing
-      }
-
-      const collectionPreferences: CollectionPreferences = {
-        artists: {},
-        genres: {},
-        styles: {},
-        subjects: {},
-        colors: {},
-        priceRanges: {}
-      }
-
-      // Build collection preferences
-      collectionArtworks.forEach(artwork => {
-        const addPreference = (category: string, value: string | undefined) => {
-          if (!value) return
-          const categoryMap = collectionPreferences[category] || {}
-          categoryMap[value] = (categoryMap[value] || 0) + WEIGHTS.COLLECTION_MATCH
-          collectionPreferences[category] = categoryMap
-        }
-
-        addPreference('artists', artwork.artist)
-        addPreference('genres', artwork.genre)
-        addPreference('styles', artwork.style)
-        addPreference('subjects', artwork.subject)
-        addPreference('colors', artwork.colour)
-
-        const priceValue = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""))
-        if (!isNaN(priceValue)) {
-          const priceRange = Math.floor(priceValue / 1000) * 1000
-          addPreference('priceRanges', priceRange.toString())
-        }
-      })
-      
-      // Calculate scores based on collector preferences AND collection matches
-      const scoredArtworks = unviewedArtworks.map(artwork => {
-        let score = 0
-
-        // Helper function to calculate score for a category
-        const calculateCategoryScore = (
-          category: 'artists' | 'genres' | 'styles' | 'subjects' | 'colors' | 'priceRanges',
-          value: string | undefined
-        ): number => {
-          if (!value) return 0
-          let score = 0
-          // Add score from general preferences
-          if (preferences[category]?.[value]) {
-            score += preferences[category][value]
-          }
-          // Add score from collection matches
-          if (collectionPreferences[category]?.[value]) {
-            score += collectionPreferences[category][value]
-          }
-          return score
-        }
-
-        // Calculate scores for each category with updated weights
-        score += calculateCategoryScore('artists', artwork.artist) * 2.5 // Artist match is most important
-        score += calculateCategoryScore('genres', artwork.genre) * 2.0
-        score += calculateCategoryScore('styles', artwork.style) * 2.0
-        score += calculateCategoryScore('subjects', artwork.subject) * 1.5
-        score += calculateCategoryScore('colors', artwork.colour) * 1.0
-
-        // Price range score
-        const priceValue = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""))
-        if (!isNaN(priceValue)) {
-          const priceRange = Math.floor(priceValue / 1000) * 1000
-          score += calculateCategoryScore('priceRanges', priceRange.toString()) * 0.8
-        }
-
-        return { ...artwork, score }
-      })
-
-      // Sort by score (highest first) and ensure some randomization for similar scores
-      const sorted = scoredArtworks
-        .sort((a, b) => {
-          const scoreDiff = b.score - a.score
-          // If scores are very close, add some randomness
-          return Math.abs(scoreDiff) < 0.2 ? Math.random() - 0.5 : scoreDiff
+      // Call the OpenAI recommendations API
+      try {
+        console.log('Calling OpenAI recommendations API...');
+        const response = await fetch('/api/recommendations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            preferences: preferences,
+            artworks: unviewedArtworks
+          })
         });
-      console.log('getRecommendations: sorted', sorted);
-      return sorted;
+
+        if (!response.ok) {
+          throw new Error(`Recommendations API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Received recommendations from OpenAI:', data);
+
+        if (data.response && data.response.recommendations) {
+          const recommendedIds = data.response.recommendations;
+          console.log('Recommended artwork IDs:', recommendedIds);
+          
+          // Reorder artworks based on OpenAI recommendations
+          const recommendedArtworks = [];
+          const remainingArtworks = [...unviewedArtworks];
+          
+          // Add artworks in the order recommended by OpenAI
+          for (const id of recommendedIds) {
+            const artworkIndex = remainingArtworks.findIndex(artwork => artwork.id === id);
+            if (artworkIndex !== -1) {
+              recommendedArtworks.push(remainingArtworks.splice(artworkIndex, 1)[0]);
+            }
+          }
+          
+          // Add any remaining artworks that weren't in the recommendations
+          recommendedArtworks.push(...remainingArtworks);
+          
+          console.log('getRecommendations: reordered by OpenAI', recommendedArtworks.length);
+          return recommendedArtworks;
+        } else {
+          console.warn('Invalid response from recommendations API, using fallback');
+          return unviewedArtworks;
+        }
+      } catch (apiError) {
+        console.error('Error calling recommendations API, using fallback scoring:', apiError);
+        
+        // Fallback to local scoring if API fails
+        return unviewedArtworks.sort((a, b) => {
+          // Simple fallback: prioritize by collection matches and preferences
+          let scoreA = 0;
+          let scoreB = 0;
+          
+          // Basic preference matching with proper type checking
+          if (a.artist && preferences.artists?.[a.artist]) scoreA += preferences.artists[a.artist];
+          if (b.artist && preferences.artists?.[b.artist]) scoreB += preferences.artists[b.artist];
+          if (a.genre && preferences.genres?.[a.genre]) scoreA += preferences.genres[a.genre];
+          if (b.genre && preferences.genres?.[b.genre]) scoreB += preferences.genres[b.genre];
+          if (a.style && preferences.styles?.[a.style]) scoreA += preferences.styles[a.style];
+          if (b.style && preferences.styles?.[b.style]) scoreB += preferences.styles[b.style];
+          
+          return scoreB - scoreA;
+        });
+      }
     } catch (error) {
       console.error('Error getting recommendations:', error)
       return artworks
