@@ -327,7 +327,7 @@ export default function CardStack({
                             }}
                             title="Share on X"
                           >
-                            <XIcon className="w-5 h-5 text-black" />
+                            <XIcon className="w-5 h-5" />
                           </button>
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -338,7 +338,7 @@ export default function CardStack({
                             }}
                             title="Share on Facebook"
                           >
-                            <Facebook className="w-5 h-5 text-black" />
+                            <Facebook className="w-5 h-5" />
                           </button>
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -349,7 +349,7 @@ export default function CardStack({
                             }}
                             title="Share on Instagram"
                           >
-                            <Instagram className="w-5 h-5 text-black" />
+                            <Instagram className="w-5 h-5" />
                           </button>
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -360,7 +360,7 @@ export default function CardStack({
                             }}
                             title="Share on WhatsApp"
                           >
-                            <MessageCircle className="w-5 h-5 text-black" />
+                            <MessageCircle className="w-5 h-5" />
                           </button>
                         </div>
                       </div>

@@ -1345,9 +1345,7 @@ export default function MobileCardStack({
                         }}
                         title="Share on X"
                       >
-                        <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <XIcon className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
-                        </div>
+                        <XIcon className="w-5 h-5" />
                       </button>
                       <button 
                         className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -1358,9 +1356,7 @@ export default function MobileCardStack({
                         }}
                         title="Share on Facebook"
                       >
-                        <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <Facebook className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
-                        </div>
+                        <Facebook className="w-5 h-5" />
                       </button>
                       <button 
                         className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -1371,9 +1367,7 @@ export default function MobileCardStack({
                         }}
                         title="Share on Instagram"
                       >
-                        <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <Instagram className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
-                        </div>
+                        <Instagram className="w-5 h-5" />
                       </button>
                       <button 
                         className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
@@ -1384,9 +1378,7 @@ export default function MobileCardStack({
                         }}
                         title="Share on WhatsApp"
                       >
-                        <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                          <MessageCircle className="w-3 h-3 text-white drop-shadow-[0_0_1px_white]" />
-                        </div>
+                        <MessageCircle className="w-5 h-5" />
                       </button>
                     </div>
                   </div>

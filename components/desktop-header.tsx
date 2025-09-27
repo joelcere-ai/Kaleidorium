@@ -22,80 +22,73 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Button
-              variant="ghost"
-              className="font-serif text-xl font-semibold tracking-wide text-black hover:text-gray-600"
-              onClick={() => handleNavigation("/?view=discover")}
-            >
-              Kaleidorium
-            </Button>
-          </div>
+    <header className="border-b bg-background relative app-header z-10">
+      <div className="flex items-center justify-between p-4 md:p-6">
+        {/* Logo with improved mobile spacing */}
+        <Button
+          variant="ghost"
+          className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0"
+          onClick={() => handleNavigation("/?view=discover")}
+        >
+          <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
+        </Button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=discover")}
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Discover
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("collection") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/collection")}
-            >
-              <Heart className="mr-2 h-4 w-4" />
-              Collection ({collectionCount})
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/for-artists")}
-            >
-              <Palette className="mr-2 h-4 w-4" />
-              For Artists
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=about")}
-            >
-              <Info className="mr-2 h-4 w-4" />
-              For Collectors
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("contact") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/contact")}
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Contact
-            </Button>
-          </nav>
-
-          {/* Right side - Profile/Login */}
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/profile")}
-            >
-              <User className="mr-2 h-4 w-4" />
-              Profile
-            </Button>
-          </div>
-        </div>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-8">
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/?view=discover")}
+          >
+            <Palette className="w-4 h-4 mr-1" />
+            Discover
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/collection")}
+          >
+            <Heart className="w-4 h-4 mr-1" />
+            Collection ({collectionCount})
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/for-artists")}
+          >
+            <Palette className="w-4 h-4 mr-1" />
+            For Artists
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/?view=about")}
+          >
+            <Info className="w-4 h-4 mr-1" />
+            For Collectors
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("contact") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/contact")}
+          >
+            <Mail className="w-4 h-4 mr-1" />
+            Contact
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/profile")}
+          >
+            <User className="w-4 h-4 mr-1" />
+            Profile
+          </Button>
+        </nav>
       </div>
 
       {/* Mobile Menu - Hidden on desktop but kept for responsive design */}
@@ -107,7 +100,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
               className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("/?view=discover")}
             >
-              <Search className="mr-3 h-5 w-5" />
+              <Palette className="mr-3 h-5 w-5" />
               Discover
             </Button>
             <Button
