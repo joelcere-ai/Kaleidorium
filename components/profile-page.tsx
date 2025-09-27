@@ -909,7 +909,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       disabled={isUploading}
                     />
                 </div>
-                <h2 className="text-lg font-semibold">{collector?.username || user?.email}</h2>
+                <h2 className="text-sm font-semibold" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{collector?.username || user?.email}</h2>
                 <p className="text-sm text-muted-foreground">{isArtist ? 'Artist' : (collector?.role || 'Collector')}</p>
                 <Button variant="outline" className="mt-4 w-full" onClick={handleLogout}>
                   Logout
@@ -942,14 +942,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                   <div className="space-y-6">
                     {/* AI-Generated Collection Summary */}
                     <div>
-                      <h3 className="text-lg font-medium mb-3">Collection Overview</h3>
+                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
                       <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
                     </div>
 
                     {/* AI-Generated Aesthetic Profile */}
                     {insights.aesthetic_profile && (
                       <div>
-                        <h3 className="text-lg font-medium mb-3">Your Aesthetic Profile</h3>
+                        <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Aesthetic Profile</h3>
                         <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
                       </div>
                     )}
@@ -957,7 +957,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     {/* AI-Generated Collecting Pattern */}
                     {insights.collecting_pattern && (
                       <div>
-                        <h3 className="text-lg font-medium mb-3">Collecting Pattern</h3>
+                        <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
                         <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
                       </div>
                     )}
@@ -966,7 +966,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
                     {/* Collection Statistics */}
                     <div>
-                      <h3 className="text-lg font-medium mb-4">Collection Statistics</h3>
+                      <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
                           <h4 className="text-sm font-medium mb-2">Top Artists</h4>
@@ -1020,7 +1020,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
                     {/* AI-Generated Recommendations */}
                     <div>
-                      <h3 className="text-lg font-medium mb-3">Personalized Recommendations</h3>
+                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
                       {insights.recommendations.length > 0 ? (
                         <ul className="space-y-2">
                           {insights.recommendations.map((recommendation, index) => (
@@ -1299,7 +1299,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <div className="border border-red-500 bg-red-50 rounded p-4">
-                    <h3 className="text-lg font-semibold text-red-700 mb-2">Danger Zone</h3>
+                    <h3 className="text-sm font-semibold text-red-700 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Danger Zone</h3>
                     <p className="text-sm text-red-700 mb-4">
                       Permanently delete your account and all associated data. This action cannot be undone.
                       {isArtist && (

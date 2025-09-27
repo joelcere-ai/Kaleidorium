@@ -44,20 +44,20 @@ function CollectionContent() {
   }, []);
 
   const handleReturnToDiscover = () => {
-    router.push('/');
+    router.push('/', { scroll: false });
   };
 
   const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
     if (nextView === "collection") return;
     if (nextView === "contact") {
-      router.push("/contact");
+      router.push("/contact", { scroll: false });
       return;
     }
     if (nextView === "profile") {
-      router.push("/profile");
+      router.push("/profile", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`);
+    router.push(`/?view=${nextView}`, { scroll: false });
   };
 
   const handleRemoveFromCollection = (id: string) => {
@@ -72,10 +72,10 @@ function CollectionContent() {
   const handleSetView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about") => {
     if (newView === "collection") return;
     if (newView === "profile") {
-      router.push("/profile");
+      router.push("/profile", { scroll: false });
       return;
     }
-    router.push(`/?view=${newView}`);
+    router.push(`/?view=${newView}`, { scroll: false });
   };
 
   return (

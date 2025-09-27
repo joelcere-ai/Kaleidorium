@@ -32,24 +32,24 @@ function ForArtistsContent() {
   }, []);
 
   const handleReturnToDiscover = () => {
-    router.push('/');
+    router.push('/', { scroll: false });
   };
 
   const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
     if (nextView === "for-artists") return;
     if (nextView === "contact") {
-      router.push("/contact");
+      router.push("/contact", { scroll: false });
       return;
     }
     if (nextView === "profile") {
-      router.push("/profile");
+      router.push("/profile", { scroll: false });
       return;
     }
     if (nextView === "collection") {
-      router.push("/collection");
+      router.push("/collection", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`);
+    router.push(`/?view=${nextView}`, { scroll: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

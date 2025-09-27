@@ -24,16 +24,16 @@ function ProfileContent() {
   }, []);
   
   const handleReturnToDiscover = () => {
-    router.push('/');
+    router.push('/', { scroll: false });
   };
 
   const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
     if (nextView === "profile") return;
     if (nextView === "contact") {
-      router.push("/contact");
+      router.push("/contact", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`);
+    router.push(`/?view=${nextView}`, { scroll: false });
   };
   
   return (
