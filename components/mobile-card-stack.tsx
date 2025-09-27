@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
@@ -44,7 +45,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -75,6 +76,7 @@ export default function MobileCardStack({
   screenWidth = 0,
   screenHeight = 0,
 }: MobileCardStackProps) {
+  const router = useRouter();
   const { toast } = useToast()
   const [visibleCardCount, setVisibleCardCount] = useState(3)
   const [showInfoModal, setShowInfoModal] = useState(false)
@@ -1191,8 +1193,8 @@ export default function MobileCardStack({
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  setView("contact")
-                  setShowMenuModal(false)
+                  router.push("/contact");
+                  setShowMenuModal(false);
                 }}
               >
                 <Mail className="mr-3 h-5 w-5" />
