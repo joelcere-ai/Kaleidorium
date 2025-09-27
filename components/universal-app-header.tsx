@@ -41,7 +41,7 @@ export function UniversalAppHeader({
   }, []);
 
   const handleNavigation = (path: string) => {
-    router.push(path);
+    router.push(path, { scroll: false });
     setIsMobileMenuOpen(false);
   };
 
@@ -60,19 +60,25 @@ export function UniversalAppHeader({
   };
 
   return (
-    <header className="border-b bg-background sticky top-0 z-50 relative">
-      <div className="flex items-center justify-between px-4 py-3">
+    <header className="border-b bg-background relative app-header z-10">
+      <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo */}
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            className="font-serif text-xl md:text-2xl font-semibold tracking-wide"
+            onClick={() => handleNavigation("/?view=discover")}
+          >
+            Kaleidorium
+          </Button>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-4">
+        <nav className="hidden md:flex items-center space-x-8">
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/")}
+            onClick={() => handleNavigation("/?view=discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -93,11 +99,11 @@ export function UniversalAppHeader({
 
           <Button
             variant="ghost"
-            className={`text-sm ${isSelected("collection") ? "bg-gray-100" : ""}`}
+            className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
             onClick={() => handleNavigation("/collection")}
           >
             <Heart className="w-4 h-4 mr-1" />
-            Collection
+            Collection ({collectionCount})
           </Button>
 
           <Button
@@ -112,7 +118,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/about")}
+            onClick={() => handleNavigation("/?view=about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
@@ -166,7 +172,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("discover") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/")}
+              onClick={() => handleNavigation("/?view=discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
               Discover
@@ -191,7 +197,7 @@ export function UniversalAppHeader({
               onClick={() => handleNavigation("/collection")}
             >
               <Heart className="w-4 h-4 mr-2" />
-              Collection
+              Collection ({collectionCount})
             </Button>
 
             <Button
@@ -206,7 +212,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("about") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/about")}
+              onClick={() => handleNavigation("/?view=about")}
             >
               <Info className="w-4 h-4 mr-2" />
               For Collectors
