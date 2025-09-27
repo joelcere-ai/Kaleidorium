@@ -78,7 +78,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/?view=for-artists");
+                  router.push("/for-artists");
                   setShowMenuModal(false);
                 }}
               >
