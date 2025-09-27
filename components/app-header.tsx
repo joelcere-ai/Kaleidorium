@@ -545,7 +545,7 @@ export function AppHeader(props: {
   }
 }) {
   return (
-    <Suspense fallback={<div className="border-b bg-background h-16 flex items-center px-4">Loading...</div>}>
+    <Suspense fallback={<div className="border-b bg-background h-16 flex items-center px-4">Loading Artwork...</div>}>
       <AppHeaderContent {...props} />
     </Suspense>
   );
