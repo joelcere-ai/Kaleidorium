@@ -75,10 +75,6 @@ function CollectionContent() {
       router.push("/profile");
       return;
     }
-    if (newView === "contact") {
-      router.push("/contact");
-      return;
-    }
     router.push(`/?view=${newView}`);
   };
 
