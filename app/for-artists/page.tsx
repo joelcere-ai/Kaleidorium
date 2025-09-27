@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { UniversalAppHeader } from "@/components/universal-app-header";
+import { NewMobileHeader } from "@/components/new-mobile-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -88,8 +88,8 @@ function ForArtistsContent() {
 
   return (
     <div className="min-h-screen">
-      <UniversalAppHeader currentPage="for-artists" collectionCount={collectionCount} />
-      <div className="flex-1 overflow-y-auto">
+      <NewMobileHeader currentPage="for-artists" collectionCount={collectionCount} />
+      <div className="flex-1 overflow-y-auto pt-16">
         <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="mb-8">
               <h1 

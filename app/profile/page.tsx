@@ -2,7 +2,7 @@
 
 import { ProfilePage } from '@/components/profile-page';
 import { useRouter } from 'next/navigation';
-import { UniversalAppHeader } from '@/components/universal-app-header';
+import { NewMobileHeader } from '@/components/new-mobile-header';
 import { useState, Suspense, useEffect } from 'react';
 
 function ProfileContent() {
@@ -37,8 +37,8 @@ function ProfileContent() {
   
   return (
     <div className="min-h-screen">
-      <UniversalAppHeader currentPage="profile" collectionCount={collectionCount} />
-      <div className="flex-1 overflow-y-auto">
+      <NewMobileHeader currentPage="profile" collectionCount={collectionCount} />
+      <div className="flex-1 overflow-y-auto pt-16">
         <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
       </div>
     </div>

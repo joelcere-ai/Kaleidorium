@@ -16,7 +16,7 @@ import { supabase } from "@/lib/supabase"
 import type { ArtSpendingRange } from "@/lib/supabase-types"
 import { ProfilePictureUpload } from "@/components/profile-picture-upload"
 import { uploadProfilePicture, type OptimizedImage } from "@/lib/image-utils"
-import { UniversalAppHeader } from "@/components/universal-app-header"
+import { NewMobileHeader } from "@/components/new-mobile-header"
 
 const spendingRanges: { value: ArtSpendingRange; label: string }[] = [
   { value: "0-999", label: "$0 - $999" },
@@ -499,8 +499,8 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <UniversalAppHeader currentPage="register" />
-      <div className="container max-w-[800px] py-10">
+      <NewMobileHeader currentPage="register" />
+      <div className="container max-w-[800px] py-20">
         {!isMobile && (
           <Button
             variant="ghost"

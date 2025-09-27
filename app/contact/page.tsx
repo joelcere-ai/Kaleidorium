@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UniversalAppHeader } from "@/components/universal-app-header";
+import { NewMobileHeader } from "@/components/new-mobile-header";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("about");
@@ -76,8 +76,8 @@ export default function ContactPage() {
 
   return (
     <div>
-      <UniversalAppHeader currentPage="contact" collectionCount={collectionCount} />
-      <div className="container mx-auto px-4 py-12 max-w-lg">
+      <NewMobileHeader currentPage="contact" collectionCount={collectionCount} />
+      <div className="container mx-auto px-4 py-16 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Email</label>

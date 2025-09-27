@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { UniversalAppHeader } from "@/components/universal-app-header";
+import { NewMobileHeader } from "@/components/new-mobile-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -79,8 +79,8 @@ function CollectionContent() {
 
   return (
     <div className="min-h-screen">
-      <UniversalAppHeader currentPage="collection" collectionCount={collectionCount} />
-      <div className="container mx-auto px-4 py-8">
+      <NewMobileHeader currentPage="collection" collectionCount={collectionCount} />
+      <div className="container mx-auto px-4 py-16">
         <div className="mb-6">
           <Button variant="ghost" onClick={handleReturnToDiscover}>
             ← Back to Discovery
