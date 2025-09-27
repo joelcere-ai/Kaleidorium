@@ -17,6 +17,7 @@ import { UnifiedMobileHeader } from "@/components/unified-mobile-header"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
 import { UniversalAppHeader } from "@/components/universal-app-header"
+import { NewMobileHeader } from "@/components/new-mobile-header"
 import { type FilterState } from "@/components/app-header"
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
 import { ImageOverlay } from "@/components/image-overlay"
@@ -1774,10 +1775,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile About Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <UnifiedMobileHeader currentPage="about" />
+            <NewMobileHeader currentPage="about" collectionCount={collectionCount} />
             
             {/* About Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pt-16">
               <AboutContent setView={setView} />
             </div>
           </div>
@@ -1826,10 +1827,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Collection Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <UnifiedMobileHeader currentPage="collection" />
+            <NewMobileHeader currentPage="collection" collectionCount={collectionCount} />
             
             {/* Mobile Collection Content */}
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-4 pt-20">
               <div className="mb-6 flex flex-col justify-between items-start gap-4">
                 <h2 className="text-base font-serif font-bold text-black" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h2>
                 <Button onClick={() => setView("discover")}>Return to Discovery</Button>
@@ -2267,10 +2268,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile For Artists Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col for-artists-page" data-view="for-artists">
-            <UnifiedMobileHeader currentPage="for-artists" />
+            <NewMobileHeader currentPage="for-artists" collectionCount={collectionCount} />
             
             {/* For Artists Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pt-16">
               <div className="container mx-auto px-4 py-8 max-w-3xl">
                 <div className="mb-8">
                   <h1 
@@ -2692,10 +2693,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Profile Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <UnifiedMobileHeader currentPage="profile" />
+            <NewMobileHeader currentPage="profile" collectionCount={collectionCount} />
             
             {/* Profile Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pt-16">
         <ProfilePage collection={dbCollection} onReturnToDiscover={() => setView("discover")} />
             </div>
           </div>

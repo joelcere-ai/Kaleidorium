@@ -1,7 +1,10 @@
 import React from "react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/separator"
+import { useRouter } from "next/navigation";
 
 export function AboutContent({ setView }: { setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void }) {
+  const router = useRouter();
+  
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <h1 className="text-base font-serif font-bold text-black mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Swipe. Discover. Fall in Love (with Art).</h1>
@@ -24,8 +27,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
           className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors font-medium"
           style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           onClick={() => {
-            // Use Next.js navigation instead of window.location
-            window.open('/register', '_blank');
+            router.push('/register');
           }}
         >
           Register as a Collector
