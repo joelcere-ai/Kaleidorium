@@ -16,7 +16,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { UnifiedMobileHeader } from "@/components/unified-mobile-header"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
-import { AppHeader, type FilterState } from "@/components/app-header"
+import { UniversalAppHeader } from "@/components/universal-app-header"
+import { type FilterState } from "@/components/app-header"
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
 import { ImageOverlay } from "@/components/image-overlay"
 import { ProfilePage } from "@/components/profile-page"
@@ -1705,14 +1706,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     <div className="flex flex-col min-h-screen">
       {/* Desktop Header - only show on desktop */}
       {!isMobile && !isTablet && (
-        <AppHeader 
-        view={view} 
-        setView={setView} 
+        <UniversalAppHeader 
+        currentPage={view} 
         collectionCount={collectionCount}
-        onFilterChange={handleFilterChange}
-        onClearFilters={clearFilters}
-        isFiltering={isFiltering}
-        availableTags={availableTags}
       />
       )}
       
