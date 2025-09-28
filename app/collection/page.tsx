@@ -96,9 +96,13 @@ function CollectionContent() {
       )}
       <div className="container mx-auto px-4 pt-4 pb-16">
         <div className="mb-6">
-          <Button variant="ghost" onClick={handleReturnToDiscover}>
+          <button 
+            type="button"
+            onClick={handleReturnToDiscover}
+            className="text-blue-600 hover:text-blue-800 underline cursor-pointer bg-transparent border-none p-0"
+          >
             ← Back to Discovery
-          </Button>
+          </button>
         </div>
 
         <div className="mb-6">
@@ -111,7 +115,13 @@ function CollectionContent() {
               <Heart className="h-16 w-16 text-gray-300 mb-4" />
               <h3 className="text-xl font-medium mb-2 text-black">Your collection is empty</h3>
               <p className="text-gray-600 mb-6">Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
-              <Button onClick={handleReturnToDiscover}>Discover Artwork</Button>
+              <button 
+                type="button"
+                onClick={handleReturnToDiscover}
+                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer border-none"
+              >
+                Discover Artwork
+              </button>
             </CardContent>
           </Card>
         ) : (
