@@ -1676,6 +1676,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         <UniversalAppHeader 
         currentPage={view} 
         collectionCount={collectionCount}
+        setView={setView}
       />
       )}
       

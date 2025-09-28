@@ -14,6 +14,7 @@ interface UniversalAppHeaderProps {
   isFiltering?: boolean;
   showFilters?: boolean;
   onToggleFilters?: () => void;
+  setView?: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void;
 }
 
 export function UniversalAppHeader({ 
@@ -23,7 +24,8 @@ export function UniversalAppHeader({
   onClearFilters,
   isFiltering = false,
   showFilters = false,
-  onToggleFilters
+  onToggleFilters,
+  setView
 }: UniversalAppHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -40,8 +42,14 @@ export function UniversalAppHeader({
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleNavigation = (path: string) => {
-    router.push(path, { scroll: false });
+  const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists" | "about") => {
+    if (setView && view) {
+      // Use setView for main app navigation (no page reload)
+      setView(view);
+    } else {
+      // Use router.push for standalone pages
+      router.push(path, { scroll: false });
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -67,7 +75,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className="font-serif text-xl md:text-2xl font-semibold tracking-wide"
-            onClick={() => handleNavigation("/?view=discover")}
+            onClick={() => handleNavigation("/?view=discover", "discover")}
           >
             Kaleidorium
           </Button>
@@ -78,7 +86,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=discover")}
+            onClick={() => handleNavigation("/?view=discover", "discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -118,7 +126,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=about")}
+            onClick={() => handleNavigation("/?view=about", "about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
@@ -172,7 +180,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("discover") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=discover")}
+              onClick={() => handleNavigation("/?view=discover", "discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
               Discover
@@ -212,7 +220,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("about") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=about")}
+              onClick={() => handleNavigation("/?view=about", "about")}
             >
               <Info className="w-4 h-4 mr-2" />
               For Collectors
