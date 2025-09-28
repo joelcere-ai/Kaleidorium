@@ -74,7 +74,7 @@ export function UniversalAppHeader({
         <div className="flex items-center">
           <Button
             variant="ghost"
-            className="text-xl font-normal text-black"
+            className="font-serif text-xl font-semibold text-black"
             onClick={() => handleNavigation("/?view=discover", "discover")}
           >
             Kaleidorium
