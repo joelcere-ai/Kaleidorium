@@ -17,7 +17,7 @@ interface MobileArtDiscoveryProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void

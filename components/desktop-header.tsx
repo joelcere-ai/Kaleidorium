@@ -65,7 +65,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=about")}
+            onClick={() => handleNavigation("/about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
@@ -122,7 +122,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("/?view=about")}
+              onClick={() => handleNavigation("/about")}
             >
               <Info className="mr-3 h-5 w-5" />
               For Collectors

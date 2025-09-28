@@ -14,7 +14,7 @@ interface UniversalAppHeaderProps {
   isFiltering?: boolean;
   showFilters?: boolean;
   onToggleFilters?: () => void;
-  setView?: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void;
+  setView?: (view: "discover" | "collection" | "profile" | "for-artists") => void;
 }
 
 export function UniversalAppHeader({ 
@@ -42,7 +42,7 @@ export function UniversalAppHeader({
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists" | "about") => {
+  const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists") => {
     if (setView && view) {
       // Use setView for main app navigation (no page reload)
       setView(view);
@@ -126,7 +126,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=about", "about")}
+            onClick={() => handleNavigation("/about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
@@ -220,7 +220,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("about") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=about", "about")}
+              onClick={() => handleNavigation("/about")}
             >
               <Info className="w-4 h-4 mr-2" />
               For Collectors

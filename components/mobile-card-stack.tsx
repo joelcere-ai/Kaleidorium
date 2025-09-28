@@ -45,7 +45,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -595,7 +595,7 @@ export default function MobileCardStack({
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
-                    setView("about")
+                    router.push("/about", { scroll: false })
                     setShowMenuModal(false)
                   }}
                 >
@@ -1182,7 +1182,7 @@ export default function MobileCardStack({
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  setView("about")
+                  router.push("/about", { scroll: false })
                   setShowMenuModal(false)
                 }}
               >

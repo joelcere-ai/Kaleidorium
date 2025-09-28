@@ -33,7 +33,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tooltip } from "@/components/ui/tooltip"
-import { AboutContent } from "@/components/about-content"
 import { useViewContext } from "./ViewContext"
 import { useMobileDetection } from "@/hooks/use-mobile-detection"
 import MobileArtDiscovery from "./mobile-art-discovery"
@@ -41,14 +40,14 @@ import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
 
 interface AppHeaderProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "about"
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void
+  view: "discover" | "collection" | "profile" | "for-artists"
+  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void
   collectionCount: number
 }
 
 interface ArtDiscoveryProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "about";
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about") => void;
+  view: "discover" | "collection" | "profile" | "for-artists";
+  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
 }
@@ -1738,24 +1737,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       {/* Image Overlay */}
       {overlayImage && <ImageOverlay artwork_image={overlayImage.url} alt={overlayImage.alt} onClose={closeImageOverlay} />}
 
-      {view === "about" ? (
-        isMobile || isTablet ? (
-          // Mobile About Page with Header
-          <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <NewMobileHeader currentPage="about" collectionCount={collectionCount} />
-            
-            {/* About Content */}
-            <div className="flex-1 overflow-y-auto pt-16">
-              <AboutContent setView={setView} />
-            </div>
-          </div>
-        ) : (
-          // Desktop About Page - header is already rendered above
-          <div className="flex-1">
-            <AboutContent setView={setView} />
-          </div>
-        )
-      ) : view === "discover" ? (
+      {view === "discover" ? (
         // Mobile vs Desktop conditional rendering
         isMobile || isTablet ? (
           <MobileArtDiscovery
