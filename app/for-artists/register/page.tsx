@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft } from "lucide-react";
 // @ts-ignore: No type declarations for 'react-select-country-list'
 import countryList from 'react-select-country-list';
 import Link from "next/link";
@@ -522,6 +523,18 @@ function ArtistRegisterPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-background">
+        {/* Back Navigation */}
+        <div className="w-full max-w-md mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 p-0 h-auto"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Back</span>
+          </Button>
+        </div>
+        
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
             <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
