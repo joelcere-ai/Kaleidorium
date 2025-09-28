@@ -31,7 +31,7 @@ export default function AboutPage() {
       ) : (
         <>
           <DesktopHeader currentPage="about" collectionCount={collectionCount} />
-          <div className="pt-20">
+          <div className="pt-4">
             <AboutContent setView={() => {}} />
           </div>
         </>

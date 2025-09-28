@@ -88,7 +88,7 @@ export default function ContactPage() {
       ) : (
         <DesktopHeader currentPage="contact" collectionCount={collectionCount} />
       )}
-      <div className="container mx-auto px-4 py-16 max-w-lg">
+      <div className="container mx-auto px-4 pt-4 pb-16 max-w-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Email</label>

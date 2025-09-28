@@ -94,7 +94,7 @@ function CollectionContent() {
       ) : (
         <DesktopHeader currentPage="collection" collectionCount={collectionCount} />
       )}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 pt-4 pb-16">
         <div className="mb-6">
           <Button variant="ghost" onClick={handleReturnToDiscover}>
             ← Back to Discovery

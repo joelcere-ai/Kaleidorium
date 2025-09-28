@@ -99,8 +99,8 @@ function ForArtistsContent() {
       ) : (
         <DesktopHeader currentPage="for-artists" collectionCount={collectionCount} />
       )}
-      <div className="flex-1 overflow-y-auto pt-16">
-        <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <div className="flex-1 overflow-y-auto pt-4">
+        <div className="container mx-auto px-4 py-4 max-w-3xl">
             <div className="mb-8">
               <h1 
                 className="text-base font-serif font-bold text-black mb-8"

@@ -48,7 +48,7 @@ function ProfileContent() {
       ) : (
         <DesktopHeader currentPage="profile" collectionCount={collectionCount} />
       )}
-      <div className="flex-1 overflow-y-auto pt-16">
+      <div className="flex-1 overflow-y-auto pt-4">
         <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
       </div>
     </div>
