@@ -46,7 +46,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
           </Button>
 
           {/* Logo */}
-          <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+          <h1 className="text-xl font-normal text-black">Kaleidorium</h1>
 
           {/* Profile Icon */}
           <Button
