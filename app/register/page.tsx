@@ -475,7 +475,7 @@ export default function RegisterPage() {
           description: "Welcome to Kaleidorium! Please check your email to verify your account and get started.",
         })
 
-        router.push("/?view=profile")
+        router.push("/profile")
       }
     } catch (error) {
       if (error instanceof z.ZodError) {

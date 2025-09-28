@@ -33,7 +33,11 @@ function ProfileContent() {
       router.push("/contact", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`, { scroll: false });
+    if (nextView === "discover") {
+      router.push("/", { scroll: false });
+      return;
+    }
+    router.push(`/${nextView}`, { scroll: false });
   };
   
   return (

@@ -54,7 +54,7 @@ export default function LoginPage() {
           description: "You have successfully logged in.",
         })
 
-        router.push("/?view=discover")
+        router.push("/")
       }
     } catch (error) {
       toast({

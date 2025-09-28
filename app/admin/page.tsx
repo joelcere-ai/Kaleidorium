@@ -209,7 +209,7 @@ export default function AdminPage() {
         <div className="container max-w-md mx-auto py-20">
           <Button
             className="mb-8"
-            onClick={() => router.push("/?view=discover")}
+            onClick={() => router.push("/")}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
@@ -293,7 +293,7 @@ export default function AdminPage() {
       <div className="container max-w-2xl mx-auto py-10">
         <div className="flex items-center justify-between mb-8">
           <Button
-            onClick={() => router.push("/?view=discover")}
+            onClick={() => router.push("/")}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home

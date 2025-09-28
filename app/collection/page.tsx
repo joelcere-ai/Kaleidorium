@@ -57,7 +57,11 @@ function CollectionContent() {
       router.push("/profile", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`, { scroll: false });
+    if (nextView === "discover") {
+      router.push("/", { scroll: false });
+      return;
+    }
+    router.push(`/${nextView}`, { scroll: false });
   };
 
   const handleRemoveFromCollection = (id: string) => {
@@ -75,7 +79,11 @@ function CollectionContent() {
       router.push("/profile", { scroll: false });
       return;
     }
-    router.push(`/?view=${newView}`, { scroll: false });
+    if (newView === "discover") {
+      router.push("/", { scroll: false });
+      return;
+    }
+    router.push(`/${newView}`, { scroll: false });
   };
 
   return (

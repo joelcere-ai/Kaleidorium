@@ -25,8 +25,13 @@ export default function ContactPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleNavigate = (nextView: typeof view) => {
-    router.push(`/?view=${nextView}`, { scroll: false });
+  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
+    if (nextView === "contact") return;
+    if (nextView === "discover") {
+      router.push("/", { scroll: false });
+      return;
+    }
+    router.push(`/${nextView}`, { scroll: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

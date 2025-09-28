@@ -49,7 +49,11 @@ function ForArtistsContent() {
       router.push("/collection", { scroll: false });
       return;
     }
-    router.push(`/?view=${nextView}`, { scroll: false });
+    if (nextView === "discover") {
+      router.push("/", { scroll: false });
+      return;
+    }
+    router.push(`/${nextView}`, { scroll: false });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

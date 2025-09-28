@@ -56,7 +56,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/?view=discover");
+                  router.push("/");
                   setShowMenuModal(false);
                 }}
               >
@@ -89,7 +89,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/?view=about");
+                  router.push("/about");
                   setShowMenuModal(false);
                 }}
               >

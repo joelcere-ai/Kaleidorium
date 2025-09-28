@@ -28,7 +28,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
         <Button
           variant="ghost"
           className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0"
-          onClick={() => handleNavigation("/?view=discover")}
+          onClick={() => handleNavigation("/")}
         >
           <span className="font-serif text-xl md:text-2xl font-semibold tracking-wide">Kaleidorium</span>
         </Button>
@@ -38,7 +38,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=discover")}
+            onClick={() => handleNavigation("/")}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -98,7 +98,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("/?view=discover")}
+              onClick={() => handleNavigation("/")}
             >
               <Palette className="mr-3 h-5 w-5" />
               Discover
