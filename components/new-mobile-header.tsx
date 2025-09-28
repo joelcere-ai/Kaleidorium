@@ -16,7 +16,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
   const pathname = usePathname();
 
   const handleNavigation = (path: string) => {
-    router.push(path);
+    router.push(path, { scroll: false });
     setIsMenuOpen(false);
   };
 
