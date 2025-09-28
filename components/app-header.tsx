@@ -101,7 +101,11 @@ function AppHeaderContent({
       setView(target);
     } else {
       console.log('🔧 Using router.push for:', target);
-      router.push(`/?view=${target}`, { scroll: false });
+      if (target === "discover") {
+        router.push("/", { scroll: false });
+      } else {
+        router.push(`/${target}`, { scroll: false });
+      }
     }
     setIsMobileMenuOpen(false);
   };

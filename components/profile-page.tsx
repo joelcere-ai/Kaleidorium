@@ -800,14 +800,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-screen">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>Access Your Profile</CardTitle>
-            <CardDescription>Sign in to manage your collection and preferences.</CardDescription>
+            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Access Your Profile</CardTitle>
+            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Sign in to manage your collection and preferences.</CardDescription>
           </CardHeader>
           <CardContent>
             {!showReset ? (
               <form onSubmit={handleSignIn} className="space-y-4" noValidate>
                 <div className="space-y-2">
-                  <Label htmlFor="signInEmail">Email</Label>
+                  <Label htmlFor="signInEmail" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Email</Label>
                   <Input 
                     id="signInEmail" 
                     name="email"
@@ -817,10 +817,11 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     required 
                     autoComplete="email"
                     placeholder="Enter your email"
+                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signInPassword">Password</Label>
+                  <Label htmlFor="signInPassword" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Password</Label>
                   <Input 
                     id="signInPassword" 
                     name="password"
@@ -830,18 +831,19 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     required 
                     autoComplete="current-password"
                     placeholder="Enter your password"
+                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                   />
                 </div>
                 {signInError && <p className="text-sm text-red-500">{signInError}</p>}
-                <Button type="submit" className="w-full" disabled={signingIn}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
-                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(true)}>
+                <Button type="submit" className="w-full" disabled={signingIn} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
+                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(true)} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Forgot your password?
                 </Button>
               </form>
             ) : (
               <form onSubmit={handlePasswordReset} className="space-y-4" noValidate>
                 <div className="space-y-2">
-                  <Label htmlFor="resetEmail">Email</Label>
+                  <Label htmlFor="resetEmail" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Email</Label>
                   <Input 
                     id="resetEmail" 
                     name="resetEmail"
@@ -850,20 +852,21 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     onChange={e => setResetEmail(e.target.value)} 
                     required 
                     autoComplete="email"
-                    placeholder="Enter your email" 
+                    placeholder="Enter your email"
+                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={resetting}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
-                {resetMessage && <p className="text-sm text-muted-foreground">{resetMessage}</p>}
-                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(false)}>
+                <Button type="submit" className="w-full" disabled={resetting} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
+                {resetMessage && <p className="text-sm text-muted-foreground" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{resetMessage}</p>}
+                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(false)} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   Back to Sign In
                 </Button>
               </form>
             )}
             <Separator className="my-4" />
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
               Don't have an account?{" "}
-              <Button variant="link" className="p-0 h-auto" onClick={() => router.push('/register')}>
+              <Button variant="link" className="p-0 h-auto" onClick={() => router.push('/register')} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                 Register here
               </Button>
             </p>
