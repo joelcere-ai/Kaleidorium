@@ -7,7 +7,7 @@ import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, ArrowLeft } from "lucide-react";
 
 function CollectionContent() {
   const router = useRouter();
@@ -96,13 +96,10 @@ function CollectionContent() {
       )}
       <div className="container mx-auto px-4 pt-4 pb-16">
         <div className="mb-6">
-          <button 
-            type="button"
-            onClick={handleReturnToDiscover}
-            className="text-blue-600 hover:text-blue-800 underline cursor-pointer bg-transparent border-none p-0"
-          >
-            ← Back to Discovery
-          </button>
+          <Button variant="ghost" onClick={handleReturnToDiscover} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Discovery
+          </Button>
         </div>
 
         <div className="mb-6">
@@ -113,15 +110,15 @@ function CollectionContent() {
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 text-center">
               <Heart className="h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-xl font-medium mb-2 text-black">Your collection is empty</h3>
-              <p className="text-gray-600 mb-6">Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
-              <button 
-                type="button"
+              <h3 className="text-xl font-medium mb-2 text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
+              <p className="text-gray-600 mb-6" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
+              <Button 
                 onClick={handleReturnToDiscover}
-                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer border-none"
+                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
               >
                 Discover Artwork
-              </button>
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -137,12 +134,13 @@ function CollectionContent() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-1">{artwork.title}</h3>
-                    <p className="text-gray-600 mb-2">by {artwork.artist}</p>
+                    <h3 className="font-semibold text-lg mb-1" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.title}</h3>
+                    <p className="text-gray-600 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>by {artwork.artist}</p>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => handleRemoveFromCollection(artwork.id)}
+                      style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                     >
                       Remove
                     </Button>
