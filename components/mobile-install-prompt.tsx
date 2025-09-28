@@ -90,7 +90,7 @@ export function MobileInstallPrompt() {
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-16 h-12 bg-black rounded-xl flex items-center justify-center px-2">
-              <span className="text-white font-sans text-xs font-normal">Kaleidorium</span>
+              <span className="text-white font-serif text-xs font-semibold">Kaleidorium</span>
             </div>
             <div>
               <h3 className="font-semibold text-lg">Add Kaleidorium to Home Screen</h3>
