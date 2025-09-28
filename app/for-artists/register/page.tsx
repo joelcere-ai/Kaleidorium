@@ -583,7 +583,7 @@ function ArtistRegisterPage() {
               </form>
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
                 <h3 className="text-base font-serif font-bold text-blue-800 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Need Help?</h3>
-                <div className="text-sm font-sans text-blue-700 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <div className="font-sans text-blue-700 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                   <p>
                     <span className="font-bold">Don't have a token?</span> Artist registration requires an invitation from our team. 
                     Submit your portfolio on the "For Artists" page to be considered.
