@@ -30,7 +30,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
           className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0"
           onClick={() => handleNavigation("/")}
         >
-          <span className="font-sans text-xl font-normal">Kaleidorium</span>
+          <span className="font-serif text-lg md:text-xl font-medium tracking-wide">Kaleidorium</span>
         </Button>
 
         {/* Desktop Navigation */}
