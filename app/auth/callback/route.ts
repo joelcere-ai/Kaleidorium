@@ -27,28 +27,29 @@ export async function GET(request: NextRequest) {
   console.log('Request headers:', Object.fromEntries(request.headers.entries()));
 
   // For debugging - return a simple response to see if callback is working
-  if (process.env.NODE_ENV === 'development') {
-    console.log('=== DEVELOPMENT MODE - RETURNING DEBUG RESPONSE ===');
-    return new NextResponse(`
-      <html>
-        <body>
-          <h1>Auth Callback Debug</h1>
-          <p>Type: ${type}</p>
-          <p>Token: ${token ? 'Present' : 'Missing'}</p>
-          <p>Code: ${code ? 'Present' : 'Missing'}</p>
-          <p>Full URL: ${request.url}</p>
-          <p>All Params: ${JSON.stringify(Object.fromEntries(requestUrl.searchParams.entries()))}</p>
-          <script>
-            setTimeout(() => {
-              window.location.href = '/password-reset';
-            }, 3000);
-          </script>
-        </body>
-      </html>
-    `, {
-      headers: { 'Content-Type': 'text/html' }
-    });
-  }
+  // Commented out to prevent interference with registration flow
+  // if (process.env.NODE_ENV === 'development') {
+  //   console.log('=== DEVELOPMENT MODE - RETURNING DEBUG RESPONSE ===');
+  //   return new NextResponse(`
+  //     <html>
+  //       <body>
+  //         <h1>Auth Callback Debug</h1>
+  //         <p>Type: ${type}</p>
+  //         <p>Token: ${token ? 'Present' : 'Missing'}</p>
+  //         <p>Code: ${code ? 'Present' : 'Missing'}</p>
+  //         <p>Full URL: ${request.url}</p>
+  //         <p>All Params: ${JSON.stringify(Object.fromEntries(requestUrl.searchParams.entries()))}</p>
+  //         <script>
+  //           setTimeout(() => {
+  //             window.location.href = '/password-reset';
+  //           }, 3000);
+  //         </script>
+  //       </body>
+  //     </html>
+  //   `, {
+  //     headers: { 'Content-Type': 'text/html' }
+  //   });
+  // }
 
   // Handle password reset flow - Supabase sends 'token' parameter for password reset
   if (type === 'recovery' && token) {

@@ -408,7 +408,26 @@ export default function RegisterPage() {
             .from("Collectors")
             .update({ 
               is_temporary: false,
-              profilepix: profilePictureUrl 
+              profilepix: profilePictureUrl,
+              username,
+              first_name: firstName,
+              surname,
+              country,
+              email,
+              preferences: {
+                artists: {},
+                genres: {},
+                styles: {},
+                subjects: {},
+                colors: {},
+                priceRanges: {},
+                interactionCount: 0,
+                viewed_artworks: [],
+                // Store art preferences in the preferences object
+                art_types: artTypes,
+                art_styles: artStyles,
+                price_range: artSpendingRange,
+              }
             })
             .eq("id", tempCollector.id)
         } else {
@@ -421,9 +440,6 @@ export default function RegisterPage() {
             first_name: firstName,
             surname,
             country,
-            art_types: artTypes,
-            art_styles: artStyles,
-            price_range: artSpendingRange,
             email,
             profilepix: profilePictureUrl,
             preferences: {
@@ -435,6 +451,10 @@ export default function RegisterPage() {
               priceRanges: {},
               interactionCount: 0,
               viewed_artworks: [],
+              // Store art preferences in the preferences object
+              art_types: artTypes,
+              art_styles: artStyles,
+              price_range: artSpendingRange,
             },
             is_temporary: false,
           });
