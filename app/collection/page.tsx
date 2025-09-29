@@ -44,7 +44,7 @@ function CollectionContent() {
   }, []);
 
   const handleReturnToDiscover = () => {
-    router.push('/', { scroll: false });
+    router.replace('/', { scroll: false });
   };
 
   const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
@@ -58,7 +58,8 @@ function CollectionContent() {
       return;
     }
     if (nextView === "discover") {
-      router.push("/", { scroll: false });
+      // Use router.replace to avoid back button issues and smooth transition
+      router.replace("/", { scroll: false });
       return;
     }
     router.push(`/${nextView}`, { scroll: false });
@@ -80,7 +81,7 @@ function CollectionContent() {
       return;
     }
     if (newView === "discover") {
-      router.push("/", { scroll: false });
+      router.replace("/", { scroll: false });
       return;
     }
     router.push(`/${newView}`, { scroll: false });

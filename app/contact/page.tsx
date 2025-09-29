@@ -28,7 +28,7 @@ export default function ContactPage() {
   const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
     if (nextView === "contact") return;
     if (nextView === "discover") {
-      router.push("/", { scroll: false });
+      router.replace("/", { scroll: false });
       return;
     }
     router.push(`/${nextView}`, { scroll: false });

@@ -50,7 +50,7 @@ function ForArtistsContent() {
       return;
     }
     if (nextView === "discover") {
-      router.push("/", { scroll: false });
+      router.replace("/", { scroll: false });
       return;
     }
     router.push(`/${nextView}`, { scroll: false });
