@@ -1623,22 +1623,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     return () => clearTimeout(emergencyFallback);
   }, []);
 
-  // AGGRESSIVE FIX: Don't show loading screen if we have any artworks
+  // Show loading only if we have no artworks and are still loading
   if (!mounted || (loading && artworks.length === 0)) {
-  return (
+    return (
       <div className="flex flex-col min-h-screen bg-black">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
-            {loading ? (
+            {isMobile ? (
               <div>
                 <div className="mb-8">
                   <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
-                  <p className="text-lg text-white">Your Personal Art Curator</p>
+                  <p className="text-lg text-white mb-4">Your Personal Art Curator</p>
                 </div>
-                <div className="text-sm text-gray-300 mb-4">
-                  <p>🚨 Emergency timeout: 8s for data, 15s total</p>
-                  <p className="mt-2">If this takes more than 15 seconds, something is wrong</p>
-                </div>
+                <div className="text-white text-xl mb-4">Loading Artwork...</div>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>
@@ -1647,7 +1644,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         onClick={() => {
                           setLoadingError(null);
                           fetchingRef.current = false;
-                          setLoading(false); // Force loading to false
+                          setLoading(false);
                           fetchArtworks();
                         }}
                         variant="outline"
@@ -1657,7 +1654,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                       </Button>
                       <Button 
                         onClick={() => {
-                          setLoading(false); // Force loading to false before reload
+                          setLoading(false);
                           window.location.reload();
                         }}
                         variant="outline"
@@ -1669,7 +1666,37 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 )}
               </div>
             ) : (
-              "Initializing..."
+              <div>
+                <div className="text-white text-xl mb-4">Loading Artwork...</div>
+                {loadingError && (
+                  <div className="mt-4">
+                    <p className="text-red-600 mb-2">{loadingError}</p>
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => {
+                          setLoadingError(null);
+                          fetchingRef.current = false;
+                          setLoading(false);
+                          fetchArtworks();
+                        }}
+                        variant="outline"
+                        className="mr-2"
+                      >
+                        Try Again
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setLoading(false);
+                          window.location.reload();
+                        }}
+                        variant="outline"
+                      >
+                        Refresh Page
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

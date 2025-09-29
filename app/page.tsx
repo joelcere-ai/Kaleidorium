@@ -10,6 +10,7 @@ function HomeContent() {
   const [view, setViewState] = useState<typeof initialView>(initialView);
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Redirect old view-based routes to new standalone routes
   useEffect(() => {
@@ -43,6 +44,17 @@ function HomeContent() {
     }
   }, [searchParams, view]);
 
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // ULTRA SIMPLE: Show app after 2 seconds, no loading screen
   useEffect(() => {
     console.log('🚨🚨🚨 DEPLOYMENT CHECK v5: Page.tsx ultra-simple loading starting - 2024-09-22-1140');
@@ -55,12 +67,22 @@ function HomeContent() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show blank screen for 2 seconds, then show app directly
+  // Show loading screen for 2 seconds, then show app directly
   if (!showApp) {
     console.log('Page.tsx: Waiting to show app...');
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Loading Artwork...</div>
+        <div className="text-center">
+          {isMobile ? (
+            <>
+              <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
+              <p className="text-lg text-white mb-4">Your Personal Art Curator</p>
+              <div className="text-white text-xl">Loading Artwork...</div>
+            </>
+          ) : (
+            <div className="text-white text-xl">Loading Artwork...</div>
+          )}
+        </div>
       </div>
     );
   }
@@ -79,8 +101,7 @@ export default function Home() {
     <Suspense fallback={
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
-          <p className="text-lg text-white">Your Personal Art Curator</p>
+          <div className="text-white text-xl">Loading Artwork...</div>
         </div>
       </div>
     }>
