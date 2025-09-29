@@ -179,7 +179,7 @@ function ArtistRegisterPage() {
     setAiError("");
     const timeoutId = setTimeout(() => setAiTimeout(true), 120000); // 2 minutes
     try {
-      toast({ title: "AI is analyzing your artwork..." });
+      toast({ title: "The Kurator is studying your artwork..." });
       
       // Use only The Kurator for complete analysis (description + tags)
       const kuratorRes = await fetch("/api/kurator-tags", {
@@ -230,7 +230,7 @@ function ArtistRegisterPage() {
       setAiError("");
       clearTimeout(timeoutId);
     } catch (err: any) {
-      setAiError("AI is taking some time to analyze your artwork. If nothing happens in 2 minutes, click 'Generate AI Description' again. Failing that, you will need to enter your own description.");
+      setAiError("The Kurator is taking some time to study your artwork. If nothing happens in 2 minutes, click 'Generate AI Description' again. Failing that, you will need to enter your own description.");
       toast({ title: "AI analysis failed", description: err.message, variant: "destructive" });
       clearTimeout(timeoutId);
     } finally {
@@ -782,7 +782,7 @@ function ArtistRegisterPage() {
                     className="mt-2 px-4 py-2 text-sm" 
                     disabled={aiLoading || !imageUrl}
                   >
-                    {aiLoading ? "Generating..." : "Generate AI Description"}
+                    {aiLoading ? "The Kurator is studying..." : "Generate AI Description"}
                   </Button>
                 </div>
                 {artwork.tags.length > 0 && (
@@ -794,7 +794,7 @@ function ArtistRegisterPage() {
                 )}
                 {(aiTimeout || aiError) && (
                   <div className="text-yellow-700 bg-yellow-100 border border-yellow-300 rounded px-3 py-2 mt-2 text-sm">
-                    AI is taking some time to analyze your artwork. If nothing happens in 2 minutes, click "Generate AI Description" again. Failing that, you will need to enter your own description.
+                    The Kurator is taking some time to study your artwork. If nothing happens in 2 minutes, click "Generate AI Description" again. Failing that, you will need to enter your own description.
                   </div>
                 )}
                 {tagWarning && (
@@ -807,7 +807,8 @@ function ArtistRegisterPage() {
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <Button 
                   type="submit" 
-                  className="w-full py-3 text-lg font-medium" 
+                  className="w-full py-3 font-medium" 
+                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                   disabled={isSubmitting || !imageUrl || !(artwork.description || aiDescription)}
                 >
                   {isSubmitting ? "Submitting Registration..." : "Complete Artist Registration"}
