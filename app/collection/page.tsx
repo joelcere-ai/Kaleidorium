@@ -94,7 +94,7 @@ function CollectionContent() {
       ) : (
         <DesktopHeader currentPage="collection" collectionCount={collectionCount} />
       )}
-      <div className="container mx-auto px-4 pt-4 pb-16">
+      <div className="container mx-auto px-4 pt-20 pb-16">
         <div className="mb-6">
           <Button variant="ghost" onClick={handleReturnToDiscover} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
             <ArrowLeft className="mr-2 h-4 w-4" />
