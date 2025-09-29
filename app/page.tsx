@@ -11,6 +11,22 @@ function HomeContent() {
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
 
+  // Redirect old view-based routes to new standalone routes
+  useEffect(() => {
+    const viewParam = searchParams.get("view");
+    if (viewParam && viewParam !== "discover") {
+      console.log('🔄 Redirecting from old route to new standalone route:', viewParam);
+      if (viewParam === "collection") {
+        router.replace("/collection");
+      } else if (viewParam === "profile") {
+        router.replace("/profile");
+      } else if (viewParam === "for-artists") {
+        router.replace("/for-artists");
+      }
+      return;
+    }
+  }, [searchParams, router]);
+
   // Create a setView function that updates both state and URL
   const setView = (newView: typeof initialView) => {
     console.log('🔧 setView called with:', newView);
