@@ -544,8 +544,8 @@ export default function MobileCardStack({
 
         {/* Mobile Menu Modal */}
         {showMenuModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
-            <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+          <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
+            <div className="bg-white rounded-t-2xl p-6 w-full">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-black">Menu</h2>
                 <Button
@@ -1116,8 +1116,8 @@ export default function MobileCardStack({
 
       {/* Mobile Menu Modal */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
+          <div className="bg-white rounded-t-2xl p-6 w-full">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-black">Menu</h2>
               <Button
