@@ -855,6 +855,41 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setCurrentIndex(newIndex);
   }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences]);
 
+  // Load recommendations in background without blocking the main loading
+  const loadRecommendationsInBackground = useCallback(async (userId: string, defaultArtworks: Artwork[]) => {
+    try {
+      console.log('🔄 Background: Fetching collector preferences for user:', userId);
+      
+      const { data: collector, error: collectorError } = await supabase
+        .from('Collectors')
+        .select('id, preferences')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (collectorError) {
+        console.error('🚨 Background: Error fetching collector preferences:', collectorError);
+        return; // Just return, don't block the app
+      }
+
+      if (collector?.preferences) {
+        console.log('🔄 Background: Found collector preferences, getting recommendations...');
+        try {
+          const recommendedArtworks = await getRecommendations(userId, defaultArtworks);
+          console.log('✅ Background: Recommendations loaded, updating artworks');
+          setArtworks(recommendedArtworks);
+        } catch (recError) {
+          console.error('🚨 Background: Error getting recommendations:', recError);
+          // Keep default artworks if recommendations fail
+        }
+      } else {
+        console.log('🔄 Background: No collector preferences found, keeping default artworks');
+      }
+    } catch (prefError) {
+      console.error('🚨 Background: Error in background recommendations fetch:', prefError);
+      // Continue with default artworks - don't let this block the app
+    }
+  }, []);
+
   // Update fetchArtworks to use recommendations if user exists
   const fetchArtworks = useCallback(async () => {
     // Prevent multiple simultaneous fetch calls
@@ -874,13 +909,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // 🚨 EMERGENCY: Force loading to complete after 5 seconds (reduced for faster recovery)
+      // 🚨 EMERGENCY: Force loading to complete after 8 seconds (increased for Supabase queries)
       const emergencyTimeout = setTimeout(() => {
-        console.log('🚨 EMERGENCY: 5s timeout reached, forcing app to load with empty artworks');
+        console.log('🚨 EMERGENCY: 8s timeout reached, forcing app to load with empty artworks');
         setArtworks([]);
         setLoading(false);
         fetchingRef.current = false;
-      }, 5000);
+      }, 8000);
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
@@ -957,37 +992,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       setArtworks(transformedArtworks);
 
+      // Load recommendations in background after setting default artworks
       if (user) {
-        console.log('Fetching collector preferences for user:', user.id);
-        try {
-          // Try to get collector data - if this fails, just continue with default artworks
-          console.log('🔍 DEBUG: Attempting to fetch collector preferences for user:', user.id);
-        const { data: collector, error: collectorError } = await supabase
-          .from('Collectors')
-            .select('id, preferences')
-          .eq('user_id', user.id)
-            .maybeSingle();
-
-        if (collectorError) {
-            console.error('🚨 API ERROR: Error fetching collector preferences:', collectorError);
-            console.error('🚨 API ERROR: Error details:', JSON.stringify(collectorError, null, 2));
-            // Don't let this error block the app - just use default artworks
-        } else if (collector?.preferences) {
-          console.log('Found collector preferences, getting recommendations...');
-            try {
-          const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
-          setArtworks(recommendedArtworks);
-            } catch (recError) {
-              console.error('Error getting recommendations, using default artworks:', recError);
-              // Keep default artworks if recommendations fail
-            }
-          } else {
-            console.log('No collector preferences found, using default artworks');
-          }
-        } catch (prefError) {
-          console.error('Error in preferences fetch (continuing with defaults):', prefError);
-          // Continue with default artworks - don't let this block the app
-        }
+        console.log('Starting background recommendations fetch for user:', user.id);
+        // Don't await this - let it run in background
+        loadRecommendationsInBackground(user.id, transformedArtworks);
       }
     } catch (error) {
       console.error('🚨 EMERGENCY: Error in fetchArtworks:', error);
@@ -1602,14 +1611,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // 🚨 EMERGENCY: Add fallback timer to force app to show after 10 seconds (reduced)
+  // 🚨 EMERGENCY: Add fallback timer to force app to show after 15 seconds
   useEffect(() => {
     const emergencyFallback = setTimeout(() => {
-      console.log('🚨 EMERGENCY: 10s fallback - forcing app to show regardless of state');
+      console.log('🚨 EMERGENCY: 15s fallback - forcing app to show regardless of state');
       setMounted(true);
       setLoading(false);
       fetchingRef.current = false;
-    }, 10000);
+    }, 15000);
     
     return () => clearTimeout(emergencyFallback);
   }, []);
@@ -1627,7 +1636,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <p className="text-lg text-white">Your Personal Art Curator</p>
                 </div>
                 <div className="text-sm text-gray-300 mb-4">
-                  <p>🚨 Emergency timeout: 10s for data, 15s total</p>
+                  <p>🚨 Emergency timeout: 8s for data, 15s total</p>
                   <p className="mt-2">If this takes more than 15 seconds, something is wrong</p>
                 </div>
                 {loadingError && (
