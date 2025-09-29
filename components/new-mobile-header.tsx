@@ -8,15 +8,20 @@ import { Menu, X, User, Search, Heart, Palette, Info, Mail } from "lucide-react"
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
+  setView?: (view: "discover" | "collection" | "profile" | "for-artists") => void;
 }
 
-export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileHeaderProps) {
+export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleNavigation = (path: string) => {
-    router.push(path, { scroll: false });
+  const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists") => {
+    if (setView && view) {
+      setView(view);
+    } else {
+      router.push(path, { scroll: false });
+    }
     setIsMenuOpen(false);
   };
 
@@ -33,7 +38,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 mobile-header">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Hamburger Menu */}
           <Button
@@ -84,7 +89,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("discover") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("/")}
+                onClick={() => handleNavigation("/", "discover")}
               >
                 <Search className="mr-3 h-5 w-5" />
                 Discover
@@ -95,7 +100,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("collection") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("/collection")}
+                onClick={() => handleNavigation("/collection", "collection")}
               >
                 <Heart className="mr-3 h-5 w-5" />
                 My Collection
@@ -111,7 +116,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("for-artists") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("/for-artists")}
+                onClick={() => handleNavigation("/for-artists", "for-artists")}
               >
                 <Palette className="mr-3 h-5 w-5" />
                 For Artists
@@ -144,7 +149,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileH
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("profile") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("/profile")}
+                onClick={() => handleNavigation("/profile", "profile")}
               >
                 <User className="mr-3 h-5 w-5" />
                 Profile
