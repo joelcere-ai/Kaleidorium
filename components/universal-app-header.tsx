@@ -75,7 +75,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className="font-serif text-xl font-semibold text-black"
-            onClick={() => handleNavigation("/?view=discover", "discover")}
+            onClick={() => handleNavigation("/", "discover")}
           >
             Kaleidorium
           </Button>
@@ -86,7 +86,7 @@ export function UniversalAppHeader({
           <Button
             variant="ghost"
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("/?view=discover", "discover")}
+            onClick={() => handleNavigation("/", "discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
             Discover
@@ -180,7 +180,7 @@ export function UniversalAppHeader({
             <Button
               variant="ghost"
               className={`justify-start ${isSelected("discover") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/?view=discover", "discover")}
+              onClick={() => handleNavigation("/", "discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
               Discover
