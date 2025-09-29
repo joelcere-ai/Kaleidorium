@@ -60,19 +60,38 @@ export function MobileInstallPrompt() {
   }, [])
 
   const handleInstallClick = async () => {
+    console.log('Install button clicked', { deferredPrompt: !!deferredPrompt, isAndroid, isIOS });
+    
     if (deferredPrompt && isAndroid) {
-      // Android - use the deferred prompt
-      deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      
-      if (outcome === 'accepted') {
-        console.log('User accepted the install prompt')
+      try {
+        // Android - use the deferred prompt
+        console.log('Triggering Android install prompt');
+        deferredPrompt.prompt()
+        const { outcome } = await deferredPrompt.userChoice
+        
+        console.log('Install prompt outcome:', outcome);
+        
+        if (outcome === 'accepted') {
+          console.log('User accepted the install prompt')
+        }
+        
+        setDeferredPrompt(null)
+        setShowPrompt(false)
+      } catch (error) {
+        console.error('Error during install:', error);
+        // Still dismiss the prompt even if there's an error
+        setShowPrompt(false);
       }
-      
-      setDeferredPrompt(null)
-      setShowPrompt(false)
+    } else if (isIOS) {
+      // iOS - show instructions
+      console.log('Showing iOS install instructions');
+      setShowPrompt(false);
+      // iOS instructions will be shown via the prompt itself
+    } else {
+      console.log('No install prompt available or not on mobile device');
+      // Dismiss the prompt if no install method is available
+      setShowPrompt(false);
     }
-    // For iOS, the prompt shows instructions since we can't trigger it programmatically
   }
 
   const handleDismiss = () => {
