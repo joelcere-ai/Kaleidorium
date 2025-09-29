@@ -17,7 +17,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   const pathname = usePathname();
 
   const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists") => {
-    if (setView && view) {
+    // If we have setView and we're on the main app (pathname === "/"), use setView for internal navigation
+    if (setView && view && pathname === "/") {
       setView(view);
     } else {
       router.push(path, { scroll: false });
@@ -26,6 +27,13 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   };
 
   const isCurrentPage = (page: string) => {
+    // Check if we're on the main app with a specific view
+    if (pathname === "/") {
+      // If we're on the main app, check the currentPage prop
+      return currentPage === page;
+    }
+    
+    // For standalone pages
     if (page === "discover" && pathname === "/") return true;
     if (page === "collection" && pathname === "/collection") return true;
     if (page === "profile" && pathname === "/profile") return true;
