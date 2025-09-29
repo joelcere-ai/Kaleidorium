@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaleidorium Outlined "K" Icon Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .preview-item {
+            text-align: center;
+        }
+        .preview-canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .control-group {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #333;
+        }
+        .download-all {
+            background: #007bff;
+        }
+        .download-all:hover {
+            background: #0056b3;
+        }
+        .note {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kaleidorium Outlined "K" Icon Generator</h1>
+        <p>Generate mobile app icons with white background, thin black outline, and smaller centered "K".</p>
+        
+        <div class="note">
+            <strong>📱 Mobile Icon:</strong> This creates icons with a white background, thin black border, and a smaller, centered "K" for better mobile app appearance.
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>Letter:</label>
+                <input type="text" id="iconText" value="K" maxlength="1" />
+            </div>
+            <div class="control-group">
+                <label>Font Size:</label>
+                <input type="range" id="fontSize" min="40" max="80" value="65" />
+                <span id="fontSizeValue">65%</span>
+            </div>
+            <div class="control-group">
+                <label>Font Weight:</label>
+                <select id="fontWeight">
+                    <option value="normal">Normal</option>
+                    <option value="600" selected>Semi-Bold</option>
+                    <option value="bold">Bold</option>
+                    <option value="900">Black</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Text Color:</label>
+                <input type="color" id="textColor" value="#000000" />
+            </div>
+            <div class="control-group">
+                <label>Background:</label>
+                <input type="color" id="backgroundColor" value="#ffffff" />
+            </div>
+            <div class="control-group">
+                <label>Border Width:</label>
+                <input type="range" id="borderWidth" min="1" max="8" value="3" />
+                <span id="borderWidthValue">3px</span>
+            </div>
+            <div class="control-group">
+                <label>Border Color:</label>
+                <input type="color" id="borderColor" value="#000000" />
+            </div>
+            <div class="control-group">
+                <label>Corner Radius:</label>
+                <input type="range" id="cornerRadius" min="10" max="40" value="20" />
+                <span id="cornerRadiusValue">20%</span>
+            </div>
+        </div>
+
+        <button onclick="generateAllIcons()">Generate Outlined K Icons</button>
+        <button onclick="downloadAndroidIcons()" class="download-all">Download Android Icons</button>
+        
+        <div class="preview-grid" id="previewGrid">
+            <!-- Icons will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Android-specific icon sizes
+        const androidIconSizes = [
+            { size: 192, name: 'android-chrome-192x192.png' },
+            { size: 512, name: 'android-chrome-512x512.png' }
+        ];
+
+        // All icon sizes including Apple
+        const allIconSizes = [
+            { size: 180, name: 'apple-touch-icon.png' },
+            { size: 192, name: 'android-chrome-192x192.png' },
+            { size: 512, name: 'android-chrome-512x512.png' },
+            { size: 32, name: 'favicon-32x32.png' },
+            { size: 16, name: 'favicon-16x16.png' }
+        ];
+
+        let generatedIcons = [];
+
+        // Update slider values
+        document.getElementById('fontSize').addEventListener('input', function() {
+            document.getElementById('fontSizeValue').textContent = this.value + '%';
+        });
+
+        document.getElementById('borderWidth').addEventListener('input', function() {
+            document.getElementById('borderWidthValue').textContent = this.value + 'px';
+        });
+
+        document.getElementById('cornerRadius').addEventListener('input', function() {
+            document.getElementById('cornerRadiusValue').textContent = this.value + '%';
+        });
+
+        // Auto-generate on input changes
+        ['iconText', 'fontSize', 'fontWeight', 'textColor', 'backgroundColor', 'borderWidth', 'borderColor', 'cornerRadius'].forEach(id => {
+            document.getElementById(id).addEventListener('input', generateAllIcons);
+        });
+
+        function generateIcon(size, fileName) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Get settings
+            const text = document.getElementById('iconText').value || 'K';
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            const fontWeight = document.getElementById('fontWeight').value;
+            const textColor = document.getElementById('textColor').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            const borderWidth = parseInt(document.getElementById('borderWidth').value);
+            const borderColor = document.getElementById('borderColor').value;
+            const cornerRadius = parseInt(document.getElementById('cornerRadius').value);
+            
+            // Calculate actual font size - smaller for centered look
+            const scaledFontSize = (fontSize / 100) * size;
+            
+            // Calculate border radius
+            const radius = (cornerRadius / 100) * (size / 2);
+            
+            // Draw background with border
+            ctx.fillStyle = backgroundColor;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Draw border
+            if (borderWidth > 0) {
+                ctx.strokeStyle = borderColor;
+                ctx.lineWidth = borderWidth;
+                ctx.beginPath();
+                ctx.roundRect(borderWidth/2, borderWidth/2, size - borderWidth, size - borderWidth, radius - borderWidth/2);
+                ctx.stroke();
+            }
+            
+            // Set text properties
+            ctx.fillStyle = textColor;
+            ctx.font = `${fontWeight} ${scaledFontSize}px 'Playfair Display', 'Times New Roman', serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Remove shadow for cleaner look
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Draw text
+            ctx.fillText(text, size / 2, size / 2);
+            
+            return canvas;
+        }
+
+        function generateAllIcons() {
+            const previewGrid = document.getElementById('previewGrid');
+            previewGrid.innerHTML = '';
+            generatedIcons = [];
+            
+            allIconSizes.forEach(iconInfo => {
+                const canvas = generateIcon(iconInfo.size, iconInfo.name);
+                generatedIcons.push({ canvas, name: iconInfo.name });
+                
+                // Create preview
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                
+                const previewCanvas = document.createElement('canvas');
+                previewCanvas.className = 'preview-canvas';
+                previewCanvas.width = 80;
+                previewCanvas.height = 80;
+                
+                const previewCtx = previewCanvas.getContext('2d');
+                previewCtx.drawImage(canvas, 0, 0, 80, 80);
+                
+                const label = document.createElement('div');
+                label.textContent = `${iconInfo.size}x${iconInfo.size}`;
+                label.style.fontSize = '12px';
+                label.style.color = '#666';
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'Download';
+                downloadBtn.style.fontSize = '12px';
+                downloadBtn.style.padding = '4px 8px';
+                downloadBtn.onclick = () => downloadIcon(canvas, iconInfo.name);
+                
+                previewItem.appendChild(previewCanvas);
+                previewItem.appendChild(label);
+                previewItem.appendChild(downloadBtn);
+                previewGrid.appendChild(previewItem);
+            });
+        }
+
+        function downloadIcon(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAndroidIcons() {
+            const androidIcons = generatedIcons.filter(icon => 
+                icon.name.includes('android-chrome')
+            );
+            
+            androidIcons.forEach((icon, index) => {
+                setTimeout(() => downloadIcon(icon.canvas, icon.name), index * 100);
+            });
+        }
+
+        // Generate initial icons
+        generateAllIcons();
+
+        // Add roundRect polyfill for older browsers
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+    </script>
+</body>
+</html>

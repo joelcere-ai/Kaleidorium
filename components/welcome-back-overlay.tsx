@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { X, Sparkles } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface WelcomeBackOverlayProps {
@@ -51,51 +51,34 @@ export function WelcomeBackOverlay({ show, newArtworkCount, onDismiss }: Welcome
     <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 transition-all duration-300 ${
       isAnimating ? 'opacity-100' : 'opacity-0'
     }`}>
-      <div className={`bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 ${
+      <div className={`bg-white rounded-lg shadow-2xl max-w-sm w-full mx-4 transform transition-all duration-300 ${
         isAnimating ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
       }`}>
         {/* Header */}
-        <div className="relative p-6 pb-4">
+        <div className="relative p-4 pb-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={handleDismiss}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 w-6 h-6"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </Button>
           
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-serif font-bold text-black">Welcome back!</h2>
-              <p className="text-sm text-gray-600">Fresh art awaits you</p>
-            </div>
+          <div className="text-center">
+            <h2 className="text-lg font-serif font-bold text-black mb-1">Welcome back.</h2>
+            <p className="text-sm text-gray-600">
+              We've added <span className="font-semibold text-black">{newArtworkCount}</span> artwork{newArtworkCount !== 1 ? 's' : ''} since your last visit.
+            </p>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-6 pb-6">
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 mb-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-1">
-                {newArtworkCount}
-              </div>
-              <p className="text-sm font-medium text-gray-700">
-                new artwork{newArtworkCount !== 1 ? 's' : ''} added since your last visit
-              </p>
-            </div>
-          </div>
-          
-          <p className="text-center text-gray-600 text-sm mb-6">
-            Discover fresh pieces curated just for your taste. Happy exploring! ✨
-          </p>
-          
+        <div className="px-4 pb-4">
           <Button
             onClick={handleDismiss}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 rounded-xl transition-all duration-200"
+            className="w-full bg-black hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-md transition-all duration-200"
+            style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           >
             Start Discovering
           </Button>
