@@ -368,7 +368,24 @@ export default function RegisterPage() {
         },
       })
 
-      if (authError) throw authError
+      if (authError) {
+        console.error('Auth registration error:', authError);
+        // Check if it's an email conflict
+        if (authError.message?.includes('already registered') || 
+            authError.message?.includes('already exists') ||
+            authError.message?.includes('duplicate') ||
+            authError.message?.includes('already been registered')) {
+          toast({
+            title: "Email already registered",
+            description: "This email address is already registered. Please sign in instead or use a different email address.",
+            variant: "destructive",
+          });
+        } else {
+          throw authError;
+        }
+        setIsLoading(false);
+        return;
+      }
 
       if (authData.user) {
         // Ensure profile-pictures bucket exists
@@ -408,26 +425,7 @@ export default function RegisterPage() {
             .from("Collectors")
             .update({ 
               is_temporary: false,
-              profilepix: profilePictureUrl,
-              username,
-              first_name: firstName,
-              surname,
-              country,
-              email,
-              preferences: {
-                artists: {},
-                genres: {},
-                styles: {},
-                subjects: {},
-                colors: {},
-                priceRanges: {},
-                interactionCount: 0,
-                viewed_artworks: [],
-                // Store art preferences in the preferences object
-                art_types: artTypes,
-                art_styles: artStyles,
-                price_range: artSpendingRange,
-              }
+              profilepix: profilePictureUrl 
             })
             .eq("id", tempCollector.id)
         } else {
@@ -440,6 +438,9 @@ export default function RegisterPage() {
             first_name: firstName,
             surname,
             country,
+            art_types: artTypes,
+            art_styles: artStyles,
+            price_range: artSpendingRange,
             email,
             profilepix: profilePictureUrl,
             preferences: {
@@ -451,14 +452,11 @@ export default function RegisterPage() {
               priceRanges: {},
               interactionCount: 0,
               viewed_artworks: [],
-              // Store art preferences in the preferences object
-              art_types: artTypes,
-              art_styles: artStyles,
-              price_range: artSpendingRange,
             },
             is_temporary: false,
           });
           if (insertError) {
+            console.error('Database insertion error:', insertError);
             toast({
               title: "Registration failed",
               description: `Could not save your profile: ${insertError.message}`,
@@ -498,6 +496,7 @@ export default function RegisterPage() {
         router.push("/profile")
       }
     } catch (error) {
+      console.error('Registration error:', error);
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {}
         error.errors.forEach((err) => {
@@ -507,9 +506,13 @@ export default function RegisterPage() {
         })
         setErrors(newErrors)
       } else {
+        // Check if it's a specific error type
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error('Error message:', errorMessage);
+        
         toast({
           title: "Registration failed",
-          description: "An error occurred during registration. Please try again.",
+          description: `An error occurred during registration: ${errorMessage}`,
           variant: "destructive",
         })
       }
