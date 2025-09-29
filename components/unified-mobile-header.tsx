@@ -30,7 +30,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
         >
           <Menu className="w-6 h-6" />
         </Button>
-        <h1 className="text-xl font-bold text-black">Kaleidorium</h1>
+        <h1 className="font-serif text-xl font-semibold text-black">Kaleidorium</h1>
         <Button
           variant="ghost"
           size="icon"
