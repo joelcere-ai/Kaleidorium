@@ -1,8 +1,33 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { NewMobileHeader } from "@/components/new-mobile-header";
+import { DesktopHeader } from "@/components/desktop-header";
 
 export default function TermsPage() {
+  const [collectionCount, setCollectionCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <>
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="terms" collectionCount={collectionCount} />
+      ) : (
+        <DesktopHeader currentPage={"terms" as any} collectionCount={collectionCount} />
+      )}
+      <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
       <h1 className="font-serif text-2xl font-semibold mb-6">Terms Of Service</h1>
       <p className="text-sm mb-2">Updated on 1st of July 2025</p>
       <h2 className="font-bold mt-6 mb-2">1. Our Agreement</h2>
@@ -64,6 +89,7 @@ export default function TermsPage() {
       <p><b>10.1.</b> This Agreement shall be governed by and construed in accordance with the laws of Singapore and you agree to submit to the exclusive jurisdiction of the Singapore courts.</p>
       <h2 className="font-bold mt-6 mb-2">11. Contact</h2>
       <p><b>11.1.</b> If we have to contact you, we will do so by writing to you at the email address you have provided to us. For support, contact <a href="mailto:kurator@kaleidorium.com" className="underline">kurator@kaleidorium.com</a>. It is therefore very important that you have provided a legitimate email address that is used by you personally and by proceeding with use of our service you warrant that you have done so.</p>
-    </div>
+      </div>
+    </>
   );
 } 

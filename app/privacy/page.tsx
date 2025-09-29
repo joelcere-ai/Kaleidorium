@@ -1,8 +1,33 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { NewMobileHeader } from "@/components/new-mobile-header";
+import { DesktopHeader } from "@/components/desktop-header";
 
 export default function PrivacyPage() {
+  const [collectionCount, setCollectionCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <>
+      {/* Conditional header rendering */}
+      {isMobile ? (
+        <NewMobileHeader currentPage="privacy" collectionCount={collectionCount} />
+      ) : (
+        <DesktopHeader currentPage={"privacy" as any} collectionCount={collectionCount} />
+      )}
+      <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
       <h1 className="font-serif text-2xl font-semibold mb-6">Privacy Policy & Data Protection</h1>
       <p className="text-sm mb-2">Updated on 1st of July 2025</p>
       <h2 className="font-bold mt-6 mb-2">1. Introduction</h2>
@@ -99,6 +124,7 @@ export default function PrivacyPage() {
         <li><b>Targeting Cookies:</b> May be used by marketing partners if applicable.</li>
       </ul>
       <p>You can manage your preferences via your browser settings or our cookie consent tool. By continuing to use our site, you consent to our use of cookies in accordance with this policy.</p>
-    </div>
+      </div>
+    </>
   );
 } 

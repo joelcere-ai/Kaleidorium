@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Search, Heart, User, Palette, Info, Mail } from "lucide-react";
 
+// Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
-  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register";
+  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
 }
 
