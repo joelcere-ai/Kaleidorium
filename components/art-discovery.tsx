@@ -1789,7 +1789,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Collection Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <NewMobileHeader currentPage="collection" collectionCount={collectionCount} setView={setView} />
+            <NewMobileHeader currentPage="collection" collectionCount={collectionCount} />
             
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4 pt-20">
@@ -2230,7 +2230,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile For Artists Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col for-artists-page" data-view="for-artists">
-            <NewMobileHeader currentPage="for-artists" collectionCount={collectionCount} setView={setView} />
+            <NewMobileHeader currentPage="for-artists" collectionCount={collectionCount} />
             
             {/* For Artists Content */}
             <div className="flex-1 overflow-y-auto pt-16">
@@ -2655,7 +2655,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Profile Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <NewMobileHeader currentPage="profile" collectionCount={collectionCount} setView={setView} />
+            <NewMobileHeader currentPage="profile" collectionCount={collectionCount} />
             
             {/* Profile Content */}
             <div className="flex-1 overflow-y-auto pt-16">

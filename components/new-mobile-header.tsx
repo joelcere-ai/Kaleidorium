@@ -8,32 +8,21 @@ import { Menu, X, User, Search, Heart, Palette, Info, Mail } from "lucide-react"
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
-  setView?: (view: "discover" | "collection" | "profile" | "for-artists") => void;
 }
 
-export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
+export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists") => {
-    // If we have setView and we're on the main app (pathname === "/"), use setView for internal navigation
-    if (setView && view && pathname === "/") {
-      setView(view);
-    } else {
-      router.push(path, { scroll: false });
-    }
+    // Always use router.push for consistent standalone routing
+    router.push(path, { scroll: false });
     setIsMenuOpen(false);
   };
 
   const isCurrentPage = (page: string) => {
-    // Check if we're on the main app with a specific view
-    if (pathname === "/") {
-      // If we're on the main app, check the currentPage prop
-      return currentPage === page;
-    }
-    
-    // For standalone pages
+    // Use standalone routes for consistent navigation
     if (page === "discover" && pathname === "/") return true;
     if (page === "collection" && pathname === "/collection") return true;
     if (page === "profile" && pathname === "/profile") return true;
