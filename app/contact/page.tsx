@@ -63,7 +63,7 @@ export default function ContactPage() {
       
       if (response.ok) {
         console.log('Email sent successfully');
-        setStatus("Your message has been sent. Thank you!");
+        setStatus("Your message is on its way. Our curators will reply shortly.");
         setEmail("");
         setSubject("");
         setMessage("");
