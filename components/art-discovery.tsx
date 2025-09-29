@@ -69,12 +69,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   useEffect(() => {
     if (view === "for-artists") {
       const aggressiveForceStyles = () => {
-        // Target ALL elements in the for-artists view
+        // Target ALL elements in the for-artists view EXCEPT mobile header
         const allElements = document.querySelectorAll('[data-view="for-artists"] *')
         
         allElements.forEach((el: Element) => {
           const htmlEl = el as HTMLElement
           const tagName = htmlEl.tagName.toLowerCase()
+          
+          // Skip mobile header elements
+          if (htmlEl.closest('.mobile-header')) {
+            return;
+          }
           
           // Force titles (h1, h2, h3) to 16px Times New Roman Bold
           if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3') {
@@ -102,10 +107,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           }
         })
 
-        // Extra aggressive targeting for bullet points
+        // Extra aggressive targeting for bullet points (excluding mobile header)
         const bulletPoints = document.querySelectorAll('[data-view="for-artists"] ul li')
         bulletPoints.forEach((el: Element) => {
           const htmlEl = el as HTMLElement
+          
+          // Skip mobile header elements
+          if (htmlEl.closest('.mobile-header')) {
+            return;
+          }
+          
           htmlEl.style.setProperty('font-size', '14px', 'important')
           htmlEl.style.setProperty('font-family', 'Arial, sans-serif', 'important')
           htmlEl.style.setProperty('color', 'black', 'important')
