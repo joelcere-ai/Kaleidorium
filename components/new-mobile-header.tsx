@@ -4,22 +4,20 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Search, Heart, Palette, Info, Mail } from "lucide-react";
-import { useNavigation } from "@/components/navigation-context";
 
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
 }
 
-export function NewMobileHeader({ currentPage, collectionCount = 0 }: NewMobileHeaderProps) {
+export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const { navigateToView } = useNavigation();
 
   const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    console.log('🚀 NewMobileHeader: Navigating to:', view);
-    navigateToView(view);
+    setView(view);
     setIsMenuOpen(false);
   };
 

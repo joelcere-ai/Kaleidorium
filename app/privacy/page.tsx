@@ -23,9 +23,9 @@ export default function PrivacyPage() {
     <>
       {/* Conditional header rendering */}
       {isMobile ? (
-        <NewMobileHeader currentPage="privacy" collectionCount={collectionCount} />
+        <NewMobileHeader currentPage="privacy" collectionCount={collectionCount} setView={() => {}} />
       ) : (
-        <DesktopHeader currentPage={"privacy" as any} collectionCount={collectionCount} />
+        <DesktopHeader currentPage={"privacy" as any} collectionCount={collectionCount} setView={() => {}} />
       )}
       <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
       <h1 className="font-serif text-2xl font-semibold mb-6">Privacy Policy & Data Protection</h1>

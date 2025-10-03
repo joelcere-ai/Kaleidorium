@@ -23,9 +23,9 @@ export default function TermsPage() {
     <>
       {/* Conditional header rendering */}
       {isMobile ? (
-        <NewMobileHeader currentPage="terms" collectionCount={collectionCount} />
+        <NewMobileHeader currentPage="terms" collectionCount={collectionCount} setView={() => {}} />
       ) : (
-        <DesktopHeader currentPage={"terms" as any} collectionCount={collectionCount} />
+        <DesktopHeader currentPage={"terms" as any} collectionCount={collectionCount} setView={() => {}} />
       )}
       <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
       <h1 className="font-serif text-2xl font-semibold mb-6">Terms Of Service</h1>

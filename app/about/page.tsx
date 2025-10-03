@@ -1,41 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { NewMobileHeader } from "@/components/new-mobile-header";
-import { DesktopHeader } from "@/components/desktop-header";
-import { AboutContent } from "@/components/about-content";
-import { useMobileDetection } from "@/hooks/use-mobile-detection";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function AboutPage() {
-  const { isMobile } = useMobileDetection();
-  const [collectionCount, setCollectionCount] = useState(0);
+export default function AboutRedirect() {
+  const router = useRouter();
 
   useEffect(() => {
-    // Load collection count from localStorage
-    const storedCollection = localStorage.getItem('artwork-collection');
-    if (storedCollection) {
-      const collection = JSON.parse(storedCollection);
-      setCollectionCount(collection.length);
-    }
-  }, []);
+    // Redirect to main app with about view
+    router.replace('/?view=about');
+  }, [router]);
 
   return (
-    <div className="min-h-screen">
-      {isMobile ? (
-        <>
-          <NewMobileHeader currentPage="about" collectionCount={collectionCount} />
-          <div className="pt-16">
-            <AboutContent setView={() => {}} />
-          </div>
-        </>
-      ) : (
-        <>
-          <DesktopHeader currentPage="about" collectionCount={collectionCount} />
-          <div className="pt-4">
-            <AboutContent setView={() => {}} />
-          </div>
-        </>
-      )}
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-center">
+        <div className="text-white text-xl">Loading About...</div>
+      </div>
     </div>
   );
 }

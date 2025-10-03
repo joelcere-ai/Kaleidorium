@@ -75,9 +75,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background">
       {/* Conditional header rendering */}
       {isMobile ? (
-        <NewMobileHeader currentPage="login" />
+        <NewMobileHeader currentPage="login" setView={() => {}} />
       ) : (
-        <DesktopHeader currentPage="login" />
+        <DesktopHeader currentPage="login" setView={() => {}} />
       )}
       
       <div className="container max-w-[800px] py-20">

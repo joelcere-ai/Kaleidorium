@@ -4,23 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Search, Heart, User, Palette, Info, Mail } from "lucide-react";
-import { useNavigation } from "@/components/navigation-context";
 
 // Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
   currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
 }
 
-export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeaderProps) {
+export function DesktopHeader({ currentPage, collectionCount = 0, setView }: DesktopHeaderProps) {
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
-  const { navigateToView } = useNavigation();
 
   const isSelected = (view: string) => currentPage === view;
 
   const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    navigateToView(view);
+    setView(view);
     setShowMenu(false);
   };
 
