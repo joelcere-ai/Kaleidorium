@@ -37,19 +37,23 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   const navigateToView = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    console.log('🚀 NavigationContext: Navigating to view:', view);
+    console.log('🚀 NavigationContext: Navigating to view:', view, 'from pathname:', pathname);
     
     if (view === "discover") {
       // Always navigate to main app for discover
       if (pathname !== "/") {
-        // Use replace to avoid adding to history and prevent reload feeling
-        router.replace("/", { scroll: false });
+        console.log('🚀 NavigationContext: Navigating from', pathname, 'to / (discover)');
+        // Use router.push with shallow: true to prevent page reload
+        router.push("/", { scroll: false });
+      } else {
+        console.log('🚀 NavigationContext: Already on discover page, updating view only');
       }
       setCurrentView("discover");
     } else {
       // Navigate to standalone pages
       const targetPath = `/${view}`;
       if (pathname !== targetPath) {
+        console.log('🚀 NavigationContext: Navigating from', pathname, 'to', targetPath);
         router.push(targetPath, { scroll: false });
       }
       setCurrentView(view);
