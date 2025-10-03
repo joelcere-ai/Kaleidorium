@@ -37,14 +37,14 @@ import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
 
 interface AppHeaderProps {
-  view: "discover" | "collection" | "profile" | "for-artists"
-  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void
+  view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy"
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void
   collectionCount: number
 }
 
 interface ArtDiscoveryProps {
-  view: "discover" | "collection" | "profile" | "for-artists";
-  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void;
+  view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy";
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
 }
