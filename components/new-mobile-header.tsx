@@ -8,7 +8,7 @@ import { Menu, X, User, Search, Heart, Palette, Info, Mail } from "lucide-react"
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
 }
 
 export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
@@ -16,7 +16,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
+  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => {
     setView(view);
     setIsMenuOpen(false);
   };

@@ -20,15 +20,15 @@ function HomeContent() {
   const { isMobile } = useMobileDetection();
   
   // Determine current view from search params
-  const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" => {
+  const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy" => {
     const viewParam = searchParams.get("view");
-    if (viewParam && ["collection", "profile", "for-artists", "about", "contact"].includes(viewParam)) {
+    if (viewParam && ["collection", "profile", "for-artists", "about", "contact", "terms", "privacy"].includes(viewParam)) {
       return viewParam as any;
     }
     return "discover";
   };
   
-  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact">(getCurrentView());
+  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy">(getCurrentView());
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
@@ -42,7 +42,7 @@ function HomeContent() {
   }, [pathname, searchParams]);
 
   // Create a setView function that updates both state and URL
-  const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
+  const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => {
     setViewState(newView);
     // Use shallow routing to avoid page reloads
     if (newView === "discover") {
@@ -341,6 +341,139 @@ function HomeContent() {
     );
   };
 
+  // Terms of Service content component
+  const TermsContent = () => {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>1. Acceptance of Terms</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            By accessing and using Kaleidorium ("the Service"), you accept and agree to be bound by the terms and provision of this agreement.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>2. Use License</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            Permission is granted to temporarily use Kaleidorium for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>3. Disclaimer</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            The materials on Kaleidorium are provided on an 'as is' basis. Kaleidorium makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>4. Limitations</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            In no event shall Kaleidorium or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Kaleidorium, even if Kaleidorium or a Kaleidorium authorized representative has been notified orally or in writing of the possibility of such damage.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>5. Accuracy of materials</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            The materials appearing on Kaleidorium could include technical, typographical, or photographic errors. Kaleidorium does not warrant that any of the materials on its website are accurate, complete or current.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>6. Links</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            Kaleidorium has not reviewed all of the sites linked to our website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Kaleidorium of the site.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>7. Modifications</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            Kaleidorium may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>8. Governing Law</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            These terms and conditions are governed by and construed in accordance with the laws of the United States and you irrevocably submit to the exclusive jurisdiction of the courts in that state or location.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  // Privacy & Data Policy content component
+  const PrivacyContent = () => {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>1. Information We Collect</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include your name, email address, and any other information you choose to provide.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>2. How We Use Your Information</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and communicate with you about products, services, and events.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>3. Information Sharing</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy. We may share your information with service providers who assist us in operating our website and conducting our business.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>4. Data Security</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>5. Cookies and Tracking</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We use cookies and similar tracking technologies to collect and use personal information about you. You can control cookies through your browser settings.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>6. Your Rights</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            You have the right to access, update, or delete the information we have on you. You also have the right to opt out of certain communications from us.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>7. Children's Privacy</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            Our service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>8. Changes to This Policy</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "last updated" date.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>9. Contact Us</h2>
+          <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            If you have any questions about this privacy policy, please contact us at thekurator@blockmeister.com.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   // Contact form component
   const ContactForm = () => {
     const [email, setEmail] = useStateContact("");
@@ -621,6 +754,46 @@ function HomeContent() {
           <div className="flex-1 overflow-y-auto pt-20">
             <div className="container mx-auto px-4 pt-20 pb-16 max-w-lg">
               <ContactForm />
+            </div>
+          </div>
+        );
+      
+      case "terms":
+        return (
+          <div className="flex-1 overflow-y-auto pt-20">
+            <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Terms of Service</h1>
+                <Button
+                  variant="ghost"
+                  onClick={() => setView("discover")}
+                  className="text-gray-600 hover:text-gray-900"
+                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                >
+                  Close
+                </Button>
+              </div>
+              <TermsContent />
+            </div>
+          </div>
+        );
+      
+      case "privacy":
+        return (
+          <div className="flex-1 overflow-y-auto pt-20">
+            <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
+              <div className="flex items-center justify-between mb-8">
+                <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Privacy & Data Policy</h1>
+                <Button
+                  variant="ghost"
+                  onClick={() => setView("discover")}
+                  className="text-gray-600 hover:text-gray-900"
+                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                >
+                  Close
+                </Button>
+              </div>
+              <PrivacyContent />
             </div>
           </div>
         );

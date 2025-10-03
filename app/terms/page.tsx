@@ -1,95 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { NewMobileHeader } from "@/components/new-mobile-header";
-import { DesktopHeader } from "@/components/desktop-header";
 
-export default function TermsPage() {
-  const [collectionCount, setCollectionCount] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function TermsRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+    // Redirect to main app with terms view
+    router.replace('/?view=terms');
+  }, [router]);
 
   return (
-    <>
-      {/* Conditional header rendering */}
-      {isMobile ? (
-        <NewMobileHeader currentPage="terms" collectionCount={collectionCount} setView={() => {}} />
-      ) : (
-        <DesktopHeader currentPage={"terms" as any} collectionCount={collectionCount} setView={() => {}} />
-      )}
-      <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
-      <h1 className="font-serif text-2xl font-semibold mb-6">Terms Of Service</h1>
-      <p className="text-sm mb-2">Updated on 1st of July 2025</p>
-      <h2 className="font-bold mt-6 mb-2">1. Our Agreement</h2>
-      <p>Kaleidorium is a service developed and operated by Hypehack Pte Ltd (the "Company"). These Terms of Service describe the terms and conditions under which the Company Pte Ltd (the "Company") ("the Company", "we", "us"), a private limited liability company incorporated in Singapore, offers you ("you" or "your" or "user") access to this Kaleidorium service.</p>
-      <p>Please read the Terms of this Agreement carefully to make sure you understand them. By using our Kaleidorium service, you are automatically deemed to agree to accept and be legally bound by these Terms as an Agreement.</p>
-      <p>You should read our Privacy Policy too. The Privacy Policy explains how we use your personal data.</p>
-      <p>For the avoidance of doubt, if you do not agree with the Terms of Service herein or with our Privacy Policy, you should not proceed to register, access or use our Kaleidorium service.</p>
-      <h3 className="font-semibold mt-4 mb-2">1.1. Changes to Terms</h3>
-      <p>We can update and change these Terms from time to time and the most current version of these Terms will be posted here. You may be invited to review and accept the revised Terms in order to continue using the Kaleidorium service. We suggest that you regularly check this page where any changes will be posted.</p>
-      <h2 className="font-bold mt-6 mb-2">2. Our Services</h2>
-      <p>The Company Pte Ltd (the "Company") acts solely as a technology provider. We are not an agent, representative, fiduciary or intermediary of either artists or collectors, and no agency, partnership, joint venture, employment, or franchise relationship is intended or created by your use of the Kaleidorium service.</p>
-      <p>The 'View' or "Artwork Page" button is a hyperlink only and does not imply any facilitation or endorsement of the transaction.</p>
-      <p><b>2.1.</b> Our service, accessible at www.kaleidorium.com or related app do not constitute a marketplace, exchange or broker. We do not have custody or control over the artwork you are interacting with and we do not execute or effectuate transactions, purchases, transfers, or sales of artwork. To that effect, we do not request and hold any financial data, credit card data or wallet address from you or any our users.</p>
-      <p><b>2.2.</b> Our service to art collectors operates like a search engine. It is designed to help you find artwork currently listed on third party platforms and website based on your taste and preference. To do so, we ask that you register as a user on our service, so that we can build an artistic profile that can be remembered and enriched every time you visit us. The artistic profile is built by your continuing interaction with our service and liking/disliking artwork presented to you. Through your continued interaction, we aim to provide you with more and relevant suggestions of artwork you may like. To read more about what type of data we collect to build your artistic profile please read our Privacy Policy. Whenever you click "Buy" you will be automatically redirected to the artwork page on the artist website or platform page, where you can decide to purchase it, or not. We have no further involvement or control other what happens between you and the artist or the platform/website that is hosting the artist's artwork, therefore cannot be liable for any issues you may encounter once you leave our platform. Likewise, we are not a party to any Purchase Terms you may read or agree to on third-party platforms or websites outside of our own.</p>
-      <p><b>2.3.</b> Our service to artists operates like a search engine. It is designed to help you promote your artwork, currently listed on third party platforms and websites to art collectors who will appreciate it, based on their taste and preference. To do so, we ask that you register as an artist on our service and upload a picture of your artwork with corresponding description and information. Art Collectors will have the option to like or dislike the picture of your artwork, and to add it to their Collection, which is an album of artwork they like. From this collection, they are able to click a "Artwork Page". This will redirect them to the URL you provided for the artwork, on your website/platform or a third-party website/platform. We have no further involvement or control other what happens between you and the art collector or the platform/website that is hosting the artist's artwork, therefore cannot be liable for any issues you may encounter. Likewise, we are not a party to any Purchase Terms between artists and art collectors.</p>
-      <h2 className="font-bold mt-6 mb-2">3. Representation, Guarantees and Warranties</h2>
-      <p>You acknowledge that we do not conduct background checks or ownership verification on artists or artworks submitted. It is solely your responsibility to verify the authenticity, provenance, ownership, and legitimacy of the artworks and the artists you may be redirected to. Hypehack Pte Ltd (the "Company") disclaims all liability for counterfeit, misattributed or misrepresented artworks.</p>
-      <p>The suggestions and matches provided by our service are generated algorithmically and are for informational purposes only. We do not guarantee the accuracy, relevance, or reliability of AI-generated matches or recommendations.</p>
-      <p><b>3.1.</b> We make no representations, warranties or guarantees, whether express or implied, that the content on our site is accurate, complete or up to date, and we do not make any representations, warranties or guarantees about third-party content visible through our service, including any content associated with artwork displayed on our service.</p>
-      <p><b>3.2.</b> Unless explicitly stated in a Certificate Of Authenticity issued by the Company, we make no claims about the identity, legitimacy, functionality, or authenticity of users or artwork visible on our service.</p>
-      <p><b>3.3.</b> We do not guarantee that any artwork visible on our service will always remain visible and/or available to be bought, sold, or transferred.</p>
-      <p><b>3.4.</b> We do not offer financial advice or recommendations to purchase artwork.</p>
-      <p><b>3.5.</b> When you click on a link to, or access and use, a third-party website or application, though we may not warn you that you have left our service, you are subject to the terms and conditions (including privacy policies) of these websites and applications. We are not responsible or liable for any third-party websites, applications or materials you access, knowingly or unknowingly.</p>
-      <p><b>3.6.</b> We do not review, approve, monitor, endorse, warrant, or make any representations with respect to third-party websites, third-party applications, third-party products or services or associated third-party materials. You use all links to third-party websites, applications and materials at your own risk.</p>
-      <p><b>3.7.</b> The downloading of any files, images, videos and data from our service by you does not in any way transfer legal ownership of the content to you. You may not use, redistribute, sell, reverse-engineer or otherwise deal with the content nor create derivative works from this platform or the materials thereon. Any unauthorized use of the platform or the materials thereon is strictly prohibited.</p>
-      <h2 className="font-bold mt-6 mb-2">4. Your Rights & Obligations as a User</h2>
-      <p>You shall not use our service or any content on our service for any commercial purpose, including but not limited to reproducing or distributing content, scraping data, or using automated bots for data collection, unless expressly permitted in writing by us.</p>
-      <p>By clicking 'I Agree' during sign-up or by continuing to use our service, you acknowledge that you have read, understood, and accepted these Terms.</p>
-      <p><b>4.1.</b> Our service is made available for personal and not commercial use. You warrant and undertake that you shall not do or authorise any act or thing which will in any way materially alter, harm, misuse or bring into disrepute, impair or materially adversely affect Us and/or Our rights and interests or the rights and interests of any of our commercial partners.</p>
-      <p><b>4.2.</b> Our service is intended for people who are at least 18 years old. By using our service you are confirming that you are at least 18 years old and have the necessary legal capacity, right, power and authority to agree to this Agreement. If you are under 18 years old, your usage of our service constitutes a breach of this agreement.</p>
-      <p><b>4.3.</b> You cannot assign, sub-license or otherwise transfer any or all of your rights or obligations under these Terms to any other person.</p>
-      <p><b>4.4.</b> You bear full responsibility for verifying the identity, legitimacy, and authenticity of artwork that are displayed on our service.</p>
-      <p><b>4.5.</b> If we do not enforce any right, we have against you, this does not prevent us from enforcing this right at a later date. A person who is not a party to these Terms does not have any rights under them.</p>
-      <p><b>4.6.</b> These Terms supersede and take precedence over any other purported terms between you and us.</p>
-      <p><b>4.7.</b> You agree not to share your account details (username and password) with any other user or third party, or knowingly carry out any activity which enables a third party to access or use your account. If we believe, acting in our discretion, that your account is used inappropriately, we reserve the right to suspend or terminate or cease to support your account without liability.</p>
-      <p><b>4.8.</b> You must not misuse our service by knowingly introducing viruses, trojans, worms, logic bombs or other material that is malicious or technologically harmful. You must not attempt to gain unauthorised access to our site, the server on which our site is stored, or any server, computer or database connected to our site. You must not attack our site via a denial-of-service attack or a distributed denial-of service attack. By breaching this provision, you would commit a criminal offence. We will report any such breach to the relevant law enforcement authorities, and we will co-operate with those authorities by disclosing your identity to them. In the event of such a breach, your right to use our site will cease immediately.</p>
-      <p><b>4.9.</b> You are solely responsible for protecting your hardware, software, data and other material from viruses, malware and other Internet security risks.</p>
-      <h2 className="font-bold mt-6 mb-2">5. Copyright and Intellectual Property</h2>
-      <p>Artists represent and warrant that they are the rightful owners or authorized licensors of the artworks uploaded, and that such uploads do not infringe upon the intellectual property rights of any third party. Artists shall indemnify and hold the Company harmless from any claims arising from misrepresentation, copyright infringement or violation of third-party rights.</p>
-      <p><b>5.1.</b> All artwork, artwork descriptions, artist profiles and descriptions, curator profiles and descriptions, curatorial notes and any assets, copy, images, logos, links, videos, materials and content provided to us by third-parties remain properties of their legitimate owners and providers and we do not have nor claim any rights, representation or protection over them.</p>
-      <p><b>5.2.</b> When we display third-party content and materials, we make no warranties, guarantees or representation that these are authentic or that the third-party who provided us with such content and material are the legitimate copyright or intellectual property owners.</p>
-      <p><b>5.3.</b> With the exception of content and materials describe in 5.1., all of the content and information contained in our service are owned or licensed by us and are protected by intellectual property rights. Examples include but are not limited to; source code, trademarks, logos, graphics, photographs, videos, animations, copy. In particular, any names, title, logos and designs that contain the words Kaleidorium or the Company. They may not be used, reproduced or appropriated in any manner without prior written consent.</p>
-      <h2 className="font-bold mt-6 mb-2">6. Limitation of Liabilities</h2>
-      <p>We are not responsible for the content, privacy policies, or practices of any third-party websites linked from our service.</p>
-      <p>While we attempt to keep the information on our platform accurate and up-to-date, we do not warrant or guarantee the accuracy, completeness or reliability of any data provided by third parties, including artists.</p>
-      <p><b>6.1.</b> To the fullest extent permitted by law, you agree that in no event will the Company or its service providers be liable to you or any third party you use or we use to provide our service for any lost profit or any indirect, consequential, exemplary, incidental, special or punitive damages arising from these Terms or from our service, including third-party websites, applications and products, or for any damages related to loss of revenue, loss of profits, loss of business, loss of use, loss of goodwill or loss of data, and whether caused by strict liability or tort (including negligence), breach of contract or otherwise, even if foreseeable and even if the Company or its service providers have been advised of the possibility of such damages, or any other claim, demand, or damages whatsoever resulting from or arising out of the possibility of such damages or in connection with these Terms and your use of our service.</p>
-      <p><b>6.2.</b> We accept no liability for any loss or damage resulting from a virus or other malware, a distributed denial of service attack, or other harmful material that may adversely affect your hardware, software, data or other material that occurs as a result of your use of our service or any other third-party website, application and services we use to provide you with our service.</p>
-      <p><b>6.3.</b> We neither assume nor accept responsibility or liability arising out of any disruption or non-availability of our service resulting from external causes including, but not limited to network failure, natural events, acts of war, or legal restrictions and censorship.</p>
-      <p><b>6.4.</b> We do not guarantee that our service will always be available or be uninterrupted, timely, secure or free from bugs, viruses, errors or omissions. For example, there may be times when our service is unavailable due to maintenance or technical problems. We may also change, suspend or discontinue certain aspects of our service without giving you prior notice.</p>
-      <p><b>6.5.</b> We do not exclude or limit in any way our liability to you where it would be unlawful to do so. This includes liability for death or personal injury caused by our negligence or the negligence of our employees, agents or subcontractors or for fraud or fraudulent misrepresentation.</p>
-      <h2 className="font-bold mt-6 mb-2">7. Indemnification</h2>
-      <p><b>7.1.</b> By agreeing to these Terms and accessing our service, you agree, to the fullest extent permitted by applicable law, to indemnify, defend, and hold harmless the Company and our respective past, present, and future employees, officers, directors, contractors, consultants, equity holders, suppliers, vendors, service providers, parent companies, subsidiaries, affiliates, agents, representatives, predecessors, successors, and assigns (individually and collectively, the "the Company Parties"), from and against all actual or alleged claims, damages, awards, judgments, losses, liabilities, obligations, penalties, interest, fees, expenses (including, without limitation, legal fees and expenses), and costs (including, without limitation, court costs, costs of settlement, and costs of pursuing indemnification and insurance), of every kind and nature whatsoever, whether known or unknown, foreseen or unforeseen, matured or unmatured, or suspected or unsuspected, in law or equity, whether in tort, contract, or otherwise (collectively, "Claims"), including, but not limited to, damages to property or personal injury, that are caused by, arise out of or are related to (a) your use or misuse of our service, content, artwork picture, or content linked to or associated with any artwork pictures we display.</p>
-      <h2 className="font-bold mt-6 mb-2">8. Termination</h2>
-      <p><b>8.1.</b> Notwithstanding anything contained in these Terms, we reserve the right, with or without notice and in our sole discretion, to suspend, disable, terminate, or delete your account and/or your ability to access or use our service (or any part of the foregoing) at any time and for any or no reason, and you acknowledge and agree that we shall have no liability or obligation to you in such event.</p>
-      <p><b>8.2.</b> You can cancel your account at any time from our service or by emailing us at <a href="mailto:kurator@kaleidorium.com" className="underline">kurator@kaleidorium.com</a>. We will acknowledge your request and proceed to delete your account and its associated data. Please note that once deleted, we will no longer be able to access your information and cannot be held liable for any claims, losses or damages as a result of you cancelling your account.</p>
-      <h2 className="font-bold mt-6 mb-2">9. Severability</h2>
-      <p><b>9.1.</b> If any part, term or provision of this Agreement is held to be illegal, in conflict with any law or otherwise invalid, the remaining portion or portions shall be considered severable and not be affected by such determination, and the rights and obligations of the parties shall be construed and enforced as if the Agreement did not contain the particular part, term or provisions held to be illegal or invalid.</p>
-      <h2 className="font-bold mt-6 mb-2">10. Governing Law and jurisdiction</h2>
-      <p><b>10.1.</b> This Agreement shall be governed by and construed in accordance with the laws of Singapore and you agree to submit to the exclusive jurisdiction of the Singapore courts.</p>
-      <h2 className="font-bold mt-6 mb-2">11. Contact</h2>
-      <p><b>11.1.</b> If we have to contact you, we will do so by writing to you at the email address you have provided to us. For support, contact <a href="mailto:kurator@kaleidorium.com" className="underline">kurator@kaleidorium.com</a>. It is therefore very important that you have provided a legitimate email address that is used by you personally and by proceeding with use of our service you warrant that you have done so.</p>
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-center">
+        <div className="text-white text-xl">Loading Terms of Service...</div>
       </div>
-    </>
+    </div>
   );
 } 

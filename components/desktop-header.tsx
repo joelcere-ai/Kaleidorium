@@ -9,7 +9,7 @@ import { Search, Heart, User, Palette, Info, Mail } from "lucide-react";
 interface DesktopHeaderProps {
   currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
 }
 
 export function DesktopHeader({ currentPage, collectionCount = 0, setView }: DesktopHeaderProps) {
