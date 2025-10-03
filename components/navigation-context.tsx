@@ -7,6 +7,7 @@ interface NavigationContextType {
   currentView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact";
   navigateToView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
   isMainApp: boolean;
+  showDiscoverOverlay: boolean;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -15,6 +16,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [currentView, setCurrentView] = useState<NavigationContextType['currentView']>("discover");
+  const [showDiscoverOverlay, setShowDiscoverOverlay] = useState(false);
 
   // Determine if we're in the main app or a standalone page
   const isMainApp = pathname === "/";
@@ -42,13 +44,17 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     if (view === "discover") {
       // Always navigate to main app for discover
       if (pathname !== "/") {
-        console.log('🚀 NavigationContext: Navigating from', pathname, 'to / (discover)');
-        // Use router.push with shallow: true to prevent page reload
-        router.push("/", { scroll: false });
+        console.log('🚀 NavigationContext: Preventing navigation to avoid reload');
+        // Prevent navigation entirely - just update the URL without reloading
+        window.history.pushState(null, '', '/');
+        // Trigger a popstate event to update the app
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        setCurrentView("discover");
+        return;
       } else {
         console.log('🚀 NavigationContext: Already on discover page, updating view only');
+        setCurrentView("discover");
       }
-      setCurrentView("discover");
     } else {
       // Navigate to standalone pages
       const targetPath = `/${view}`;
@@ -60,8 +66,12 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const closeDiscoverOverlay = () => {
+    setShowDiscoverOverlay(false);
+  };
+
   return (
-    <NavigationContext.Provider value={{ currentView, navigateToView, isMainApp }}>
+    <NavigationContext.Provider value={{ currentView, navigateToView, isMainApp, showDiscoverOverlay }}>
       {children}
     </NavigationContext.Provider>
   );
