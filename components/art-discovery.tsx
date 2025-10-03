@@ -1621,16 +1621,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   // Show loading only if we have no artworks and are still loading
   if (!mounted || (loading && artworks.length === 0)) {
     return (
-      <div className="flex flex-col min-h-screen bg-black">
+      <div className="flex flex-col min-h-screen bg-white">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
             {isMobile ? (
               <div>
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
-                  <p className="text-lg text-white mb-4">Your Personal Art Curator</p>
+                  <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
+                  <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
                 </div>
-                <div className="text-white text-xl mb-4">Loading Artwork...</div>
+                <div className="text-black text-xl mb-4">Loading Artwork...</div>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>
@@ -1662,7 +1662,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               </div>
             ) : (
               <div>
-                <div className="text-white text-xl mb-4">Loading Artwork...</div>
+                <div className="text-black text-xl mb-4">Loading Artwork...</div>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>
