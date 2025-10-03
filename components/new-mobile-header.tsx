@@ -159,8 +159,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
                 <button
                   className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                   onClick={() => {
-                    router.push("/terms");
-                    setIsMenuOpen(false);
+                    handleNavigation("terms");
                   }}
                 >
                   Terms of Service
@@ -168,8 +167,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
                 <button
                   className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                   onClick={() => {
-                    router.push("/privacy");
-                    setIsMenuOpen(false);
+                    handleNavigation("privacy");
                   }}
                 >
                   Privacy & Data Policy

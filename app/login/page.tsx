@@ -75,9 +75,21 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background">
       {/* Conditional header rendering */}
       {isMobile ? (
-        <NewMobileHeader currentPage="login" setView={() => {}} />
+        <NewMobileHeader currentPage="login" setView={(view) => {
+          if (view === "discover") {
+            router.push("/");
+          } else {
+            router.push(`/?view=${view}`);
+          }
+        }} />
       ) : (
-        <DesktopHeader currentPage="login" setView={() => {}} />
+        <DesktopHeader currentPage="login" setView={(view) => {
+          if (view === "discover") {
+            router.push("/");
+          } else {
+            router.push(`/?view=${view}`);
+          }
+        }} />
       )}
       
       <div className="container max-w-[800px] py-20">

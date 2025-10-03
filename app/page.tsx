@@ -9,7 +9,7 @@ import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft } from "lucide-react";
+import { Heart, ArrowLeft, X } from "lucide-react";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 
@@ -766,11 +766,11 @@ function HomeContent() {
                 <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Terms of Service</h1>
                 <Button
                   variant="ghost"
+                  size="icon"
                   onClick={() => setView("discover")}
                   className="text-gray-600 hover:text-gray-900"
-                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                 >
-                  Close
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
               <TermsContent />
@@ -786,11 +786,11 @@ function HomeContent() {
                 <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Privacy & Data Policy</h1>
                 <Button
                   variant="ghost"
+                  size="icon"
                   onClick={() => setView("discover")}
                   className="text-gray-600 hover:text-gray-900"
-                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                 >
-                  Close
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
               <PrivacyContent />

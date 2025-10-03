@@ -525,9 +525,21 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-background">
       {/* Conditional header rendering */}
       {isMobile ? (
-        <NewMobileHeader currentPage="register" setView={() => {}} />
+        <NewMobileHeader currentPage="register" setView={(view) => {
+          if (view === "discover") {
+            router.push("/");
+          } else {
+            router.push(`/?view=${view}`);
+          }
+        }} />
       ) : (
-        <DesktopHeader currentPage="register" setView={() => {}} />
+        <DesktopHeader currentPage="register" setView={(view) => {
+          if (view === "discover") {
+            router.push("/");
+          } else {
+            router.push(`/?view=${view}`);
+          }
+        }} />
       )}
       
       <div className="container max-w-[800px] py-20">
