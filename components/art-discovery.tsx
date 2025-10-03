@@ -13,10 +13,8 @@ import { initEmailJS, sendArtistSubmission } from "@/lib/emailjs"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { UnifiedMobileHeader } from "@/components/unified-mobile-header"
 import { useToast } from "@/hooks/use-toast"
 import { ArtworkDetails } from "@/components/artwork-details"
-import { UniversalAppHeader } from "@/components/universal-app-header"
 import { NewMobileHeader } from "@/components/new-mobile-header"
 import { type FilterState } from "@/components/app-header"
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
@@ -1713,16 +1711,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Desktop Header - only show on desktop */}
-      {!isMobile && !isTablet && (
-        <UniversalAppHeader 
-        currentPage={view} 
-        collectionCount={collectionCount}
-        setView={setView}
-      />
-      )}
-      
+    <div className="flex flex-col min-h-screen">      
       {/* Auth Modal */}
       {showAuthModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
