@@ -582,16 +582,16 @@ function HomeContent() {
   if (!showApp) {
     console.log('Page.tsx: Waiting to show app...');
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           {isMobile ? (
             <>
-              <h1 className="text-3xl font-bold text-white mb-2">Kaleidorium</h1>
-              <p className="text-lg text-white mb-4">Your Personal Art Curator</p>
-              <div className="text-white text-xl">Loading Artwork...</div>
+              <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
+              <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
+              <div className="text-black text-xl">Loading Artwork...</div>
             </>
           ) : (
-            <div className="text-white text-xl">Loading Artwork...</div>
+            <div className="text-black text-xl">Loading Artwork...</div>
           )}
         </div>
       </div>
@@ -814,9 +814,9 @@ function HomeContent() {
 export default function Home() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="text-white text-xl">Loading Artwork...</div>
+          <div className="text-black text-xl">Loading Artwork...</div>
         </div>
       </div>
     }>

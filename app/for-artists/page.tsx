@@ -12,9 +12,9 @@ export default function ForArtistsRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center">
-        <div className="text-white text-xl">Loading For Artists...</div>
+        <div className="text-black text-xl">Loading For Artists...</div>
       </div>
     </div>
   );
