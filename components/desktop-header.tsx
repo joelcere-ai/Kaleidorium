@@ -20,9 +20,6 @@ export function DesktopHeader({ currentPage, collectionCount = 0 }: DesktopHeade
   const isSelected = (view: string) => currentPage === view;
 
   const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    console.log('🚀 DesktopHeader: Navigating to:', view);
-    console.log('🚀 DesktopHeader: navigateToView function:', typeof navigateToView);
-    console.log('🚀 DesktopHeader: current pathname:', window.location.pathname);
     navigateToView(view);
     setShowMenu(false);
   };
