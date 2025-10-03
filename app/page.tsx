@@ -32,6 +32,7 @@ function HomeContent() {
   const setView = (newView: typeof initialView) => {
     console.log('🔧 setView called with:', newView);
     setViewState(newView);
+    // Use shallow routing to avoid page reloads
     router.push(`/?view=${newView}`, { scroll: false });
   };
 

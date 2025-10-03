@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { CookieConsent } from "@/components/cookie-consent"
 import { Footer } from "@/components/footer"
 import { MobileInstallPrompt } from "@/components/mobile-install-prompt"
+import { NavigationProvider } from "@/components/navigation-context"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -136,11 +137,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
           forcedTheme="light"
         >
-          {children}
-          <Footer />
-          <CookieConsent />
-          <MobileInstallPrompt />
-          <Toaster />
+          <NavigationProvider>
+            {children}
+            <Footer />
+            <CookieConsent />
+            <MobileInstallPrompt />
+            <Toaster />
+          </NavigationProvider>
         </ThemeProvider>
       </body>
     </html>

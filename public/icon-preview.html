@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaleidorium Icon Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .icon-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+        }
+        .icon-item img {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .note {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Kaleidorium New Icon Design</h1>
+        <p class="description">This is how your mobile app shortcut icon should look:</p>
+        
+        <div class="icon-preview">
+            <div class="icon-item">
+                <img src="/android-chrome-192x192.png" alt="192x192 Icon" width="96" height="96">
+                <h3>192x192 (Mobile)</h3>
+                <p>Main app icon</p>
+            </div>
+            
+            <div class="icon-item">
+                <img src="/android-chrome-512x512.png" alt="512x512 Icon" width="96" height="96">
+                <h3>512x512 (High-res)</h3>
+                <p>High resolution</p>
+            </div>
+            
+            <div class="icon-item">
+                <img src="/apple-touch-icon.png" alt="Apple Touch Icon" width="96" height="96">
+                <h3>180x180 (iOS)</h3>
+                <p>Apple devices</p>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>📱 Icon Features:</strong>
+            <ul>
+                <li>White square background</li>
+                <li>Thin black border (2px)</li>
+                <li>Centered black "K" in serif font</li>
+                <li>Rounded corners for modern look</li>
+            </ul>
+        </div>
+        
+        <div class="note">
+            <strong>🔧 If you see the old icon:</strong>
+            <ol>
+                <li>Uninstall the current PWA from your home screen</li>
+                <li>Clear your browser cache</li>
+                <li>Visit the website again and reinstall</li>
+                <li>The new icon should appear</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
