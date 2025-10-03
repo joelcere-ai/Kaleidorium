@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { NewMobileHeader } from "@/components/new-mobile-header";
 import { DesktopHeader } from "@/components/desktop-header";
+import { useNavigation } from "@/components/navigation-context";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Heart, ArrowLeft } from "lucide-react";
 
 function CollectionContent() {
   const router = useRouter();
+  const { navigateToView } = useNavigation();
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("collection");
   const [collectionCount, setCollectionCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -43,27 +45,8 @@ function CollectionContent() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleReturnToDiscover = () => {
-    router.replace('/', { scroll: false });
-  };
+  // Navigation is now handled by the NavigationContext in the headers
 
-  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    if (nextView === "collection") return;
-    if (nextView === "contact") {
-      router.push("/contact", { scroll: false });
-      return;
-    }
-    if (nextView === "profile") {
-      router.push("/profile", { scroll: false });
-      return;
-    }
-    if (nextView === "discover") {
-      // Use router.replace to avoid back button issues and smooth transition
-      router.replace("/", { scroll: false });
-      return;
-    }
-    router.push(`/${nextView}`, { scroll: false });
-  };
 
   const handleRemoveFromCollection = (id: string) => {
     const updatedCollection = collection.filter(artwork => artwork.id !== id);
@@ -74,18 +57,6 @@ function CollectionContent() {
     localStorage.setItem('artwork-collection', JSON.stringify(updatedCollection));
   };
 
-  const handleSetView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about") => {
-    if (newView === "collection") return;
-    if (newView === "profile") {
-      router.push("/profile", { scroll: false });
-      return;
-    }
-    if (newView === "discover") {
-      router.replace("/", { scroll: false });
-      return;
-    }
-    router.push(`/${newView}`, { scroll: false });
-  };
 
   return (
     <div className="min-h-screen">
@@ -97,7 +68,7 @@ function CollectionContent() {
       )}
       <div className="container mx-auto px-4 pt-20 pb-16">
         <div className="mb-6">
-          <Button variant="ghost" onClick={handleReturnToDiscover} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+          <Button variant="ghost" onClick={() => navigateToView("discover")} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Discovery
           </Button>
@@ -114,7 +85,7 @@ function CollectionContent() {
               <h3 className="text-xl font-medium mb-2 text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
               <p className="text-gray-600 mb-6" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
               <Button 
-                onClick={handleReturnToDiscover}
+                onClick={() => navigateToView("discover")}
                 className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
                 style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
               >

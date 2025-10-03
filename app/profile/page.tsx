@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { NewMobileHeader } from '@/components/new-mobile-header';
 import { DesktopHeader } from '@/components/desktop-header';
 import { useState, Suspense, useEffect } from 'react';
+import { useNavigation } from '@/components/navigation-context';
 
 function ProfileContent() {
   const router = useRouter();
+  const { navigateToView } = useNavigation();
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("profile");
   const [collectionCount, setCollectionCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -23,22 +25,7 @@ function ProfileContent() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  const handleReturnToDiscover = () => {
-    router.push('/', { scroll: false });
-  };
-
-  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    if (nextView === "profile") return;
-    if (nextView === "contact") {
-      router.push("/contact", { scroll: false });
-      return;
-    }
-    if (nextView === "discover") {
-      router.replace("/", { scroll: false });
-      return;
-    }
-    router.push(`/${nextView}`, { scroll: false });
-  };
+  // Navigation is now handled by the NavigationContext in the headers
   
   return (
     <div className="min-h-screen">
@@ -49,7 +36,7 @@ function ProfileContent() {
         <DesktopHeader currentPage="profile" collectionCount={collectionCount} />
       )}
       <div className="flex-1 overflow-y-auto pt-20">
-        <ProfilePage collection={[]} onReturnToDiscover={handleReturnToDiscover} />
+        <ProfilePage collection={[]} onReturnToDiscover={() => navigateToView("discover")} />
       </div>
     </div>
   );

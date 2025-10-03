@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { NewMobileHeader } from "@/components/new-mobile-header";
 import { DesktopHeader } from "@/components/desktop-header";
+import { useNavigation } from "@/components/navigation-context";
 
 export default function ContactPage() {
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("about");
@@ -14,6 +15,7 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
+  const { navigateToView } = useNavigation();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -25,14 +27,7 @@ export default function ContactPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    if (nextView === "contact") return;
-    if (nextView === "discover") {
-      router.replace("/", { scroll: false });
-      return;
-    }
-    router.push(`/${nextView}`, { scroll: false });
-  };
+  // Navigation is now handled by the NavigationContext in the headers
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

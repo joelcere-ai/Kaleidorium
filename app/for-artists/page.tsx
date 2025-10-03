@@ -4,11 +4,13 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { NewMobileHeader } from "@/components/new-mobile-header";
 import { DesktopHeader } from "@/components/desktop-header";
+import { useNavigation } from "@/components/navigation-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 function ForArtistsContent() {
   const router = useRouter();
+  const { navigateToView } = useNavigation();
   const [view, setView] = useState<"discover" | "collection" | "profile" | "for-artists" | "about">("for-artists");
   const [collectionCount, setCollectionCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -31,30 +33,7 @@ function ForArtistsContent() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleReturnToDiscover = () => {
-    router.push('/', { scroll: false });
-  };
-
-  const handleNavigate = (nextView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
-    if (nextView === "for-artists") return;
-    if (nextView === "contact") {
-      router.push("/contact", { scroll: false });
-      return;
-    }
-    if (nextView === "profile") {
-      router.push("/profile", { scroll: false });
-      return;
-    }
-    if (nextView === "collection") {
-      router.push("/collection", { scroll: false });
-      return;
-    }
-    if (nextView === "discover") {
-      router.replace("/", { scroll: false });
-      return;
-    }
-    router.push(`/${nextView}`, { scroll: false });
-  };
+  // Navigation is now handled by the NavigationContext in the headers
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
