@@ -48,7 +48,7 @@ function HomeContent() {
     if (newView === "discover") {
       router.push("/", { scroll: false });
     } else {
-      router.push(`/?view=${newView}`, { scroll: false });
+    router.push(`/?view=${newView}`, { scroll: false });
     }
   };
 
@@ -72,7 +72,7 @@ function HomeContent() {
 
   // Show app immediately - no loading delay
   useEffect(() => {
-    setShowApp(true);
+      setShowApp(true);
   }, []);
 
   // Collection management functions
@@ -499,25 +499,28 @@ function HomeContent() {
               />
             ) : (
               <div className="container mx-auto px-4 py-8">
-                <div className="flex items-center justify-between mb-6">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setView("discover")}
-                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
+                <div className="mb-6">
+                  <Button variant="ghost" onClick={() => setView("discover")} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
                     Back to Discovery
                   </Button>
-                  <h1 className="text-2xl font-bold">My Collection ({collectionCount})</h1>
                 </div>
-                
+
+                <div className="mb-6">
+                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
+                </div>
+
                 {collection.length === 0 ? (
-                  <Card className="p-8 text-center">
-                    <CardContent>
-                      <Heart className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                      <h3 className="text-lg font-semibold mb-2">Your collection is empty</h3>
-                      <p className="text-gray-600 mb-4">Start discovering artwork to build your collection</p>
-                      <Button onClick={() => setView("discover")}>
+                  <Card>
+                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                      <Heart className="h-16 w-16 text-gray-300 mb-4" />
+                      <h3 className="text-xl font-medium mb-2 text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
+                      <p className="text-gray-600 mb-6" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
+                      <Button 
+                        onClick={() => setView("discover")}
+                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                        style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                      >
                         Discover Artwork
                       </Button>
                     </CardContent>
@@ -533,13 +536,14 @@ function HomeContent() {
                             className="w-full h-64 object-cover"
                           />
                           <div className="p-4">
-                            <h3 className="font-semibold mb-1">{artwork.title}</h3>
-                            <p className="text-sm text-gray-600 mb-2">{artwork.artist}</p>
+                            <h3 className="font-semibold mb-1" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.title}</h3>
+                            <p className="text-sm text-gray-600 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.artist}</p>
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleRemoveFromCollection(artwork.id)}
                               className="w-full"
+                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                             >
                               Remove from Collection
                             </Button>
@@ -615,11 +619,8 @@ function HomeContent() {
       case "contact":
         return (
           <div className="flex-1 overflow-y-auto pt-20">
-            <div className="container mx-auto px-4 py-8">
-              <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">Contact Us</h1>
-                <ContactForm />
-              </div>
+            <div className="container mx-auto px-4 pt-20 pb-16 max-w-lg">
+              <ContactForm />
             </div>
           </div>
         );
