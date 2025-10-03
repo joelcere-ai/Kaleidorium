@@ -8,6 +8,7 @@ interface NavigationContextType {
   navigateToView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => void;
   isMainApp: boolean;
   showDiscoverOverlay: boolean;
+  closeDiscoverOverlay: () => void;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -44,11 +45,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     if (view === "discover") {
       // Always navigate to main app for discover
       if (pathname !== "/") {
-        console.log('🚀 NavigationContext: Preventing navigation to avoid reload');
-        // Prevent navigation entirely - just update the URL without reloading
-        window.history.pushState(null, '', '/');
-        // Trigger a popstate event to update the app
-        window.dispatchEvent(new PopStateEvent('popstate'));
+        console.log('🚀 NavigationContext: Showing discover overlay instead of navigating');
+        // Show discover overlay to prevent page reload
+        setShowDiscoverOverlay(true);
         setCurrentView("discover");
         return;
       } else {
@@ -71,7 +70,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <NavigationContext.Provider value={{ currentView, navigateToView, isMainApp, showDiscoverOverlay }}>
+    <NavigationContext.Provider value={{ currentView, navigateToView, isMainApp, showDiscoverOverlay, closeDiscoverOverlay }}>
       {children}
     </NavigationContext.Provider>
   );

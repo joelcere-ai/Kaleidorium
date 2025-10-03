@@ -8,6 +8,7 @@ import { CookieConsent } from "@/components/cookie-consent"
 import { Footer } from "@/components/footer"
 import { MobileInstallPrompt } from "@/components/mobile-install-prompt"
 import { NavigationProvider } from "@/components/navigation-context"
+import { DiscoverOverlay } from "@/components/discover-overlay"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -142,6 +143,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
             <CookieConsent />
             <MobileInstallPrompt />
+            <DiscoverOverlay />
             <Toaster />
           </NavigationProvider>
         </ThemeProvider>
