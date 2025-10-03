@@ -45,7 +45,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "for-artists") => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -619,7 +619,7 @@ export default function MobileCardStack({
                     <button
                       className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                       onClick={() => {
-                        window.open('/terms-of-service', '_blank');
+                        setView("terms");
                         setShowMenuModal(false);
                       }}
                     >
@@ -628,7 +628,7 @@ export default function MobileCardStack({
                     <button
                       className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                       onClick={() => {
-                        window.open('/privacy-policy', '_blank');
+                        setView("privacy");
                         setShowMenuModal(false);
                       }}
                     >
@@ -1206,7 +1206,7 @@ export default function MobileCardStack({
                   <button
                     className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                     onClick={() => {
-                      window.open('/terms-of-service', '_blank');
+                      setView("terms");
                       setShowMenuModal(false);
                     }}
                   >
@@ -1215,7 +1215,7 @@ export default function MobileCardStack({
                   <button
                     className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
                     onClick={() => {
-                      window.open('/privacy-policy', '_blank');
+                      setView("privacy");
                       setShowMenuModal(false);
                     }}
                   >
