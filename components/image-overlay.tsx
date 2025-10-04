@@ -50,7 +50,7 @@ export function ImageOverlay({ artwork_image, alt, onClose }: ImageOverlayProps)
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-2 md:p-8" onClick={onClose}>
+    <div className="fixed inset-0 z-[200] bg-gray-100 flex items-center justify-center p-2 md:p-8" onClick={onClose}>
       <div 
         className={`relative ${isLandscape ? 'max-w-[95vw] max-h-[95vh]' : 'max-w-[90vw] max-h-[90vh]'}`} 
         onClick={(e) => e.stopPropagation()}

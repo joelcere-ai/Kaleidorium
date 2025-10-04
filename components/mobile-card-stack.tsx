@@ -1391,7 +1391,7 @@ export default function MobileCardStack({
 
       {/* Full-Screen Artwork Overlay */}
       {showFullscreenArtwork && selectedArtwork && (
-        <div className="fixed inset-0 bg-black z-[200] flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-100 z-[200] flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
             {!fullscreenImageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center">
