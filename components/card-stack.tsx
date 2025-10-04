@@ -292,18 +292,25 @@ export default function CardStack({
                                 <Button
                                   size="lg"
                                   onClick={() => {
-                                    if (artwork.link) {
-                                      window.open(artwork.link, '_blank', 'noopener,noreferrer');
+                                    if (artwork.link && artwork.link.trim() !== '') {
+                                      // Validate URL before opening
+                                      try {
+                                        new URL(artwork.link)
+                                        window.open(artwork.link, '_blank', 'noopener,noreferrer');
+                                      } catch (error) {
+                                        console.error('Invalid artist URL:', artwork.link)
+                                        // Could show a toast message here if needed
+                                      }
                                     }
                                   }}
                                   className={`min-w-[120px] ${
-                                    artwork.link 
+                                    artwork.link && artwork.link.trim() !== ''
                                       ? 'border border-black bg-white text-black hover:bg-black hover:text-white' 
                                       : 'bg-gray-200 text-black hover:bg-gray-300'
                                   } transition-all duration-200`}
                                   style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                                 >
-                                  {artwork.link ? 'View on artist\'s website' : 'Not for sale'}
+                                  {artwork.link && artwork.link.trim() !== '' ? 'View on artist\'s website' : 'Not for sale'}
                                 </Button>
                               </div>
                             : <div className="text-center">

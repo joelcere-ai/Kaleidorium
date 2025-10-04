@@ -1314,18 +1314,26 @@ export default function MobileCardStack({
                 <div className="pt-4">
                   <Button 
                     className={`w-full py-3 text-sm font-medium ${
-                      selectedArtwork.link
+                      selectedArtwork.link && selectedArtwork.link.trim() !== ''
                         ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
                         : 'bg-gray-200 text-gray-600 cursor-not-allowed'
                     } transition-all duration-200`}
                     onClick={() => {
-                      if (selectedArtwork.link) {
-                        window.open(selectedArtwork.link, '_blank', 'noopener,noreferrer')
+                      if (selectedArtwork.link && selectedArtwork.link.trim() !== '') {
+                        // Validate URL before opening
+                        try {
+                          new URL(selectedArtwork.link)
+                          // On mobile, use location.href to avoid the K logo screen
+                          window.location.href = selectedArtwork.link
+                        } catch (error) {
+                          console.error('Invalid artist URL:', selectedArtwork.link)
+                          // Could show a toast message here if needed
+                        }
                       }
                     }}
                   >
                     {selectedArtwork.price === 'Not for sale' 
-                      ? (selectedArtwork.link ? 'View on artist\'s website' : 'Not for sale')
+                      ? (selectedArtwork.link && selectedArtwork.link.trim() !== '' ? 'View on artist\'s website' : 'Not for sale')
                       : selectedArtwork.price
                     }
                   </Button>
