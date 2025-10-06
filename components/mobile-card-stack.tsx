@@ -774,7 +774,7 @@ export default function MobileCardStack({
                         } transition-all duration-200`}
                         disabled={!isClickable}
                         onClick={() => {
-                          if (isClickable && hasValidLink) {
+                          if (isClickable && hasValidLink && selectedArtwork.link) {
                             const linkUrl = selectedArtwork.link;
                             console.log('Artist website button clicked, link:', linkUrl);
                             // Validate and fix URL before opening
