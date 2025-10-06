@@ -877,7 +877,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   }
 
   return (
-    <div className="flex-1 p-4 sm:p-6 lg:p-8">
+    <div className="flex-1 container mx-auto px-4 py-8">
       <div className="mb-6">
         <Button variant="ghost" onClick={onReturnToDiscover}>
           <ArrowLeft className="mr-2 h-4 w-4" />

@@ -648,7 +648,7 @@ function HomeContent() {
       
       case "collection":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
+          <div className="flex-1 overflow-y-auto">
             {isMobile ? (
               <MobileCardStack
                 artworks={collection}
@@ -728,14 +728,14 @@ function HomeContent() {
       
       case "profile":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
+          <div className="flex-1 overflow-y-auto">
             <ProfilePage collection={collection} onReturnToDiscover={() => setView("discover")} />
           </div>
         );
       
       case "for-artists":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
+          <div className="flex-1 overflow-y-auto">
             <div className="container mx-auto px-4 py-4 max-w-3xl" data-view="for-artists">
               <div className="mb-8">
                 <h1 
@@ -779,15 +779,15 @@ function HomeContent() {
       
       case "about":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
+          <div className="flex-1 overflow-y-auto">
             <AboutContent setView={setView} />
           </div>
         );
       
       case "contact":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
-            <div className="container mx-auto px-4 pt-20 pb-16 max-w-lg">
+          <div className="flex-1 overflow-y-auto">
+            <div className="container mx-auto px-4 py-8 max-w-lg">
               <ContactForm />
             </div>
           </div>
@@ -795,8 +795,8 @@ function HomeContent() {
       
       case "terms":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
-            <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
+          <div className="flex-1 overflow-y-auto">
+            <div className="container mx-auto px-4 py-8 max-w-3xl">
               <div className="flex items-center justify-between mb-8">
                 <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Terms of Service</h1>
                 <Button
@@ -815,8 +815,8 @@ function HomeContent() {
       
       case "privacy":
         return (
-          <div className="flex-1 overflow-y-auto pt-20">
-            <div className="container mx-auto px-4 pt-20 pb-16 max-w-3xl">
+          <div className="flex-1 overflow-y-auto">
+            <div className="container mx-auto px-4 py-8 max-w-3xl">
               <div className="flex items-center justify-between mb-8">
                 <h1 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Privacy & Data Policy</h1>
                 <Button

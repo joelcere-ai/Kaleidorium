@@ -6,7 +6,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
   const router = useRouter();
   
   return (
-    <div className="container mx-auto px-4 py-12 max-w-2xl">
+    <div className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-base font-serif font-bold text-black mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Swipe. Discover. Fall in Love (with Art).</h1>
 
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.</p>
