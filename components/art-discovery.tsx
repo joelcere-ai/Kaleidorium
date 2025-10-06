@@ -22,6 +22,7 @@ import { ImageOverlay } from "@/components/image-overlay"
 import { ProfilePage } from "@/components/profile-page"
 import { WelcomeBackOverlay } from "@/components/welcome-back-overlay"
 import { useUserEngagement } from "@/hooks/use-user-engagement"
+import { useRegistrationPrompt } from "@/hooks/use-registration-prompt"
 import { supabase } from "@/lib/supabase"
 import type { Artwork } from "@/types/artwork"
 import { v4 as uuidv4 } from 'uuid'
@@ -62,6 +63,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [user, setUser] = useState<{ id: string } | null>(null)
   const { toast } = useToast()
   const router = useRouter()
+  
+  // Registration prompt hook for non-authenticated users
+  const { trackInteraction } = useRegistrationPrompt()
 
   // 🚨 AGGRESSIVE DOM MANIPULATION FOR FONT CONSISTENCY
   useEffect(() => {
@@ -693,6 +697,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const handleDislike = useCallback(async () => {
     if (!mounted || !currentArtwork) return;
     
+    // Track interaction for registration prompt
+    trackInteraction();
+    
     // Track analytics
     await trackAnalytics(currentArtwork.id, 'dislike', user?.id);
     
@@ -720,11 +727,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
 
   // Refactored handleLike
   const handleLike = useCallback(async () => {
     if (!mounted || !currentArtwork) return;
+    
+    // Track interaction for registration prompt
+    trackInteraction();
     
     // Track analytics
     await trackAnalytics(currentArtwork.id, 'like', user?.id);
@@ -753,11 +763,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
 
   // Enhanced handleAddToCollection with localStorage persistence
   const handleAddToCollection = useCallback(async () => {
     if (!mounted || !currentArtwork) return;
+    
+    // Track interaction for registration prompt
+    trackInteraction();
     
     // Track analytics
     await trackAnalytics(currentArtwork.id, 'add_to_collection', user?.id);
@@ -849,7 +862,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences, trackInteraction]);
 
   // Load recommendations in background without blocking the main loading
   const loadRecommendationsInBackground = useCallback(async (userId: string, defaultArtworks: Artwork[]) => {
