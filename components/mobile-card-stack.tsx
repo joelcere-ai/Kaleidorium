@@ -662,8 +662,8 @@ export default function MobileCardStack({
         {/* Artwork Info Modal */}
         {showInfoModal && selectedArtwork && (
           <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
-            <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
+            <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain" style={{WebkitOverflowScrolling: 'touch'}}>
+              <div className="p-6 pb-8 min-h-[600px]">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h2 className="text-xl font-bold text-black">{selectedArtwork.title}</h2>
@@ -735,6 +735,102 @@ export default function MobileCardStack({
                     )
                   })()}
                 </div>
+                
+                {/* Artist Website Button */}
+                <div className="pt-4">
+                  <Button 
+                    className={`w-full py-3 text-sm font-medium ${
+                      selectedArtwork.link && selectedArtwork.link.trim() !== ''
+                        ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
+                        : 'bg-gray-200 text-gray-600 cursor-not-allowed'
+                    } transition-all duration-200`}
+                    disabled={!selectedArtwork.link || selectedArtwork.link.trim() === ''}
+                    onClick={() => {
+                      console.log('Artist website button clicked, link:', selectedArtwork.link);
+                      if (selectedArtwork.link && selectedArtwork.link.trim() !== '') {
+                        // Validate and fix URL before opening
+                        try {
+                          let url = selectedArtwork.link.trim()
+                          // Add https:// if no protocol is specified
+                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://' + url
+                          }
+                          // Validate the URL
+                          new URL(url)
+                          console.log('Opening URL:', url);
+                          // On mobile, use location.href to avoid the K logo screen
+                          window.location.href = url
+                        } catch (error) {
+                          console.error('Invalid artist URL:', selectedArtwork.link)
+                          // Could show a toast message here if needed
+                        }
+                      }
+                    }}
+                  >
+                    {selectedArtwork.link && selectedArtwork.link.trim() !== '' 
+                      ? 'View on artist\'s website' 
+                      : 'Not for sale'
+                    }
+                  </Button>
+                </div>
+                
+                {/* Social Media Share Buttons */}
+                <div className="pt-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
+                    <div className="flex justify-center gap-2">
+                      <button 
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
+                        }}
+                        title="Share on X"
+                      >
+                        <XIcon className="w-5 h-5" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'noopener,noreferrer');
+                        }}
+                        title="Share on Facebook"
+                      >
+                        <Facebook className="w-5 h-5" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://www.instagram.com/`, '_blank', 'noopener,noreferrer');
+                        }}
+                        title="Share on Instagram"
+                      >
+                        <Instagram className="w-5 h-5" />
+                      </button>
+                      <button 
+                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        onClick={() => {
+                          const url = encodeURIComponent(window.location.href);
+                          const text = encodeURIComponent(`Check out "${selectedArtwork.title}" by ${selectedArtwork.artist} on Kaleidorium`);
+                          window.open(`https://wa.me/?text=${text}%20${url}`, '_blank', 'noopener,noreferrer');
+                        }}
+                        title="Share on WhatsApp"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Scroll indicator */}
+              <div className="text-center text-xs text-gray-400 py-2">
+                Scroll for more
               </div>
             </div>
           </div>
