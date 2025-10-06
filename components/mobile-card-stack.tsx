@@ -1328,7 +1328,7 @@ export default function MobileCardStack({
                   )
                 })()}
                 
-                {/* Sale Status Button */}
+                {/* Artist Website Button */}
                 <div className="pt-4">
                   <Button 
                     className={`w-full py-3 text-sm font-medium ${
@@ -1336,7 +1336,9 @@ export default function MobileCardStack({
                         ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
                         : 'bg-gray-200 text-gray-600 cursor-not-allowed'
                     } transition-all duration-200`}
+                    disabled={!selectedArtwork.link || selectedArtwork.link.trim() === ''}
                     onClick={() => {
+                      console.log('Artist website button clicked, link:', selectedArtwork.link);
                       if (selectedArtwork.link && selectedArtwork.link.trim() !== '') {
                         // Validate and fix URL before opening
                         try {
@@ -1347,6 +1349,7 @@ export default function MobileCardStack({
                           }
                           // Validate the URL
                           new URL(url)
+                          console.log('Opening URL:', url);
                           // On mobile, use location.href to avoid the K logo screen
                           window.location.href = url
                         } catch (error) {
@@ -1356,9 +1359,9 @@ export default function MobileCardStack({
                       }
                     }}
                   >
-                    {selectedArtwork.price === 'Not for sale' 
-                      ? (selectedArtwork.link && selectedArtwork.link.trim() !== '' ? 'View on artist\'s website' : 'Not for sale')
-                      : selectedArtwork.price
+                    {selectedArtwork.link && selectedArtwork.link.trim() !== '' 
+                      ? 'View on artist\'s website' 
+                      : 'Not for sale'
                     }
                   </Button>
                 </div>
