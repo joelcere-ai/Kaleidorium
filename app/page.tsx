@@ -62,10 +62,14 @@ function HomeContent() {
     const loadCollection = () => {
       try {
         const savedCollection = localStorage.getItem('kaleidorium_temp_collection');
+        console.log('Loading collection from localStorage:', savedCollection);
         if (savedCollection) {
           const parsedCollection = JSON.parse(savedCollection);
+          console.log('Parsed collection:', parsedCollection);
           setCollection(parsedCollection);
           setCollectionCount(parsedCollection.length);
+        } else {
+          console.log('No collection found in localStorage');
         }
       } catch (error) {
         console.error('Error loading collection:', error);
@@ -74,6 +78,23 @@ function HomeContent() {
     
     loadCollection();
   }, []);
+
+  // Reload collection when collectionCount changes (from ArtDiscovery component)
+  useEffect(() => {
+    const loadCollection = () => {
+      try {
+        const savedCollection = localStorage.getItem('kaleidorium_temp_collection');
+        if (savedCollection) {
+          const parsedCollection = JSON.parse(savedCollection);
+          setCollection(parsedCollection);
+        }
+      } catch (error) {
+        console.error('Error reloading collection:', error);
+      }
+    };
+    
+    loadCollection();
+  }, [collectionCount]);
 
   // Show app immediately - no loading delay
   useEffect(() => {
@@ -653,7 +674,10 @@ function HomeContent() {
                   <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
                 </div>
 
-                {collection.length === 0 ? (
+                {(() => {
+                  console.log('Collection display check - collection.length:', collection.length, 'collectionCount:', collectionCount);
+                  return collection.length === 0;
+                })() ? (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                       <Heart className="h-16 w-16 text-gray-300 mb-4" />
