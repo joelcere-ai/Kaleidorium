@@ -742,10 +742,9 @@ export default function MobileCardStack({
                     console.log('Rendering artist website button for artwork:', selectedArtwork.title);
                     console.log('Artwork object:', selectedArtwork);
                     console.log('Link property:', selectedArtwork.link);
-                    console.log('Artwork_link property:', selectedArtwork.artwork_link);
                     console.log('Price property:', selectedArtwork.price);
                     
-                    const hasValidLink = (selectedArtwork.link && selectedArtwork.link.trim() !== '') || (selectedArtwork.artwork_link && selectedArtwork.artwork_link.trim() !== '');
+                    const hasValidLink = selectedArtwork.link && selectedArtwork.link.trim() !== '';
                     const hasPrice = selectedArtwork.price && selectedArtwork.price.trim() !== '' && selectedArtwork.price.toLowerCase() !== 'not for sale';
                     
                     console.log('Has valid link:', hasValidLink);
@@ -776,7 +775,7 @@ export default function MobileCardStack({
                         disabled={!isClickable}
                         onClick={() => {
                           if (isClickable && hasValidLink) {
-                            const linkUrl = selectedArtwork.link || selectedArtwork.artwork_link;
+                            const linkUrl = selectedArtwork.link;
                             console.log('Artist website button clicked, link:', linkUrl);
                             // Validate and fix URL before opening
                             try {
