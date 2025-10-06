@@ -56,7 +56,7 @@ function HomeContent() {
   useEffect(() => {
     const loadCollection = () => {
       try {
-        const savedCollection = localStorage.getItem('artwork-collection');
+        const savedCollection = localStorage.getItem('kaleidorium_temp_collection');
         if (savedCollection) {
           const parsedCollection = JSON.parse(savedCollection);
           setCollection(parsedCollection);
@@ -80,7 +80,7 @@ function HomeContent() {
     const updatedCollection = collection.filter(item => item.id !== id);
     setCollection(updatedCollection);
     setCollectionCount(updatedCollection.length);
-    localStorage.setItem('artwork-collection', JSON.stringify(updatedCollection));
+    localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(updatedCollection));
   };
 
   // For Artists Form component
