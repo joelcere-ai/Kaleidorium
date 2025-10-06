@@ -1249,8 +1249,8 @@ export default function MobileCardStack({
       {/* Artwork Info Modal */}
       {showInfoModal && selectedArtwork && (
         <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
-          <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+          <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain" style={{WebkitOverflowScrolling: 'touch'}}>
+            <div className="p-6 pb-8 min-h-[600px]">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <h2 className="text-xl font-bold text-black">{selectedArtwork.title}</h2>
@@ -1418,6 +1418,11 @@ export default function MobileCardStack({
                     </div>
                   </div>
                 </div>
+              </div>
+              
+              {/* Scroll indicator */}
+              <div className="text-center text-xs text-gray-400 py-2">
+                Scroll for more
               </div>
             </div>
           </div>
