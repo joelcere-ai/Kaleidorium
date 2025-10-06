@@ -96,17 +96,6 @@ export function useRegistrationPrompt() {
       title: "Register to enhance your experience",
       description: "Register to save your preferences and get better artwork suggestions.",
       duration: 8000, // Show for 8 seconds
-      action: (
-        <button
-          onClick={() => {
-            // Navigate to register page
-            window.location.href = '/register'
-          }}
-          className="bg-black text-white px-3 py-1 rounded text-sm font-medium hover:bg-gray-800 transition-colors"
-        >
-          Register
-        </button>
-      ),
     })
 
     // Mark as shown
