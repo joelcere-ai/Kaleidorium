@@ -32,6 +32,7 @@ function HomeContent() {
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
+  const [selectedCollectionArtwork, setSelectedCollectionArtwork] = useState<any>(null);
 
   // Update view when pathname changes
   useEffect(() => {
@@ -81,6 +82,11 @@ function HomeContent() {
     setCollection(updatedCollection);
     setCollectionCount(updatedCollection.length);
     localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(updatedCollection));
+  };
+
+  // Handle artwork selection for desktop collection
+  const handleArtworkClick = (artwork: any) => {
+    setSelectedCollectionArtwork(artwork);
   };
 
   // For Artists Form component
@@ -666,7 +672,8 @@ function HomeContent() {
                           <img
                             src={artwork.artwork_image || "/placeholder.svg"}
                             alt={artwork.title}
-                            className="w-full h-64 object-cover"
+                            className="w-full h-64 object-cover cursor-pointer"
+                            onClick={() => handleArtworkClick(artwork)}
                           />
                           <div className="p-4">
                             <h3 className="font-semibold mb-1" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.title}</h3>
@@ -684,6 +691,92 @@ function HomeContent() {
                         </CardContent>
                       </Card>
                     ))}
+                  </div>
+                )}
+                
+                {/* Desktop Collection Modal */}
+                {selectedCollectionArtwork && (
+                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                      <div className="p-6">
+                        <div className="flex justify-between items-start mb-4">
+                          <h2 className="text-2xl font-bold text-black">{selectedCollectionArtwork.title}</h2>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedCollectionArtwork(null)}
+                            className="text-black hover:bg-gray-100"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <div>
+                            <img
+                              src={selectedCollectionArtwork.artwork_image || "/placeholder.svg"}
+                              alt={selectedCollectionArtwork.title}
+                              className="w-full h-64 object-cover rounded-lg"
+                            />
+                          </div>
+                          
+                          <div className="space-y-4">
+                            <div>
+                              <span className="font-semibold text-black">Artist:</span>
+                              <span className="ml-2 text-gray-700">{selectedCollectionArtwork.artist}</span>
+                            </div>
+                            
+                            {selectedCollectionArtwork.medium && (
+                              <div>
+                                <span className="font-semibold text-black">Medium:</span>
+                                <span className="ml-2 text-gray-700">{selectedCollectionArtwork.medium}</span>
+                              </div>
+                            )}
+                            
+                            {selectedCollectionArtwork.dimensions && (
+                              <div>
+                                <span className="font-semibold text-black">Dimensions:</span>
+                                <span className="ml-2 text-gray-700">{selectedCollectionArtwork.dimensions}</span>
+                              </div>
+                            )}
+                            
+                            {selectedCollectionArtwork.description && (
+                              <div>
+                                <span className="font-semibold text-black">Description:</span>
+                                <p className="mt-1 text-gray-700">{selectedCollectionArtwork.description}</p>
+                              </div>
+                            )}
+                            
+                            <div className="flex gap-3 pt-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleRemoveFromCollection(selectedCollectionArtwork.id)}
+                                className="border-red-300 text-red-600 hover:bg-red-50"
+                              >
+                                Remove from Collection
+                              </Button>
+                              {selectedCollectionArtwork.link && selectedCollectionArtwork.link.trim() !== '' && (
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => {
+                                    try {
+                                      new URL(selectedCollectionArtwork.link);
+                                      window.open(selectedCollectionArtwork.link, '_blank', 'noopener,noreferrer');
+                                    } catch (error) {
+                                      console.error('Invalid artist URL:', selectedCollectionArtwork.link);
+                                    }
+                                  }}
+                                >
+                                  View on Artist's Website
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

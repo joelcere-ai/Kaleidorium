@@ -507,7 +507,12 @@ export default function MobileCardStack({
                       <img
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedArtwork(artwork)
+                          handleArtworkTap(artwork)
+                        }}
                       />
                     </div>
                     
