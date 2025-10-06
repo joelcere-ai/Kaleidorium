@@ -47,9 +47,10 @@ interface ArtDiscoveryProps {
   setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
+  selectedArtworkId?: string | null;
 }
 
-export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount }: ArtDiscoveryProps) {
+export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, selectedArtworkId }: ArtDiscoveryProps) {
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -1431,6 +1432,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (currentIndex >= 0 && currentIndex < artworks.length) {
     }
   }, [currentIndex, artworks])
+
+  // Handle selectedArtworkId - find and display the specific artwork
+  useEffect(() => {
+    if (selectedArtworkId && artworks.length > 0) {
+      const artworkIndex = artworks.findIndex(artwork => artwork.id === selectedArtworkId);
+      if (artworkIndex !== -1) {
+        setCurrentIndex(artworkIndex);
+      }
+    }
+  }, [selectedArtworkId, artworks])
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
