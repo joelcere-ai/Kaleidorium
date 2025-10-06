@@ -293,10 +293,16 @@ export default function CardStack({
                                   size="lg"
                                   onClick={() => {
                                     if (artwork.link && artwork.link.trim() !== '') {
-                                      // Validate URL before opening
+                                      // Validate and fix URL before opening
                                       try {
-                                        new URL(artwork.link)
-                                        window.open(artwork.link, '_blank', 'noopener,noreferrer');
+                                        let url = artwork.link.trim()
+                                        // Add https:// if no protocol is specified
+                                        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                                          url = 'https://' + url
+                                        }
+                                        // Validate the URL
+                                        new URL(url)
+                                        window.open(url, '_blank', 'noopener,noreferrer');
                                       } catch (error) {
                                         console.error('Invalid artist URL:', artwork.link)
                                         // Could show a toast message here if needed

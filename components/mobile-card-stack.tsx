@@ -1338,11 +1338,17 @@ export default function MobileCardStack({
                     } transition-all duration-200`}
                     onClick={() => {
                       if (selectedArtwork.link && selectedArtwork.link.trim() !== '') {
-                        // Validate URL before opening
+                        // Validate and fix URL before opening
                         try {
-                          new URL(selectedArtwork.link)
+                          let url = selectedArtwork.link.trim()
+                          // Add https:// if no protocol is specified
+                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://' + url
+                          }
+                          // Validate the URL
+                          new URL(url)
                           // On mobile, use location.href to avoid the K logo screen
-                          window.location.href = selectedArtwork.link
+                          window.location.href = url
                         } catch (error) {
                           console.error('Invalid artist URL:', selectedArtwork.link)
                           // Could show a toast message here if needed
