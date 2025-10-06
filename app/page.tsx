@@ -664,7 +664,7 @@ function HomeContent() {
                       <Card key={artwork.id} className="overflow-hidden">
                         <CardContent className="p-0">
                           <img
-                            src={artwork.imageUrl}
+                            src={artwork.artwork_image || "/placeholder.svg"}
                             alt={artwork.title}
                             className="w-full h-64 object-cover"
                           />

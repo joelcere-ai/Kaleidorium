@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -498,12 +498,12 @@ export default function MobileCardStack({
               <Button onClick={() => setView("discover")}>Start Discovering</Button>
             </div>
           ) : (
-            <div className={`space-y-4 ${isLandscape ? 'grid grid-cols-2 gap-4 space-y-0' : ''}`}>
+            <div className="space-y-6">
               {collection.map((artwork) => (
-                <div key={artwork.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-200">
-                  <div className={`flex ${isLandscape ? 'flex-col' : ''}`} onClick={() => handleArtworkTap(artwork)}>
-                    {/* Artwork Image */}
-                    <div className={`${isLandscape ? 'w-full aspect-square' : 'w-24 h-24'} flex-shrink-0 relative`}>
+                <div key={artwork.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300">
+                  <div onClick={() => handleArtworkTap(artwork)}>
+                    {/* Artwork Image - Big Tile */}
+                    <div className="w-full aspect-[4/3] relative">
                       <img
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
@@ -512,28 +512,41 @@ export default function MobileCardStack({
                     </div>
                     
                     {/* Artwork Info */}
-                    <div className={`flex-1 p-4 flex flex-col justify-between ${isLandscape ? 'min-h-[120px]' : ''}`}>
-                      <div>
-                        <h3 className="font-semibold text-black text-lg leading-tight">{artwork.title}</h3>
-                        <p className="text-gray-600 text-base">{artwork.artist}</p>
-                        <p className="text-black font-medium text-sm mt-1">{artwork.price}</p>
+                    <div className="p-6">
+                      <div className="mb-4">
+                        <h3 className="font-bold text-black text-xl leading-tight mb-2">{artwork.title}</h3>
+                        <p className="text-gray-600 text-lg">{artwork.artist}</p>
+                        <p className="text-black font-medium text-base mt-2">{artwork.price}</p>
                       </div>
-                    </div>
-                    
-                    {/* Info Button */}
-                    <div className={`p-4 flex items-center ${isLandscape ? 'justify-center' : ''}`}>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="w-12 h-12 rounded-full border-gray-300 hover:bg-gray-50"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedArtwork(artwork)
-                          setShowInfoModal(true)
-                        }}
-                      >
-                        <Info className="w-6 h-6 text-black" />
-                      </Button>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 border-gray-300 hover:bg-gray-50"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedArtwork(artwork)
+                            setShowInfoModal(true)
+                          }}
+                        >
+                          <Info className="w-4 h-4 mr-2" />
+                          View Details
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onRemoveFromCollection(artwork.id)
+                          }}
+                        >
+                          <Trash className="w-4 h-4 mr-2" />
+                          Remove
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
