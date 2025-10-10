@@ -2297,7 +2297,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     Be Discovered. Not Buried.
                   </h1>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                    You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
@@ -2459,7 +2459,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     Be Discovered. Not Buried.
                   </h1>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    You put time, soul, and skill into your work—only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                    You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
                   </p>
                   <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     We're not a gallery, marketplace, or agent.
@@ -2625,7 +2625,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         lineHeight: '1.5'
                       }}
                     >
-                      No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors—we're not part of any conversation or transaction that follows.
+                      No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors. We're not part of any conversation or transaction that follows.
                     </p>
                   </div>
 

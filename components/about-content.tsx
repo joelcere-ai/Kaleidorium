@@ -12,7 +12,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
       <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.</p>
 
       <h2 className="text-sm font-sans font-bold text-black mb-4 mt-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>You swipe, we learn.</h2>
-      <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Our algorithm refines your preferences and shows you art you're more likely to love—across styles, mediums, and geographies.</p>
+      <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Our algorithm refines your preferences and shows you art you're more likely to love across styles, mediums, and geographies.</p>
 
       <h2 className="text-sm font-sans font-bold text-black mb-4 mt-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Save what speaks to you</h2>
       <ul className="list-disc pl-6 mb-4">
@@ -45,7 +45,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
         <div>
           <h3 className="text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Are you a marketplace or a gallery?</h3>
           <p className="text-sm font-sans text-black leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-            No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors—we're not part of any conversation or transaction that follows.
+            No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors. We're not part of any conversation or transaction that follows.
           </p>
         </div>
 
