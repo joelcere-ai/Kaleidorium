@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Discover Contemporary & Digital Art Curated For You | Kaleidorium",
-  description: "Swipe, match, and discover digital and contemporary art curated to your taste. Kaleidorium connects artists and collectors to make finding art you love easier.",
+  description: "Your personal art curator. Swipe. Discover. Fall in Love (with Art).",
   keywords: [
     "digital art finder",
     "contemporary art online", 
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.kaleidorium.com',
     title: 'Kaleidorium – Discover & Collect Art Curated For You',
-    description: 'Swipe, discover, and fall in love with art. We connect collectors with artists through a unique swipe-based experience.',
+    description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
     siteName: 'Kaleidorium',
     images: [
       {
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Kaleidorium – Discover & Collect Art Curated For You',
-    description: 'Swipe, discover, and fall in love with art. We connect collectors with artists through a unique swipe-based experience.',
+    description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
     images: ['/android-chrome-512x512.png'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
