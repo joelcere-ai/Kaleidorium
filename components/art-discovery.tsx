@@ -940,7 +940,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           style,
           subject,
           artwork_image,
-          artwork_link,
+          link,
           medium,
           colour
         `);
@@ -988,7 +988,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           description: artwork.description || 'No description available',
           tags,
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: artwork.artwork_link || null,
+          link: artwork.link || null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           style: artwork.style,
