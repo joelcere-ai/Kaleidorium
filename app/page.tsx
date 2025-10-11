@@ -978,7 +978,7 @@ function HomeContent() {
                                 {insights.recommendations.map((recommendation, index) => (
                                 <li key={index} className="flex items-start space-x-2">
                                   <span className="text-primary mt-1">•</span>
-                                  <span className="text-black">{recommendation}</span>
+                                  <span className="text-black leading-relaxed">{recommendation}</span>
                                 </li>
                                 ))}
                               </ul>
