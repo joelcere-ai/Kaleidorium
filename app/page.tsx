@@ -194,7 +194,7 @@ function HomeContent() {
         artistCounts[artwork.artist] = (artistCounts[artwork.artist] || 0) + 1;
       }
       if (artwork.tags && Array.isArray(artwork.tags)) {
-        artwork.tags.forEach((tag) => {
+        artwork.tags.forEach((tag: string) => {
           if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
         });
       }
