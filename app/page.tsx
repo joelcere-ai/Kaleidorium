@@ -801,64 +801,12 @@ function HomeContent() {
                   </Button>
                 </div>
 
-                <div className="mb-6">
-                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
-                </div>
-
-                {(() => {
-                  console.log('Collection display check - collection.length:', collection.length, 'collectionCount:', collectionCount);
-                  return collection.length === 0;
-                })() ? (
-                  <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                      <Heart className="h-16 w-16 text-gray-300 mb-4" />
-                      <h3 className="text-xl font-medium mb-2 text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
-                      <p className="text-gray-600 mb-6" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
-                      <Button 
-                        onClick={() => setView("discover")}
-                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-                        style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                      >
-                        Discover Artwork
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {collection.map((artwork) => (
-                      <Card key={artwork.id} className="overflow-hidden">
-                        <CardContent className="p-0">
-                          <img
-                            src={artwork.artwork_image || "/placeholder.svg"}
-                            alt={artwork.title}
-                            className="w-full h-64 object-cover cursor-pointer"
-                            onClick={() => handleArtworkClick(artwork)}
-                          />
-                          <div className="p-4">
-                            <h3 className="font-semibold mb-1" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.title}</h3>
-                            <p className="text-sm text-gray-600 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.artist}</p>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleRemoveFromCollection(artwork.id)}
-                              className="w-full"
-                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                            >
-                              Remove from Collection
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-                
                 {/* Two-Tier Artistic Profile Section */}
-                <div className="mt-8">
+                <div className="mb-8">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
-                        <CardTitle className="text-lg">Your Aesthetic Profile</CardTitle>
+                        <CardTitle className="text-lg">Your Artistic Profile</CardTitle>
                       </div>
                       <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
                         <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
@@ -993,6 +941,58 @@ function HomeContent() {
                     </CardContent>
                   </Card>
                 </div>
+
+                <div className="mb-6">
+                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
+                </div>
+
+                {(() => {
+                  console.log('Collection display check - collection.length:', collection.length, 'collectionCount:', collectionCount);
+                  return collection.length === 0;
+                })() ? (
+                  <Card>
+                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                      <Heart className="h-16 w-16 text-gray-300 mb-4" />
+                      <h3 className="text-xl font-medium mb-2 text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
+                      <p className="text-gray-600 mb-6" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
+                      <Button 
+                        onClick={() => setView("discover")}
+                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                        style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                      >
+                        Discover Artwork
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {collection.map((artwork) => (
+                      <Card key={artwork.id} className="overflow-hidden">
+                        <CardContent className="p-0">
+                          <img
+                            src={artwork.artwork_image || "/placeholder.svg"}
+                            alt={artwork.title}
+                            className="w-full h-64 object-cover cursor-pointer"
+                            onClick={() => handleArtworkClick(artwork)}
+                          />
+                          <div className="p-4">
+                            <h3 className="font-semibold mb-1" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.title}</h3>
+                            <p className="text-sm text-gray-600 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.artist}</p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRemoveFromCollection(artwork.id)}
+                              className="w-full"
+                              style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                            >
+                              Remove from Collection
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
