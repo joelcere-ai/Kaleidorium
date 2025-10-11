@@ -9,7 +9,9 @@ import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, X } from "lucide-react";
+import { Heart, ArrowLeft, X, RefreshCw } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 
@@ -37,6 +39,19 @@ function HomeContent() {
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
+  
+  // Art Preferences state (copied from ProfilePage)
+  const [insights, setInsights] = useState({
+    summary: "Click 'Refresh Insights' to analyze your collection.",
+    aesthetic_profile: "",
+    collecting_pattern: "",
+    topArtists: [],
+    topTags: [],
+    priceRange: "N/A",
+    recommendations: [],
+    preferredMediums: []
+  });
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Update view when pathname changes
   useEffect(() => {
@@ -112,6 +127,121 @@ function HomeContent() {
   // Handle artwork selection for desktop collection - navigate to discover with artwork ID
   const handleArtworkClick = (artwork: any) => {
     router.push(`/?artworkId=${artwork.id}`, { scroll: false });
+  };
+
+  // Art Preferences functions (copied from ProfilePage)
+  const generateInsights = async () => {
+    setIsGenerating(true)
+    try {
+      // First get basic analysis for stats
+      const basicAnalysis = analyzeCollection()
+      
+      // Then get AI-powered insights if collection has artworks
+      if (collection.length > 0) {
+        const response = await fetch('/api/profile-insights', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            collection: collection
+          })
+        })
+        
+        if (response.ok) {
+          const aiInsights = await response.json()
+          setInsights({
+            ...basicAnalysis,
+            summary: aiInsights.summary,
+            aesthetic_profile: aiInsights.aesthetic_profile,
+            collecting_pattern: aiInsights.collecting_pattern,
+            recommendations: aiInsights.recommendations
+          })
+        } else {
+          // Fallback to basic analysis if AI fails
+          setInsights(basicAnalysis)
+        }
+      } else {
+        setInsights(basicAnalysis)
+      }
+    } catch (error) {
+      console.error('Error generating insights:', error)
+      setInsights(analyzeCollection())
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const analyzeCollection = (): any => {
+    if (collection.length === 0) {
+      return {
+        summary: "Your collection is empty. Add some artworks to get insights.",
+        topArtists: [],
+        topTags: [],
+        priceRange: "N/A",
+        recommendations: [],
+        preferredMediums: []
+      };
+    }
+
+    const artistCounts: Record<string, number> = {};
+    const tagCounts: Record<string, number> = {};
+    const mediumCounts: Record<string, number> = {};
+    const prices: number[] = [];
+
+    collection.forEach((artwork) => {
+      if (artwork.artist) {
+        artistCounts[artwork.artist] = (artistCounts[artwork.artist] || 0) + 1;
+      }
+      if (artwork.tags && Array.isArray(artwork.tags)) {
+        artwork.tags.forEach((tag) => {
+          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      }
+      if (artwork.medium) {
+        mediumCounts[artwork.medium] = (mediumCounts[artwork.medium] || 0) + 1;
+      }
+      if (artwork.price) {
+        const price = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""));
+        if(!isNaN(price)) prices.push(price);
+      }
+    });
+
+    const getTopItems = (counts: Record<string, number>, count: number) =>
+      Object.entries(counts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, count)
+        .map(([name]) => name);
+
+    const topArtists = getTopItems(artistCounts, 3);
+    const topTags = getTopItems(tagCounts, 5);
+    const preferredMediums = getTopItems(mediumCounts, 3);
+    
+    const priceRange = prices.length > 0 
+      ? `$${Math.min(...prices).toLocaleString()} - $${Math.max(...prices).toLocaleString()}` 
+      : "N/A";
+
+    let summary = `Your diverse collection spans multiple styles including ${topTags.slice(0, 3).join(", ")}, showing an eclectic taste in digital art.`;
+    if (collection.length === 1) {
+      summary = `Your collection features a single piece by ${topArtists[0]}. This ${topTags[0] || 'abstract'} artwork suggests you're just beginning to explore the world of digital art.`;
+    }
+
+    const recommendations = [];
+    if (topTags.includes("Abstract")) {
+      recommendations.push("Explore more works in the generative and abstract genres.");
+    }
+    if (recommendations.length === 0) {
+      recommendations.push("Explore more works in the Discover section to refine your preferences");
+    }
+
+    return {
+      summary,
+      topArtists,
+      topTags,
+      priceRange,
+      preferredMediums,
+      recommendations,
+    };
   };
 
   // For Artists Form component
@@ -721,6 +851,121 @@ function HomeContent() {
                     ))}
                   </div>
                 )}
+                
+                {/* Art Preferences Section - copied from ProfilePage */}
+                <div className="mt-8">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <div>
+                        <CardTitle className="text-lg">Your Art Preferences</CardTitle>
+                      </div>
+                      <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
+                        <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
+                        Refresh Insights
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-6">
+                        {/* AI-Generated Collection Summary */}
+                        <div>
+                          <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
+                          <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
+                        </div>
+
+                        {/* AI-Generated Aesthetic Profile */}
+                        {insights.aesthetic_profile && (
+                          <div>
+                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Aesthetic Profile</h3>
+                            <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
+                          </div>
+                        )}
+
+                        {/* AI-Generated Collecting Pattern */}
+                        {insights.collecting_pattern && (
+                          <div>
+                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
+                            <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
+                          </div>
+                        )}
+
+                        <Separator />
+
+                        {/* Collection Statistics */}
+                        <div>
+                          <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div>
+                              <h4 className="text-sm font-medium mb-2">Top Artists</h4>
+                            {insights.topArtists.length > 0 ? (
+                              <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                {insights.topArtists.map((artist: string) => (
+                                  <li key={artist}>{artist}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No artists in collection yet</p>
+                            )}
+                          </div>
+
+                          <div>
+                              <h4 className="text-sm font-medium mb-2">Preferred Styles</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {insights.topTags.length > 0 ? (
+                                insights.topTags.map((tag) => (
+                                  <Badge key={tag} variant="secondary">
+                                    {tag}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <p className="text-sm text-muted-foreground">No styles in collection yet</p>
+                              )}
+                          </div>
+                        </div>
+
+                          <div>
+                              <h4 className="text-sm font-medium mb-2">Preferred Mediums</h4>
+                            {insights.preferredMediums.length > 0 ? (
+                              <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                {insights.preferredMediums.map((medium) => (
+                                  <li key={medium}>{medium}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No mediums in collection yet</p>
+                            )}
+                          </div>
+
+                          <div>
+                              <h4 className="text-sm font-medium mb-2">Price Range</h4>
+                            <p className="text-sm text-muted-foreground">{insights.priceRange}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* AI-Generated Recommendations */}
+                        <div>
+                          <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
+                          {insights.recommendations.length > 0 ? (
+                            <ul className="space-y-2">
+                              {insights.recommendations.map((recommendation, index) => (
+                                <li key={index} className="flex items-start space-x-2">
+                                  <span className="text-primary mt-1">•</span>
+                                  <span className="text-muted-foreground">{recommendation}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-muted-foreground">
+                              Add artworks to your collection to get personalized recommendations
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             )}
           </div>
