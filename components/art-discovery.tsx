@@ -1049,7 +1049,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
-  }, [mounted, fetchArtworks]) // Include fetchArtworks in dependencies
+  }, [mounted, user?.id]) // Only depend on mounted and user ID
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
