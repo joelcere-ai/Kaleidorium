@@ -883,12 +883,12 @@ function HomeContent() {
                         >
                           {isCollectionDetailsExpanded ? (
                             <>
-                              Hide Collection Details
+                              Hide Collection Insights
                               <ChevronUp className="h-4 w-4" />
                             </>
                           ) : (
                             <>
-                              Show Collection Details
+                              Show Collection Insights and Personalized Recommendations
                               <ChevronDown className="h-4 w-4" />
                             </>
                           )}
