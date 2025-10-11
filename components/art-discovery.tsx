@@ -954,36 +954,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('First artwork sample:', JSON.stringify(artworksData[0], null, 2));
 
       const transformedArtworks = artworksData.map((artwork: any) => {
-        // Format price with currency if available
-        let formattedPrice = artwork.price || 'Price on request';
-        if (artwork.price && 'currency' in artwork && artwork.currency) {
-          formattedPrice = `${artwork.currency} ${artwork.price}`;
-        }
-        // Only include one colour tag: use colour column
-        const tags = [
-          artwork.genre,
-          artwork.style,
-          artwork.subject,
-          artwork.colour
-        ].filter(Boolean);
         return {
           id: artwork.id?.toString() || Math.random().toString(),
           title: artwork.artwork_title || 'Untitled',
           artist: artwork.artist || 'Unknown Artist',
-          medium: artwork.medium || 'Digital Art',
-          dimensions: (artwork as any).dimensions || '1920x1080',
-          year: (artwork as any).year || "2025",
-          price: formattedPrice,
-          description: artwork.description || 'No description available',
-          tags,
+          medium: 'Digital Art',
+          dimensions: '1920x1080',
+          year: "2025",
+          price: 'Price on request',
+          description: 'No description available',
+          tags: [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: artwork.artwork_link || null,
+          link: null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          style: artwork.style,
-          genre: artwork.genre,
-          subject: artwork.subject,
-          colour: artwork.colour
+          style: null,
+          genre: null,
+          subject: null,
+          colour: null
         };
       });
 
