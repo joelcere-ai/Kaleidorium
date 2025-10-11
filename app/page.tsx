@@ -9,7 +9,7 @@ import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, X, RefreshCw } from "lucide-react";
+import { Heart, ArrowLeft, X, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
@@ -52,6 +52,7 @@ function HomeContent() {
     preferredMediums: []
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
 
   // Update view when pathname changes
   useEffect(() => {
@@ -852,12 +853,12 @@ function HomeContent() {
                   </div>
                 )}
                 
-                {/* Art Preferences Section - copied from ProfilePage */}
+                {/* Two-Tier Artistic Profile Section */}
                 <div className="mt-8">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
-                        <CardTitle className="text-lg">Your Art Preferences</CardTitle>
+                        <CardTitle className="text-lg">Your Aesthetic Profile</CardTitle>
                       </div>
                       <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
                         <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
@@ -865,104 +866,130 @@ function HomeContent() {
                       </Button>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <div className="space-y-6">
-                        {/* AI-Generated Collection Summary */}
+                      {/* Always Visible: Aesthetic Profile */}
+                      {insights.aesthetic_profile && (
                         <div>
-                          <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
-                          <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
+                          <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
                         </div>
+                      )}
 
-                        {/* AI-Generated Aesthetic Profile */}
-                        {insights.aesthetic_profile && (
+                      {/* Collapsible Toggle Button */}
+                      <div className="flex justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setIsCollectionDetailsExpanded(!isCollectionDetailsExpanded)}
+                          className="flex items-center gap-2"
+                        >
+                          {isCollectionDetailsExpanded ? (
+                            <>
+                              Hide Collection Details
+                              <ChevronUp className="h-4 w-4" />
+                            </>
+                          ) : (
+                            <>
+                              Show Collection Details
+                              <ChevronDown className="h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      {/* Expandable Content */}
+                      {isCollectionDetailsExpanded && (
+                        <div className="space-y-6 animate-in slide-in-from-top-2 duration-300">
+                          <Separator />
+
+                          {/* AI-Generated Collection Summary */}
                           <div>
-                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Aesthetic Profile</h3>
-                            <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
+                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
+                            <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
                           </div>
-                        )}
 
-                        {/* AI-Generated Collecting Pattern */}
-                        {insights.collecting_pattern && (
+                          {/* AI-Generated Collecting Pattern */}
+                          {insights.collecting_pattern && (
+                            <div>
+                              <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
+                              <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
+                            </div>
+                          )}
+
+                          <Separator />
+
+                          {/* Collection Statistics */}
                           <div>
-                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
-                            <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
-                          </div>
-                        )}
-
-                        <Separator />
-
-                        {/* Collection Statistics */}
-                        <div>
-                          <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div>
-                              <h4 className="text-sm font-medium mb-2">Top Artists</h4>
-                            {insights.topArtists.length > 0 ? (
-                              <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                                {insights.topArtists.map((artist: string) => (
-                                  <li key={artist}>{artist}</li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">No artists in collection yet</p>
-                            )}
-                          </div>
-
-                          <div>
-                              <h4 className="text-sm font-medium mb-2">Preferred Styles</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {insights.topTags.length > 0 ? (
-                                insights.topTags.map((tag) => (
-                                  <Badge key={tag} variant="secondary">
-                                    {tag}
-                                  </Badge>
-                                ))
+                            <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <h4 className="text-sm font-medium mb-2">Top Artists</h4>
+                              {insights.topArtists.length > 0 ? (
+                                <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                  {insights.topArtists.map((artist: string) => (
+                                    <li key={artist}>{artist}</li>
+                                  ))}
+                                </ul>
                               ) : (
-                                <p className="text-sm text-muted-foreground">No styles in collection yet</p>
+                                <p className="text-sm text-muted-foreground">No artists in collection yet</p>
                               )}
-                          </div>
-                        </div>
+                            </div>
 
-                          <div>
-                              <h4 className="text-sm font-medium mb-2">Preferred Mediums</h4>
-                            {insights.preferredMediums.length > 0 ? (
-                              <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                                {insights.preferredMediums.map((medium) => (
-                                  <li key={medium}>{medium}</li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">No mediums in collection yet</p>
-                            )}
-                          </div>
-
-                          <div>
-                              <h4 className="text-sm font-medium mb-2">Price Range</h4>
-                            <p className="text-sm text-muted-foreground">{insights.priceRange}</p>
+                            <div>
+                                <h4 className="text-sm font-medium mb-2">Preferred Styles</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {insights.topTags.length > 0 ? (
+                                  insights.topTags.map((tag) => (
+                                    <Badge key={tag} variant="secondary">
+                                      {tag}
+                                    </Badge>
+                                  ))
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">No styles in collection yet</p>
+                                )}
                             </div>
                           </div>
-                        </div>
 
-                        <Separator />
+                            <div>
+                                <h4 className="text-sm font-medium mb-2">Preferred Mediums</h4>
+                              {insights.preferredMediums.length > 0 ? (
+                                <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                  {insights.preferredMediums.map((medium) => (
+                                    <li key={medium}>{medium}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">No mediums in collection yet</p>
+                              )}
+                            </div>
 
-                        {/* AI-Generated Recommendations */}
-                        <div>
-                          <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
-                          {insights.recommendations.length > 0 ? (
-                            <ul className="space-y-2">
-                              {insights.recommendations.map((recommendation, index) => (
-                              <li key={index} className="flex items-start space-x-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span className="text-black">{recommendation}</span>
-                              </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-muted-foreground">
-                              Add artworks to your collection to get personalized recommendations
-                            </p>
-                          )}
+                            <div>
+                                <h4 className="text-sm font-medium mb-2">Price Range</h4>
+                              <p className="text-sm text-muted-foreground">{insights.priceRange}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          {/* AI-Generated Recommendations */}
+                          <div>
+                            <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
+                            {insights.recommendations.length > 0 ? (
+                              <ul className="space-y-2">
+                                {insights.recommendations.map((recommendation, index) => (
+                                <li key={index} className="flex items-start space-x-2">
+                                  <span className="text-primary mt-1">•</span>
+                                  <span className="text-black">{recommendation}</span>
+                                </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-muted-foreground">
+                                Add artworks to your collection to get personalized recommendations
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
