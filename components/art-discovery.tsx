@@ -928,22 +928,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
+      // Test with minimal query first
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select(`
-          id,
-          artwork_title,
-          artist,
-          description,
-          price,
-          genre,
-          style,
-          subject,
-          artwork_image,
-          link,
-          medium,
-          colour
-        `);
+        .select('id, artwork_title, artist, artwork_image')
+        .limit(10);
 
       // Clear the emergency timeout if we got here
       clearTimeout(emergencyTimeout);
@@ -988,7 +977,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           description: artwork.description || 'No description available',
           tags,
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: artwork.link || null,
+          link: artwork.artwork_link || null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           style: artwork.style,
