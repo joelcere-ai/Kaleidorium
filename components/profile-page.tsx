@@ -54,7 +54,6 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   const [resetting, setResetting] = useState(false);
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
-  const defaultTab = tabParam === "account" ? "account" : "preferences";
   const [artistArtworks, setArtistArtworks] = useState<any[]>([]);
   const [deletingArtworkId, setDeletingArtworkId] = useState<string | null>(null);
   const [isDeletingArtwork, setIsDeletingArtwork] = useState(false);
@@ -72,6 +71,8 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   const [isArtist, setIsArtist] = useState(false);
   const [portfolioArtworks, setPortfolioArtworks] = useState<any[]>([]);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
+  
+  const defaultTab = tabParam === "account" ? "account" : (isArtist ? "portfolio" : "account");
 
   const handleProfilePictureUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -924,8 +925,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
         <div className="lg:w-3/4">
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className={`grid w-full ${isArtist ? 'grid-cols-3' : 'grid-cols-2'}`}>
-              <TabsTrigger value="preferences">Art Preferences</TabsTrigger>
+            <TabsList className={`grid w-full ${isArtist ? 'grid-cols-2' : 'grid-cols-1'}`}>
+              {/* Art Preferences tab hidden - functionality moved to Collection page */}
+              {/* <TabsTrigger value="preferences">Art Preferences</TabsTrigger> */}
               {isArtist && <TabsTrigger value="portfolio">Portfolio</TabsTrigger>}
               <TabsTrigger value="account">Account Information</TabsTrigger>
             </TabsList>
