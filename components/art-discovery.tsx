@@ -965,13 +965,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           description: 'No description available',
           tags: [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: null,
+          link: undefined,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          style: null,
-          genre: null,
-          subject: null,
-          colour: null
+          style: undefined,
+          genre: undefined,
+          subject: undefined,
+          colour: undefined
         };
       });
 
