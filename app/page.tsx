@@ -943,13 +943,10 @@ function HomeContent() {
                 </div>
 
                 <div className="mb-6">
-                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collectionCount})</h1>
+                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collection.length})</h1>
                 </div>
 
-                {(() => {
-                  console.log('Collection display check - collection.length:', collection.length, 'collectionCount:', collectionCount);
-                  return collection.length === 0;
-                })() ? (
+                {collection.length === 0 ? (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                       <Heart className="h-16 w-16 text-gray-300 mb-4" />
