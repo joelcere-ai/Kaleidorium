@@ -924,10 +924,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('🔍 Full Supabase query - no timeout limit...');
       const startTime = Date.now();
       
+      console.log('About to execute Supabase query...');
       const { data: artworksData, error } = await supabase
         .from('Artwork')
         .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
         .limit(50);
+      console.log('Supabase query completed, processing results...');
         
       const queryTime = Date.now() - startTime;
       console.log(`⏱️ Supabase query took ${queryTime}ms`);
@@ -1607,17 +1609,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // 🚨 EMERGENCY: Add fallback timer to force app to show after 15 seconds
-  useEffect(() => {
-    const emergencyFallback = setTimeout(() => {
-      console.log('🚨 EMERGENCY: 15s fallback - forcing app to show regardless of state');
-      setMounted(true);
-      setLoading(false);
-      fetchingRef.current = false;
-    }, 15000);
-    
-    return () => clearTimeout(emergencyFallback);
-  }, []);
+  // Removed emergency fallback - let the app load naturally
 
   // Show loading only if we have no artworks and are still loading
   if (!mounted || (loading && artworks.length === 0)) {
