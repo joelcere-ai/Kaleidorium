@@ -502,33 +502,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }
 
-  // Update user authentication effect
-  useEffect(() => {
-    const initAuth = async () => {
-      // Get initial session
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        setUser(session.user)
-        await ensureCollectorProfile(session.user)
-      }
-
-      // Listen for auth changes
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-          setUser(session.user)
-          await ensureCollectorProfile(session.user)
-    } else {
-          setUser(null)
-        }
-      })
-
-      return () => {
-        subscription.unsubscribe()
-      }
-    }
-
-    initAuth()
-  }, [])
+  // User authentication is now handled by parent component (page.tsx)
+  // No need for duplicate auth listeners here
 
   // Helper function to ensure collector profile exists
   const ensureCollectorProfile = async (user: any) => {

@@ -32,15 +32,8 @@ export function UniversalAppHeader({
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  // User authentication is handled by parent component (page.tsx)
+  // No need for duplicate auth listeners here
 
   const handleNavigation = (path: string, view?: "discover" | "collection" | "profile" | "for-artists") => {
     if (setView && view) {

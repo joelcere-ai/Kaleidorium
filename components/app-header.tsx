@@ -55,15 +55,8 @@ function AppHeaderContent({
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  // User authentication is handled by parent component (page.tsx)
+  // No need for duplicate auth listeners here
 
   // Handle click outside filter panel to close it
   useEffect(() => {
