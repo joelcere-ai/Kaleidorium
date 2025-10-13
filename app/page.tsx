@@ -839,9 +839,12 @@ function HomeContent() {
           collectionCount={collectionCount} 
           setView={setView}
           onToggleFilters={() => {
-            // Toggle filters in the ArtDiscovery component
-            // This will be handled by the component's internal state
-            console.log('Toggle filters clicked - handled by ArtDiscovery component');
+            // Call the global toggle function from ArtDiscovery component
+            if ((window as any).toggleDesktopFilters) {
+              (window as any).toggleDesktopFilters();
+            } else {
+              console.log('Desktop filters not yet available');
+            }
           }}
           isFiltering={false}
           showFilters={false}
@@ -854,7 +857,7 @@ function HomeContent() {
   const renderContent = () => {
     switch (view) {
       case "discover":
-        return <ArtDiscovery view="discover" setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} selectedArtworkId={getArtworkId()} />;
+        return <ArtDiscovery view="discover" setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} selectedArtworkId={getArtworkId()} onToggleDesktopFilters={() => {}} />;
       
       case "collection":
         return (

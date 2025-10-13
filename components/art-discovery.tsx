@@ -49,9 +49,10 @@ interface ArtDiscoveryProps {
   collectionCount: number;
   setCollectionCount: (count: number) => void;
   selectedArtworkId?: string | null;
+  onToggleDesktopFilters?: () => void;
 }
 
-export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, selectedArtworkId }: ArtDiscoveryProps) {
+export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, selectedArtworkId, onToggleDesktopFilters }: ArtDiscoveryProps) {
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -193,6 +194,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     colors: ''
   })
   const [isFiltering, setIsFiltering] = useState(false)
+  const [showDesktopFilters, setShowDesktopFilters] = useState(false)
   const [showFallbackMessage, setShowFallbackMessage] = useState(false)
 
   // Use filtered artworks if filtering is active
@@ -1267,6 +1269,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     handleFilterChange(filterState)
   }
 
+  // Toggle desktop filters
+  const toggleDesktopFilters = () => {
+    setShowDesktopFilters(!showDesktopFilters)
+  }
+
+  // Expose toggle function to parent via callback
+  useEffect(() => {
+    if (onToggleDesktopFilters) {
+      // Store the toggle function globally so parent can access it
+      (window as any).toggleDesktopFilters = toggleDesktopFilters
+    }
+  }, [toggleDesktopFilters])
+
   // Setup keyboard shortcuts only on the client side
   useEffect(() => {
     if (!mounted) return
@@ -1858,18 +1873,146 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             screenHeight={screenHeight}
           />
         ) : currentArtwork ? (
-          <CardStack
-            artworks={currentArtworkList}
-            currentIndex={currentIndex}
-            onLike={handleLike}
-            onDislike={handleDislike}
-            onAddToCollection={handleAddToCollection}
-            onNext={handleNext}
-            onLoadMore={loadMoreArtworks}
-            onImageClick={openImageOverlay}
-            loading={loading}
-            showFallbackMessage={showFallbackMessage}
-          />
+          <>
+            <CardStack
+              artworks={currentArtworkList}
+              currentIndex={currentIndex}
+              onLike={handleLike}
+              onDislike={handleDislike}
+              onAddToCollection={handleAddToCollection}
+              onNext={handleNext}
+              onLoadMore={loadMoreArtworks}
+              onImageClick={openImageOverlay}
+              loading={loading}
+              showFallbackMessage={showFallbackMessage}
+            />
+
+            {/* Desktop Filter Panel */}
+            {showDesktopFilters && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+            <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto m-4">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-black">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDesktopFilters(false)}
+                    className="text-black hover:bg-gray-100"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+                
+                <div className="space-y-6">
+                  {/* Style Filter */}
+                  <div>
+                    <label className="block text-sm font-bold mb-2">Style</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['Digital Art', 'Abstract', 'Portrait', 'Contemporary', 'Modern', 'Realism', 'Impressionism', 'Cubism', 'Surrealism', 'Minimalism'].map((tag) => (
+                        <Button
+                          key={tag}
+                          variant="outline"
+                          size="sm"
+                          className={`text-xs ${activeFilters.style.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          onClick={() => {
+                            const newFilters = { ...activeFilters }
+                            if (newFilters.style.includes(tag)) {
+                              newFilters.style = newFilters.style.replace(tag, '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                            } else {
+                              newFilters.style = newFilters.style ? `${newFilters.style}, ${tag}` : tag
+                            }
+                            setActiveFilters(newFilters)
+                          }}
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Subject Filter */}
+                  <div>
+                    <label className="block text-sm font-bold mb-2">Subject</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape', 'Still Life', 'Architecture', 'Animals', 'People', 'City'].map((tag) => (
+                        <Button
+                          key={tag}
+                          variant="outline"
+                          size="sm"
+                          className={`text-xs ${activeFilters.subject.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          onClick={() => {
+                            const newFilters = { ...activeFilters }
+                            if (newFilters.subject.includes(tag)) {
+                              newFilters.subject = newFilters.subject.replace(tag, '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                            } else {
+                              newFilters.subject = newFilters.subject ? `${newFilters.subject}, ${tag}` : tag
+                            }
+                            setActiveFilters(newFilters)
+                          }}
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Colors Filter */}
+                  <div>
+                    <label className="block text-sm font-bold mb-2">Colors</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['Black', 'White', 'Colorful', 'Monochrome', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Warm tones', 'Cool tones'].map((tag) => (
+                        <Button
+                          key={tag}
+                          variant="outline"
+                          size="sm"
+                          className={`text-xs ${activeFilters.colors.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          onClick={() => {
+                            const newFilters = { ...activeFilters }
+                            if (newFilters.colors.includes(tag)) {
+                              newFilters.colors = newFilters.colors.replace(tag, '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                            } else {
+                              newFilters.colors = newFilters.colors ? `${newFilters.colors}, ${tag}` : tag
+                            }
+                            setActiveFilters(newFilters)
+                          }}
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filter Action Buttons */}
+                <div className="flex justify-center gap-4 mt-6">
+                  <Button 
+                    onClick={() => {
+                      handleFilterChange(activeFilters)
+                      setShowDesktopFilters(false)
+                    }}
+                    className="px-6"
+                  >
+                    Apply Filters
+                  </Button>
+                  {isFiltering && (
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        clearFilters()
+                        setShowDesktopFilters(false)
+                      }}
+                      className="px-6"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+            )}
+          </>
         ) : null
       ) : view === "collection" ? (
         isMobile || isTablet ? (
