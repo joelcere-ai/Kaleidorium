@@ -1300,12 +1300,9 @@ export default function MobileCardStack({
           {/* Fallback message when no filters match */}
           {showFallbackMessage && (
             <div className="mt-8 text-center p-6 bg-blue-50 border border-blue-200 rounded-lg mx-4">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">No exact matches found</h3>
-              <p className="text-sm text-blue-600 mb-3">
-                We don't have artwork that matches all of your preferences at present, but feel free to explore other work.
-              </p>
-              <p className="text-xs text-blue-500">
-                Come back in a few days as we are adding new artwork frequently.
+              <h3 className="text-lg font-semibold text-blue-800 mb-2">No more artwork matching your criteria</h3>
+              <p className="text-sm text-blue-600">
+                Remove some of the filters you selected or come back soon as we are always adding new artwork.
               </p>
             </div>
           )}
