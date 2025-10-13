@@ -1906,8 +1906,41 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 
                 <div className="space-y-6">
                   {/* Style Filter */}
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-bold mb-2">Style</label>
+                    
+                    {/* Selected tags display */}
+                    {activeFilters.style && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {activeFilters.style.split(',').map((tag) => (
+                          <span
+                            key={tag.trim()}
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            onClick={() => {
+                              const newFilters = { ...activeFilters }
+                              newFilters.style = newFilters.style.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                              setActiveFilters(newFilters)
+                            }}
+                          >
+                            {tag.trim()} ×
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <Input
+                      type="text"
+                      placeholder="e.g. Abstract, Portrait, Digital Art..."
+                      value={activeFilters.style}
+                      onChange={(e) => {
+                        const newFilters = { ...activeFilters }
+                        newFilters.style = e.target.value
+                        setActiveFilters(newFilters)
+                      }}
+                      className="mb-2"
+                    />
+                    
+                    {/* Quick select buttons */}
                     <div className="flex flex-wrap gap-2">
                       {['Digital Art', 'Abstract', 'Portrait', 'Contemporary', 'Modern', 'Realism', 'Impressionism', 'Cubism', 'Surrealism', 'Minimalism'].map((tag) => (
                         <Button
@@ -1932,8 +1965,41 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
 
                   {/* Subject Filter */}
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-bold mb-2">Subject</label>
+                    
+                    {/* Selected tags display */}
+                    {activeFilters.subject && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {activeFilters.subject.split(',').map((tag) => (
+                          <span
+                            key={tag.trim()}
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            onClick={() => {
+                              const newFilters = { ...activeFilters }
+                              newFilters.subject = newFilters.subject.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                              setActiveFilters(newFilters)
+                            }}
+                          >
+                            {tag.trim()} ×
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <Input
+                      type="text"
+                      placeholder="e.g. Nature, Urban, Portrait..."
+                      value={activeFilters.subject}
+                      onChange={(e) => {
+                        const newFilters = { ...activeFilters }
+                        newFilters.subject = e.target.value
+                        setActiveFilters(newFilters)
+                      }}
+                      className="mb-2"
+                    />
+                    
+                    {/* Quick select buttons */}
                     <div className="flex flex-wrap gap-2">
                       {['Nature', 'Urban', 'Portrait', 'Abstract', 'Landscape', 'Still Life', 'Architecture', 'Animals', 'People', 'City'].map((tag) => (
                         <Button
@@ -1958,8 +2024,41 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
 
                   {/* Colors Filter */}
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-bold mb-2">Colors</label>
+                    
+                    {/* Selected tags display */}
+                    {activeFilters.colors && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {activeFilters.colors.split(',').map((tag) => (
+                          <span
+                            key={tag.trim()}
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            onClick={() => {
+                              const newFilters = { ...activeFilters }
+                              newFilters.colors = newFilters.colors.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
+                              setActiveFilters(newFilters)
+                            }}
+                          >
+                            {tag.trim()} ×
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <Input
+                      type="text"
+                      placeholder="e.g. Black, Colorful, Warm tones..."
+                      value={activeFilters.colors}
+                      onChange={(e) => {
+                        const newFilters = { ...activeFilters }
+                        newFilters.colors = e.target.value
+                        setActiveFilters(newFilters)
+                      }}
+                      className="mb-2"
+                    />
+                    
+                    {/* Quick select buttons */}
                     <div className="flex flex-wrap gap-2">
                       {['Black', 'White', 'Colorful', 'Monochrome', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Warm tones', 'Cool tones'].map((tag) => (
                         <Button
