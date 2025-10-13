@@ -901,33 +901,34 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('About to execute full Supabase query...');
       
-      // Test Supabase connection with a simple query
-      console.log('Step 1: Testing Supabase connection...');
-      try {
-        const { data: testData, error: testError } = await supabase
-          .from('Artwork')
-          .select('id')
-          .limit(1);
-        
-        if (testError) {
-          console.error('❌ Supabase connection failed:', testError);
-          throw testError;
-        }
-        
-        console.log('✅ Supabase connection works, got', testData?.length, 'records');
-      } catch (error) {
-        console.error('❌ Supabase connection test failed:', error);
-        throw error;
-      }
+      // TEMPORARY: Use fallback data while investigating Supabase connection issue
+      console.log('⚠️ Using fallback data - Supabase connection is hanging');
       
-      // Now try the full query
-      console.log('Step 2: Executing full query...');
-      const { data: artworksData, error } = await supabase
-        .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
-        .limit(10);
-        
-      console.log('Supabase query completed, processing results...');
+      const fallbackArtworks = [
+        {
+          id: "1",
+          artwork_title: "Test Artwork",
+          artist: "Test Artist",
+          artwork_image: "/placeholder.svg",
+          medium: "Digital Art",
+          dimensions: "1920x1080",
+          year: "2025",
+          price: "Price on request",
+          description: "This is a test artwork while we investigate the Supabase connection issue.",
+          tags: ["test", "fallback"],
+          artwork_link: undefined,
+          style: "Digital Art",
+          genre: "Contemporary",
+          subject: "Abstract",
+          colour: "Mixed",
+          created_at: new Date().toISOString()
+        }
+      ];
+      
+      const artworksData = fallbackArtworks;
+      const error = null;
+      
+      console.log('Using fallback data with', artworksData.length, 'artworks');
         
       const queryTime = Date.now() - startTime;
       console.log(`⏱️ Supabase query took ${queryTime}ms`);
