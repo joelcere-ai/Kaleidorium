@@ -214,7 +214,7 @@ export function useUserEngagement() {
     
     return () => {
       mounted = false
-      subscription.unsubscribe()
+      // No auth subscription to unsubscribe from
       // No visibility change handler to remove
     }
   }, [])
