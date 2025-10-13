@@ -206,12 +206,8 @@ export function useUserEngagement() {
     
     runInitialization()
     
-    // Listen for auth changes only
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (mounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT')) {
-        await initializeEngagement()
-      }
-    })
+    // Auth state changes are handled by parent component (page.tsx)
+    // No need for duplicate auth listeners here
     
     // NO VISIBILITY CHANGE HANDLING - this was causing tab switch reload issues
     console.log('🚨 SIMPLE: useUserEngagement - no visibility change handler')

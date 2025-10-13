@@ -52,20 +52,8 @@ export function useRegistrationPrompt() {
 
     checkUser()
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null)
-      if (session?.user) {
-        // Reset state for authenticated users
-        setState({
-          interactionCount: 0,
-          hasShownPrompt: false,
-          shouldShowPrompt: false
-        })
-      }
-    })
-
-    return () => subscription.unsubscribe()
+    // Auth state changes are handled by parent component (page.tsx)
+    // No need for duplicate auth listeners here
   }, [supabase])
 
   // Track user interaction

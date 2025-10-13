@@ -220,48 +220,8 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
   }, []);
 
-  // Listen for auth state changes and refresh user/collector data
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        // Fetch collector profile for the new user
-        setCollectorLoading(true);
-        let { data, error } = await supabase
-          .from('Collectors')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single();
-        // If no collector record, create one
-        if (error && error.code === 'PGRST116') { // Not found
-          const { error: insertError } = await supabase.from('Collectors').insert({
-            user_id: session.user.id,
-            email: session.user.email,
-            is_temporary: false,
-            preferences: {
-              artists: {}, genres: {}, styles: {}, subjects: {}, colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: []
-            }
-          });
-          if (!insertError) {
-            // Try fetching again
-            ({ data, error } = await supabase
-              .from('Collectors')
-              .select('*')
-              .eq('user_id', session.user.id)
-              .single());
-          }
-        }
-        if (!error && data) setCollector(data);
-        setCollectorLoading(false);
-      } else {
-        setUser(null);
-        setCollector(null);
-      }
-    });
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
+  // Auth state changes are handled by parent component (page.tsx)
+  // No need for duplicate auth listeners here
 
   // Fetch artist's artworks if user is artist
   useEffect(() => {
