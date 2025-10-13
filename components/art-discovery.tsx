@@ -899,11 +899,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('🔍 Full Supabase query - no timeout limit...');
       const startTime = Date.now();
       
-      console.log('About to execute basic Supabase query...');
+      console.log('About to execute full Supabase query...');
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image')
-        .limit(10);
+        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
+        .limit(50);
       console.log('Supabase query completed, processing results...');
         
       const queryTime = Date.now() - startTime;
@@ -935,20 +935,20 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           id: artwork.id?.toString() || Math.random().toString(),
           title: artwork.artwork_title || 'Untitled',
           artist: artwork.artist || 'Unknown Artist',
-          medium: 'Digital Art',
-          dimensions: '1920x1080',
-          year: "2025",
-          price: 'Price on request',
-          description: 'No description available',
-          tags: [],
+          medium: artwork.medium || 'Digital Art',
+          dimensions: artwork.dimensions || '1920x1080',
+          year: artwork.year || "2025",
+          price: artwork.price || 'Price on request',
+          description: artwork.description || 'No description available',
+          tags: artwork.tags || [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: undefined,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          style: undefined,
-          genre: undefined,
-          subject: undefined,
-          colour: undefined
+          link: artwork.artwork_link || undefined,
+          created_at: artwork.created_at || new Date().toISOString(),
+          updated_at: artwork.created_at || new Date().toISOString(),
+          style: artwork.style || undefined,
+          genre: artwork.genre || undefined,
+          subject: artwork.subject || undefined,
+          colour: artwork.colour || undefined
         };
       });
 
