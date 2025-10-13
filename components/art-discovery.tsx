@@ -934,7 +934,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at, updated_at')
+        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
         .limit(50);
         
       const queryTime = Date.now() - startTime;
@@ -982,7 +982,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           artwork_image: artwork.artwork_image || "/placeholder.svg",
           link: artwork.artwork_link || undefined,
           created_at: artwork.created_at || new Date().toISOString(),
-          updated_at: artwork.updated_at || new Date().toISOString(),
+          updated_at: artwork.created_at || new Date().toISOString(),
           style: artwork.style || undefined,
           genre: artwork.genre || undefined,
           subject: artwork.subject || undefined,
