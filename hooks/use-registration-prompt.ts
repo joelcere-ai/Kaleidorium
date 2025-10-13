@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useToast } from '@/hooks/use-toast'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabase } from '@/lib/supabase'
 
 interface RegistrationPromptState {
   interactionCount: number
@@ -19,7 +19,7 @@ export function useRegistrationPrompt() {
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
-  const supabase = createClientComponentClient()
+  // Using shared Supabase client from lib/supabase.ts
 
   // Check if user is authenticated
   useEffect(() => {
