@@ -918,18 +918,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // 🚨 EMERGENCY: Force loading to complete after 30 seconds (extended for full Supabase queries)
-      const emergencyTimeout = setTimeout(() => {
-        console.log('🚨 EMERGENCY: 30s timeout reached, forcing app to load with empty artworks');
-        setArtworks([]);
-        setLoading(false);
-        fetchingRef.current = false;
-      }, 30000);
-      
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
-      // Full query with extended timeout
-      console.log('🔍 Full Supabase query with extended timeout...');
+      // Full query without timeout - let it take as long as needed
+      console.log('🔍 Full Supabase query - no timeout limit...');
       const startTime = Date.now();
       
       const { data: artworksData, error } = await supabase
@@ -938,11 +930,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         .limit(50);
         
       const queryTime = Date.now() - startTime;
-      console.log(`⏱️ Fast query took ${queryTime}ms`);
-
-      // Clear the emergency timeout if we got here
-      clearTimeout(emergencyTimeout);
-      console.log('✅ Supabase query completed, clearing emergency timeout');
+      console.log(`⏱️ Supabase query took ${queryTime}ms`);
+      console.log('✅ Supabase query completed successfully');
       console.log('Raw Supabase response:', { artworksData, error });
       
       if (error) {
