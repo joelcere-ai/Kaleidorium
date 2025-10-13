@@ -928,17 +928,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
-      // Try a more efficient query - get essential fields first
-      console.log('🔍 Attempting full Supabase query...');
+      // Use a faster query first to get artworks loading quickly
+      console.log('🚀 Fast query: Getting essential fields first...');
       const startTime = Date.now();
       
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
+        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link')
         .limit(50);
         
       const queryTime = Date.now() - startTime;
-      console.log(`⏱️ Supabase query took ${queryTime}ms`);
+      console.log(`⏱️ Fast query took ${queryTime}ms`);
 
       // Clear the emergency timeout if we got here
       clearTimeout(emergencyTimeout);
@@ -981,12 +981,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           tags: artwork.tags || [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
           link: artwork.artwork_link || undefined,
-          created_at: artwork.created_at || new Date().toISOString(),
-          updated_at: artwork.created_at || new Date().toISOString(),
-          style: artwork.style || undefined,
-          genre: artwork.genre || undefined,
-          subject: artwork.subject || undefined,
-          colour: artwork.colour || undefined
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          style: undefined,
+          genre: undefined,
+          subject: undefined,
+          colour: undefined
         };
       });
 
