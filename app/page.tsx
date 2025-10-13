@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
+import { supabase } from "@/lib/supabase";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -39,6 +40,7 @@ function HomeContent() {
   const [collectionCount, setCollectionCount] = useState(0);
   const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
+  const [dbCollection, setDbCollection] = useState<any[]>([]);
   
   // Art Preferences state (copied from ProfilePage)
   const [insights, setInsights] = useState({
@@ -111,6 +113,44 @@ function HomeContent() {
     
     loadCollection();
   }, [collectionCount]);
+
+  // Fetch user's collection from database (for registered users)
+  useEffect(() => {
+    const fetchUserCollection = async () => {
+      if (!user) return;
+      
+      try {
+        const { data: collectionRows, error: collectionError } = await supabase
+          .from('Collection')
+          .select('artwork_id')
+          .eq('user_id', user.id);
+          
+        if (collectionError) {
+          console.error('Error fetching user collection:', collectionError);
+          return;
+        }
+        
+        const artworkIds = collectionRows?.map(row => row.artwork_id) || [];
+        if (artworkIds.length === 0) {
+          setDbCollection([]);
+          return;
+        }
+        
+        const { data: artworks, error: artworkError } = await supabase
+          .from('Artwork')
+          .select('*')
+          .in('id', artworkIds);
+          
+        if (!artworkError && artworks) {
+          setDbCollection(artworks);
+        }
+      } catch (error) {
+        console.error('Error in fetchUserCollection:', error);
+      }
+    };
+    
+    fetchUserCollection();
+  }, [user]);
 
   // Show app immediately - no loading delay
   useEffect(() => {
@@ -782,10 +822,10 @@ function HomeContent() {
           <div className="flex-1 overflow-y-auto">
             {isMobile ? (
               <MobileCardStack
-                artworks={collection}
+                artworks={user ? dbCollection : collection}
                 view="collection"
                 setView={setView}
-                collection={collection}
+                collection={user ? dbCollection : collection}
                 onRemoveFromCollection={handleRemoveFromCollection}
                 onLike={() => {}}
                 onDislike={() => {}}
@@ -943,10 +983,10 @@ function HomeContent() {
                 </div>
 
                 <div className="mb-6">
-                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({collection.length})</h1>
+                  <h1 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>My Collection ({(user ? dbCollection : collection).length})</h1>
                 </div>
 
-                {collection.length === 0 ? (
+                {(user ? dbCollection : collection).length === 0 ? (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                       <Heart className="h-16 w-16 text-gray-300 mb-4" />
@@ -963,7 +1003,7 @@ function HomeContent() {
                   </Card>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {collection.map((artwork) => (
+                    {(user ? dbCollection : collection).map((artwork) => (
                       <Card key={artwork.id} className="overflow-hidden">
                         <CardContent className="p-0">
                           <img
