@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'Kaleidorium',
     images: [
       {
-        url: '/android-chrome-512x512.png',
+        url: '/logos/pwa-icon-512x512.svg',
         width: 512,
         height: 512,
         alt: 'Kaleidorium - Art Discovery Platform',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Kaleidorium – Discover & Collect Art Curated For You',
     description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
-    images: ['/android-chrome-512x512.png'],
+    images: ['/logos/pwa-icon-512x512.svg'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
   },
@@ -87,24 +87,31 @@ export const metadata: Metadata = {
         type: 'image/x-icon',
       },
       {
-        url: '/icons/icon-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
+        url: '/logos/favicon-16x16.svg',
+        sizes: '16x16',
+        type: 'image/svg+xml',
       },
       {
-        url: '/icons/icon-512x512.png',
+        url: '/logos/favicon-32x32.svg',
+        sizes: '32x32',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/logos/pwa-icon-192x192.svg',
+        sizes: '192x192',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/logos/pwa-icon-512x512.svg',
         sizes: '512x512',
-        type: 'image/png',
+        type: 'image/svg+xml',
       }
     ],
     apple: [
       {
-        url: '/icons/icon-152x152.png',
-        sizes: '152x152',
-      },
-      {
-        url: '/icons/icon-192x192.png',
-        sizes: '192x192',
+        url: '/logos/apple-touch-icon-180x180.svg',
+        sizes: '180x180',
+        type: 'image/svg+xml',
       }
     ]
   },

@@ -1677,7 +1677,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             {isMobile ? (
               <div>
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
+                  <div className="flex items-center justify-center mb-4">
+                    <img 
+                      src="/logos/logo-medium-48x48.svg" 
+                      alt="Kaleidorium Logo" 
+                      className="w-12 h-12 mr-3"
+                    />
+                    <h1 className="text-3xl font-bold text-black">Kaleidorium</h1>
+                  </div>
                   <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
                 </div>
                 <div className="text-black text-xl mb-4">Loading Artwork...</div>
@@ -1712,7 +1719,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               </div>
             ) : (
               <div>
-                <div className="text-black text-xl mb-4">Loading Artwork...</div>
+                <div className="flex items-center justify-center mb-4">
+                  <img 
+                    src="/logos/logo-desktop-32x32.svg" 
+                    alt="Kaleidorium Logo" 
+                    className="w-8 h-8 mr-3"
+                  />
+                  <div className="text-black text-xl">Loading Artwork...</div>
+                </div>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>

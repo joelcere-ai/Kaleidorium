@@ -55,8 +55,15 @@ export default function AnimatedLoading({ onComplete, duration = 3000 }: Animate
         padding: '20px'
       }}
     >
-      {/* Simple text logo */}
+      {/* Logo with text */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <img 
+            src="/logos/logo-large-64x64.svg" 
+            alt="Kaleidorium Logo" 
+            style={{ width: '48px', height: '48px', marginRight: '16px' }}
+          />
+        </div>
         <h1 
           style={{
             color: 'white',

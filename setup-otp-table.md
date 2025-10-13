@@ -74,3 +74,4 @@ After setting up the table and EmailJS template:
 
 The system will now work without Supabase magic links!
 
+

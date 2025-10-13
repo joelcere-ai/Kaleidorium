@@ -36,3 +36,4 @@ iconSizes.forEach(({ size, name }) => {
 
 console.log('✅ All PWA icons generated successfully!');
 console.log('Note: These are SVG files. For production, convert them to PNG using the HTML generator.');
+

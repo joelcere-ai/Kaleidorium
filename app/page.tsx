@@ -800,12 +800,26 @@ function HomeContent() {
         <div className="text-center">
           {isMobile ? (
             <>
-              <h1 className="text-3xl font-bold text-black mb-2">Kaleidorium</h1>
+              <div className="flex items-center justify-center mb-4">
+                <img 
+                  src="/logos/logo-medium-48x48.svg" 
+                  alt="Kaleidorium Logo" 
+                  className="w-12 h-12 mr-3"
+                />
+                <h1 className="text-3xl font-bold text-black">Kaleidorium</h1>
+              </div>
               <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
               <div className="text-black text-xl">Loading Artwork...</div>
             </>
           ) : (
-            <div className="text-black text-xl">Loading Artwork...</div>
+            <div className="flex items-center justify-center">
+              <img 
+                src="/logos/logo-desktop-32x32.svg" 
+                alt="Kaleidorium Logo" 
+                className="w-8 h-8 mr-3"
+              />
+              <div className="text-black text-xl">Loading Artwork...</div>
+            </div>
           )}
         </div>
       </div>
@@ -1172,7 +1186,14 @@ export default function Home() {
     <Suspense fallback={
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="text-black text-xl">Loading Artwork...</div>
+          <div className="flex items-center justify-center">
+            <img 
+              src="/logos/logo-desktop-32x32.svg" 
+              alt="Kaleidorium Logo" 
+              className="w-8 h-8 mr-3"
+            />
+            <div className="text-black text-xl">Loading Artwork...</div>
+          </div>
         </div>
       </div>
     }>

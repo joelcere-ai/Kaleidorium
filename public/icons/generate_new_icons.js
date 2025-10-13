@@ -67,3 +67,4 @@ icons.forEach(icon => {
 
 console.log('All icons generated successfully!');
 console.log('New icons have white background, thin black outline, and smaller centered K.');
+
