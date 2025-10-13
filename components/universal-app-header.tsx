@@ -67,7 +67,7 @@ export function UniversalAppHeader({
         <div className="flex items-center">
           <Button
             variant="ghost"
-            className="flex items-center space-x-2 font-serif text-xl font-semibold text-black"
+            className="flex items-center space-x-1 font-serif text-xl font-semibold text-black"
             onClick={() => handleNavigation("/", "discover")}
           >
             <img 

@@ -29,7 +29,7 @@ export function DesktopHeader({ currentPage, collectionCount = 0, setView }: Des
         {/* Logo with improved mobile spacing */}
         <Button 
           variant="ghost" 
-          className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0"
+          className="flex items-center space-x-1 py-2 px-1 md:py-0 md:px-0"
           onClick={() => handleNavigation("discover")}
         >
           <img 
