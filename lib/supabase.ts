@@ -69,9 +69,7 @@ const testStorageConfig = async () => {
   }
 };
 
-// Run tests
-testConnection();
-testStorageConfig();
+// Connection tests removed - they were causing hanging issues
 
 // Initialize storage for profile pictures
 export const initializeProfilePictureStorage = async () => {
@@ -108,7 +106,4 @@ export const initializeProfilePictureStorage = async () => {
   }
 }
 
-// Initialize storage on client side
-if (typeof window !== 'undefined') {
-  initializeProfilePictureStorage()
-} 
+// Storage initialization removed - was causing hanging issues 

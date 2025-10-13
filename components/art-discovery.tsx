@@ -901,19 +901,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('About to execute full Supabase query...');
       
-      // Test with a very simple query first
-      console.log('Step 1: Testing basic table access...');
-      const { data: testData, error: testError } = await supabase
-        .from('Artwork')
-        .select('id')
-        .limit(1);
-      
-      if (testError) {
-        console.error('❌ Basic table access failed:', testError);
-        throw testError;
+      // Test Supabase connection with a simple query
+      console.log('Step 1: Testing Supabase connection...');
+      try {
+        const { data: testData, error: testError } = await supabase
+          .from('Artwork')
+          .select('id')
+          .limit(1);
+        
+        if (testError) {
+          console.error('❌ Supabase connection failed:', testError);
+          throw testError;
+        }
+        
+        console.log('✅ Supabase connection works, got', testData?.length, 'records');
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+        throw error;
       }
-      
-      console.log('✅ Basic table access works, got', testData?.length, 'records');
       
       // Now try the full query
       console.log('Step 2: Executing full query...');
