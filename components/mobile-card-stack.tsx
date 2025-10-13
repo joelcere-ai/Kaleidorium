@@ -1162,7 +1162,14 @@ export default function MobileCardStack({
         >
           <Menu className="w-6 h-6" />
         </Button>
-        <h1 className="font-serif text-xl font-semibold text-black">Kaleidorium</h1>
+        <h1 className="font-serif text-xl font-semibold text-black flex items-center space-x-2">
+          <img 
+            src="/logos/logo-mobile-20x20.svg" 
+            alt="Kaleidorium Logo" 
+            className="w-5 h-5"
+          />
+          Kaleidorium
+        </h1>
         <Button
           variant="ghost"
           size="icon"
