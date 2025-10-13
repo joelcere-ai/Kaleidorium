@@ -901,34 +901,69 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('About to execute full Supabase query...');
       
-      // TEMPORARY: Use fallback data while investigating Supabase connection issue
-      console.log('⚠️ Using fallback data - Supabase connection is hanging');
+      // Test Supabase connection with timeout
+      console.log('Step 1: Testing Supabase connection with 5s timeout...');
       
-      const fallbackArtworks = [
-        {
-          id: "1",
-          artwork_title: "Test Artwork",
-          artist: "Test Artist",
-          artwork_image: "/placeholder.svg",
-          medium: "Digital Art",
-          dimensions: "1920x1080",
-          year: "2025",
-          price: "Price on request",
-          description: "This is a test artwork while we investigate the Supabase connection issue.",
-          tags: ["test", "fallback"],
-          artwork_link: undefined,
-          style: "Digital Art",
-          genre: "Contemporary",
-          subject: "Abstract",
-          colour: "Mixed",
-          created_at: new Date().toISOString()
+      let artworksData = [];
+      let error = null;
+      
+      try {
+        // Create a promise that rejects after 5 seconds
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Supabase query timeout after 5s')), 5000)
+        );
+        
+        // Create the Supabase query promise
+        const queryPromise = supabase
+          .from('Artwork')
+          .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
+          .limit(10);
+        
+        // Race between the query and timeout
+        const { data, error: queryError } = await Promise.race([queryPromise, timeoutPromise]);
+        
+        if (queryError) {
+          console.error('❌ Supabase query error:', queryError);
+          error = queryError;
+        } else {
+          console.log('✅ Supabase query succeeded, got', data?.length, 'records');
+          artworksData = data || [];
         }
-      ];
+      } catch (timeoutError) {
+        console.error('❌ Supabase connection timeout:', timeoutError);
+        error = timeoutError;
+      }
       
-      const artworksData = fallbackArtworks;
-      const error = null;
+      // If Supabase failed, use fallback data
+      if (error || artworksData.length === 0) {
+        console.log('⚠️ Using fallback data due to Supabase issue');
+        
+        const fallbackArtworks = [
+          {
+            id: "1",
+            artwork_title: "Test Artwork",
+            artist: "Test Artist",
+            artwork_image: "/placeholder.svg",
+            medium: "Digital Art",
+            dimensions: "1920x1080",
+            year: "2025",
+            price: "Price on request",
+            description: "This is a test artwork while we investigate the Supabase connection issue.",
+            tags: ["test", "fallback"],
+            artwork_link: undefined,
+            style: "Digital Art",
+            genre: "Contemporary",
+            subject: "Abstract",
+            colour: "Mixed",
+            created_at: new Date().toISOString()
+          }
+        ];
+        
+        artworksData = fallbackArtworks;
+        error = null;
+      }
       
-      console.log('Using fallback data with', artworksData.length, 'artworks');
+      console.log('Final result: Using', artworksData.length, 'artworks');
         
       const queryTime = Date.now() - startTime;
       console.log(`⏱️ Supabase query took ${queryTime}ms`);
