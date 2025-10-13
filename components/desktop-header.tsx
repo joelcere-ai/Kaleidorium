@@ -32,6 +32,11 @@ export function DesktopHeader({ currentPage, collectionCount = 0, setView }: Des
           className="flex items-center space-x-2 py-2 px-1 md:py-0 md:px-0"
           onClick={() => handleNavigation("discover")}
         >
+          <img 
+            src="/kaleidorium-icon.svg" 
+            alt="Kaleidorium" 
+            className="h-6 w-6 mr-2"
+          />
           <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
         </Button>
 
