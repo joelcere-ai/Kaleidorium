@@ -928,14 +928,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
-      // Use a faster query first to get artworks loading quickly
-      console.log('🚀 Fast query: Getting essential fields first...');
+      // Ultra-minimal query to prevent timeouts
+      console.log('🚀 Ultra-minimal query: Getting basic fields only...');
       const startTime = Date.now();
       
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link')
-        .limit(50);
+        .select('id, artwork_title, artist, artwork_image')
+        .limit(30);
         
       const queryTime = Date.now() - startTime;
       console.log(`⏱️ Fast query took ${queryTime}ms`);
@@ -963,24 +963,20 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       console.log('Received artwork data:', artworksData.length, 'items');
       console.log('First artwork sample:', JSON.stringify(artworksData[0], null, 2));
-      console.log('🔍 FULL QUERY DEBUG: Checking if we have full data...');
-      console.log('Has description?', artworksData[0]?.description ? 'YES' : 'NO');
-      console.log('Has medium?', artworksData[0]?.medium ? 'YES' : 'NO');
-      console.log('Has tags?', artworksData[0]?.tags ? 'YES' : 'NO');
 
       const transformedArtworks = artworksData.map((artwork: any) => {
         return {
           id: artwork.id?.toString() || Math.random().toString(),
           title: artwork.artwork_title || 'Untitled',
           artist: artwork.artist || 'Unknown Artist',
-          medium: artwork.medium || 'Digital Art',
-          dimensions: artwork.dimensions || '1920x1080',
-          year: artwork.year || "2025",
-          price: artwork.price || 'Price on request',
-          description: artwork.description || 'No description available',
-          tags: artwork.tags || [],
+          medium: 'Digital Art',
+          dimensions: '1920x1080',
+          year: "2025",
+          price: 'Price on request',
+          description: 'No description available',
+          tags: [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: artwork.artwork_link || undefined,
+          link: undefined,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           style: undefined,
