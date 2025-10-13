@@ -899,11 +899,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('🔍 Full Supabase query - no timeout limit...');
       const startTime = Date.now();
       
-      console.log('About to execute full Supabase query...');
+      console.log('About to execute test Supabase query...');
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
-        .limit(50);
+        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, created_at')
+        .limit(10);
       console.log('Supabase query completed, processing results...');
         
       const queryTime = Date.now() - startTime;
@@ -945,10 +945,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           link: artwork.artwork_link || undefined,
           created_at: artwork.created_at || new Date().toISOString(),
           updated_at: artwork.created_at || new Date().toISOString(),
-          style: artwork.style || undefined,
-          genre: artwork.genre || undefined,
-          subject: artwork.subject || undefined,
-          colour: artwork.colour || undefined
+          style: undefined, // Field may not exist in database
+          genre: undefined, // Field may not exist in database  
+          subject: undefined, // Field may not exist in database
+          colour: undefined // Field may not exist in database
         };
       });
 
