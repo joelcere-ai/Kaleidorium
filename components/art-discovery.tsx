@@ -918,26 +918,37 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // 🚨 EMERGENCY: Force loading to complete after 8 seconds (increased for Supabase queries)
+      // 🚨 EMERGENCY: Force loading to complete after 15 seconds (increased for full Supabase queries)
       const emergencyTimeout = setTimeout(() => {
-        console.log('🚨 EMERGENCY: 8s timeout reached, forcing app to load with empty artworks');
+        console.log('🚨 EMERGENCY: 15s timeout reached, forcing app to load with empty artworks');
         setArtworks([]);
         setLoading(false);
         fetchingRef.current = false;
-      }, 8000);
+      }, 15000);
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
-      // Full query with all artwork fields
+      // Try a more efficient query - get essential fields first
+      console.log('🔍 Attempting full Supabase query...');
+      const startTime = Date.now();
+      
       const { data: artworksData, error } = await supabase
         .from('Artwork')
         .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at, updated_at')
         .limit(50);
+        
+      const queryTime = Date.now() - startTime;
+      console.log(`⏱️ Supabase query took ${queryTime}ms`);
 
       // Clear the emergency timeout if we got here
       clearTimeout(emergencyTimeout);
       console.log('✅ Supabase query completed, clearing emergency timeout');
       console.log('Raw Supabase response:', { artworksData, error });
+      
+      if (error) {
+        console.error('🚨 SUPABASE ERROR:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+      }
 
       if (error) {
         console.error('Supabase error fetching artworks:', error);
