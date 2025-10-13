@@ -16,30 +16,30 @@
       "short_name": "Discover",
       "description": "Start discovering new artwork",
       "url": "/?view=discover",
-      "icons": [{"src": "/logos/pwa-icon-192x192.svg", "sizes": "192x192"}]
+      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
     },
     {
       "name": "My Collection", 
       "short_name": "Collection",
       "description": "View your art collection",
       "url": "/?view=collection",
-      "icons": [{"src": "/logos/pwa-icon-192x192.svg", "sizes": "192x192"}]
+      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
     }
   ],
   "icons": [
     {
-      "src": "/logos/favicon-32x32.svg",
+      "src": "/logos/favicon-32x32.svg?v=2",
       "sizes": "32x32",
       "type": "image/svg+xml"
     },
     {
-      "src": "/logos/pwa-icon-192x192.svg",
+      "src": "/logos/pwa-icon-192x192.svg?v=2",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/logos/pwa-icon-512x512.svg",
+      "src": "/logos/pwa-icon-512x512.svg?v=2",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable any"
