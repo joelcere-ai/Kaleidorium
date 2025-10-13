@@ -920,7 +920,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           .limit(10);
         
         // Race between the query and timeout
-        const { data, error: queryError } = await Promise.race([queryPromise, timeoutPromise]);
+        const result = await Promise.race([queryPromise, timeoutPromise]) as any;
+        const { data, error: queryError } = result;
         
         if (queryError) {
           console.error('❌ Supabase query error:', queryError);
