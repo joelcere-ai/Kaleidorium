@@ -901,38 +901,60 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       console.log('About to execute full Supabase query...');
       
-      // Test Supabase connection with timeout
-      console.log('Step 1: Testing Supabase connection with 5s timeout...');
+      // Test basic network connectivity to Supabase
+      console.log('Step 1: Testing basic connectivity to Supabase...');
       
       let artworksData = [];
       let error = null;
       
       try {
-        // Create a promise that rejects after 5 seconds
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Supabase query timeout after 5s')), 5000)
+        // First test: Simple fetch to Supabase REST API
+        const supabaseUrl = 'https://zeexxekmnbbntnmwfcat.supabase.co';
+        const testUrl = `${supabaseUrl}/rest/v1/Artwork?select=id&limit=1`;
+        
+        console.log('Testing direct REST API call to:', testUrl);
+        
+        const fetchResponse = await fetch(testUrl, {
+          headers: {
+            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!fetchResponse.ok) {
+          throw new Error(`HTTP ${fetchResponse.status}: ${fetchResponse.statusText}`);
+        }
+        
+        const fetchData = await fetchResponse.json();
+        console.log('✅ Direct REST API call succeeded, got', fetchData?.length, 'records');
+        
+        // If direct REST works, try Supabase client with shorter timeout
+        console.log('Step 2: Testing Supabase client with 3s timeout...');
+        
+        const clientTimeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Supabase client timeout after 3s')), 3000)
         );
         
-        // Create the Supabase query promise
-        const queryPromise = supabase
+        const clientQueryPromise = supabase
           .from('Artwork')
           .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
           .limit(10);
         
-        // Race between the query and timeout
-        const result = await Promise.race([queryPromise, timeoutPromise]) as any;
-        const { data, error: queryError } = result;
+        const clientResult = await Promise.race([clientQueryPromise, clientTimeoutPromise]) as any;
+        const { data, error: queryError } = clientResult;
         
         if (queryError) {
-          console.error('❌ Supabase query error:', queryError);
+          console.error('❌ Supabase client query error:', queryError);
           error = queryError;
         } else {
-          console.log('✅ Supabase query succeeded, got', data?.length, 'records');
+          console.log('✅ Supabase client query succeeded, got', data?.length, 'records');
           artworksData = data || [];
         }
-      } catch (timeoutError) {
-        console.error('❌ Supabase connection timeout:', timeoutError);
-        error = timeoutError;
+        
+      } catch (networkError) {
+        console.error('❌ Network connectivity issue:', networkError);
+        error = networkError;
       }
       
       // If Supabase failed, use fallback data
