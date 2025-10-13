@@ -10,9 +10,23 @@ interface DesktopHeaderProps {
   currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
   setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
+  onFilterChange?: (filters: any) => void;
+  onClearFilters?: () => void;
+  isFiltering?: boolean;
+  showFilters?: boolean;
+  onToggleFilters?: () => void;
 }
 
-export function DesktopHeader({ currentPage, collectionCount = 0, setView }: DesktopHeaderProps) {
+export function DesktopHeader({ 
+  currentPage, 
+  collectionCount = 0, 
+  setView, 
+  onFilterChange, 
+  onClearFilters, 
+  isFiltering = false, 
+  showFilters = false, 
+  onToggleFilters 
+}: DesktopHeaderProps) {
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
 
@@ -50,6 +64,19 @@ export function DesktopHeader({ currentPage, collectionCount = 0, setView }: Des
             <Palette className="w-4 h-4 mr-1" />
             Discover
           </Button>
+          
+          {/* Filter Button - Only show on discover page */}
+          {(isSelected("discover") || currentPage === "discover") && onToggleFilters && (
+            <Button 
+              variant="ghost" 
+              className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+              onClick={onToggleFilters}
+            >
+              <Search className="w-4 h-4 mr-1" />
+              Filters
+              {isFiltering && <span className="ml-1 w-2 h-2 bg-blue-600 rounded-full"></span>}
+            </Button>
+          )}
           
           <Button 
             variant="ghost" 

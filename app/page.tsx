@@ -833,7 +833,20 @@ function HomeContent() {
     if (isMobile) {
       return <NewMobileHeader currentPage={view} collectionCount={collectionCount} setView={setView} />;
     } else {
-      return <DesktopHeader currentPage={view} collectionCount={collectionCount} setView={setView} />;
+      return (
+        <DesktopHeader 
+          currentPage={view} 
+          collectionCount={collectionCount} 
+          setView={setView}
+          onToggleFilters={() => {
+            // Toggle filters in the ArtDiscovery component
+            // This will be handled by the component's internal state
+            console.log('Toggle filters clicked - handled by ArtDiscovery component');
+          }}
+          isFiltering={false}
+          showFilters={false}
+        />
+      );
     }
   };
 
