@@ -918,24 +918,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setLoading(true);
       setLoadingError(null); // Clear any previous errors
       
-      // 🚨 EMERGENCY: Force loading to complete after 15 seconds (increased for full Supabase queries)
+      // 🚨 EMERGENCY: Force loading to complete after 30 seconds (extended for full Supabase queries)
       const emergencyTimeout = setTimeout(() => {
-        console.log('🚨 EMERGENCY: 15s timeout reached, forcing app to load with empty artworks');
+        console.log('🚨 EMERGENCY: 30s timeout reached, forcing app to load with empty artworks');
         setArtworks([]);
         setLoading(false);
         fetchingRef.current = false;
-      }, 15000);
+      }, 30000);
       
       console.log('fetchArtworks: Fetching artworks from Supabase...');
       
-      // Ultra-minimal query to prevent timeouts
-      console.log('🚀 Ultra-minimal query: Getting basic fields only...');
+      // Full query with extended timeout
+      console.log('🔍 Full Supabase query with extended timeout...');
       const startTime = Date.now();
       
       const { data: artworksData, error } = await supabase
         .from('Artwork')
-        .select('id, artwork_title, artist, artwork_image')
-        .limit(30);
+        .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
+        .limit(50);
         
       const queryTime = Date.now() - startTime;
       console.log(`⏱️ Fast query took ${queryTime}ms`);
@@ -969,20 +969,20 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           id: artwork.id?.toString() || Math.random().toString(),
           title: artwork.artwork_title || 'Untitled',
           artist: artwork.artist || 'Unknown Artist',
-          medium: 'Digital Art',
-          dimensions: '1920x1080',
-          year: "2025",
-          price: 'Price on request',
-          description: 'No description available',
-          tags: [],
+          medium: artwork.medium || 'Digital Art',
+          dimensions: artwork.dimensions || '1920x1080',
+          year: artwork.year || "2025",
+          price: artwork.price || 'Price on request',
+          description: artwork.description || 'No description available',
+          tags: artwork.tags || [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",
-          link: undefined,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          style: undefined,
-          genre: undefined,
-          subject: undefined,
-          colour: undefined
+          link: artwork.artwork_link || undefined,
+          created_at: artwork.created_at || new Date().toISOString(),
+          updated_at: artwork.created_at || new Date().toISOString(),
+          style: artwork.style || undefined,
+          genre: artwork.genre || undefined,
+          subject: artwork.subject || undefined,
+          colour: artwork.colour || undefined
         };
       });
 
