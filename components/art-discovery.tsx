@@ -1232,10 +1232,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       })
     }
     
-    // Strategy 3: If still no matches, show all artworks with a message
+    // Strategy 3: If still no matches, show empty list with fallback message
     if (filtered.length === 0) {
-      console.log('No partial matches found, showing all artworks with fallback message')
-      filtered = artworks
+      console.log('No matches found, showing fallback message')
       setShowFallbackMessage(true)
     } else {
       setShowFallbackMessage(false)

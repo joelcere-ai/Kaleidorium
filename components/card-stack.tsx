@@ -155,10 +155,22 @@ export default function CardStack({
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-white relative">
           <div className="flex items-center justify-center p-8">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-4">No artworks available</h2>
-              <p className="text-muted-foreground">Check back later for more artworks</p>
-            </div>
+            {showFallbackMessage ? (
+              <div className="text-center p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">No exact matches found</h3>
+                <p className="text-sm text-blue-600 mb-3">
+                  We don't have artwork that matches all of your preferences at present, but feel free to explore other work.
+                </p>
+                <p className="text-xs text-blue-500">
+                  Come back in a few days as we are adding new artwork frequently.
+                </p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <h2 className="text-xl font-semibold mb-4">No artworks available</h2>
+                <p className="text-muted-foreground">Check back later for more artworks</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
