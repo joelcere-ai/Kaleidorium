@@ -41,6 +41,7 @@ function HomeContent() {
   const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
   const [dbCollection, setDbCollection] = useState<any[]>([]);
+  const [user, setUser] = useState<any>(null);
   
   // Art Preferences state (copied from ProfilePage)
   const [insights, setInsights] = useState({
@@ -151,6 +152,17 @@ function HomeContent() {
     
     fetchUserCollection();
   }, [user]);
+
+  // Initialize user authentication
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Show app immediately - no loading delay
   useEffect(() => {
