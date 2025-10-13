@@ -911,7 +911,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: fetchArtworks proceeding without visibility checks');
     
     try {
-      console.log('🚨 CACHE BUST v4: EMERGENCY fetchArtworks starting with 10s timeout - FORCE REFRESH');
+      console.log('🚨 CACHE BUST v5: FULL SUPABASE QUERY - fetchArtworks starting with 10s timeout - FORCE REFRESH');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
       console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
@@ -952,6 +952,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       console.log('Received artwork data:', artworksData.length, 'items');
       console.log('First artwork sample:', JSON.stringify(artworksData[0], null, 2));
+      console.log('🔍 FULL QUERY DEBUG: Checking if we have full data...');
+      console.log('Has description?', artworksData[0]?.description ? 'YES' : 'NO');
+      console.log('Has medium?', artworksData[0]?.medium ? 'YES' : 'NO');
+      console.log('Has tags?', artworksData[0]?.tags ? 'YES' : 'NO');
 
       const transformedArtworks = artworksData.map((artwork: any) => {
         return {
