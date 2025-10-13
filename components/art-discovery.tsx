@@ -929,28 +929,28 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         const fetchData = await fetchResponse.json();
         console.log('✅ Direct REST API call succeeded, got', fetchData?.length, 'records');
         
-        // If direct REST works, try Supabase client with shorter timeout
-        console.log('Step 2: Testing Supabase client with 3s timeout...');
+        // Since direct REST works, use it instead of the hanging Supabase client
+        console.log('Step 2: Using direct REST API since Supabase client is hanging...');
         
-        const clientTimeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Supabase client timeout after 3s')), 3000)
-        );
+        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=50`;
         
-        const clientQueryPromise = supabase
-          .from('Artwork')
-          .select('id, artwork_title, artist, artwork_image, medium, dimensions, year, price, description, tags, artwork_link, style, genre, subject, colour, created_at')
-          .limit(10);
+        console.log('Fetching full artwork data via REST API...');
         
-        const clientResult = await Promise.race([clientQueryPromise, clientTimeoutPromise]) as any;
-        const { data, error: queryError } = clientResult;
+        const fullFetchResponse = await fetch(fullRestUrl, {
+          headers: {
+            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+            'Content-Type': 'application/json'
+          }
+        });
         
-        if (queryError) {
-          console.error('❌ Supabase client query error:', queryError);
-          error = queryError;
-        } else {
-          console.log('✅ Supabase client query succeeded, got', data?.length, 'records');
-          artworksData = data || [];
+        if (!fullFetchResponse.ok) {
+          throw new Error(`HTTP ${fullFetchResponse.status}: ${fullFetchResponse.statusText}`);
         }
+        
+        const fullFetchData = await fullFetchResponse.json();
+        console.log('✅ Full REST API call succeeded, got', fullFetchData?.length, 'records');
+        artworksData = fullFetchData || [];
         
       } catch (networkError) {
         console.error('❌ Network connectivity issue:', networkError);
