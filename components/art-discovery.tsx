@@ -911,7 +911,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: fetchArtworks proceeding without visibility checks');
     
     try {
-      console.log('🚨 CACHE BUST v5: FULL SUPABASE QUERY - fetchArtworks starting with 10s timeout - FORCE REFRESH');
+      console.log('🚀 Starting artwork fetch - no timeout limit');
       console.log('fetchArtworks: User:', user?.id || 'anonymous');
       console.log('fetchArtworks: Current artworks count:', artworks.length);
       fetchingRef.current = true;
