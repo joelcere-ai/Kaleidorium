@@ -215,7 +215,7 @@ export default function CardStack({
                           <div className="text-base font-serif text-gray-600 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
                             by <ArtistNameWithBadge 
                               artistName={artwork.artist}
-                              artistId={artwork.artist_id}
+                              artistId={(artwork as any).artist_id}
                               className="inline"
                             />
                           </div>

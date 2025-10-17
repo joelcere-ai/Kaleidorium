@@ -2543,7 +2543,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           <h3 className="font-medium font-serif text-base sm:text-lg truncate" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>{artwork.title}</h3>
                           <ArtistNameWithBadge 
                             artistName={artwork.artist}
-                            artistId={artwork.artist_id}
+                            artistId={(artwork as any).artist_id}
                             className="text-xs sm:text-sm text-muted-foreground truncate"
                           />
                         </div>

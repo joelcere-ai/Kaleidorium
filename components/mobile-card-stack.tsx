@@ -810,7 +810,7 @@ export default function MobileCardStack({
                         <h3 className="font-bold text-black text-xl leading-tight mb-2">{artwork.title}</h3>
                         <ArtistNameWithBadge 
                           artistName={artwork.artist}
-                          artistId={artwork.artist_id}
+                          artistId={(artwork as any).artist_id}
                           className="text-gray-600 text-lg"
                         />
                         <p className="text-black font-medium text-base mt-2">{artwork.price}</p>
@@ -1250,7 +1250,7 @@ export default function MobileCardStack({
                     <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
                     <ArtistNameWithBadge 
                       artistName={artwork.artist}
-                      artistId={artwork.artist_id}
+                      artistId={(artwork as any).artist_id}
                       className="text-base text-gray-600"
                     />
                   </div>
