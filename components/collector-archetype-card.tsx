@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Facebook, Linkedin } from "lucide-react"
+import { Copy, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
@@ -24,26 +24,32 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
 
   const handleShare = async (platform: string) => {
     const shareText = `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`
-    const shareUrl = window.location.origin
+    const shareUrl = `${window.location.origin}/?view=collection&archetype=${archetype.id}`
     const imageUrl = `${window.location.origin}${archetype.imagePath}`
 
     try {
       switch (platform) {
         case 'twitter':
-          // Twitter doesn't support image sharing via URL parameters, but we can include the image URL in the text
-          const twitterText = `${shareText}\n\n${imageUrl}`
-          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+          const twitterText = `Check out my collector archetype: ${archetype.name} on Kaleidorium`
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')
           break
         case 'facebook':
-          // Facebook can handle images better, include in the post
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}&picture=${encodeURIComponent(imageUrl)}`, '_blank')
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')
           break
-        case 'linkedin':
-          // LinkedIn sharing with image
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(archetype.name)}&summary=${encodeURIComponent(shareText)}`, '_blank')
+        case 'instagram':
+          // Instagram doesn't support direct sharing via URL, so we'll copy the content
+          await navigator.clipboard.writeText(`${shareText}\n\n${imageUrl}\n${shareUrl}`)
+          toast({
+            title: "Copied to clipboard!",
+            description: "Paste this in your Instagram story or post!"
+          })
+          break
+        case 'whatsapp':
+          const whatsappText = `${shareText}\n\n${shareUrl}`
+          window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank', 'noopener,noreferrer')
           break
         case 'copy':
-          await navigator.clipboard.writeText(`${shareText}\n\n${imageUrl}\n${shareUrl}`)
+          await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`)
           toast({
             title: "Copied to clipboard!",
             description: "Share your collector archetype with friends!"
@@ -113,10 +119,17 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
               </button>
               <button 
                 className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
-                onClick={() => handleShare('linkedin')}
-                title="Share on LinkedIn"
+                onClick={() => handleShare('instagram')}
+                title="Share on Instagram"
               >
-                <Linkedin className="w-5 h-5" />
+                <Instagram className="w-5 h-5" />
+              </button>
+              <button 
+                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                onClick={() => handleShare('whatsapp')}
+                title="Share on WhatsApp"
+              >
+                <MessageCircle className="w-5 h-5" />
               </button>
               <button 
                 className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"

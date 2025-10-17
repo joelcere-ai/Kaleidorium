@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 import { supabase } from "@/lib/supabase";
-import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
+import { CollectorArchetype, analyzeCollectionForArchetype, getArchetypeById } from "@/lib/collector-archetypes";
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 
 function HomeContent() {
@@ -36,6 +36,11 @@ function HomeContent() {
   // Get artwork ID from search params
   const getArtworkId = (): string | null => {
     return searchParams.get("artworkId");
+  };
+
+  // Get archetype ID from search params for sharing
+  const getArchetypeId = (): string | null => {
+    return searchParams.get("archetype");
   };
   
   const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy">(getCurrentView());
@@ -67,6 +72,50 @@ function HomeContent() {
       setViewState(currentView);
     }
   }, [pathname, searchParams]);
+
+  // Handle dynamic metadata for archetype sharing
+  useEffect(() => {
+    const archetypeId = getArchetypeId();
+    if (archetypeId) {
+      const archetype = getArchetypeById(archetypeId);
+      if (archetype) {
+        // Update document title
+        document.title = `${archetype.name} - Kaleidorium`;
+        
+        // Update Open Graph meta tags for social sharing
+        const updateMetaTag = (property: string, content: string) => {
+          let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('property', property);
+            document.head.appendChild(meta);
+          }
+          meta.setAttribute('content', content);
+        };
+
+        const updateMetaName = (name: string, content: string) => {
+          let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', name);
+            document.head.appendChild(meta);
+          }
+          meta.setAttribute('content', content);
+        };
+
+        updateMetaTag('og:title', archetype.name);
+        updateMetaTag('og:description', `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`);
+        updateMetaTag('og:image', `${window.location.origin}${archetype.imagePath}`);
+        updateMetaTag('og:url', window.location.href);
+        updateMetaTag('og:type', 'website');
+        
+        updateMetaName('twitter:card', 'summary_large_image');
+        updateMetaName('twitter:title', archetype.name);
+        updateMetaName('twitter:description', `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`);
+        updateMetaName('twitter:image', `${window.location.origin}${archetype.imagePath}`);
+      }
+    }
+  }, [searchParams]);
 
   // Create a setView function that updates both state and URL
   const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => {
