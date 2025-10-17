@@ -1065,6 +1065,8 @@ function HomeContent() {
       case "for-artists":
         return (
           <div className="flex-1 overflow-y-auto" data-view="for-artists">
+            {isMobile ? (
+              <div className="pt-20">
             {/* Hero Section */}
             <div className="bg-gradient-to-br from-gray-50 to-white py-12">
               <div className="container mx-auto px-4 max-w-5xl">
@@ -1304,6 +1306,267 @@ function HomeContent() {
                 <InteractiveFAQ />
               </div>
             </div>
+          </div>
+            ) : (
+              // Desktop FOR ARTISTS content stays the same
+              <>
+                {/* Hero Section */}
+                <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+                  <div className="container mx-auto px-4 max-w-5xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      {/* Left Column - Text */}
+                      <div className="lg:pr-8">
+                        <h1 
+                          className="text-2xl lg:text-3xl font-serif font-bold text-black mb-4"
+                          style={{fontFamily: 'Times New Roman, serif'}}
+                        >
+                          Be Discovered. Not Buried.
+                        </h1>
+                        <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                        </p>
+                        <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                          We're not a gallery, marketplace, or agent.
+                        </p>
+                        <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                          We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
+                        </p>
+                        
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <Button 
+                            onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                            style={{fontFamily: 'Arial, sans-serif'}}
+                          >
+                            Join the Founding 100 Artists
+                          </Button>
+                          <Button 
+                            variant="outline"
+                            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="border-black text-black hover:bg-gray-50 px-6 py-2 text-sm font-medium"
+                            style={{fontFamily: 'Arial, sans-serif'}}
+                          >
+                            How it Works
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Right Column - Compact Artwork Grid */}
+                      <div className="relative">
+                        <div className="bg-gray-100 rounded-lg p-4">
+                          <p className="text-sm font-sans text-gray-600 text-center mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                            Your art finds its perfect audience
+                          </p>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                                alt="Artwork 1"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                                alt="Artwork 2"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                                alt="Artwork 3"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                                alt="Artwork 4"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                                alt="Artwork 5"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                                alt="Artwork 6"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* How It Works Section */}
+                <div id="how-it-works" className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-5xl">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black text-center mb-8"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      How It Works
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {/* Step 1 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Upload Your Artwork
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Upload a picture of your artwork and link to your own site. Simple and straightforward.
+                        </p>
+                      </div>
+                      
+                      {/* Step 2 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          AI matches you with collectors
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Our AI analyzes your visual signature and matches it with collectors who will love your style.
+                        </p>
+                      </div>
+                      
+                      {/* Step 3 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Track Performance
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          See how your art performs: likes, saves, and collector engagement with detailed analytics.
+                        </p>
+                      </div>
+                      
+                      {/* Step 4 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Build Your Network
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Connect directly with collectors who love your work and build lasting relationships.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Founding 100 Artists Section */}
+                <div className="py-12 bg-gray-50">
+                  <div className="container mx-auto px-4 max-w-4xl">
+                    <div className="text-center mb-8">
+                      <h2 
+                        className="text-xl font-serif font-bold text-black mb-4"
+                        style={{fontFamily: 'Times New Roman, serif'}}
+                      >
+                        Join the Founding 100 Artists
+                      </h2>
+                      <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                        Be part of the first 100 artists who will shape the recommendations and help us build a platform that truly serves artists.
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 className="text-base font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>Founding Artist Benefits</h3>
+                        <ul className="space-y-3">
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>12 months of free platform access</span>
+                          </li>
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Input on platform development</span>
+                          </li>
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Early access to new features</span>
+                          </li>
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Community of like-minded artists</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 className="text-base font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>How to Get Started</h3>
+                        <ol className="space-y-3">
+                          <li className="flex items-start">
+                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">1</span>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Submit your portfolio below</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">2</span>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Our team reviews your work</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">3</span>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>If selected, you'll receive an invitation</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">4</span>
+                            <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Join the founding 100 and start uploading</span>
+                          </li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Portfolio Submission Form */}
+                <div id="portfolio-form" className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-2xl">
+                    <ForArtistsForm />
+                  </div>
+                </div>
+
+                {/* FAQ Section */}
+                <div className="py-12 bg-gray-50">
+                  <div className="container mx-auto px-4 max-w-4xl">
+                    <InteractiveFAQ />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         );
       

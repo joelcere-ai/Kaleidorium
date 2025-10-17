@@ -2559,16 +2559,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         )
       ) : view === "for-artists" ? (
         isMobile || isTablet ? (
-          // Mobile For Artists Page with Header
-          <div className="fixed inset-0 bg-white z-50 flex flex-col for-artists-page" data-view="for-artists">
-            <NewMobileHeader currentPage="for-artists" collectionCount={collectionCount} setView={(view) => {
-              if (["discover", "collection", "profile", "for-artists"].includes(view)) {
-                setView(view as "discover" | "collection" | "profile" | "for-artists");
-              }
-            }} />
-            
-            {/* For Artists Content */}
-            <div className="flex-1 overflow-y-auto pt-40">
+          // Mobile For Artists Content - let main app handle header
+          <div className="for-artists-page" data-view="for-artists">
             {/* Hero Section */}
             <div className="bg-gradient-to-br from-gray-50 to-white py-8 px-4">
               <div className="max-w-3xl mx-auto">
@@ -2870,7 +2862,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 </div>
               </div>
             </div>
-          </div>
         ) : (
           // Desktop For Artists Page
           <div className="container mx-auto px-4 py-8 max-w-3xl for-artists-page" data-view="for-artists">
