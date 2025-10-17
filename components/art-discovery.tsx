@@ -2568,7 +2568,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             }} />
             
             {/* For Artists Content */}
-            <div className="flex-1 overflow-y-auto pt-20">
+            <div className="flex-1 overflow-y-auto pt-24">
             {/* Hero Section */}
             <div className="bg-gradient-to-br from-gray-50 to-white py-8 px-4">
               <div className="max-w-3xl mx-auto">
