@@ -626,7 +626,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
                 className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed">
+              <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
                 Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
               </label>
             </div>
