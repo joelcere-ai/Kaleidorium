@@ -1531,19 +1531,35 @@ function HomeContent() {
                         <h3 className="text-base font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>How to Get Started</h3>
                         <ol className="space-y-3">
                           <li className="flex items-start">
-                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">1</span>
+                            <span className="w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </span>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Submit your portfolio below</span>
                           </li>
                           <li className="flex items-start">
-                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">2</span>
+                            <span className="w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </span>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Our team reviews your work</span>
                           </li>
                           <li className="flex items-start">
-                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">3</span>
+                            <span className="w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </span>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>If selected, you'll receive an invitation</span>
                           </li>
                           <li className="flex items-start">
-                            <span className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5 flex-shrink-0">4</span>
+                            <span className="w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                              <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </span>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Join the founding 100 and start uploading</span>
                           </li>
                         </ol>
