@@ -906,13 +906,6 @@ function HomeContent() {
                       </Button>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {/* Always Visible: Aesthetic Profile */}
-                      {insights.aesthetic_profile && (
-                        <div>
-                          <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
-                        </div>
-                      )}
-
                       {/* Collector Archetype Card */}
                       {userArchetype ? (
                         <div className="flex justify-center">

@@ -1,11 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Share2, Copy, Twitter, Facebook, Linkedin } from "lucide-react"
+import { Copy, Facebook, Linkedin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { CollectorArchetype } from "@/lib/collector-archetypes"
+
+// X Icon component to match existing design
+const XIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+)
 
 interface CollectorArchetypeCardProps {
   archetype: CollectorArchetype
@@ -13,7 +20,6 @@ interface CollectorArchetypeCardProps {
 }
 
 export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetypeCardProps) {
-  const [showShareMenu, setShowShareMenu] = useState(false)
   const { toast } = useToast()
 
   const handleShare = async (platform: string) => {
@@ -39,7 +45,6 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
           })
           break
       }
-      setShowShareMenu(false)
       onShare?.()
     } catch (error) {
       toast({
@@ -55,7 +60,7 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+            <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
               <img
                 src={archetype.imagePath}
                 alt={archetype.name}
@@ -76,54 +81,48 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
             </div>
           </div>
           
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowShareMenu(!showShareMenu)}
-              className="h-8 w-8 p-0"
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
-            
-            {showShareMenu && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10 min-w-[160px]">
-                <button
-                  onClick={() => handleShare('twitter')}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                >
-                  <Twitter className="h-4 w-4 text-blue-400" />
-                  <span>Twitter</span>
-                </button>
-                <button
-                  onClick={() => handleShare('facebook')}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                >
-                  <Facebook className="h-4 w-4 text-blue-600" />
-                  <span>Facebook</span>
-                </button>
-                <button
-                  onClick={() => handleShare('linkedin')}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                >
-                  <Linkedin className="h-4 w-4 text-blue-700" />
-                  <span>LinkedIn</span>
-                </button>
-                <button
-                  onClick={() => handleShare('copy')}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                >
-                  <Copy className="h-4 w-4 text-gray-600" />
-                  <span>Copy Link</span>
-                </button>
-              </div>
-            )}
-          </div>
         </div>
         
         <p className="text-sm text-gray-700 leading-relaxed">
           {archetype.description}
         </p>
+        
+        {/* Social Media Share Buttons - Matching existing style */}
+        <div className="pt-4">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-3">Share this archetype</p>
+            <div className="flex justify-center gap-2">
+              <button 
+                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                onClick={() => handleShare('twitter')}
+                title="Share on X"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
+              <button 
+                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                onClick={() => handleShare('facebook')}
+                title="Share on Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </button>
+              <button 
+                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                onClick={() => handleShare('linkedin')}
+                title="Share on LinkedIn"
+              >
+                <Linkedin className="w-5 h-5" />
+              </button>
+              <button 
+                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                onClick={() => handleShare('copy')}
+                title="Copy Link"
+              >
+                <Copy className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   )
