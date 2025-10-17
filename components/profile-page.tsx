@@ -835,25 +835,33 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
             <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Create an account to save your favorite artworks and build your collection.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-center text-sm text-muted-foreground" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              Don't have an account?{" "}
-              <Button variant="link" className="p-0 h-auto" onClick={() => router.push('/register')} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                Register here
+            <div className="text-center">
+              <Button 
+                onClick={() => router.push('/register')}
+                className="w-full bg-black text-white hover:bg-gray-800"
+                style={{
+                  color: 'white !important', 
+                  backgroundColor: 'black !important',
+                  borderColor: 'black !important'
+                }}
+              >
+                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as a Collector</span>
               </Button>
-            </p>
+            </div>
           </CardContent>
         </Card>
 
         {/* Register as Artist Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardTitle>
-            <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              If you've received an invitation email with a token, click below to register.
-            </CardDescription>
+            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register as an Artist</CardTitle>
+            <CardDescription className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center">
+              <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                If you've received an invitation email with a token, click below to register.
+              </p>
               <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                 Already have your invitation token? Complete your artist registration now.
               </p>
