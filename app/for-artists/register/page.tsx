@@ -48,6 +48,7 @@ function ArtistRegisterPage() {
     country: "",
     biog: "",
     website: "",
+    notificationConsent: false,
   });
   const [artwork, setArtwork] = useState({
     title: "",
@@ -375,7 +376,8 @@ function ArtistRegisterPage() {
           country: artist.country,
           biog: artist.biog,
           website: artist.website,
-          profilepix: profilePictureUrl
+          profilepix: profilePictureUrl,
+          notification_consent: artist.notificationConsent
         });
       if (artistError) throw artistError;
 
@@ -416,6 +418,7 @@ function ArtistRegisterPage() {
           surname: artist.surname,
           country: artist.country,
           profilepix: profilePictureUrl,
+          notification_consent: artist.notificationConsent,
           preferences: {
               artists: {}, genres: {}, styles: {}, subjects: {},
               colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -659,6 +662,20 @@ function ArtistRegisterPage() {
                   <label className="block text-sm font-medium text-gray-700">Email Address</label>
                   <Input name="email" type="email" placeholder="Email" value={inviteEmail} readOnly className="bg-gray-50" />
                   {errors.email && <div className="text-red-600 text-xs mt-1">{errors.email}</div>}
+                </div>
+                
+                {/* Notification Consent Checkbox */}
+                <div className="flex items-start space-x-2 mt-4">
+                  <input
+                    type="checkbox"
+                    id="artistNotificationConsent"
+                    checked={artist.notificationConsent}
+                    onChange={(e) => setArtist({ ...artist, notificationConsent: e.target.checked })}
+                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="artistNotificationConsent" className="text-sm text-gray-700 leading-relaxed">
+                    Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
+                  </label>
                 </div>
                 
                 <div className="space-y-1">

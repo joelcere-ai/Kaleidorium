@@ -338,6 +338,7 @@ export default function RegisterPage() {
   const [artTypeSuggestionIdx, setArtTypeSuggestionIdx] = useState(-1);
   const [artStyleSuggestionIdx, setArtStyleSuggestionIdx] = useState(-1);
   const [profileImage, setProfileImage] = useState<OptimizedImage | null>(null);
+  const [notificationConsent, setNotificationConsent] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -425,7 +426,8 @@ export default function RegisterPage() {
             .from("Collectors")
             .update({ 
               is_temporary: false,
-              profilepix: profilePictureUrl 
+              profilepix: profilePictureUrl,
+              notification_consent: notificationConsent
             })
             .eq("id", tempCollector.id)
         } else {
@@ -443,6 +445,7 @@ export default function RegisterPage() {
             price_range: artSpendingRange,
             email,
             profilepix: profilePictureUrl,
+            notification_consent: notificationConsent,
             preferences: {
               artists: {},
               genres: {},
@@ -612,6 +615,21 @@ export default function RegisterPage() {
             {errors.email && (
               <p className="text-sm text-red-500 mt-1">{errors.email}</p>
             )}
+            
+            {/* Notification Consent Checkbox */}
+            <div className="flex items-start space-x-2 mt-4">
+              <input
+                type="checkbox"
+                id="notificationConsent"
+                checked={notificationConsent}
+                onChange={(e) => setNotificationConsent(e.target.checked)}
+                disabled={isLoading}
+                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed">
+                Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
+              </label>
+            </div>
             <Input
               type="password"
               placeholder="Password"
