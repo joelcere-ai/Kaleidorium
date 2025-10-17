@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
+import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes"
+import { CollectorArchetypeCard } from "@/components/collector-archetype-card"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -102,6 +104,7 @@ export default function MobileCardStack({
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
+  const [userArchetype, setUserArchetype] = useState<CollectorArchetype | null>(null);
   
   // Filter states - now arrays for multiple tags
   const [filters, setFilters] = useState({
@@ -452,8 +455,15 @@ export default function MobileCardStack({
           // Fallback to basic analysis if AI fails
           setInsights(basicAnalysis)
         }
+        
+        // Analyze collector archetype
+        const archetype = analyzeCollectionForArchetype(collection)
+        setUserArchetype(archetype)
       } else {
         setInsights(basicAnalysis)
+        // Analyze collector archetype even with empty collection
+        const archetype = analyzeCollectionForArchetype(collection)
+        setUserArchetype(archetype)
       }
     } catch (error) {
       console.error('Error generating insights:', error)
@@ -638,6 +648,18 @@ export default function MobileCardStack({
                 {insights.aesthetic_profile && (
                   <div>
                     <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
+                  </div>
+                )}
+
+                {/* Collector Archetype Card */}
+                {userArchetype ? (
+                  <div className="flex justify-center">
+                    <CollectorArchetypeCard archetype={userArchetype} />
+                  </div>
+                ) : (
+                  <div className="text-center p-6 bg-gray-50 border border-gray-200 rounded-lg mx-4">
+                    <p className="text-sm text-gray-600 mb-2">Discover your collector archetype!</p>
+                    <p className="text-xs text-gray-500">Click "Refresh Insights" to analyze your collection and find out what type of collector you are.</p>
                   </div>
                 )}
 

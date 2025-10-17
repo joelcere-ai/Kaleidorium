@@ -15,6 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 import { supabase } from "@/lib/supabase";
+import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
+import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -56,6 +58,7 @@ function HomeContent() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
+  const [userArchetype, setUserArchetype] = useState<CollectorArchetype | null>(null);
 
   // Update view when pathname changes
   useEffect(() => {
@@ -214,8 +217,15 @@ function HomeContent() {
           // Fallback to basic analysis if AI fails
           setInsights(basicAnalysis)
         }
+        
+        // Analyze collector archetype
+        const archetype = analyzeCollectionForArchetype(collection)
+        setUserArchetype(archetype)
       } else {
         setInsights(basicAnalysis)
+        // Analyze collector archetype even with empty collection
+        const archetype = analyzeCollectionForArchetype(collection)
+        setUserArchetype(archetype)
       }
     } catch (error) {
       console.error('Error generating insights:', error)
@@ -900,6 +910,18 @@ function HomeContent() {
                       {insights.aesthetic_profile && (
                         <div>
                           <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
+                        </div>
+                      )}
+
+                      {/* Collector Archetype Card */}
+                      {userArchetype ? (
+                        <div className="flex justify-center">
+                          <CollectorArchetypeCard archetype={userArchetype} />
+                        </div>
+                      ) : (
+                        <div className="text-center p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                          <p className="text-sm text-gray-600 mb-2">Discover your collector archetype!</p>
+                          <p className="text-xs text-gray-500">Click "Refresh Insights" to analyze your collection and find out what type of collector you are.</p>
                         </div>
                       )}
 
