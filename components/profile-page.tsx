@@ -855,16 +855,10 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register as an Artist</CardTitle>
-            <CardDescription className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardDescription>
+            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>If you've received an invitation email with a token, click below to register.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                If you've received an invitation email with a token, click below to register.
-              </p>
-              <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                Already have your invitation token? Complete your artist registration now.
-              </p>
               <Button 
                 onClick={() => router.push('/for-artists/register')}
                 className="w-full bg-black text-white hover:bg-gray-800"
