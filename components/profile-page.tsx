@@ -71,6 +71,8 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   const [isArtist, setIsArtist] = useState(false);
   const [portfolioArtworks, setPortfolioArtworks] = useState<any[]>([]);
   const [portfolioLoading, setPortfolioLoading] = useState(false);
+  const [notificationConsent, setNotificationConsent] = useState(false);
+  const [updatingConsent, setUpdatingConsent] = useState(false);
   
   const defaultTab = tabParam === "account" ? "account" : (isArtist ? "portfolio" : "account");
 
@@ -209,7 +211,10 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         .select('*')
         .eq('user_id', user.id)
         .single();
-      if (!error && data) setCollector(data);
+      if (!error && data) {
+        setCollector(data);
+        setNotificationConsent(data.notification_consent || false);
+      }
       setCollectorLoading(false);
     };
     fetchCollector();
@@ -536,6 +541,43 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
           setEditPassword("");
         }
       }
+    }
+  };
+
+  const handleNotificationConsentChange = async (newConsent: boolean) => {
+    if (!user) {
+      toast({ title: "Error", description: "You must be signed in to update your preferences.", variant: "destructive" });
+      return;
+    }
+
+    setUpdatingConsent(true);
+    try {
+      const { error } = await supabase
+        .from('Collectors')
+        .update({ notification_consent: newConsent })
+        .eq('user_id', user.id);
+
+      if (error) {
+        toast({ 
+          title: "Error updating preferences", 
+          description: error.message, 
+          variant: "destructive" 
+        });
+      } else {
+        setNotificationConsent(newConsent);
+        toast({ 
+          title: "Preferences updated", 
+          description: `You will ${newConsent ? 'receive' : 'no longer receive'} notifications about new artwork that matches your preferences.` 
+        });
+      }
+    } catch (error) {
+      toast({ 
+        title: "Error updating preferences", 
+        description: "An unexpected error occurred. Please try again.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setUpdatingConsent(false);
     }
   };
 
@@ -1214,6 +1256,28 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                         To change your password, please use the 'Forgot Password' link on the login page.
                       </p>
                     </div>
+                    
+                    {/* Notification Preferences */}
+                    <div className="space-y-2">
+                      <Label className="text-base font-medium">Notification Preferences</Label>
+                      <div className="flex items-start space-x-2">
+                        <input
+                          type="checkbox"
+                          id="notificationConsent"
+                          checked={notificationConsent}
+                          onChange={(e) => handleNotificationConsentChange(e.target.checked)}
+                          disabled={updatingConsent}
+                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
+                          Be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
+                        </label>
+                      </div>
+                      {updatingConsent && (
+                        <p className="text-sm text-blue-600">Updating preferences...</p>
+                      )}
+                    </div>
+                    
                     <Button type="submit" disabled>Save Changes</Button>
                   </form>
                 </CardContent>
