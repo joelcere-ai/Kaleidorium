@@ -1310,7 +1310,13 @@ function HomeContent() {
       case "about":
         return (
           <div className="flex-1 overflow-y-auto">
-            <AboutContent setView={setView} />
+            {isMobile ? (
+              <div className="pt-20">
+                <AboutContent setView={setView} />
+              </div>
+            ) : (
+              <AboutContent setView={setView} />
+            )}
           </div>
         );
       
