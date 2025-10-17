@@ -43,7 +43,7 @@ export function ArtistNameWithBadge({
   }, [artistId, showBadge]);
 
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <span className={`inline-flex items-center gap-1 ${className}`}>
       <span>{artistName}</span>
       {showBadge && artistId && isFounding && !loading && (
         <FoundingArtistBadge 
@@ -51,6 +51,6 @@ export function ArtistNameWithBadge({
           className="flex-shrink-0"
         />
       )}
-    </div>
+    </span>
   );
 }
