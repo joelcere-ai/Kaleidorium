@@ -1500,26 +1500,26 @@ function HomeContent() {
                       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <h3 className="text-base font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>Founding Artist Benefits</h3>
                         <ul className="space-y-3">
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <li className="flex items-center">
+                            <svg className="w-5 h-5 text-black mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>12 months of free platform access</span>
                           </li>
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <li className="flex items-center">
+                            <svg className="w-5 h-5 text-black mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Input on platform development</span>
                           </li>
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <li className="flex items-center">
+                            <svg className="w-5 h-5 text-black mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Early access to new features</span>
                           </li>
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-black mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <li className="flex items-center">
+                            <svg className="w-5 h-5 text-black mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>Community of like-minded artists</span>
