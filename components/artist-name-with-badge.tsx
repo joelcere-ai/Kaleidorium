@@ -49,7 +49,6 @@ export function ArtistNameWithBadge({
         <FoundingArtistBadge 
           size="sm" 
           className="flex-shrink-0"
-          title="Founding Artist - One of the first 100 artists on Kaleidorium"
         />
       )}
     </div>
