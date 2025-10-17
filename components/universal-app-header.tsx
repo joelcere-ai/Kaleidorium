@@ -75,7 +75,7 @@ export function UniversalAppHeader({
               alt="Kaleidorium Logo" 
               className="w-6 h-6"
             />
-            Kaleidorium
+            <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
           </Button>
         </div>
 

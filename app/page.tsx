@@ -779,7 +779,7 @@ function HomeContent() {
                   alt="Kaleidorium Logo" 
                   className="w-12 h-12 mr-3"
                 />
-                <h1 className="text-3xl font-bold text-black">Kaleidorium</h1>
+                <h1 className="text-3xl font-serif font-bold text-black">Kaleidorium</h1>
               </div>
               <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
               <div className="text-black text-xl">Loading Artwork...</div>
