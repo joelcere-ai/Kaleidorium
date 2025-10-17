@@ -25,20 +25,25 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
   const handleShare = async (platform: string) => {
     const shareText = `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`
     const shareUrl = window.location.origin
+    const imageUrl = `${window.location.origin}${archetype.imagePath}`
 
     try {
       switch (platform) {
         case 'twitter':
-          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+          // Twitter doesn't support image sharing via URL parameters, but we can include the image URL in the text
+          const twitterText = `${shareText}\n\n${imageUrl}`
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
           break
         case 'facebook':
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank')
+          // Facebook can handle images better, include in the post
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}&picture=${encodeURIComponent(imageUrl)}`, '_blank')
           break
         case 'linkedin':
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')
+          // LinkedIn sharing with image
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(archetype.name)}&summary=${encodeURIComponent(shareText)}`, '_blank')
           break
         case 'copy':
-          await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
+          await navigator.clipboard.writeText(`${shareText}\n\n${imageUrl}\n${shareUrl}`)
           toast({
             title: "Copied to clipboard!",
             description: "Share your collector archetype with friends!"
@@ -60,7 +65,7 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+            <div className="w-48 h-48 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
               <img
                 src={archetype.imagePath}
                 alt={archetype.name}
