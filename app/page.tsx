@@ -167,6 +167,14 @@ function HomeContent() {
     loadCollection();
   }, [collectionCount]);
 
+  // Update collectionCount when actual collections change
+  useEffect(() => {
+    const actualCount = user ? dbCollection.length : collection.length;
+    if (actualCount !== collectionCount) {
+      setCollectionCount(actualCount);
+    }
+  }, [collection.length, dbCollection.length, user, collectionCount]);
+
   // Fetch user's collection from database (for registered users)
   useEffect(() => {
     const fetchUserCollection = async () => {
