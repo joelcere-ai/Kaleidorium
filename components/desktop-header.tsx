@@ -120,7 +120,7 @@ export function DesktopHeader({
             onClick={() => handleNavigation("profile")}
           >
             <User className="w-4 h-4 mr-1" />
-            Profile
+            Account
           </Button>
         </nav>
       </div>

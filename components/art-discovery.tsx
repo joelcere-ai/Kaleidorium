@@ -2685,47 +2685,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </CardContent>
                 </Card>
 
-                {/* Invitation Section */}
-                <Card className="mb-8">
-                  <CardHeader>
-                    <CardTitle 
-                      style={{
-                        fontSize: '16px',
-                        fontFamily: 'Times New Roman, serif',
-                        fontWeight: 'bold',
-                        color: 'black',
-                        lineHeight: '1.2'
-                      }}
-                    >
-                      Have you received your invitation?
-                    </CardTitle>
-                    <CardDescription 
-                      style={{
-                        fontSize: '14px',
-                        fontFamily: 'Arial, sans-serif',
-                        color: 'black',
-                        lineHeight: '1.4'
-                      }}
-                    >
-                      If you've received an invitation email with a token, click below to register.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center">
-                      <Button 
-                        onClick={() => router.push('/for-artists/register')}
-                        className="w-full"
-                      >
-                        Register as an Artist
-                      </Button>
-                    </div>
-                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                      <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                        <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </div>

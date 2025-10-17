@@ -149,7 +149,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
                 onClick={() => handleNavigation("profile")}
               >
                 <User className="mr-3 h-5 w-5" />
-                Profile
+                Account
               </Button>
             </div>
 

@@ -758,10 +758,11 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
   if (!user) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center min-h-screen">
+      <div className="p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-center min-h-screen space-y-8">
+        {/* Sign In Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Access Your Profile</CardTitle>
+            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Access Your Account</CardTitle>
             <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Sign in to manage your collection and preferences.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -824,13 +825,55 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 </Button>
               </form>
             )}
-            <Separator className="my-4" />
+          </CardContent>
+        </Card>
+
+        {/* Register as Collector Section */}
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register as a Collector</CardTitle>
+            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Create an account to save your favorite artworks and build your collection.</CardDescription>
+          </CardHeader>
+          <CardContent>
             <p className="text-center text-sm text-muted-foreground" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
               Don't have an account?{" "}
               <Button variant="link" className="p-0 h-auto" onClick={() => router.push('/register')} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                 Register here
               </Button>
             </p>
+          </CardContent>
+        </Card>
+
+        {/* Register as Artist Section */}
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardTitle>
+            <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+              If you've received an invitation email with a token, click below to register.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center">
+              <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                Already have your invitation token? Complete your artist registration now.
+              </p>
+              <Button 
+                onClick={() => router.push('/for-artists/register')}
+                className="w-full bg-black text-white hover:bg-gray-800"
+                style={{
+                  color: 'white !important', 
+                  backgroundColor: 'black !important',
+                  borderColor: 'black !important'
+                }}
+              >
+                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as an Artist</span>
+              </Button>
+            </div>
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+              <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

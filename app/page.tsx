@@ -443,42 +443,6 @@ function HomeContent() {
     );
   };
 
-  // For Artists Invitation component
-  const ForArtistsInvitation = () => {
-    return (
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Have you received your invitation?</CardTitle>
-          <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-            If you've received an invitation email with a token, click below to register.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center">
-            <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              Already have your invitation token? Complete your artist registration now.
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/for-artists/register'}
-              className="w-full bg-black text-white hover:bg-gray-800"
-              style={{
-                color: 'white !important', 
-                backgroundColor: 'black !important',
-                borderColor: 'black !important'
-              }}
-            >
-              <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as an Artist</span>
-            </Button>
-          </div>
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-            <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
 
   // For Artists FAQ component
   const ForArtistsFAQ = () => {
@@ -1145,7 +1109,6 @@ function HomeContent() {
               <ForArtistsForm />
 
               {/* Invitation Section */}
-              <ForArtistsInvitation />
 
               {/* FAQ Section */}
               <ForArtistsFAQ />

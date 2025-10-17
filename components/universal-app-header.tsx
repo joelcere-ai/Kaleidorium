@@ -140,14 +140,14 @@ export function UniversalAppHeader({
           </Button>
 
           {user ? (
-            <Button
-              variant="ghost"
-              className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
-              onClick={() => handleNavigation("/profile")}
-            >
-              <User className="w-4 h-4 mr-1" />
-              Profile
-            </Button>
+          <Button
+            variant="ghost"
+            className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("/profile")}
+          >
+            <User className="w-4 h-4 mr-1" />
+            Account
+          </Button>
           ) : (
             <Button
               variant="ghost"
