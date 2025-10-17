@@ -444,98 +444,90 @@ function HomeContent() {
   };
 
 
-  // For Artists FAQ component
-  const ForArtistsFAQ = () => {
+  // Simple FAQ component
+  const InteractiveFAQ = () => {
+    const [openFAQ, setOpenFAQ] = useState<string | null>(null);
+
+    const faqs = [
+      {
+        id: 'marketplace',
+        question: 'Are you a marketplace or a gallery?',
+        answer: 'No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors. We\'re not part of any conversation or transaction that follows.'
+      },
+      {
+        id: 'fee',
+        question: 'Is there a fee to join or submit my work?',
+        answer: 'No. Kaleidorium is currently in beta and completely free for artists. There are no commissions, no submission fees, and no hidden charges. In 2026, once we\'ve reached a healthy community size, we may introduce a modest subscription and commission model for artists, with plenty of notice and the option to opt out. Collectors will always enjoy free access. If you ever wish to remove your work, you can do so in one click.'
+      },
+      {
+        id: 'show-artwork',
+        question: 'How will my artwork be shown to collectors?',
+        answer: 'Your work is not displayed side-by-side in a crowded feed. Instead, it\'s shown individually to collectors whose preferences suggest they\'ll genuinely appreciate it. We use a personalized matching approach, more like a curator than a catalogue.'
+      },
+      {
+        id: 'interested',
+        question: 'What happens when collectors are interested?',
+        answer: 'Each artwork links directly to your own website, online store, or gallery page. Kaleidorium does not handle transactions. We simply bring qualified, interested collectors to you. If you\'re represented by a gallery, you can set your redirect link to point there instead.'
+      },
+      {
+        id: 'why-create',
+        question: 'Why did you create Kaleidorium?',
+        answer: 'We\'ve seen too many brilliant artists struggle to get noticed. In a world overflowing with content, being good is no longer enough, you also need to be found. Kaleidorium helps solve this by curating artwork to match each collector\'s taste, increasing the chance of discovery and appreciation.'
+      },
+      {
+        id: 'not-selected',
+        question: 'What if I\'m not selected?',
+        answer: 'We\'re curating a high-quality experience for both artists and collectors. If you\'re not selected initially, we\'ll keep your information on file for future consideration as our community grows. You can always reapply with updated work.'
+      },
+      {
+        id: 'get-started',
+        question: 'How do I get started?',
+        answer: 'Submit your portfolio using the form above. Our team will review your work and get back to you within a few days. If selected, you\'ll receive an invitation email with next steps.'
+      }
+    ];
+
+    const toggleFAQ = (id: string) => {
+      setOpenFAQ(openFAQ === id ? null : id);
+    };
+
     return (
-      <Card id="faq-section" className="mb-8">
-        <CardHeader>
-          <CardTitle 
-            style={{
-              fontSize: '16px',
-              fontFamily: 'Times New Roman, serif',
-              fontWeight: 'bold',
-              color: 'black',
-              lineHeight: '1.2'
-            }}
-          >
+      <div>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-serif font-bold text-black mb-3">
             Frequently Asked Questions
-          </CardTitle>
-          <p className="text-sm font-sans text-gray-600 leading-relaxed mt-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+          </h2>
+          <p className="font-sans text-sm text-gray-600 leading-relaxed">
             We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
           </p>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div>
-              <h3
-                className="mb-2 for-artists-faq-question"
-                style={{
-                  fontSize: '14px',
-                  fontFamily: 'Arial, sans-serif',
-                  fontWeight: 'bold',
-                  color: 'black',
-                  lineHeight: '1.4'
-                }}
+        </div>
+        
+        <div>
+          {faqs.map((faq) => (
+            <div key={faq.id} className="mb-2">
+              <div 
+                className="p-4 cursor-pointer bg-white border border-gray-200 rounded-lg"
+                onClick={() => toggleFAQ(faq.id)}
               >
-                Are you a marketplace or a gallery?
-              </h3>
-              <p 
-                className="leading-relaxed for-artists-faq-answer"
-                style={{
-                  fontSize: '14px',
-                  fontFamily: 'Arial, sans-serif',
-                  color: 'black',
-                  lineHeight: '1.5'
-                }}
-              >
-                No. Kaleidorium is not a marketplace nor a gallery. We do not facilitate any transaction. We connect artists and collectors. We're not part of any conversation or transaction that follows.
-              </p>
+                <div className="flex justify-between items-center">
+                  <span className="font-sans font-bold text-black text-sm">
+                    {faq.question}
+                  </span>
+                  <span className="text-gray-500">
+                    {openFAQ === faq.id ? '−' : '+'}
+                  </span>
+                </div>
+              </div>
+              {openFAQ === faq.id && (
+                <div className="p-4 bg-gray-50 border-l-4 border-gray-300 mt-1">
+                  <p className="font-sans text-gray-700 text-sm leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
+              )}
             </div>
-
-            <div>
-              <h3 className="mb-2 for-artists-faq-question" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>Is there a fee to join or submit my work?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                No. Kaleidorium is currently in beta and completely free for artists. There are no commissions, no submission fees, and no hidden charges. In 2026, once we've reached a healthy community size, we may introduce a modest subscription and commission model for artists, with plenty of notice and the option to opt out. Collectors will always enjoy free access. If you ever wish to remove your work, you can do so in one click.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>How will my artwork be shown to collectors?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                Your work is not displayed side-by-side in a crowded feed. Instead, it's shown individually to collectors whose preferences suggest they'll genuinely appreciate it. We use a personalized matching approach, more like a curator than a catalogue.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>What happens when collectors are interested?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                Each artwork links directly to your own website, online store, or gallery page. Kaleidorium does not handle transactions. We simply bring qualified, interested collectors to you. If you're represented by a gallery, you can set your redirect link to point there instead.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>Why did you create Kaleidorium?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                We've seen too many brilliant artists struggle to get noticed. In a world overflowing with content, being good is no longer enough, you also need to be found. Kaleidorium helps solve this by curating artwork to match each collector's taste, increasing the chance of discovery and appreciation.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>What if I'm not selected?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                We're curating a high-quality experience for both artists and collectors. If you're not selected initially, we'll keep your information on file for future consideration as our community grows. You can always reapply with updated work.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>How do I get started?</h3>
-              <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                Submit your portfolio using the form above. Our team will review your work and get back to you within a few days. If selected, you'll receive an invitation email with next steps.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      </div>
     );
   };
 
@@ -729,11 +721,10 @@ function HomeContent() {
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Email</label>
+          <label className="block mb-1 text-sm font-sans font-bold text-black">Your Email</label>
           <input
             type="email"
-            className="border rounded px-3 py-2 w-full"
-            style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+            className="font-sans border rounded px-3 py-2 w-full text-sm"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
@@ -741,10 +732,9 @@ function HomeContent() {
           />
         </div>
         <div>
-          <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Subject</label>
+          <label className="block mb-1 text-sm font-sans font-bold text-black">Subject</label>
           <input
-            className="border rounded px-3 py-2 w-full"
-            style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+            className="font-sans border rounded px-3 py-2 w-full text-sm"
             value={subject}
             onChange={e => setSubject(e.target.value)}
             required
@@ -752,10 +742,9 @@ function HomeContent() {
           />
         </div>
         <div>
-          <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Message</label>
+          <label className="block mb-1 text-sm font-sans font-bold text-black">Message</label>
           <textarea
-            className="border rounded px-3 py-2 w-full"
-            style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+            className="font-sans border rounded px-3 py-2 w-full text-sm"
             value={message}
             onChange={e => setMessage(e.target.value)}
             required
@@ -765,13 +754,13 @@ function HomeContent() {
         </div>
         <button
           type="submit"
-          className="bg-black text-white px-4 py-2 rounded"
+          className="font-sans bg-black text-white px-4 py-2 rounded text-sm"
           disabled={loading}
-          style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+          style={{fontFamily: 'Arial, sans-serif'}}
         >
           {loading ? "Sending..." : "Submit"}
         </button>
-        {status && <div className="mt-4 text-center text-blue-700" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{status}</div>}
+        {status && <div className="font-sans mt-4 text-center text-blue-700 text-sm">{status}</div>}
       </form>
     );
   };
@@ -1075,43 +1064,245 @@ function HomeContent() {
       
       case "for-artists":
         return (
-          <div className="flex-1 overflow-y-auto">
-            <div className="container mx-auto px-4 py-4 max-w-3xl" data-view="for-artists">
-              <div className="mb-8">
-                <h1 
-                  className="text-base font-serif font-bold text-black mb-8"
-                  style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}
-                >
-                  Be Discovered. Not Buried.
-                </h1>
-                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
-                </p>
-                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  We're not a gallery, marketplace, or agent.
-                </p>
-                <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
-                </p>
-                
-                <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                <ul className="list-disc pl-6 mb-4">
-                  <li className="text-sm font-sans text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Upload your artwork and description</li>
-                  <li className="text-sm font-sans text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Our algorithm shows it to collectors whose tastes match your style</li>
-                  <li className="text-sm font-sans text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                  <li className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>You keep control. No commissions. No middlemen. No gatekeeping.</li>
-                </ul>
-                
-                <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Early access artists get 12 months of free uploads.</p>
-                <p className="text-sm font-sans font-bold text-black mb-8" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Submit your portfolio and join our curated artist community</p>
+          <div className="flex-1 overflow-y-auto" data-view="for-artists">
+            {/* Hero Section */}
+            <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+              <div className="container mx-auto px-4 max-w-5xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {/* Left Column - Text */}
+                  <div className="lg:pr-8">
+                    <h1 
+                      className="text-2xl lg:text-3xl font-serif font-bold text-black mb-4"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Be Discovered. Not Buried.
+                    </h1>
+                    <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                    </p>
+                    <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                      We're not a gallery, marketplace, or agent.
+                    </p>
+                    <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                      We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
+                    </p>
+                    
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button 
+                        onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                        style={{fontFamily: 'Arial, sans-serif'}}
+                      >
+                        Join the Founding 100 Artists
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="border-black text-black hover:bg-black hover:text-white px-6 py-2 text-sm font-medium"
+                        style={{fontFamily: 'Arial, sans-serif'}}
+                      >
+                        How it Works
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Right Column - Compact Artwork Grid */}
+                  <div className="relative">
+                    <div className="bg-gray-100 rounded-lg p-4">
+                      <p className="text-sm font-sans text-gray-600 text-center mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                        Your art finds its perfect audience
+                      </p>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                            alt="Artwork 1"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                            alt="Artwork 2"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                            alt="Artwork 3"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                            alt="Artwork 4"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                            alt="Artwork 5"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                            alt="Artwork 6"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <ForArtistsForm />
+            {/* How It Works Section */}
+            <div id="how-it-works" className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-5xl">
+                <h2 
+                  className="text-xl font-serif font-bold text-black text-center mb-8"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  How It Works
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Step 1 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Upload Your Artwork
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Upload a picture of your artwork and link to your own site. Simple and straightforward.
+                    </p>
+                  </div>
+                  
+                  {/* Step 2 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      AI matches you with collectors
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Our AI analyzes your visual signature and matches it with collectors who will love your style.
+                    </p>
+                  </div>
+                  
+                  {/* Step 3 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Track Performance
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      See how your art performs: likes, saves, and collector engagement with detailed analytics.
+                    </p>
+                  </div>
+                  
+                  {/* Step 4 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Stay in Control
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      You keep full control. No commissions. No middlemen. No gatekeeping.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              {/* Invitation Section */}
+            {/* Founding 100 Section */}
+            <div className="py-12 bg-gray-50">
+              <div className="container mx-auto px-4 max-w-4xl text-center">
+                <h2 
+                  className="text-xl font-serif font-bold text-black mb-4"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  Become a Founding Artist
+                </h2>
+                <p className="text-base font-sans text-black mb-6 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                  We're curating the first 100 artists who will shape Kaleidorium's discovery model and help us build the future of art discovery.
+                </p>
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <h3 className="text-lg font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Founding Artist Benefits
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                    <div>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ 12 months of free platform access
+                      </p>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Priority in our AI matching algorithm
+                      </p>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Input on platform development
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Exclusive founding artist badge
+                      </p>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Early access to new features
+                      </p>
+                      <p className="text-sm font-sans text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Community of like-minded artists
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              {/* FAQ Section */}
-              <ForArtistsFAQ />
+            {/* Portfolio Submission Form */}
+            <div id="portfolio-form" className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-2xl">
+                <div className="text-center mb-8">
+                  <h2 
+                    className="text-xl font-serif font-bold text-black mb-3"
+                    style={{fontFamily: 'Times New Roman, serif'}}
+                  >
+                    Submit Your Portfolio
+                  </h2>
+                  <p className="text-base font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Join our curated artist community and help shape the future of art discovery.
+                  </p>
+                </div>
+                <ForArtistsForm />
+              </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="py-12 bg-gray-50">
+              <div className="container mx-auto px-4 max-w-4xl">
+                <InteractiveFAQ />
+              </div>
             </div>
           </div>
         );

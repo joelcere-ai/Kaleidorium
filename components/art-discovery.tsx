@@ -2569,122 +2569,305 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             
             {/* For Artists Content */}
             <div className="flex-1 overflow-y-auto pt-16">
-              <div className="container mx-auto px-4 py-8 max-w-3xl">
-                <div className="mb-8">
-                  <h1 
-                    className="text-base font-serif font-bold text-black mb-8"
-                    style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}
-                  >
-                    Be Discovered. Not Buried.
-                  </h1>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+            {/* Hero Section */}
+            <div className="bg-gradient-to-br from-gray-50 to-white py-8 px-4">
+              <div className="max-w-3xl mx-auto">
+                <h1 
+                  className="text-xl font-serif font-bold text-black mb-4"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  Be Discovered. Not Buried.
+                </h1>
+                <p className="text-sm font-sans text-black mb-3 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                  You put time, soul, and skill into your work. Only for it to disappear in endless scrolls and overcrowded marketplaces. Kaleidorium changes that.
+                </p>
+                <p className="text-xs font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                  We're not a gallery, marketplace, or agent.
+                </p>
+                <p className="text-xs font-sans text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                  We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
+                </p>
+                
+                {/* Compact Artwork Grid */}
+                <div className="bg-gray-100 rounded-lg p-3 mb-6">
+                  <p className="text-xs font-sans text-gray-600 text-center mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Your art finds its perfect audience
                   </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    We're not a gallery, marketplace, or agent.
-                  </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
-                  </p>
-                  
-                  <p className="text-sm font-sans font-bold text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>How it works:</p>
-                  <ul className="list-disc pl-6 mb-4">
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Upload your artwork and description</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Our algorithm shows it to collectors whose tastes match your style</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>When they like it, they're redirected to your own site or portfolio to follow up directly</li>
-                    <li className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>You keep control. No commissions. No middlemen. No gatekeeping.</li>
-                  </ul>
-                  
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    Early access artists get 12 months of free uploads.
-                  </p>
-                  <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    Submit your portfolio and join our curated artist community
-                  </p>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                        alt="Artwork 1"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                        alt="Artwork 2"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                        alt="Artwork 3"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                        alt="Artwork 4"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                        alt="Artwork 5"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                      <img 
+                        src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                        alt="Artwork 6"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
                 </div>
+                
+                {/* CTA Button */}
+                <Button 
+                  onClick={() => document.getElementById('mobile-portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full bg-black text-white hover:bg-gray-800 py-2 text-sm font-medium mb-4"
+                  style={{fontFamily: 'Arial, sans-serif'}}
+                >
+                  Join the Founding 100 Artists
+                </Button>
+              </div>
+            </div>
 
-                <Card className="mb-8">
-                  <CardHeader>
-                    <CardTitle 
-                      style={{
-                        fontSize: '16px',
-                        fontFamily: 'Times New Roman, serif',
-                        fontWeight: 'bold',
-                        color: 'black',
-                        lineHeight: '1.2'
-                      }}
-                    >
-                      Submit Your Portfolio
-                    </CardTitle>
-                    <CardDescription 
-                      style={{
-                        fontSize: '14px',
-                        fontFamily: 'Arial, sans-serif',
-                        color: 'black',
-                        lineHeight: '1.4'
-                      }}
-                    >
-                      Please fill out the form below to submit your portfolio for review.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                          placeholder="Your full name"
-                        />
+              {/* How It Works Section */}
+              <div className="py-8 px-4 bg-white">
+                <div className="max-w-3xl mx-auto">
+                  <h2 
+                    className="text-lg font-serif font-bold text-black text-center mb-6"
+                    style={{fontFamily: 'Times New Roman, serif'}}
+                  >
+                    How It Works
+                  </h2>
+                  <div className="space-y-6">
+                    {/* Step 1 */}
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
                       </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                          placeholder="your@email.com"
-                        />
+                      <div>
+                        <h3 className="text-sm font-sans font-bold text-black mb-1" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Upload Your Artwork
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Upload a picture of your artwork and link to your own site. Simple and straightforward.
+                        </p>
                       </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="portfolioLink">Portfolio Link</Label>
-                        <Input
-                          id="portfolioLink"
-                          name="portfolioLink"
-                          type="text"
-                          value={formData.portfolioLink}
-                          onChange={handleChange}
-                          required
-                          placeholder="www.your-portfolio.com"
-                          pattern="^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$"
-                          title="Please enter a valid website URL (e.g., www.example.com or https://example.com)"
-                        />
+                    </div>
+                    
+                    {/* Step 2 */}
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
                       </div>
+                      <div>
+                        <h3 className="text-sm font-sans font-bold text-black mb-1" style={{fontFamily: 'Arial, sans-serif'}}>
+                          AI matches you with collectors
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Our AI analyzes your visual signature and matches it with collectors who will love your style.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 3 */}
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-sans font-bold text-black mb-1" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Track Performance
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          See how your art performs: likes, saves, and collector engagement with detailed analytics.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 4 */}
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-sans font-bold text-black mb-1" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Stay in Control
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          You keep full control. No commissions. No middlemen. No gatekeeping.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                      <Button type="submit" className="w-full">
-                        Submit Portfolio
-                      </Button>
-                    </form>
-
-                    <div className="mt-6">
-                      <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                        We will only use the information to review your portfolio and to notify you. If you are not invited, we will delete this information within 1 week.
+              {/* Founding 100 Section */}
+              <div className="py-8 px-4 bg-gray-50">
+                <div className="max-w-3xl mx-auto text-center">
+                  <h2 
+                    className="text-lg font-serif font-bold text-black mb-3"
+                    style={{fontFamily: 'Times New Roman, serif'}}
+                  >
+                    Become a Founding Artist
+                  </h2>
+                  <p className="text-sm font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                    We're curating the first 100 artists who will shape Kaleidorium's discovery model.
+                  </p>
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 text-left">
+                    <h3 className="text-base font-sans font-bold text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Founding Artist Benefits
+                    </h3>
+                    <div className="space-y-1">
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ 12 months of free platform access
                       </p>
-                      <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                        If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Priority in our AI matching algorithm
+                      </p>
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Input on platform development
+                      </p>
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Exclusive founding artist badge
+                      </p>
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Early access to new features
+                      </p>
+                      <p className="text-xs font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        ✓ Community of like-minded artists
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
+              </div>
 
+              {/* Portfolio Submission Form */}
+              <div id="mobile-portfolio-form" className="py-8 px-4 bg-white">
+                <div className="max-w-3xl mx-auto">
+                  <div className="text-center mb-6">
+                    <h2 
+                      className="text-lg font-serif font-bold text-black mb-2"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Submit Your Portfolio
+                    </h2>
+                    <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Join our curated artist community and help shape the future of art discovery.
+                    </p>
+                  </div>
+                  
+                  <Card className="mb-8">
+                    <CardHeader>
+                      <CardTitle 
+                        style={{
+                          fontSize: '16px',
+                          fontFamily: 'Times New Roman, serif',
+                          fontWeight: 'bold',
+                          color: 'black',
+                          lineHeight: '1.2'
+                        }}
+                      >
+                        Submit Your Portfolio
+                      </CardTitle>
+                      <CardDescription 
+                        style={{
+                          fontSize: '14px',
+                          fontFamily: 'Arial, sans-serif',
+                          color: 'black',
+                          lineHeight: '1.4'
+                        }}
+                      >
+                        Please fill out the form below to submit your portfolio for review.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Name</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Your full name"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="your@email.com"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="portfolioLink">Portfolio Link</Label>
+                          <Input
+                            id="portfolioLink"
+                            name="portfolioLink"
+                            type="text"
+                            value={formData.portfolioLink}
+                            onChange={handleChange}
+                            required
+                            placeholder="www.your-portfolio.com"
+                            pattern="^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$"
+                            title="Please enter a valid website URL (e.g., www.example.com or https://example.com)"
+                          />
+                        </div>
+
+                        <Button type="submit" className="w-full">
+                          Submit Portfolio
+                        </Button>
+                      </form>
+
+                      <div className="mt-6">
+                        <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                          We will only use the information to review your portfolio and to notify you. If you are not invited, we will delete this information within 1 week.
+                        </p>
+                        <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                          If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
           </div>

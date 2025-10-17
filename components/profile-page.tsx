@@ -762,14 +762,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         {/* Sign In Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Access Your Account</CardTitle>
-            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Sign in to manage your collection and preferences.</CardDescription>
+            <CardTitle className="font-sans text-sm">Access Your Account</CardTitle>
+            <CardDescription className="font-sans text-sm text-black">Sign in to manage your collection and preferences.</CardDescription>
           </CardHeader>
           <CardContent>
             {!showReset ? (
               <form onSubmit={handleSignIn} className="space-y-4" noValidate>
                 <div className="space-y-2">
-                  <Label htmlFor="signInEmail" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Email</Label>
+                  <Label htmlFor="signInEmail" className="font-sans text-sm">Email</Label>
                   <Input 
                     id="signInEmail" 
                     name="email"
@@ -779,11 +779,11 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     required 
                     autoComplete="email"
                     placeholder="Enter your email"
-                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                    className="font-sans text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signInPassword" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Password</Label>
+                  <Label htmlFor="signInPassword" className="font-sans text-sm">Password</Label>
                   <Input 
                     id="signInPassword" 
                     name="password"
@@ -793,19 +793,19 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     required 
                     autoComplete="current-password"
                     placeholder="Enter your password"
-                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                    className="font-sans text-sm"
                   />
                 </div>
                 {signInError && <p className="text-sm text-red-500">{signInError}</p>}
-                <Button type="submit" className="w-full" disabled={signingIn} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
-                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(true)} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <Button type="submit" className="w-full font-sans text-sm" disabled={signingIn}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
+                <Button type="button" variant="link" className="p-0 h-auto w-full font-sans text-sm" onClick={() => setShowReset(true)}>
                   Forgot your password?
                 </Button>
               </form>
             ) : (
               <form onSubmit={handlePasswordReset} className="space-y-4" noValidate>
                 <div className="space-y-2">
-                  <Label htmlFor="resetEmail" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Email</Label>
+                  <Label htmlFor="resetEmail" className="font-sans text-sm">Email</Label>
                   <Input 
                     id="resetEmail" 
                     name="resetEmail"
@@ -815,12 +815,12 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     required 
                     autoComplete="email"
                     placeholder="Enter your email"
-                    style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                    className="font-sans text-sm"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={resetting} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
-                {resetMessage && <p className="text-sm text-muted-foreground" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{resetMessage}</p>}
-                <Button type="button" variant="link" className="p-0 h-auto w-full" onClick={() => setShowReset(false)} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <Button type="submit" className="w-full font-sans text-sm" disabled={resetting}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
+                {resetMessage && <p className="text-sm text-muted-foreground font-sans">{resetMessage}</p>}
+                <Button type="button" variant="link" className="p-0 h-auto w-full font-sans text-sm" onClick={() => setShowReset(false)}>
                   Back to Sign In
                 </Button>
               </form>
@@ -831,8 +831,8 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         {/* Register as Collector Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register as a Collector</CardTitle>
-            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Create an account to save your favorite artworks and build your collection.</CardDescription>
+            <CardTitle className="font-sans text-sm">Register as a Collector</CardTitle>
+            <CardDescription className="font-sans text-sm text-black">Create an account to save your favorite artworks and build your collection.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center">
@@ -854,8 +854,8 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         {/* Register as Artist Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Register as an Artist</CardTitle>
-            <CardDescription style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>If you've received an invitation email with a token, click below to register.</CardDescription>
+            <CardTitle className="font-sans text-sm">Register as an Artist</CardTitle>
+            <CardDescription className="font-sans text-sm text-black">If you've received an invitation email with a token, click below to register.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center">
@@ -872,7 +872,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
               </Button>
             </div>
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-              <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+              <p className="text-blue-700 font-sans text-sm">
                 <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
               </p>
             </div>
@@ -918,7 +918,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       disabled={isUploading}
                     />
                 </div>
-                <h2 className="text-sm font-semibold" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{collector?.username || user?.email}</h2>
+                <h2 className="text-sm font-semibold font-sans">{collector?.username || user?.email}</h2>
                 <p className="text-sm text-muted-foreground">{isArtist ? 'Artist' : (collector?.role || 'Collector')}</p>
                 <Button variant="outline" className="mt-4 w-full" onClick={handleLogout}>
                   Logout
@@ -952,14 +952,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                   <div className="space-y-6">
                     {/* AI-Generated Collection Summary */}
                     <div>
-                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
+                      <h3 className="text-sm font-medium mb-3 font-sans">Collection Overview</h3>
                       <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
                     </div>
 
                     {/* AI-Generated Aesthetic Profile */}
                     {insights.aesthetic_profile && (
                       <div>
-                        <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your Aesthetic Profile</h3>
+                        <h3 className="text-sm font-medium mb-3 font-sans">Your Aesthetic Profile</h3>
                         <p className="text-muted-foreground leading-relaxed">{insights.aesthetic_profile}</p>
                       </div>
                     )}
@@ -967,7 +967,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     {/* AI-Generated Collecting Pattern */}
                     {insights.collecting_pattern && (
                       <div>
-                        <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
+                        <h3 className="text-sm font-medium mb-3 font-sans">Collecting Pattern</h3>
                         <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
                       </div>
                     )}
@@ -976,7 +976,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
                     {/* Collection Statistics */}
                     <div>
-                      <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
+                      <h3 className="text-sm font-medium mb-4 font-sans">Collection Statistics</h3>
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
                           <h4 className="text-sm font-medium mb-2">Top Artists</h4>
@@ -1030,7 +1030,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
                     {/* AI-Generated Recommendations */}
                     <div>
-                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
+                      <h3 className="text-sm font-medium mb-3 font-sans">Personalized Recommendations</h3>
                       {insights.recommendations.length > 0 ? (
                         <ul className="space-y-2">
                           {insights.recommendations.map((recommendation, index) => (
@@ -1309,7 +1309,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <div className="border border-red-500 bg-red-50 rounded p-4">
-                    <h3 className="text-sm font-semibold text-red-700 mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Danger Zone</h3>
+                    <h3 className="text-sm font-semibold text-red-700 mb-2 font-sans">Danger Zone</h3>
                     <p className="text-sm text-red-700 mb-4">
                       Permanently delete your account and all associated data. This action cannot be undone.
                       {isArtist && (
