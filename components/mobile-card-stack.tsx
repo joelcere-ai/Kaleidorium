@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes"
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card"
+import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -807,7 +808,11 @@ export default function MobileCardStack({
                     <div className="p-6">
                       <div className="mb-4">
                         <h3 className="font-bold text-black text-xl leading-tight mb-2">{artwork.title}</h3>
-                        <p className="text-gray-600 text-lg">{artwork.artist}</p>
+                        <ArtistNameWithBadge 
+                          artistName={artwork.artist}
+                          artistId={artwork.artist_id}
+                          className="text-gray-600 text-lg"
+                        />
                         <p className="text-black font-medium text-base mt-2">{artwork.price}</p>
                       </div>
                       
@@ -1243,7 +1248,11 @@ export default function MobileCardStack({
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
-                    <p className="text-base text-gray-600">{artwork.artist}</p>
+                    <ArtistNameWithBadge 
+                      artistName={artwork.artist}
+                      artistId={artwork.artist_id}
+                      className="text-base text-gray-600"
+                    />
                   </div>
                 </div>
 

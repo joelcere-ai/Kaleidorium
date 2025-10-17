@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Heart, ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
@@ -211,7 +212,13 @@ export default function CardStack({
                           <h3 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
                             {artwork.title}
                           </h3>
-                          <p className="text-base font-serif text-gray-600 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>by {artwork.artist}</p>
+                          <div className="text-base font-serif text-gray-600 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
+                            by <ArtistNameWithBadge 
+                              artistName={artwork.artist}
+                              artistId={artwork.artist_id}
+                              className="inline"
+                            />
+                          </div>
                         </div>
                       </div>
 

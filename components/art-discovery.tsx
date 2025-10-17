@@ -36,6 +36,7 @@ import { useMobileDetection } from "@/hooks/use-mobile-detection"
 import MobileArtDiscovery from "./mobile-art-discovery"
 import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
+import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy"
@@ -2540,7 +2541,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                       <div className="flex justify-between items-start gap-2">
                         <div className="min-w-0">
                           <h3 className="font-medium font-serif text-base sm:text-lg truncate" style={{fontSize: '14px', fontFamily: 'Times New Roman, serif'}}>{artwork.title}</h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground truncate" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.artist}</p>
+                          <ArtistNameWithBadge 
+                            artistName={artwork.artist}
+                            artistId={artwork.artist_id}
+                            className="text-xs sm:text-sm text-muted-foreground truncate"
+                          />
                         </div>
                         <Tooltip content={artwork.link ? "You will be redirected to the artwork page on the artist's website." : "No artwork URL provided."}>
                           <span>
