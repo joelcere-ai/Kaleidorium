@@ -24,7 +24,7 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
 
   const handleShare = async (platform: string) => {
     const shareText = `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`
-    const shareUrl = `${window.location.origin}/?view=collection&archetype=${archetype.id}`
+    const shareUrl = `${window.location.origin}/share/archetype/${archetype.id}`
     const imageUrl = `${window.location.origin}${archetype.imagePath}`
 
     try {
