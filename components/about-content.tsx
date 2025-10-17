@@ -89,91 +89,97 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section - Matching FOR ARTISTS layout */}
-      <div className="container mx-auto px-4 py-6 lg:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
-          {/* Left Column - Text Content */}
-          <div className="space-y-4">
-            <h1 className="text-2xl lg:text-3xl font-serif font-bold text-black leading-tight">
-              Swipe. Discover. Fall in Love (with Art).
-            </h1>
-            
-            <p className="text-base font-sans text-black leading-relaxed">
-              Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.
-            </p>
-
-            <p className="text-sm font-sans text-black leading-relaxed">
-              You swipe, we learn. Our AI-powered algorithm refines your preferences and shows you art you're more likely to love across style and mediums.
-            </p>
-
-            <p className="text-sm font-sans text-black leading-relaxed">
-              Save what speaks to you. Build your own visual album to inspire you, click to explore the artist's site, get a personalised artistic profile, artwork recommendations curated for you, and support artists you like.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <Button
-                onClick={() => router.push('/register')}
-                className="bg-black text-white hover:bg-gray-800 px-6 py-2 font-sans text-sm"
+      {/* Hero Section - Exact copy from FOR ARTISTS layout */}
+      <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Left Column - Text */}
+            <div className="lg:pr-8">
+              <h1 
+                className="text-2xl lg:text-3xl font-serif font-bold text-black mb-4"
+                style={{fontFamily: 'Times New Roman, serif'}}
               >
-                Register as a Collector
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setView("discover")}
-                className="border-black text-black hover:bg-gray-100 px-6 py-2 font-sans text-sm"
-              >
-                Start Discovering
-              </Button>
+                Swipe. Discover. Fall in Love (with Art).
+              </h1>
+              <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.
+              </p>
+              <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                You swipe, we learn. Our AI-powered algorithm refines your preferences and shows you art you're more likely to love across style and mediums.
+              </p>
+              <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                Save what speaks to you. Build your own visual album to inspire you, click to explore the artist's site, get a personalised artistic profile, artwork recommendations curated for you, and support artists you like.
+              </p>
+              
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={() => router.push('/register')}
+                  className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                  style={{fontFamily: 'Arial, sans-serif'}}
+                >
+                  Register as a Collector
+                </Button>
+                <Button 
+                  onClick={() => setView("discover")}
+                  className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                  style={{fontFamily: 'Arial, sans-serif'}}
+                >
+                  Start Discovering
+                </Button>
+              </div>
             </div>
-          </div>
-
-          {/* Right Column - Artwork Grid */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-serif font-bold text-black text-center">
-              Find your perfect matches
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
-                  alt="Artwork 1"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
-                  alt="Artwork 2"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
-                  alt="Artwork 3"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
-                  alt="Artwork 4"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
-                  alt="Artwork 5"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
-                <img 
-                  src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
-                  alt="Artwork 6"
-                  className="w-full h-full object-cover"
-                />
+            
+            {/* Right Column - Compact Artwork Grid with grey background card */}
+            <div className="relative">
+              <div className="bg-gray-100 rounded-lg p-4">
+                <p className="text-sm font-sans text-gray-600 text-center mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                  Find your perfect matches
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                      alt="Artwork 1"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                      alt="Artwork 2"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                      alt="Artwork 3"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                      alt="Artwork 4"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                      alt="Artwork 5"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                    <img 
+                      src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                      alt="Artwork 6"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
