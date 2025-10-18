@@ -67,7 +67,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const router = useRouter()
   
   // Registration prompt hook for non-authenticated users
-  const { trackInteraction } = useRegistrationPrompt()
+  const { trackInteraction } = useRegistrationPrompt(collection)
 
   // 🚨 AGGRESSIVE DOM MANIPULATION FOR FONT CONSISTENCY
   useEffect(() => {
