@@ -672,29 +672,30 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   };
 
   // Refactored handleDislike
-  const handleDislike = useCallback(async () => {
-    if (!mounted || !currentArtwork) return;
+  const handleDislike = useCallback(async (artworkParam?: Artwork) => {
+    const artwork = artworkParam || currentArtwork;
+    if (!mounted || !artwork) return;
     
     // Track interaction for registration prompt
     trackInteraction();
     
     // Track analytics
-    await trackAnalytics(currentArtwork.id, 'dislike', user?.id);
+    await trackAnalytics(artwork.id, 'dislike', user?.id);
     
     if (!user) {
-      updateLocalPreferences(currentArtwork, 'dislike');
+      updateLocalPreferences(artwork, 'dislike');
       const recommendedArtworks = getLocalRecommendations(artworks);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, currentArtwork.id])) {
+      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
       return;
     }
-    if (!await handleAuthAction('dislike', currentArtwork)) return;
-    const newPreferences = await updatePreferences(user.id, currentArtwork, 'dislike');
+    if (!await handleAuthAction('dislike', artwork)) return;
+    const newPreferences = await updatePreferences(user.id, artwork, 'dislike');
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
@@ -708,29 +709,30 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
 
   // Refactored handleLike
-  const handleLike = useCallback(async () => {
-    if (!mounted || !currentArtwork) return;
+  const handleLike = useCallback(async (artworkParam?: Artwork) => {
+    const artwork = artworkParam || currentArtwork;
+    if (!mounted || !artwork) return;
     
     // Track interaction for registration prompt
     trackInteraction();
     
     // Track analytics
-    await trackAnalytics(currentArtwork.id, 'like', user?.id);
+    await trackAnalytics(artwork.id, 'like', user?.id);
     
     if (!user) {
-      updateLocalPreferences(currentArtwork, 'like');
+      updateLocalPreferences(artwork, 'like');
       const recommendedArtworks = getLocalRecommendations(artworks);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, currentArtwork.id])) {
+      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
       return;
     }
-    if (!await handleAuthAction('like', currentArtwork)) return;
-    const newPreferences = await updatePreferences(user.id, currentArtwork, 'like');
+    if (!await handleAuthAction('like', artwork)) return;
+    const newPreferences = await updatePreferences(user.id, artwork, 'like');
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
@@ -744,43 +746,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
 
   // Enhanced handleAddToCollection with localStorage persistence
-  const handleAddToCollection = useCallback(async () => {
-    if (!mounted || !currentArtwork) return;
+  const handleAddToCollection = useCallback(async (artworkParam?: Artwork) => {
+    const artwork = artworkParam || currentArtwork;
+    if (!mounted || !artwork) return;
     
     // Track interaction for registration prompt
     trackInteraction();
     
     // Track analytics
-    await trackAnalytics(currentArtwork.id, 'add_to_collection', user?.id);
+    await trackAnalytics(artwork.id, 'add_to_collection', user?.id);
     
     if (!user) {
-      updateLocalPreferences(currentArtwork, 'add');
-      if (currentArtwork && currentArtwork.id && !collection.some((item) => item.id === currentArtwork.id)) {
-        const newCollection = [...collection, currentArtwork];
+      updateLocalPreferences(artwork, 'add');
+      if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
+        const newCollection = [...collection, artwork];
         setCollection(newCollection);
         saveTemporaryCollection(newCollection); // Persist to localStorage
-        toast({
-          title: "Added to collection",
-          description: `\"${currentArtwork.title}\" has been added to your collection.`,
-        });
-      } else if (currentArtwork && currentArtwork.id) {
-        toast({
-          title: "Already in collection",
-          description: "This artwork is already in your collection.",
-        });
+        // Note: Toast message is handled by the calling component (CardStack/MobileCardStack)
       }
       const recommendedArtworks = getLocalRecommendations(artworks);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, currentArtwork.id])) {
+      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
       return;
     }
-    if (!await handleAuthAction('add', currentArtwork)) return;
-    const newPreferences = await updatePreferences(user.id, currentArtwork, 'add');
+    if (!await handleAuthAction('add', artwork)) return;
+    const newPreferences = await updatePreferences(user.id, artwork, 'add');
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
@@ -789,13 +784,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         setShowEndOfMatchesOverlay(true);
       }
     }
-    if (user && currentArtwork && currentArtwork.id) {
+    if (user && artwork && artwork.id) {
       // Check if already in collection using maybeSingle to avoid errors on no results
       const { data: existing, error: checkError } = await supabase
         .from('Collection')
         .select('id')
         .eq('user_id', user.id)
-        .eq('artwork_id', Number(currentArtwork.id))
+        .eq('artwork_id', Number(artwork.id))
         .maybeSingle();
 
       if (checkError) {
@@ -813,7 +808,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         // If it doesn't exist, insert it.
         const { error: insertError } = await supabase
           .from('Collection')
-          .insert({ user_id: user.id, artwork_id: Number(currentArtwork.id) });
+          .insert({ user_id: user.id, artwork_id: Number(artwork.id) });
 
         if (insertError) {
           console.error('Insert error:', insertError);
@@ -822,20 +817,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             description: insertError.message,
             variant: "destructive",
           });
-    } else {
-          // On success, show toast and refetch the collection to update the UI.
-          toast({
-            title: "Added to collection",
-            description: `\"${currentArtwork.title}\" has been added to your collection.`,
-          });
+        } else {
+          // Note: Success toast message is handled by the calling component (CardStack/MobileCardStack)
           fetchUserCollection(); // Refetch the collection.
         }
       } else {
-        // If it already exists, just show a toast.
-      toast({
-        title: "Already in collection",
-        description: "This artwork is already in your collection.",
-        });
+        // Note: "Already in collection" toast message is handled by the calling component
       }
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
@@ -1468,18 +1455,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   };
 
   const handleMobileLike = async (artwork: Artwork) => {
-    // Use the same logic as desktop handleLike
-    await handleLike();
+    // Use the same logic as desktop handleLike, passing the artwork parameter
+    await handleLike(artwork);
   };
 
   const handleMobileDislike = async (artwork: Artwork) => {
-    // Use the same logic as desktop handleDislike
-    await handleDislike();
+    // Use the same logic as desktop handleDislike, passing the artwork parameter
+    await handleDislike(artwork);
   };
 
   const handleMobileAddToCollection = async (artwork: Artwork) => {
-    // Use the same logic as desktop handleAddToCollection
-    await handleAddToCollection();
+    // Use the same logic as desktop handleAddToCollection, passing the artwork parameter
+    await handleAddToCollection(artwork);
+  };
+
+  // Desktop CardStack wrapper functions to match the expected interface
+  const handleDesktopLike = async (artwork: Artwork) => {
+    await handleLike(artwork);
+  };
+
+  const handleDesktopDislike = async (artwork: Artwork) => {
+    await handleDislike(artwork);
+  };
+
+  const handleDesktopAddToCollection = async (artwork: Artwork) => {
+    await handleAddToCollection(artwork);
   };
 
   // Add an effect to update currentArtwork when index changes
@@ -1877,9 +1877,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             <CardStack
               artworks={currentArtworkList}
               currentIndex={currentIndex}
-              onLike={handleLike}
-              onDislike={handleDislike}
-              onAddToCollection={handleAddToCollection}
+              onLike={handleDesktopLike}
+              onDislike={handleDesktopDislike}
+              onAddToCollection={handleDesktopAddToCollection}
               onNext={handleNext}
               onLoadMore={loadMoreArtworks}
               onImageClick={openImageOverlay}
