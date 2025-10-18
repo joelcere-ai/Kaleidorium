@@ -2776,7 +2776,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                       className="text-lg font-serif font-bold text-black mb-2"
                       style={{fontFamily: 'Times New Roman, serif'}}
                     >
-                      Submit Your Portfolio
+                      Become a Founding Artist: Submit Your Portfolio
                     </h2>
                     <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
                       Join our curated artist community and help shape the future of art discovery.
@@ -2794,7 +2794,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           lineHeight: '1.2'
                         }}
                       >
-                        Submit Your Portfolio
+                        Become a Founding Artist: Submit Your Portfolio
                       </CardTitle>
                       <CardDescription 
                         style={{

@@ -1290,7 +1290,7 @@ function HomeContent() {
                     className="text-xl font-serif font-bold text-black mb-3"
                     style={{fontFamily: 'Times New Roman, serif'}}
                   >
-                    Submit Your Portfolio
+                    Become a Founding Artist: Submit Your Portfolio
                   </h2>
                   <p className="text-base font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
                     Join our curated artist community and help shape the future of art discovery.
