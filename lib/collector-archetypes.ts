@@ -99,22 +99,84 @@ export function getArchetypeById(id: string): CollectorArchetype | undefined {
 
 export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchetype {
   // AI analysis logic to determine the most fitting archetype
-  // This is a simplified version - in production, you'd use actual AI analysis
+  // Enhanced to properly analyze artwork characteristics and recommend appropriate archetypes
   
   if (artworks.length === 0) {
     return COLLECTOR_ARCHETYPES[0] // Default to first archetype
   }
   
-  // Simple heuristics based on collection characteristics
+  // Analyze artwork characteristics
+  const styles = artworks.map(a => (a.style || '').toLowerCase()).filter(Boolean)
+  const subjects = artworks.map(a => (a.subject || '').toLowerCase()).filter(Boolean)
+  const genres = artworks.map(a => (a.genre || '').toLowerCase()).filter(Boolean)
+  const tags = artworks.flatMap(a => (a.tags || []).map((tag: string) => tag.toLowerCase()))
+  const artists = artworks.map(a => (a.artist || '').toLowerCase()).filter(Boolean)
+  
+  // Check for historical/classical indicators
+  const historicalKeywords = ['historical', 'history', 'classic', 'classical', 'traditional', 'vintage', 'antique', 'period', 'century', 'renaissance', 'baroque', 'impressionist', 'impressionism']
+  const landscapeKeywords = ['landscape', 'nature', 'natural', 'outdoor', 'countryside', 'forest', 'mountain', 'sea', 'ocean', 'field', 'garden', 'scenery']
+  const intellectualKeywords = ['realism', 'realistic', 'figurative', 'portrait', 'academic', 'museum', 'master', 'great', 'famous']
+  
+  // Count matches for different characteristics
+  const historicalMatches = [...styles, ...subjects, ...tags, ...artists].filter(item => 
+    historicalKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  const landscapeMatches = [...subjects, ...tags].filter(item => 
+    landscapeKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  const intellectualMatches = [...styles, ...tags, ...artists].filter(item => 
+    intellectualKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  // Check for specific historical artists (common in collections with historical focus)
+  const historicalArtistNames = ['van gogh', 'monet', 'renoir', 'degas', 'cezanne', 'gauguin', 'toulouse', 'lautrec', 'pissarro', 'manet', 'vermeer', 'rembrandt', 'david', 'ingres', 'delacroix', 'turner', 'constable']
+  const hasHistoricalArtists = artists.some(artist => 
+    historicalArtistNames.some(name => artist.includes(name))
+  )
+  
+  // Check for traditional mediums that suggest classical/artistic focus
+  const traditionalMediums = ['oil', 'watercolor', 'tempera', 'acrylic', 'canvas', 'paper']
+  const hasTraditionalMediums = genres.some(genre => 
+    traditionalMediums.some(medium => genre.includes(medium))
+  )
+  
   const totalArtworks = artworks.length
   const uniqueArtists = new Set(artworks.map(a => a.artist)).size
   const diversityRatio = uniqueArtists / totalArtworks
   
-  // Analyze styles, subjects, and other characteristics
-  const styles = artworks.map(a => a.style || '').filter(Boolean)
-  const subjects = artworks.map(a => a.subject || '').filter(Boolean)
+  // Determine archetype based on collection characteristics
+  const totalHistoricalScore = historicalMatches + (hasHistoricalArtists ? 2 : 0) + (hasTraditionalMediums ? 1 : 0)
+  const totalLandscapeScore = landscapeMatches
+  const totalIntellectualScore = intellectualMatches
   
-  // Determine archetype based on collection patterns
+  // Prioritize archetypes based on collection analysis
+  if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
+    // This suggests a collection focused on historical, landscape, or classical art
+    
+    if (totalHistoricalScore > totalArtworks * 0.6) {
+      // Strong historical focus - likely a scholar or custodian
+      if (diversityRatio < 0.5) {
+        // Focused on specific historical periods/artists
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
+      } else {
+        // Broader historical appreciation
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0]
+      }
+    } else if (totalLandscapeScore > totalArtworks * 0.4) {
+      // Strong landscape/nature focus - likely intellectual collector
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
+    } else if (totalIntellectualScore > 0) {
+      // Intellectual/realistic focus
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
+    } else {
+      // Mixed historical/classical elements
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0]
+    }
+  }
+  
+  // Fall back to diversity-based analysis for contemporary/modern collections
   if (diversityRatio < 0.3) {
     // Low diversity - likely focused collector
     return COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0]
@@ -122,7 +184,7 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     // High diversity - likely exploratory collector
     return COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0]
   } else {
-    // Medium diversity - balanced approach
+    // Medium diversity - default to instinctive curator for non-historical collections
     return COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0]
   }
 }
