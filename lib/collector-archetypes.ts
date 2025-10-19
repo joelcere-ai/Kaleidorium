@@ -204,31 +204,7 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   
   // Prioritize archetypes based on collection analysis
   
-  // Check for minimalism/essence-focused collections (The Essence Enthusiast)
-  if (totalMinimalismScore > totalArtworks * 0.4) {
-    // Strong minimalism focus - essence enthusiast
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'essence-enthusiast') || COLLECTOR_ARCHETYPES[0]
-  }
-  
-  // Check for investment/prestige-focused collections (Financial archetypes)
-  if (totalInvestmentScore > totalArtworks * 0.3) {
-    // Investment/prestige focus - determine if acquisitor or valuator
-    if (totalHistoricalScore > totalArtworks * 0.4) {
-      // Mix of investment and historical prestige - likely acquisitor of esteem
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0]
-    } else {
-      // Pure investment focus - likely valuator virtuoso
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0]
-    }
-  }
-  
-  // Check for benevolent patron (collections focused on supporting artists)
-  if (totalEmergingScore > totalArtworks * 0.6 && diversityRatio > 0.7) {
-    // High emerging artist diversity suggests supportive collector - benevolent patron
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0]
-  }
-  
-  // Check for historical/classical collections
+  // 1. FIRST PRIORITY: Check for historical/classical collections
   if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
     // This suggests a collection focused on historical, landscape, or classical art
     
@@ -253,7 +229,19 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     }
   }
   
-  // Check for digital/futuristic/contemporary collections
+  // 2. SECOND PRIORITY: Check for investment/prestige-focused collections (Financial archetypes)
+  if (totalInvestmentScore > totalArtworks * 0.3) {
+    // Investment/prestige focus - determine if acquisitor or valuator
+    if (totalHistoricalScore > totalArtworks * 0.4) {
+      // Mix of investment and historical prestige - likely acquisitor of esteem
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0]
+    } else {
+      // Pure investment focus - likely valuator virtuoso
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0]
+    }
+  }
+  
+  // 3. THIRD PRIORITY: Check for digital/futuristic/contemporary collections
   if (totalDigitalScore > 0 || totalFuturisticScore > totalArtworks * 0.3 || hasDigitalMediums) {
     // This suggests a collection focused on digital, futuristic, or cutting-edge art
     
@@ -281,7 +269,19 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     }
   }
   
-  // Fall back to diversity-based analysis for contemporary/modern collections
+  // 4. FOURTH PRIORITY: Check for minimalism/essence-focused collections (The Essence Enthusiast)
+  if (totalMinimalismScore > totalArtworks * 0.4) {
+    // Strong minimalism focus - essence enthusiast
+    return COLLECTOR_ARCHETYPES.find(a => a.id === 'essence-enthusiast') || COLLECTOR_ARCHETYPES[0]
+  }
+  
+  // 5. FIFTH PRIORITY: Check for benevolent patron (collections focused on supporting artists)
+  if (totalEmergingScore > totalArtworks * 0.6 && diversityRatio > 0.7) {
+    // High emerging artist diversity suggests supportive collector - benevolent patron
+    return COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0]
+  }
+  
+  // 6. SIXTH PRIORITY: Fall back to diversity-based analysis for contemporary/modern collections
   if (diversityRatio < 0.3) {
     // Low diversity - likely focused collector
     return COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0]
