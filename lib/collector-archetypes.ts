@@ -117,6 +117,12 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const landscapeKeywords = ['landscape', 'nature', 'natural', 'outdoor', 'countryside', 'forest', 'mountain', 'sea', 'ocean', 'field', 'garden', 'scenery']
   const intellectualKeywords = ['realism', 'realistic', 'figurative', 'portrait', 'academic', 'museum', 'master', 'great', 'famous']
   
+  // Check for digital/futuristic/contemporary indicators
+  const digitalKeywords = ['digital', 'nft', 'crypto', 'blockchain', 'generative', 'algorithmic', 'code', 'programming', 'software', 'virtual', 'cyber', 'tech']
+  const futuristicKeywords = ['futuristic', 'future', 'futurism', 'sci-fi', 'science fiction', 'space', 'robot', 'ai', 'artificial intelligence', 'cybernetic', 'techno', 'neon', 'glitch', 'holographic']
+  const contemporaryKeywords = ['contemporary', 'modern', 'postmodern', 'avant-garde', 'experimental', 'conceptual', 'innovative', 'cutting-edge', 'emerging', 'new media', 'interactive', 'multimedia']
+  const emergingKeywords = ['emerging', 'new', 'young', 'artist', 'underground', 'alternative', 'subversive', 'pioneering', 'breakthrough']
+  
   // Count matches for different characteristics
   const historicalMatches = [...styles, ...subjects, ...tags, ...artists].filter(item => 
     historicalKeywords.some(keyword => item.includes(keyword))
@@ -128,6 +134,23 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   
   const intellectualMatches = [...styles, ...tags, ...artists].filter(item => 
     intellectualKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  // Count digital/futuristic/contemporary matches
+  const digitalMatches = [...styles, ...subjects, ...tags, ...genres].filter(item => 
+    digitalKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  const futuristicMatches = [...styles, ...subjects, ...tags].filter(item => 
+    futuristicKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  const contemporaryMatches = [...styles, ...tags, ...artists].filter(item => 
+    contemporaryKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  const emergingMatches = [...tags, ...artists].filter(item => 
+    emergingKeywords.some(keyword => item.includes(keyword))
   ).length
   
   // Check for specific historical artists (common in collections with historical focus)
@@ -142,6 +165,12 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     traditionalMediums.some(medium => genre.includes(medium))
   )
   
+  // Check for digital/contemporary mediums
+  const digitalMediums = ['digital', 'nft', 'gif', 'video', 'animation', '3d', 'vr', 'ar', 'mixed media']
+  const hasDigitalMediums = genres.some(genre => 
+    digitalMediums.some(medium => genre.includes(medium))
+  )
+  
   const totalArtworks = artworks.length
   const uniqueArtists = new Set(artworks.map(a => a.artist)).size
   const diversityRatio = uniqueArtists / totalArtworks
@@ -150,6 +179,9 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const totalHistoricalScore = historicalMatches + (hasHistoricalArtists ? 2 : 0) + (hasTraditionalMediums ? 1 : 0)
   const totalLandscapeScore = landscapeMatches
   const totalIntellectualScore = intellectualMatches
+  const totalDigitalScore = digitalMatches + (hasDigitalMediums ? 2 : 0)
+  const totalFuturisticScore = futuristicMatches + contemporaryMatches
+  const totalEmergingScore = emergingMatches
   
   // Prioritize archetypes based on collection analysis
   if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
@@ -173,6 +205,34 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     } else {
       // Mixed historical/classical elements
       return COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0]
+    }
+  }
+  
+  // Check for digital/futuristic/contemporary collections
+  if (totalDigitalScore > 0 || totalFuturisticScore > totalArtworks * 0.3 || hasDigitalMediums) {
+    // This suggests a collection focused on digital, futuristic, or cutting-edge art
+    
+    if (totalEmergingScore > 0 || totalFuturisticScore > totalArtworks * 0.4) {
+      // Strong emerging/futuristic focus - pioneer/visionary collector
+      if (totalDigitalScore > totalArtworks * 0.5) {
+        // Primarily digital/tech-focused
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0]
+      } else {
+        // Mixed futuristic/experimental focus
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0]
+      }
+    } else if (totalDigitalScore > totalArtworks * 0.4) {
+      // Strong digital focus but not necessarily emerging artists
+      if (diversityRatio > 0.6) {
+        // Diverse digital collection - exploring new territories
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0]
+      } else {
+        // Focused digital collector - architect of tomorrow
+        return COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0]
+      }
+    } else {
+      // Some digital/futuristic elements
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0]
     }
   }
   
