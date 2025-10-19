@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 
@@ -23,6 +24,7 @@ function HomeContent() {
   const router = useRouter();
   const pathname = usePathname();
   const { isMobile } = useMobileDetection();
+  const { toast } = useToast();
   
   // Determine current view from search params
   const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy" => {
@@ -182,12 +184,69 @@ function HomeContent() {
       setShowApp(true);
   }, []);
 
+  // Enhanced localStorage helpers for temporary collection
+  const saveTemporaryCollection = (newCollection: any[]) => {
+    try {
+      localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(newCollection));
+      setCollectionCount(newCollection.length);
+    } catch (error) {
+      console.error('Failed to save temporary collection:', error);
+    }
+  };
+
   // Collection management functions
-  const handleRemoveFromCollection = (id: string) => {
-    const updatedCollection = collection.filter(item => item.id !== id);
-    setCollection(updatedCollection);
-    setCollectionCount(updatedCollection.length);
-    localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(updatedCollection));
+  const handleRemoveFromCollection = async (id: string) => {
+    if (!user) {
+      // Handle temporary collection removal
+      const newCollection = collection.filter((item) => item.id !== id);
+      setCollection(newCollection);
+      saveTemporaryCollection(newCollection); // Persist to localStorage
+      
+      const removedArtwork = collection.find((item) => item.id === id);
+      toast({
+        title: "Removed from collection",
+        description: removedArtwork ? `\"${removedArtwork.title}\" has been removed from your collection.` : "Artwork removed from collection.",
+      });
+      return;
+    }
+
+    try {
+      // Remove from Supabase database
+      const { error } = await supabase
+        .from('Collection')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('artwork_id', Number(id));
+
+      if (error) {
+        console.error('Error removing from collection:', error);
+        toast({
+          title: "Error",
+          description: "Failed to remove artwork from collection. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update local state
+      setDbCollection(prev => prev.filter((item) => item.id !== id));
+      setCollection(prev => prev.filter((item) => item.id !== id));
+      
+      // Update collection count
+      setCollectionCount(Math.max(0, collectionCount - 1));
+      
+      toast({
+        title: "Removed from collection",
+        description: "Artwork has been removed from your collection.",
+      });
+    } catch (error) {
+      console.error('Error removing from collection:', error);
+      toast({
+        title: "Error",
+        description: "Failed to remove artwork from collection. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Handle artwork selection for desktop collection - navigate to discover with artwork ID
