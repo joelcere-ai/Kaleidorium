@@ -123,6 +123,13 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const contemporaryKeywords = ['contemporary', 'modern', 'postmodern', 'avant-garde', 'experimental', 'conceptual', 'innovative', 'cutting-edge', 'emerging', 'new media', 'interactive', 'multimedia']
   const emergingKeywords = ['emerging', 'new', 'young', 'artist', 'underground', 'alternative', 'subversive', 'pioneering', 'breakthrough']
   
+  // Check for minimalism/essence indicators (The Essence Enthusiast)
+  const minimalismKeywords = ['minimalism', 'minimal', 'minimalist', 'clean', 'pure', 'simple', 'abstract', 'geometric', 'basic', 'fundamental', 'essential', 'reduced', 'spare', 'restraint']
+  
+  // Check for financial/investment indicators (Financial archetypes)
+  // Note: This would typically require price/value data we don't have, so we'll use stylistic indicators
+  const investmentKeywords = ['prestigious', 'masterpiece', 'established', 'collectible', 'limited', 'exclusive', 'museum', 'gallery', 'blue chip']
+  
   // Count matches for different characteristics
   const historicalMatches = [...styles, ...subjects, ...tags, ...artists].filter(item => 
     historicalKeywords.some(keyword => item.includes(keyword))
@@ -151,6 +158,16 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   
   const emergingMatches = [...tags, ...artists].filter(item => 
     emergingKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  // Count minimalism/essence matches
+  const minimalismMatches = [...styles, ...tags].filter(item => 
+    minimalismKeywords.some(keyword => item.includes(keyword))
+  ).length
+  
+  // Count investment/prestigious matches
+  const investmentMatches = [...styles, ...tags, ...artists].filter(item => 
+    investmentKeywords.some(keyword => item.includes(keyword))
   ).length
   
   // Check for specific historical artists (common in collections with historical focus)
@@ -182,8 +199,36 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const totalDigitalScore = digitalMatches + (hasDigitalMediums ? 2 : 0)
   const totalFuturisticScore = futuristicMatches + contemporaryMatches
   const totalEmergingScore = emergingMatches
+  const totalMinimalismScore = minimalismMatches
+  const totalInvestmentScore = investmentMatches
   
   // Prioritize archetypes based on collection analysis
+  
+  // Check for minimalism/essence-focused collections (The Essence Enthusiast)
+  if (totalMinimalismScore > totalArtworks * 0.4) {
+    // Strong minimalism focus - essence enthusiast
+    return COLLECTOR_ARCHETYPES.find(a => a.id === 'essence-enthusiast') || COLLECTOR_ARCHETYPES[0]
+  }
+  
+  // Check for investment/prestige-focused collections (Financial archetypes)
+  if (totalInvestmentScore > totalArtworks * 0.3) {
+    // Investment/prestige focus - determine if acquisitor or valuator
+    if (totalHistoricalScore > totalArtworks * 0.4) {
+      // Mix of investment and historical prestige - likely acquisitor of esteem
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0]
+    } else {
+      // Pure investment focus - likely valuator virtuoso
+      return COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0]
+    }
+  }
+  
+  // Check for benevolent patron (collections focused on supporting artists)
+  if (totalEmergingScore > totalArtworks * 0.6 && diversityRatio > 0.7) {
+    // High emerging artist diversity suggests supportive collector - benevolent patron
+    return COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0]
+  }
+  
+  // Check for historical/classical collections
   if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
     // This suggests a collection focused on historical, landscape, or classical art
     
