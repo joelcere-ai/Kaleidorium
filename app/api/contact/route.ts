@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         template_id: 'template_kziu70q',
         user_id: 'CRMHpV3s39teTwijy',
         template_params: {
-          to_email: 'thekurator@blockmeister.com',
+          to_email: 'kurator@kaleidorium.com',
           from_email: email,
           subject,
           message,

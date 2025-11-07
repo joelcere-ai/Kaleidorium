@@ -451,7 +451,7 @@ function ArtistRegisterPage() {
       try {
         const adminTemplateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
         await sendEmailJS(serviceId, adminTemplateId, {
-          to_email: 'TheKurator@blockmeister.com',
+          to_email: 'kurator@kaleidorium.com',
           artist_name: artist.username,
           artist_id: userId,
         }, publicKey);

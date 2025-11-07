@@ -34,10 +34,12 @@ export async function POST(request: Request) {
     const { name, email, portfolioLink } = validation.sanitized!
 
     // Create email content
+    const recipientEmail = process.env.ARTIST_SUBMISSION_RECIPIENT ?? 'kurator@kaleidorium.com';
+
     const emailParams = {
-      Source: 'TheKurator@blockmeister.com', // This email must be verified in SES
+      Source: recipientEmail, // This email must be verified in SES
       Destination: {
-        ToAddresses: ['TheKurator@blockmeister.com']
+        ToAddresses: [recipientEmail]
       },
       Message: {
         Subject: {

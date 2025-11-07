@@ -736,7 +736,7 @@ function HomeContent() {
         <div>
           <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>9. Contact Us</h2>
           <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-            If you have any questions about this privacy policy, please contact us at thekurator@blockmeister.com.
+            If you have any questions about this privacy policy, please contact us at kurator@kaleidorium.com.
           </p>
         </div>
       </div>
@@ -768,7 +768,7 @@ function HomeContent() {
             template_id: 'template_qo87gc7',
             user_id: 'CRMHpV3s39teTwijy',
             template_params: {
-              to_email: 'thekurator@blockmeister.com',
+              to_email: 'kurator@kaleidorium.com',
               from_email: email,
               subject: subject,
               message: message,

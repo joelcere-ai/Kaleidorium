@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     // Prepare variables for EmailJS template
     const templateParams = {
-      to_email: 'TheKurator@blockmeister.com',
+      to_email: 'kurator@kaleidorium.com',
       artist_name: artist?.username || '',
       artist_email: artist?.email || '',
       artwork_title: artwork?.title || '',
