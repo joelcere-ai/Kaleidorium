@@ -24,12 +24,27 @@ export async function POST(request: Request) {
 
     const { name, email, portfolioLink } = validation.sanitized!;
 
+    const emailUser = process.env.EMAIL_USER;
+    const emailPassword = process.env.EMAIL_PASSWORD;
+
+    if (!emailUser || !emailPassword) {
+      console.warn("Artist submission email credentials are not configured. Submission will be logged but no email sent.", {
+        hasEmailUser: Boolean(emailUser),
+        hasEmailPassword: Boolean(emailPassword)
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Submission received (email notifications not configured)."
+      });
+    }
+
     // Create a transporter using SMTP
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: emailUser,
+        pass: emailPassword,
       },
     });
 
