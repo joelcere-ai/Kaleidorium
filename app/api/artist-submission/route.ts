@@ -49,9 +49,10 @@ export async function POST(request: Request) {
     });
 
     // Email content
+    const recipientEmail = process.env.ARTIST_SUBMISSION_RECIPIENT ?? 'kurator@kaleidorium.com';
     const mailOptions = {
-      from: 'TheKurator@blockmeister.com',
-      to: 'TheKurator@blockmeister.com',
+      from: emailUser,
+      to: recipientEmail,
       subject: "New Artist Portfolio Submission",
       text: `
         New artist submission received:
