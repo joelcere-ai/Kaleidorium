@@ -421,6 +421,25 @@ function HomeContent() {
       });
     };
 
+    const handlePortfolioBlur = () => {
+      setFormData((prev) => {
+        const trimmedLink = prev.portfolioLink.trim();
+
+        if (!trimmedLink) {
+          return prev;
+        }
+
+        if (/^https?:\/\//i.test(trimmedLink)) {
+          return prev.portfolioLink === trimmedLink ? prev : { ...prev, portfolioLink: trimmedLink };
+        }
+
+        return {
+          ...prev,
+          portfolioLink: `https://${trimmedLink}`
+        };
+      });
+    };
+
     return (
       <Card className="mb-8">
         <CardHeader>
@@ -464,8 +483,9 @@ function HomeContent() {
                 name="portfolioLink"
                 value={formData.portfolioLink}
                 onChange={handleInputChange}
+                onBlur={handlePortfolioBlur}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="https://yourportfolio.com"
+                placeholder="www.yourportfolio.com"
                 required
               />
             </div>
