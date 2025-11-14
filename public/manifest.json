@@ -12,15 +12,15 @@
   "categories": ["art", "lifestyle", "entertainment"],
   "shortcuts": [
     {
-      "name": "Discover Art",
-      "short_name": "Discover",
+      "name": "Kaleidorium Discover Art",
+      "short_name": "Kaleidorium Discover",
       "description": "Start discovering new artwork",
       "url": "/?view=discover",
       "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
     },
     {
-      "name": "My Collection", 
-      "short_name": "Collection",
+      "name": "Kaleidorium Collection", 
+      "short_name": "Kaleidorium Collection",
       "description": "View your art collection",
       "url": "/?view=collection",
       "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
