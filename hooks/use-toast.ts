@@ -183,6 +183,25 @@ function useToast() {
     }
   }, [state])
 
+  React.useEffect(() => {
+    if (state.toasts.length === 0) {
+      return
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null
+      if (target?.closest('[data-radix-toast-root]')) {
+        return
+      }
+      dispatch({ type: "DISMISS_TOAST" })
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown)
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown)
+    }
+  }, [state.toasts.length])
+
   return {
     ...state,
     toast,

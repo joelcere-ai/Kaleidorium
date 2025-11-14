@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -854,17 +854,24 @@ export default function MobileCardStack({
 
         {/* Mobile Menu Modal */}
         {showMenuModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
-            <div className="bg-white rounded-t-2xl p-6 w-full">
+          <div
+            className="fixed inset-0 bg-black/50 flex items-end z-[100]"
+            onClick={() => setShowMenuModal(false)}
+          >
+            <div
+              className="bg-white rounded-t-2xl p-6 w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-black">Menu</h2>
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon"
                   onClick={() => setShowMenuModal(false)}
-                  className="text-black hover:bg-gray-100"
+                  className="text-black hover:bg-gray-100 h-10 w-10"
                 >
-                  ×
+                  <X className="w-6 h-6" />
+                  <span className="sr-only">Close menu</span>
                 </Button>
               </div>
               <div className="space-y-4">
@@ -953,8 +960,18 @@ export default function MobileCardStack({
 
         {/* Artwork Info Modal */}
         {showInfoModal && selectedArtwork && (
-          <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
-            <div className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain" style={{WebkitOverflowScrolling: 'touch'}}>
+          <div
+            className="fixed inset-0 bg-black/50 flex items-end z-[100]"
+            onClick={() => {
+              setShowInfoModal(false)
+              setSelectedArtwork(null)
+            }}
+          >
+            <div
+              className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="p-6 pb-8 min-h-[600px]">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
@@ -962,14 +979,15 @@ export default function MobileCardStack({
                   </div>
                   <Button
                     variant="ghost"
-                    size="sm"
+                    size="icon"
                     onClick={() => {
                       setShowInfoModal(false)
                       setSelectedArtwork(null)
                     }}
-                    className="text-black hover:bg-gray-100"
+                    className="text-black hover:bg-gray-100 h-10 w-10"
                   >
-                    ×
+                    <X className="w-6 h-6" />
+                    <span className="sr-only">Close details</span>
                   </Button>
                 </div>
 

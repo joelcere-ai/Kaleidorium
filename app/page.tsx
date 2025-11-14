@@ -1689,9 +1689,9 @@ function HomeContent() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setView("discover")}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 h-10 w-10"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-6 h-6" />
                 </Button>
               </div>
               <TermsContent />
@@ -1709,9 +1709,9 @@ function HomeContent() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setView("discover")}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 h-10 w-10"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-6 h-6" />
                 </Button>
               </div>
               <PrivacyContent />

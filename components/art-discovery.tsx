@@ -1793,12 +1793,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     <div className="flex flex-col min-h-screen">      
       {/* Auth Modal */}
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowAuthModal(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-medium">Create an Account</h2>
-              <Button variant="ghost" size="sm" onClick={() => setShowAuthModal(false)}>
-                <X className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10"
+                onClick={() => setShowAuthModal(false)}
+              >
+                <X className="h-6 w-6" />
+                <span className="sr-only">Close</span>
               </Button>
             </div>
             <div className="text-center mb-6">

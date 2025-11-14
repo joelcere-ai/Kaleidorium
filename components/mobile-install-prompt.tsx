@@ -104,8 +104,14 @@ export function MobileInstallPrompt() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
-      <div className="bg-white rounded-t-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom duration-300">
+    <div
+      className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4"
+      onClick={handleDismiss}
+    >
+      <div
+        className="bg-white rounded-t-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-white border-2 border-black rounded-lg flex items-center justify-center">
@@ -122,11 +128,12 @@ export function MobileInstallPrompt() {
           </div>
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={handleDismiss}
-            className="h-8 w-8 p-0"
+            className="h-10 w-10"
           >
-            <X className="h-4 w-4" />
+            <X className="h-6 w-6" />
+            <span className="sr-only">Dismiss</span>
           </Button>
         </div>
 
