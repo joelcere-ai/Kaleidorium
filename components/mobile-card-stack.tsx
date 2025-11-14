@@ -91,6 +91,7 @@ export default function MobileCardStack({
   const [showFullscreenArtwork, setShowFullscreenArtwork] = useState(false)
   const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
   const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
+  const [showGestureIntro, setShowGestureIntro] = useState(false)
   
   // Art Preferences state (copied from desktop)
   const [insights, setInsights] = useState({
@@ -605,10 +606,67 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     router.push("/", { scroll: false })
   }
 
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const hasSeenIntro = localStorage.getItem("kaleidorium_swipe_intro_seen")
+    if (!hasSeenIntro) {
+      setShowGestureIntro(true)
+      const timer = setTimeout(() => {
+        setShowGestureIntro(false)
+        localStorage.setItem("kaleidorium_swipe_intro_seen", "true")
+      }, 4500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
+
+  const dismissGestureIntro = () => {
+    setShowGestureIntro(false)
+    try {
+      localStorage.setItem("kaleidorium_swipe_intro_seen", "true")
+    } catch (error) {
+      console.error("Failed to persist intro state", error)
+    }
+  }
+
   // Collection View
+  const gestureIntroOverlay = showGestureIntro ? (
+    <div
+      className="fixed inset-0 z-[150] flex items-center justify-center bg-black/60 px-6"
+      onClick={dismissGestureIntro}
+    >
+      <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm text-center space-y-5 animate-in fade-in zoom-in-95 duration-500">
+        <h3 className="text-lg font-serif font-semibold text-black">Discover with a swipe</h3>
+        <div className="space-y-4 text-sm text-gray-700">
+          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
+            <span>Swipe left to pass</span>
+            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
+              <ThumbsDown className="w-5 h-5 text-gray-600" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
+            <span>Swipe right to like &amp; save</span>
+            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
+              <ThumbsUp className="w-5 h-5 text-gray-600" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
+            <span>Tap the info icon to learn more</span>
+            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
+              <Info className="w-5 h-5 text-gray-600" />
+            </div>
+          </div>
+        </div>
+        <Button className="bg-black text-white hover:bg-gray-800" onClick={dismissGestureIntro}>
+          Got it
+        </Button>
+      </div>
+    </div>
+  ) : null
+
   if (view === "collection") {
     return (
       <div className={getContainerClasses()}>
+        {gestureIntroOverlay}
         {/* Header */}
         <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
           <Button
@@ -974,7 +1032,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             }}
           >
           <div
-            className="bg-white rounded-t-2xl w-full max-h-[80vh] min-h-[50vh] overflow-y-auto overscroll-contain"
+            className="bg-white rounded-t-2xl w-full max-h-[70vh] min-h-[45vh] overflow-y-auto overscroll-contain mx-2 shadow-xl"
             style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1196,6 +1254,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
   return (
     <div className={getContainerClasses()}>
+      {gestureIntroOverlay}
       {/* Header */}
       <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 z-10">
         <Button
