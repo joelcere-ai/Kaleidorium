@@ -21,6 +21,11 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
     setIsMenuOpen(false);
   };
 
+  const handleLogoClick = () => {
+    handleNavigation("discover");
+    router.push("/", { scroll: false });
+  };
+
   const isCurrentPage = (page: string) => {
     // Use standalone routes for consistent navigation
     if (page === "discover" && pathname === "/") return true;
@@ -48,7 +53,13 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
           </Button>
 
           {/* Logo */}
-          <h1 className="font-serif text-xl font-semibold text-black">Kaleidorium</h1>
+          <Button
+            variant="ghost"
+            onClick={handleLogoClick}
+            className="text-black hover:bg-gray-100 px-2"
+          >
+            <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
+          </Button>
 
           {/* Profile Icon */}
           <Button

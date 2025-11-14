@@ -37,6 +37,11 @@ export function DesktopHeader({
     setShowMenu(false);
   };
 
+  const handleLogoClick = () => {
+    handleNavigation("discover");
+    router.push("/", { scroll: false });
+  };
+
   return (
     <header className="border-b bg-background relative app-header z-10">
       <div className="flex items-center justify-between p-4 md:p-6">
@@ -44,7 +49,7 @@ export function DesktopHeader({
         <Button 
           variant="ghost" 
           className="flex items-center space-x-1 py-2 px-1 md:py-0 md:px-0"
-          onClick={() => handleNavigation("discover")}
+          onClick={handleLogoClick}
         >
           <img 
             src="/logos/logo-desktop-32x32.svg" 

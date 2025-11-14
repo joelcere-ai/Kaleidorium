@@ -18,6 +18,10 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
     setShowMenuModal(false);
   };
 
+  const handleLogoClick = () => {
+    handleNavigation("/");
+  };
+
   return (
     <>
       {/* Mobile Header - Always Visible */}
@@ -30,7 +34,13 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
         >
           <Menu className="w-6 h-6" />
         </Button>
-        <h1 className="font-serif text-xl font-semibold text-black">Kaleidorium</h1>
+        <Button
+          variant="ghost"
+          onClick={handleLogoClick}
+          className="text-black hover:bg-gray-100 px-2"
+        >
+          <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
+        </Button>
         <Button
           variant="ghost"
           size="icon"
