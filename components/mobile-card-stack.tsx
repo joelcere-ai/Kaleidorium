@@ -631,34 +631,31 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   // Collection View
   const gestureIntroOverlay = showGestureIntro ? (
     <div
-      className="fixed inset-0 z-[150] flex items-center justify-center bg-black/60 px-6"
-      onClick={dismissGestureIntro}
+      className="fixed inset-0 z-[150] pointer-events-none flex flex-col justify-between"
     >
-      <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm text-center space-y-5 animate-in fade-in zoom-in-95 duration-500">
-        <h3 className="text-lg font-serif font-semibold text-black">Discover with a swipe</h3>
-        <div className="space-y-4 text-sm text-gray-700">
-          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
-            <span>Swipe left to pass</span>
-            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
-              <ThumbsDown className="w-5 h-5 text-gray-600" />
-            </div>
-          </div>
-          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
-            <span>Swipe right to like &amp; save</span>
-            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
-              <ThumbsUp className="w-5 h-5 text-gray-600" />
-            </div>
-          </div>
-          <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
-            <span>Tap the info icon to learn more</span>
-            <div className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center">
-              <Info className="w-5 h-5 text-gray-600" />
-            </div>
-          </div>
+      <div className="flex justify-center pt-6 px-4">
+        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-top duration-500">
+          <span>Swipe left to pass</span>
+          <ThumbsDown className="w-4 h-4 text-white" />
         </div>
-        <Button className="bg-black text-white hover:bg-gray-800" onClick={dismissGestureIntro}>
+      </div>
+      <div className="flex justify-between items-center px-4 pb-28">
+        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-left duration-500 delay-200">
+          <ThumbsUp className="w-4 h-4 text-white" />
+          <span>Swipe right to like &amp; save</span>
+        </div>
+        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-right duration-500 delay-200">
+          <Info className="w-4 h-4 text-white" />
+          <span>Tap for details</span>
+        </div>
+      </div>
+      <div className="flex justify-center pb-12">
+        <button
+          className="pointer-events-auto bg-white/90 text-gray-800 text-xs font-semibold px-4 py-2 rounded-full shadow"
+          onClick={dismissGestureIntro}
+        >
           Got it
-        </Button>
+        </button>
       </div>
     </div>
   ) : null
