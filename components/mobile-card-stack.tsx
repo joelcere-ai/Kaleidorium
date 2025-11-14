@@ -1346,7 +1346,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               onClick={() => handleButtonAction('dislike', artwork)}
               disabled={isAnimating}
             >
-              <ThumbsDown className={`w-9 h-9 transition-colors duration-200 ${
+              <ThumbsDown className={`w-12 h-12 transition-colors duration-200 ${
                 buttonStates.dislike ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
@@ -1359,7 +1359,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               onClick={() => handleButtonAction('info', artwork)}
               disabled={isAnimating}
             >
-              <Info className={`w-9 h-9 transition-colors duration-200 ${
+              <Info className={`w-12 h-12 transition-colors duration-200 ${
                 buttonStates.info ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
@@ -1372,7 +1372,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               onClick={() => handleButtonAction('like', artwork)}
               disabled={isAnimating}
             >
-              <ThumbsUp className={`w-9 h-9 transition-colors duration-200 ${
+              <ThumbsUp className={`w-12 h-12 transition-colors duration-200 ${
                 buttonStates.like ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>

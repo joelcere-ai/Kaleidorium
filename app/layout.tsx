@@ -15,7 +15,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Discover Contemporary & Digital Art Curated For You | Kaleidorium",
+  title: "Kaleidorium – Your Personal Art Curator",
   description: "Your personal art curator. Swipe. Discover. Fall in Love (with Art).",
   keywords: [
     "digital art finder",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.kaleidorium.com',
-    title: 'Kaleidorium – Discover & Collect Art Curated For You',
+    title: 'Kaleidorium – Your Personal Art Curator',
     description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
     siteName: 'Kaleidorium',
     images: [
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kaleidorium – Discover & Collect Art Curated For You',
+    title: 'Kaleidorium – Your Personal Art Curator',
     description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
     images: ['/logos/pwa-icon-512x512.svg?v=2'],
     creator: '@kaleidorium',
