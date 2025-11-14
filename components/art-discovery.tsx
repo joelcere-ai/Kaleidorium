@@ -728,8 +728,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await trackAnalytics(artwork.id, 'add_to_collection', user?.id);
     
     if (!user) {
-      updateLocalPreferences(artwork, 'like');
-      updateLocalPreferences(artwork, 'add', { incrementInteraction: false });
+      updateLocalPreferences(artwork, 'add');
       
       if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
         const newCollection = [...collection, artwork];
@@ -747,12 +746,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       return;
     }
 
-    if (!await handleAuthAction('like', artwork)) return;
-    const likePreferences = await updatePreferences(user.id, artwork, 'like');
-
     if (!await handleAuthAction('add', artwork)) return;
     const addPreferences = await updatePreferences(user.id, artwork, 'add');
-
     if (user && artwork && artwork.id) {
       const { data: existing, error: checkError } = await supabase
         .from('Collection')
@@ -790,11 +785,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       }
     }
 
-    const latestPreferences = addPreferences || likePreferences;
-    if (latestPreferences) {
+    if (addPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
-      if (checkEndOfMatches(recommendedArtworks, latestPreferences.preferences.viewed_artworks)) {
+      if (checkEndOfMatches(recommendedArtworks, addPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
     }
