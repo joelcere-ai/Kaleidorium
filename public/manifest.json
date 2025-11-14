@@ -1,6 +1,6 @@
 {
-  "name": "Kaleidorium",
-  "short_name": "Kaleidorium",
+  "name": "Kaleidorium - Personal Art Curator",
+  "short_name": "Kaleidorium - Personal Art Curator",
   "description": "Discover and collect fine art from emerging and established artists",
   "start_url": "/",
   "display": "standalone",
@@ -13,14 +13,14 @@
   "shortcuts": [
     {
       "name": "Kaleidorium Discover Art",
-      "short_name": "Kaleidorium Discover",
+      "short_name": "Kaleidorium - Personal Art Curator",
       "description": "Start discovering new artwork",
       "url": "/?view=discover",
       "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
     },
     {
       "name": "Kaleidorium Collection", 
-      "short_name": "Kaleidorium Collection",
+      "short_name": "Kaleidorium - Personal Art Curator",
       "description": "View your art collection",
       "url": "/?view=collection",
       "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
