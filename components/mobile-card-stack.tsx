@@ -967,12 +967,12 @@ export default function MobileCardStack({
               setSelectedArtwork(null)
             }}
           >
-            <div
-              className="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain"
-              style={{ WebkitOverflowScrolling: 'touch' }}
+          <div
+            className="bg-white rounded-t-2xl w-full max-h-[80vh] min-h-[50vh] overflow-y-auto overscroll-contain"
+            style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-6 pb-8 min-h-[600px]">
+              <div className="p-6 pb-8">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h2 className="text-xl font-bold text-black">{selectedArtwork.title}</h2>
