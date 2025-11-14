@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Heart, ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { Badge } from "@/components/ui/badge"
@@ -123,26 +123,20 @@ export default function CardStack({
     setVisibleCardCount(3)
   }, [artworks.length, currentIndex])
 
-  const handleAction = (action: 'like' | 'dislike' | 'add', artwork: Artwork) => {
+const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
     switch (action) {
       case 'like':
-        onLike(artwork)
+      await onLike(artwork)
+      await onAddToCollection(artwork)
         toast({
-          title: "Liked!",
+        title: "Liked & Saved!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'dislike':
-        onDislike(artwork)
+      await onDislike(artwork)
         toast({
           title: "Disliked!",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
-        break
-      case 'add':
-        onAddToCollection(artwork)
-        toast({
-          title: "Added to Collection!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
@@ -236,22 +230,12 @@ export default function CardStack({
             
             <Button
               size="lg"
-              onClick={() => handleAction('add', artwork)}
-              className="flex-1 sm:flex-none min-w-[120px] px-4 sm:px-8 border border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
-            >
-              <Heart className="w-5 h-5 mr-2" />
-              <span className="sm:hidden">❤️</span>
-              <span className="hidden sm:inline">Add to Collection</span>
-            </Button>
-            
-            <Button
-              size="lg"
               onClick={() => handleAction('like', artwork)}
               className="flex-1 sm:flex-none min-w-[120px] border border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
             >
               <ThumbsUp className="w-5 h-5 mr-2" />
-              <span className="sm:hidden">👍</span>
-              <span className="hidden sm:inline">Like</span>
+            <span className="sm:hidden">👍</span>
+            <span className="hidden sm:inline">Like & Save</span>
             </Button>
                       </div>
                     </div>

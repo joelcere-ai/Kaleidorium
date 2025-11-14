@@ -130,15 +130,13 @@ export default function MobileCardStack({
   const [isAnimating, setIsAnimating] = useState(false)
   
   // Button animation states
-  const [buttonStates, setButtonStates] = useState<{
+const [buttonStates, setButtonStates] = useState<{
     dislike: boolean
     info: boolean
-    add: boolean
     like: boolean
   }>({
     dislike: false,
     info: false,
-    add: false,
     like: false
   })
 
@@ -547,7 +545,7 @@ export default function MobileCardStack({
   };
 
   // Enhanced button action handler with micro-interactions
-  const handleButtonAction = async (action: 'like' | 'dislike' | 'add' | 'info', artwork: Artwork) => {
+const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: Artwork) => {
     // Trigger haptic feedback if available
     if (navigator.vibrate) {
       navigator.vibrate(50)
@@ -561,23 +559,17 @@ export default function MobileCardStack({
 
     switch (action) {
       case 'like':
-        onLike(artwork)
+        await onLike(artwork)
+        await onAddToCollection(artwork)
         toast({
-          title: "Liked!",
+          title: "Liked & Saved!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
       case 'dislike':
-        onDislike(artwork)
+        await onDislike(artwork)
         toast({
           title: "Disliked!",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
-        break
-      case 'add':
-        onAddToCollection(artwork)
-        toast({
-          title: "Added to Collection!",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
@@ -1299,19 +1291,6 @@ export default function MobileCardStack({
             >
               <Info className={`w-9 h-9 transition-colors duration-200 ${
                 buttonStates.info ? 'text-white' : 'text-black group-hover:text-white'
-              }`} />
-            </Button>
-            
-            <Button
-              size="icon"
-              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
-                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.add ? 'bg-black scale-95 animate-pulse' : 'bg-white hover:bg-black'}`}
-              onClick={() => handleButtonAction('add', artwork)}
-              disabled={isAnimating}
-            >
-              <Heart className={`w-9 h-9 transition-colors duration-200 ${
-                buttonStates.add ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
             

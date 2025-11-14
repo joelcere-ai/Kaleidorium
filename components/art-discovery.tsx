@@ -589,7 +589,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }
 
   // Helper to update local preferences
-  const updateLocalPreferences = (artwork: Artwork, action: 'add' | 'like' | 'dislike') => {
+  const updateLocalPreferences = (
+    artwork: Artwork,
+    action: 'add' | 'like' | 'dislike',
+    options?: { incrementInteraction?: boolean }
+  ) => {
+    const { incrementInteraction = true } = options ?? {}
     const weightMap = {
       add: WEIGHTS.ADD_TO_COLLECTION,
       like: WEIGHTS.LIKE,
@@ -619,7 +624,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const priceRange = Math.floor(priceValue / 1000) * 1000;
       updateCount('priceRanges', priceRange.toString());
     }
-    updated.interactionCount = (updated.interactionCount || 0) + 1;
+    if (incrementInteraction) {
+      updated.interactionCount = (updated.interactionCount || 0) + 1;
+    }
     setLocalPreferences(updated);
     return updated;
   };
@@ -716,34 +723,104 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     // Track interaction for registration prompt
     trackInteraction();
     
-    // Track analytics
+    // Track analytics for both like and add_to_collection
     await trackAnalytics(artwork.id, 'like', user?.id);
+    await trackAnalytics(artwork.id, 'add_to_collection', user?.id);
     
     if (!user) {
       updateLocalPreferences(artwork, 'like');
+      updateLocalPreferences(artwork, 'add', { incrementInteraction: false });
+      
+      if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
+        const newCollection = [...collection, artwork];
+        setCollection(newCollection);
+        saveTemporaryCollection(newCollection);
+      }
+
       const recommendedArtworks = getLocalRecommendations(artworks);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
-      // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
       return;
     }
+
     if (!await handleAuthAction('like', artwork)) return;
-    const newPreferences = await updatePreferences(user.id, artwork, 'like');
-    if (newPreferences) {
+    const likePreferences = await updatePreferences(user.id, artwork, 'like');
+
+    if (!await handleAuthAction('add', artwork)) return;
+    const addPreferences = await updatePreferences(user.id, artwork, 'add');
+
+    if (user && artwork && artwork.id) {
+      const { data: existing, error: checkError } = await supabase
+        .from('Collection')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('artwork_id', Number(artwork.id))
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("Error checking if artwork is in collection:", checkError);
+        toast({
+          title: "Error",
+          description: "Could not check your collection. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!existing) {
+        const { error: insertError } = await supabase
+          .from('Collection')
+          .insert({ user_id: user.id, artwork_id: Number(artwork.id) });
+
+        if (insertError) {
+          console.error('Insert error:', insertError);
+          toast({
+            title: "Error saving to collection",
+            description: insertError.message,
+            variant: "destructive",
+          });
+          return;
+        } else {
+          fetchUserCollection();
+        }
+      }
+    }
+
+    const latestPreferences = addPreferences || likePreferences;
+    if (latestPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
-      // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
+      if (checkEndOfMatches(recommendedArtworks, latestPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
     }
+
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
+  }, [
+    mounted,
+    currentArtwork,
+    currentIndex,
+    artworks.length,
+    toast,
+    user,
+    artworks,
+    localPreferences,
+    trackInteraction,
+    collection,
+    saveTemporaryCollection,
+    getLocalRecommendations,
+    checkEndOfMatches,
+    handleAuthAction,
+    updatePreferences,
+    fetchUserCollection,
+    getRecommendations,
+    setCollection
+  ]);
 
   // Enhanced handleAddToCollection with localStorage persistence
   const handleAddToCollection = useCallback(async (artworkParam?: Artwork) => {
@@ -1620,7 +1697,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [artworks, localPreferences, currentIndex, showEndOfMatchesOverlay]);
 
   // Fetch user's collection from Collection table
-  const fetchUserCollection = async () => {
+  async function fetchUserCollection() {
     if (!user) return;
     const { data: collectionRows, error: collectionError } = await supabase
       .from('Collection')
@@ -1637,7 +1714,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       .select('*')
       .in('id', artworkIds);
     if (!artworkError && artworks) setDbCollection(artworks);
-  };
+  }
 
   // Call fetchUserCollection on mount and after add/remove
   useEffect(() => { fetchUserCollection(); }, [user]);
