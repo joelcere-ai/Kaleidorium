@@ -128,10 +128,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
       case 'like':
       await onLike(artwork)
       await onAddToCollection(artwork)
-        toast({
-        title: "Liked & Saved!",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
+      toast({
+        title: "Added to your collection",
+        description: `"${artwork.title}" by ${artwork.artist}`,
+      })
         break
       case 'dislike':
       await onDislike(artwork)
@@ -235,7 +235,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
             >
               <ThumbsUp className="w-5 h-5 mr-2" />
             <span className="sm:hidden">👍</span>
-            <span className="hidden sm:inline">Like & Save</span>
+            <span className="hidden sm:inline">Like</span>
             </Button>
                       </div>
                     </div>

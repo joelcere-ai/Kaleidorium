@@ -366,10 +366,11 @@ const [buttonStates, setButtonStates] = useState<{
       
       // Execute action immediately without waiting for animation
       if (currentX.current > 0) {
-        // Swipe right - Like
-        onLike(artwork)
+        // Swipe right - Like (capture & save)
+        onLike(artwork).catch(console.error)
+        onAddToCollection(artwork).catch(console.error)
         toast({
-          title: "Liked!",
+          title: "Added to your collection",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
       } else {
@@ -558,14 +559,15 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }, 200)
 
     switch (action) {
-      case 'like':
+      case 'like': {
         await onLike(artwork)
         await onAddToCollection(artwork)
         toast({
-          title: "Liked & Saved!",
+          title: "Added to your collection",
           description: `"${artwork.title}" by ${artwork.artist}`,
         })
         break
+      }
       case 'dislike':
         await onDislike(artwork)
         toast({
