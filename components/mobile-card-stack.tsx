@@ -354,7 +354,7 @@ const [buttonStates, setButtonStates] = useState<{
     }
   }
 
-  const handleTouchEnd = (artworkId: string, artwork: Artwork) => {
+  const handleTouchEnd = async (artworkId: string, artwork: Artwork) => {
     if (!isDragging.current || showInfoModal || isAnimating) return
     
     isDragging.current = false
@@ -367,8 +367,8 @@ const [buttonStates, setButtonStates] = useState<{
       // Execute action immediately without waiting for animation
       if (currentX.current > 0) {
         // Swipe right - Like (capture & save)
-        onLike(artwork).catch(console.error)
-        onAddToCollection(artwork).catch(console.error)
+        await onLike(artwork)
+        await onAddToCollection(artwork)
         toast({
           title: "Added to your collection",
           description: `"${artwork.title}" by ${artwork.artist}`,
