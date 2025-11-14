@@ -1145,7 +1145,7 @@ function HomeContent() {
         return (
           <div className="flex-1 overflow-y-auto" data-view="for-artists">
             {isMobile ? (
-              <div className="pt-20">
+              <div>
             {/* Hero Section */}
             <div className="bg-gradient-to-br from-gray-50 to-white py-12">
               <div className="container mx-auto px-4 max-w-5xl">
@@ -1661,7 +1661,7 @@ function HomeContent() {
         return (
           <div className="flex-1 overflow-y-auto">
             {isMobile ? (
-              <div className="pt-20">
+              <div>
                 <AboutContent setView={setView} />
               </div>
             ) : (
@@ -1724,10 +1724,22 @@ function HomeContent() {
     }
   };
 
+  const mobileContentPadding = isMobile
+    ? {
+        paddingTop: 'calc(96px + env(safe-area-inset-top))',
+        paddingBottom: 'calc(24px + env(safe-area-inset-bottom))',
+      }
+    : {};
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {renderHeader()}
-      {renderContent()}
+      <main
+        className="flex-1 flex flex-col"
+        style={mobileContentPadding}
+      >
+        {renderContent()}
+      </main>
     </div>
   );
 }
