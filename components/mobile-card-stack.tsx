@@ -1284,7 +1284,7 @@ export default function MobileCardStack({
               onClick={() => handleButtonAction('dislike', artwork)}
               disabled={isAnimating}
             >
-              <ThumbsDown className={`w-7 h-7 transition-colors duration-200 ${
+              <ThumbsDown className={`w-9 h-9 transition-colors duration-200 ${
                 buttonStates.dislike ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
@@ -1297,7 +1297,7 @@ export default function MobileCardStack({
               onClick={() => handleButtonAction('info', artwork)}
               disabled={isAnimating}
             >
-              <Info className={`w-7 h-7 transition-colors duration-200 ${
+              <Info className={`w-9 h-9 transition-colors duration-200 ${
                 buttonStates.info ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
@@ -1310,7 +1310,7 @@ export default function MobileCardStack({
               onClick={() => handleButtonAction('add', artwork)}
               disabled={isAnimating}
             >
-              <Heart className={`w-7 h-7 transition-colors duration-200 ${
+              <Heart className={`w-9 h-9 transition-colors duration-200 ${
                 buttonStates.add ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
@@ -1323,7 +1323,7 @@ export default function MobileCardStack({
               onClick={() => handleButtonAction('like', artwork)}
               disabled={isAnimating}
             >
-              <ThumbsUp className={`w-7 h-7 transition-colors duration-200 ${
+              <ThumbsUp className={`w-9 h-9 transition-colors duration-200 ${
                 buttonStates.like ? 'text-white' : 'text-black group-hover:text-white'
               }`} />
             </Button>
