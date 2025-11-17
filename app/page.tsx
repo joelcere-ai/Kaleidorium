@@ -43,7 +43,6 @@ function HomeContent() {
   
   const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy">(getCurrentView());
   const [collectionCount, setCollectionCount] = useState(0);
-  const [showApp, setShowApp] = useState(false);
   const [collection, setCollection] = useState<any[]>([]);
   const [dbCollection, setDbCollection] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
@@ -179,10 +178,6 @@ function HomeContent() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Show app immediately - no loading delay
-  useEffect(() => {
-      setShowApp(true);
-  }, []);
 
   // Enhanced localStorage helpers for temporary collection
   const saveTemporaryCollection = (newCollection: any[]) => {
@@ -843,40 +838,6 @@ function HomeContent() {
       </form>
     );
   };
-
-  // Show loading screen briefly, then show app
-  if (!showApp) {
-    console.log('Page.tsx: Waiting to show app...');
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          {isMobile ? (
-            <>
-              <div className="flex items-center justify-center mb-4">
-                <img 
-                  src="/logos/logo-medium-48x48.svg" 
-                  alt="Kaleidorium Logo" 
-                  className="w-12 h-12 mr-3"
-                />
-                <h1 className="text-3xl font-serif font-bold text-black">Kaleidorium</h1>
-              </div>
-              <p className="text-lg text-black mb-4">Your Personal Art Curator</p>
-              <div className="text-black text-xl">Loading Artwork...</div>
-            </>
-          ) : (
-            <div className="flex items-center justify-center">
-              <img 
-                src="/logos/logo-desktop-32x32.svg" 
-                alt="Kaleidorium Logo" 
-                className="w-8 h-8 mr-3"
-              />
-              <div className="text-black text-xl">Loading Artwork...</div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   console.log('Page.tsx: Showing unified app with view =', view);
 
@@ -1746,20 +1707,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="flex items-center justify-center">
-            <img 
-              src="/logos/logo-desktop-32x32.svg" 
-              alt="Kaleidorium Logo" 
-              className="w-8 h-8 mr-3"
-            />
-            <div className="text-black text-xl">Loading Artwork...</div>
-          </div>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={null}>
       <HomeContent />
     </Suspense>
   );
