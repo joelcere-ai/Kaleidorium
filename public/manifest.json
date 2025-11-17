@@ -16,14 +16,14 @@
       "short_name": "Kaleidorium - Personal Art Curator",
       "description": "Start discovering new artwork",
       "url": "/?view=discover",
-      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
+      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=3", "sizes": "192x192"}]
     },
     {
       "name": "Kaleidorium Collection", 
       "short_name": "Kaleidorium - Personal Art Curator",
       "description": "View your art collection",
       "url": "/?view=collection",
-      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=2", "sizes": "192x192"}]
+      "icons": [{"src": "/logos/pwa-icon-192x192.svg?v=3", "sizes": "192x192"}]
     }
   ],
   "icons": [
@@ -33,13 +33,13 @@
       "type": "image/svg+xml"
     },
     {
-      "src": "/logos/pwa-icon-192x192.svg?v=2",
+      "src": "/logos/pwa-icon-192x192.svg?v=3",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/logos/pwa-icon-512x512.svg?v=2",
+      "src": "/logos/pwa-icon-512x512.svg?v=3",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable any"

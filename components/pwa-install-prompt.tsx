@@ -122,9 +122,9 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
           variant="ghost"
           size="icon"
           onClick={handleDismiss}
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 w-10 h-10"
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 w-12 h-12"
         >
-          <X className="w-6 h-6" />
+          <X className="w-8 h-8" />
           <span className="sr-only">Dismiss</span>
         </Button>
         

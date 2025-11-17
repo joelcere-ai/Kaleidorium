@@ -929,9 +929,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowMenuModal(false)}
-                  className="text-black hover:bg-gray-100 h-10 w-10"
+                  className="text-black hover:bg-gray-100 h-12 w-12"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-8 h-8" />
                   <span className="sr-only">Close menu</span>
                 </Button>
               </div>
@@ -1029,7 +1029,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             }}
           >
           <div
-            className="bg-white rounded-t-2xl w-full max-h-[70vh] min-h-[45vh] overflow-y-auto overscroll-contain mx-2 shadow-xl"
+            className="bg-white rounded-t-2xl w-full max-h-[70vh] min-h-[50vh] overflow-y-auto overscroll-contain mx-4 mb-4 shadow-xl"
             style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1045,9 +1045,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                       setShowInfoModal(false)
                       setSelectedArtwork(null)
                     }}
-                    className="text-black hover:bg-gray-100 h-10 w-10"
+                    className="text-black hover:bg-gray-100 h-12 w-12"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-8 h-8" />
                     <span className="sr-only">Close details</span>
                   </Button>
                 </div>

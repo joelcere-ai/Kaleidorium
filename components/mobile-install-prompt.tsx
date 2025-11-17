@@ -130,9 +130,9 @@ export function MobileInstallPrompt() {
             variant="ghost"
             size="icon"
             onClick={handleDismiss}
-            className="h-10 w-10"
+            className="h-12 w-12"
           >
-            <X className="h-6 w-6" />
+            <X className="h-8 w-8" />
             <span className="sr-only">Dismiss</span>
           </Button>
         </div>

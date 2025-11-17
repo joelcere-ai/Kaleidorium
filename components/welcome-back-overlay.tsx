@@ -60,9 +60,9 @@ export function WelcomeBackOverlay({ show, newArtworkCount, onDismiss }: Welcome
             variant="ghost"
             size="icon"
             onClick={handleDismiss}
-            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 w-6 h-6"
+            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 w-12 h-12"
           >
-            <X className="w-4 h-4" />
+            <X className="w-8 h-8" />
           </Button>
           
           <div className="text-center">

@@ -56,10 +56,10 @@ export function ImageOverlay({ artwork_image, alt, onClose }: ImageOverlayProps)
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+          className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors"
           onClick={onClose}
         >
-          <X className="h-6 w-6" />
+          <X className="h-8 w-8" />
           <span className="sr-only">Close</span>
         </button>
         <div className="bg-white/5 backdrop-blur-sm rounded-lg p-1">
