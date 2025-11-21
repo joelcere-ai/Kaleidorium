@@ -39,11 +39,21 @@ export function MobileInstallPrompt() {
         try {
           console.log('beforeinstallprompt event fired!', e);
           e.preventDefault()
-          setDeferredPrompt(e as BeforeInstallPromptEvent)
+          const promptEvent = e as BeforeInstallPromptEvent;
+          setDeferredPrompt(promptEvent)
           console.log('Deferred prompt captured and set');
+          
+          // Also store it in a global variable as backup
+          (window as any).__deferredPrompt = promptEvent;
         } catch (error) {
           console.error('Error handling beforeinstallprompt:', error);
         }
+      }
+
+      // Check if prompt was already captured (before component mounted)
+      if ((window as any).__deferredPrompt) {
+        console.log('Found existing deferred prompt');
+        setDeferredPrompt((window as any).__deferredPrompt);
       }
 
       window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -86,15 +96,20 @@ export function MobileInstallPrompt() {
     console.log('Add Shortcut button clicked', { 
       deferredPrompt: !!deferredPrompt, 
       isAndroid, 
-      isIOS
+      isIOS,
+      userAgent: navigator.userAgent
     });
     
-    if (deferredPrompt) {
+    // Check for deferred prompt in state or global variable
+    const prompt = deferredPrompt || (window as any).__deferredPrompt;
+    
+    // Try to use the deferred prompt if available
+    if (prompt) {
       try {
         // Automatically trigger the install prompt
         console.log('Triggering install prompt automatically...');
-        await deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        await prompt.prompt();
+        const { outcome } = await prompt.userChoice;
         
         console.log('Install prompt outcome:', outcome);
         
@@ -105,15 +120,42 @@ export function MobileInstallPrompt() {
         }
         
         setDeferredPrompt(null);
+        (window as any).__deferredPrompt = null;
         setShowPrompt(false);
+        return;
       } catch (error: any) {
         console.error('Error during install:', error);
-        // If automatic install fails, just dismiss the prompt
-        setShowPrompt(false);
       }
-    } else {
-      // If no prompt available, just dismiss
-      console.log('No install prompt available');
+    }
+    
+    // Fallback: Try to check if the browser has native install support
+    // Some browsers might support installation even without beforeinstallprompt
+    try {
+      // Check if we're in a standalone mode (already installed)
+      const isStandalone = (window.navigator as any).standalone === true || 
+        window.matchMedia('(display-mode: standalone)').matches;
+      
+      if (isStandalone) {
+        console.log('App is already installed');
+        setShowPrompt(false);
+        return;
+      }
+      
+      // For Android Chrome, try to show a message directing to browser menu
+      if (isAndroid) {
+        // The browser might show its own install prompt in the menu
+        // We can't programmatically trigger it, but we can guide the user
+        console.log('Android detected - install prompt may be in browser menu');
+        // Dismiss our prompt - the browser's native prompt should be available
+        setShowPrompt(false);
+        return;
+      }
+      
+      // If we get here, no install method is available
+      console.log('No install prompt available - dismissing');
+      setShowPrompt(false);
+    } catch (error) {
+      console.error('Error in install fallback:', error);
       setShowPrompt(false);
     }
   }
@@ -169,7 +211,6 @@ export function MobileInstallPrompt() {
             <Button 
               onClick={handleInstallClick}
               className="w-full bg-black text-white hover:bg-gray-800"
-              disabled={!deferredPrompt}
             >
               <Download className="h-4 w-4 mr-2" />
               Add Shortcut
