@@ -59,25 +59,26 @@ export async function POST(request: Request) {
       ? EMAILJS_GALLERY_TEMPLATE_ID
       : EMAILJS_ARTIST_TEMPLATE_ID || EMAILJS_GALLERY_TEMPLATE_ID;
 
-    const payload = {
-      service_id: EMAILJS_SERVICE_ID,
-      template_id: templateId,
-      accessToken: EMAILJS_PRIVATE_KEY.trim(),
-      template_params: {
-        to_email: EMAIL_RECIPIENT,
-        submission_type: submissionType,
-        from_name: name,
-        contact_name: contactName,
-        from_email: email,
-        portfolio_link: portfolioLink,
-        gallery_message: message,
-      },
-    };
-
     const emailResponse = await fetch(EMAILJS_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${EMAILJS_PRIVATE_KEY.trim()}`,
+      },
+      body: JSON.stringify({
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: templateId,
+        user_id: EMAILJS_USER_ID,
+        template_params: {
+          to_email: EMAIL_RECIPIENT,
+          submission_type: submissionType,
+          from_name: name,
+          contact_name: contactName,
+          from_email: email,
+          portfolio_link: portfolioLink,
+          gallery_message: message,
+        },
+      }),
     });
 
     if (!emailResponse.ok) {
