@@ -404,7 +404,7 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
     
     // Use variation factor to select from top candidates (weighted toward higher scores)
     // Higher scores get more chances
-    const weightedSelection = []
+    const weightedSelection: { archetype: CollectorArchetype; score: number }[] = []
     topCandidates.forEach((candidate, index) => {
       const weight = Math.ceil((candidate.score * 10) - (index * 2))
       for (let i = 0; i < weight; i++) {
