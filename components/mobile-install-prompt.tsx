@@ -21,53 +21,64 @@ export function MobileInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    // Check if device is iOS
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const isInStandaloneMode = (window.navigator as any).standalone === true || 
-      window.matchMedia('(display-mode: standalone)').matches
+    try {
+      // Check if device is iOS
+      const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      const isInStandaloneMode = (window.navigator as any).standalone === true || 
+        window.matchMedia('(display-mode: standalone)').matches
 
-    // Check if device is Android
-    const android = /Android/.test(navigator.userAgent)
-    
-    setIsIOS(iOS)
-    setIsAndroid(android)
-    setIsStandalone(isInStandaloneMode)
-
-    // Store the deferred prompt globally so we can access it even if component re-renders
-    let capturedPrompt: BeforeInstallPromptEvent | null = null;
-
-    // Listen for the beforeinstallprompt event (Android/Chrome)
-    const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('beforeinstallprompt event fired!', e);
-      e.preventDefault()
-      capturedPrompt = e as BeforeInstallPromptEvent
-      setDeferredPrompt(capturedPrompt)
-      console.log('Deferred prompt captured and set');
-    }
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
-    // Only show prompt on mobile devices that aren't already installed
-    if ((iOS || android) && !isInStandaloneMode) {
-      // Check if user has already dismissed the prompt recently
-      const dismissed = localStorage.getItem('pwa-prompt-dismissed')
-      const dismissedTime = dismissed ? parseInt(dismissed) : 0
-      const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+      // Check if device is Android
+      const android = /Android/.test(navigator.userAgent)
       
-      if (!dismissed || dismissedTime < oneWeekAgo) {
-        // Show prompt after a delay to ensure beforeinstallprompt has time to fire
-        setTimeout(() => {
-          // Check if we have a prompt (it might have been captured)
-          if (capturedPrompt) {
-            setDeferredPrompt(capturedPrompt);
-          }
-          setShowPrompt(true);
-        }, 3000)
-      }
-    }
+      setIsIOS(iOS)
+      setIsAndroid(android)
+      setIsStandalone(isInStandaloneMode)
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      // Listen for the beforeinstallprompt event (Android/Chrome)
+      const handleBeforeInstallPrompt = (e: Event) => {
+        try {
+          console.log('beforeinstallprompt event fired!', e);
+          e.preventDefault()
+          setDeferredPrompt(e as BeforeInstallPromptEvent)
+          console.log('Deferred prompt captured and set');
+        } catch (error) {
+          console.error('Error handling beforeinstallprompt:', error);
+        }
+      }
+
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
+      // Only show prompt on mobile devices that aren't already installed
+      if ((iOS || android) && !isInStandaloneMode) {
+        try {
+          // Check if user has already dismissed the prompt recently
+          const dismissed = localStorage.getItem('pwa-prompt-dismissed')
+          const dismissedTime = dismissed ? parseInt(dismissed) : 0
+          const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+          
+          if (!dismissed || dismissedTime < oneWeekAgo) {
+            // Show prompt after a delay to ensure beforeinstallprompt has time to fire
+            const timeoutId = setTimeout(() => {
+              setShowPrompt(true);
+            }, 3000)
+            
+            return () => {
+              clearTimeout(timeoutId);
+              window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+            }
+          }
+        } catch (error) {
+          console.error('Error checking localStorage:', error);
+        }
+      }
+
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      }
+    } catch (error) {
+      console.error('Error in MobileInstallPrompt useEffect:', error);
+      // Don't crash the app - just return cleanup
+      return () => {};
     }
   }, [])
 

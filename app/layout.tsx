@@ -155,17 +155,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                      console.log('Service Worker registered successfully:', registration.scope);
-                      console.log('Service Worker state:', registration.active?.state);
-                    })
-                    .catch((error) => {
-                      console.error('Service Worker registration failed:', error);
-                    });
+                  try {
+                    navigator.serviceWorker.register('/sw.js')
+                      .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                      })
+                      .catch((error) => {
+                        // Silently fail - service worker is optional for PWA
+                        console.log('Service Worker registration failed (non-critical):', error.message);
+                      });
+                  } catch (error) {
+                    // Silently fail - don't break the app
+                    console.log('Service Worker registration error (non-critical)');
+                  }
                 });
-              } else {
-                console.log('Service Worker not supported in this browser');
               }
             `,
           }}

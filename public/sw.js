@@ -15,10 +15,19 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Service Worker: Caching files');
-        return cache.addAll(urlsToCache);
+        // Use addAll but don't fail if some files don't exist
+        return Promise.allSettled(
+          urlsToCache.map(url => 
+            cache.add(url).catch(err => {
+              console.log('Service Worker: Failed to cache', url, err);
+              return null; // Don't fail the whole install
+            })
+          )
+        );
       })
       .catch((error) => {
-        console.error('Service Worker: Cache failed', error);
+        console.log('Service Worker: Cache failed (non-critical)', error);
+        // Don't fail installation if caching fails
       })
   );
   self.skipWaiting(); // Activate immediately
@@ -43,15 +52,28 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         // Return cached version or fetch from network
-        return response || fetch(event.request);
+        return response || fetch(event.request).catch(() => {
+          // If fetch fails, return a basic response instead of crashing
+          return new Response('Network error', { 
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
+        });
       })
       .catch(() => {
-        // If both fail, return offline page (optional)
-        return new Response('Offline', { status: 503 });
+        // Fallback to network if cache match fails
+        return fetch(event.request).catch(() => {
+          return new Response('Offline', { status: 503 });
+        });
       })
   );
 });
