@@ -100,9 +100,11 @@ export function getArchetypeById(id: string): CollectorArchetype | undefined {
 export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchetype {
   // AI analysis logic to determine the most fitting archetype
   // Enhanced to properly analyze artwork characteristics and recommend appropriate archetypes
+  // Now includes variation to ensure different profiles can appear for similar collections
   
   if (artworks.length === 0) {
-    return COLLECTOR_ARCHETYPES[0] // Default to first archetype
+    // Return a random archetype for empty collections to add variation
+    return COLLECTOR_ARCHETYPES[Math.floor(Math.random() * COLLECTOR_ARCHETYPES.length)]
   }
   
   // Analyze artwork characteristics
@@ -282,14 +284,65 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   }
   
   // 6. SIXTH PRIORITY: Fall back to diversity-based analysis for contemporary/modern collections
+  // Calculate scores for multiple candidate archetypes to add variation
+  const candidateArchetypes: { archetype: CollectorArchetype; score: number }[] = []
+  
   if (diversityRatio < 0.3) {
     // Low diversity - likely focused collector
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0]
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0],
+      score: 0.8
+    })
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
+      score: 0.5
+    })
   } else if (diversityRatio > 0.8) {
     // High diversity - likely exploratory collector
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0]
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+      score: 0.9
+    })
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
+      score: 0.6
+    })
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
+      score: 0.4
+    })
   } else {
-    // Medium diversity - default to instinctive curator for non-historical collections
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0]
+    // Medium diversity - multiple possibilities
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
+      score: 0.7
+    })
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+      score: 0.5
+    })
+    candidateArchetypes.push({ 
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
+      score: 0.4
+    })
   }
+  
+  // Add some variation based on collection size and composition
+  // Use collection hash to add deterministic but varied selection
+  const collectionHash = artworks.length + uniqueArtists + totalArtworks % 10
+  const variationFactor = collectionHash % 3
+  
+  // Select from top candidates with weighted randomness
+  if (candidateArchetypes.length > 0) {
+    // Sort by score and take top 2-3
+    candidateArchetypes.sort((a, b) => b.score - a.score)
+    const topCandidates = candidateArchetypes.slice(0, Math.min(3, candidateArchetypes.length))
+    
+    // Use variation factor to select from top candidates
+    const selectedIndex = variationFactor % topCandidates.length
+    return topCandidates[selectedIndex].archetype
+  }
+  
+  // Final fallback
+  return COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0]
 }

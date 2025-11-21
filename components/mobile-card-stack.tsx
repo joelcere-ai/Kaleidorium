@@ -767,7 +767,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg">Your Artistic Profile</CardTitle>
+                  <CardTitle className="text-lg">Your Collector Profile</CardTitle>
                 </div>
                 <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
                   <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
