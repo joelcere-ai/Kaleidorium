@@ -354,6 +354,23 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
 
       if (artistError || !artistData) throw new Error("Artist not found");
 
+      // Validate and format URL if provided
+      let artworkLinkUrl = null;
+      if (artworkUrl.trim()) {
+        const urlResult = validateURL(artworkUrl.trim());
+        if (urlResult.valid && urlResult.sanitized) {
+          artworkLinkUrl = urlResult.sanitized;
+        } else {
+          toast({
+            title: "Invalid URL",
+            description: urlResult.error || "Please enter a valid URL",
+            variant: "destructive",
+          });
+          setUploadingArtwork(false);
+          return;
+        }
+      }
+
       // Insert artwork
       const { error: artworkError } = await supabase
         .from("Artwork")
@@ -367,7 +384,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           description: artworkDescription.trim() || null,
           price: artworkPrice.trim() || null,
           currency: artworkCurrency || null,
-          artwork_link: artworkUrl.trim() || null,
+          artwork_link: artworkLinkUrl,
           artwork_image: artworkImageUrl,
           uploaded_by_gallery_id: isGallery ? userId : null,
           tags: artworkTags.join(", "),
@@ -826,10 +843,10 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 </Label>
                 <Input
                   id="artworkUrl"
-                  type="url"
+                  type="text"
                   value={artworkUrl}
                   onChange={(e) => setArtworkUrl(e.target.value)}
-                  placeholder={isGallery ? "https://yourgallery.com/artwork" : "https://yourwebsite.com/artwork"}
+                  placeholder={isGallery ? "https://yourgallery.com/artwork or www.yourgallery.com/artwork" : "https://yourwebsite.com/artwork or www.yourwebsite.com/artwork"}
                 />
               </div>
 
