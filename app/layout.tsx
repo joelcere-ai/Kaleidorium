@@ -75,6 +75,12 @@ export const metadata: Metadata = {
   category: 'Art & Culture',
   classification: 'Art Discovery Platform',
   manifest: "/manifest.json",
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'theme-color': '#000000',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
