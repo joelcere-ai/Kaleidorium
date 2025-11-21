@@ -1644,15 +1644,16 @@ function HomeContent() {
             }
 
             try {
-              const response = await fetch('/api/gallery-submission', {
+              const response = await fetch('/api/artist-submission', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                  type: 'gallery',
                   name: formData.name,
+                  website: websiteUrl,
                   email: formData.email,
-                  portfolioLink: websiteUrl,
                   contactName: formData.contactName,
                   message: formData.message
                 }),
