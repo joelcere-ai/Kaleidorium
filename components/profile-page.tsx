@@ -190,14 +190,24 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       if (!user) return
 
       // First check if user is a gallery (profile picture in Artists table)
-      const { data: artistData } = await supabase
+      const { data: artistData, error: artistError } = await supabase
         .from('Artists')
         .select('profilepix, is_gallery')
         .eq('id', user.id)
         .single()
 
+      if (artistError) {
+        console.error('Error fetching Artists record for profile picture:', artistError);
+      }
+
       if (artistData?.is_gallery && artistData?.profilepix) {
         setProfilePicture(artistData.profilepix)
+        return
+      }
+
+      // Also check if is_gallery is true but profilepix is null (use default)
+      if (artistData?.is_gallery) {
+        // Gallery exists but no profile picture - that's okay, just return
         return
       }
 
