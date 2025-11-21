@@ -83,26 +83,38 @@ export async function POST(request: Request) {
     };
 
     // Build the request payload
-    const payload = {
+    // EmailJS requires the private key as 'accessToken' in the payload for strict mode
+    const payload: Record<string, any> = {
       service_id: EMAILJS_SERVICE_ID,
       template_id: templateId,
       user_id: EMAILJS_USER_ID,
       template_params: templateParams,
     };
 
-    // Prepare headers with Authorization if private key is available
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (EMAILJS_PRIVATE_KEY) {
-      headers['Authorization'] = `Bearer ${EMAILJS_PRIVATE_KEY.trim()}`;
+    // Add private key to payload if available (required for strict mode)
+    if (!EMAILJS_PRIVATE_KEY) {
+      console.error('EMAILJS_PRIVATE_KEY is not configured. EmailJS strict mode requires this.');
+      console.error('Available env vars:', {
+        hasServiceId: !!EMAILJS_SERVICE_ID,
+        hasUserId: !!EMAILJS_USER_ID,
+        hasPrivateKey: false,
+        hasGalleryTemplate: !!EMAILJS_GALLERY_TEMPLATE_ID,
+        hasArtistTemplate: !!EMAILJS_ARTIST_TEMPLATE_ID,
+      });
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      );
     }
+
+    payload.accessToken = EMAILJS_PRIVATE_KEY.trim();
 
     // Send email via EmailJS API
     const emailResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(payload),
     });
 
