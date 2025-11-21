@@ -204,127 +204,191 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const totalMinimalismScore = minimalismMatches
   const totalInvestmentScore = investmentMatches
   
-  // Prioritize archetypes based on collection analysis
-  
-  // 1. FIRST PRIORITY: Check for historical/classical collections
-  if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
-    // This suggests a collection focused on historical, landscape, or classical art
-    
-    if (totalHistoricalScore > totalArtworks * 0.6) {
-      // Strong historical focus - likely a scholar or custodian
-      if (diversityRatio < 0.5) {
-        // Focused on specific historical periods/artists
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
-      } else {
-        // Broader historical appreciation
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0]
-      }
-    } else if (totalLandscapeScore > totalArtworks * 0.4) {
-      // Strong landscape/nature focus - likely intellectual collector
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
-    } else if (totalIntellectualScore > 0) {
-      // Intellectual/realistic focus
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0]
-    } else {
-      // Mixed historical/classical elements
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0]
-    }
-  }
-  
-  // 2. SECOND PRIORITY: Check for investment/prestige-focused collections (Financial archetypes)
-  if (totalInvestmentScore > totalArtworks * 0.3) {
-    // Investment/prestige focus - determine if acquisitor or valuator
-    if (totalHistoricalScore > totalArtworks * 0.4) {
-      // Mix of investment and historical prestige - likely acquisitor of esteem
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0]
-    } else {
-      // Pure investment focus - likely valuator virtuoso
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0]
-    }
-  }
-  
-  // 3. THIRD PRIORITY: Check for digital/futuristic/contemporary collections
-  if (totalDigitalScore > 0 || totalFuturisticScore > totalArtworks * 0.3 || hasDigitalMediums) {
-    // This suggests a collection focused on digital, futuristic, or cutting-edge art
-    
-    if (totalEmergingScore > 0 || totalFuturisticScore > totalArtworks * 0.4) {
-      // Strong emerging/futuristic focus - pioneer/visionary collector
-      if (totalDigitalScore > totalArtworks * 0.5) {
-        // Primarily digital/tech-focused
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0]
-      } else {
-        // Mixed futuristic/experimental focus
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0]
-      }
-    } else if (totalDigitalScore > totalArtworks * 0.4) {
-      // Strong digital focus but not necessarily emerging artists
-      if (diversityRatio > 0.6) {
-        // Diverse digital collection - exploring new territories
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0]
-      } else {
-        // Focused digital collector - architect of tomorrow
-        return COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0]
-      }
-    } else {
-      // Some digital/futuristic elements
-      return COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0]
-    }
-  }
-  
-  // 4. FOURTH PRIORITY: Check for minimalism/essence-focused collections (The Essence Enthusiast)
-  if (totalMinimalismScore > totalArtworks * 0.4) {
-    // Strong minimalism focus - essence enthusiast
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'essence-enthusiast') || COLLECTOR_ARCHETYPES[0]
-  }
-  
-  // 5. FIFTH PRIORITY: Check for benevolent patron (collections focused on supporting artists)
-  if (totalEmergingScore > totalArtworks * 0.6 && diversityRatio > 0.7) {
-    // High emerging artist diversity suggests supportive collector - benevolent patron
-    return COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0]
-  }
-  
-  // 6. SIXTH PRIORITY: Fall back to diversity-based analysis for contemporary/modern collections
-  // Calculate scores for multiple candidate archetypes to add variation
+  // Build candidate archetypes with scores for variation
   const candidateArchetypes: { archetype: CollectorArchetype; score: number }[] = []
   
-  if (diversityRatio < 0.3) {
-    // Low diversity - likely focused collector
+  // 1. Historical/classical collections
+  if (totalHistoricalScore > 0 || totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
+    if (totalHistoricalScore > totalArtworks * 0.6) {
+      if (diversityRatio < 0.5) {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0],
+          score: 0.9
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0],
+          score: 0.6
+        })
+      } else {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0],
+          score: 0.9
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0],
+          score: 0.7
+        })
+      }
+    } else if (totalLandscapeScore > totalArtworks * 0.4 || totalIntellectualScore > 0) {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0],
+        score: 0.8
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0],
+        score: 0.5
+      })
+    } else {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'custodian-of-continuance') || COLLECTOR_ARCHETYPES[0],
+        score: 0.7
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0],
+        score: 0.5
+      })
+    }
+  }
+  
+  // 2. Investment/prestige-focused collections
+  if (totalInvestmentScore > totalArtworks * 0.3) {
+    if (totalHistoricalScore > totalArtworks * 0.4) {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0],
+        score: 0.85
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0],
+        score: 0.6
+      })
+    } else {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'valuator-virtuoso') || COLLECTOR_ARCHETYPES[0],
+        score: 0.85
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'acquisitor-of-esteem') || COLLECTOR_ARCHETYPES[0],
+        score: 0.6
+      })
+    }
+  }
+  
+  // 3. Digital/futuristic/contemporary collections
+  if (totalDigitalScore > 0 || totalFuturisticScore > totalArtworks * 0.3 || hasDigitalMediums) {
+    if (totalEmergingScore > 0 || totalFuturisticScore > totalArtworks * 0.4) {
+      if (totalDigitalScore > totalArtworks * 0.5) {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0],
+          score: 0.9
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
+          score: 0.6
+        })
+      } else {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
+          score: 0.9
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0],
+          score: 0.6
+        })
+      }
+    } else if (totalDigitalScore > totalArtworks * 0.4) {
+      if (diversityRatio > 0.6) {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+          score: 0.8
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0],
+          score: 0.6
+        })
+      } else {
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0],
+          score: 0.8
+        })
+        candidateArchetypes.push({ 
+          archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+          score: 0.5
+        })
+      }
+    } else {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
+        score: 0.7
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'architect-of-tomorrow') || COLLECTOR_ARCHETYPES[0],
+        score: 0.5
+      })
+    }
+  }
+  
+  // 4. Minimalism/essence-focused collections
+  if (totalMinimalismScore > totalArtworks * 0.4) {
     candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0],
-      score: 0.8
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'essence-enthusiast') || COLLECTOR_ARCHETYPES[0],
+      score: 0.85
     })
     candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'arbiter-of-aesthetics') || COLLECTOR_ARCHETYPES[0],
       score: 0.5
     })
-  } else if (diversityRatio > 0.8) {
-    // High diversity - likely exploratory collector
+  }
+  
+  // 5. Benevolent patron (supporting artists)
+  if (totalEmergingScore > totalArtworks * 0.6 && diversityRatio > 0.7) {
     candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
       score: 0.9
     })
     candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
+      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
       score: 0.6
     })
-    candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
-      score: 0.4
-    })
-  } else {
-    // Medium diversity - multiple possibilities
-    candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
-      score: 0.7
-    })
-    candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
-      score: 0.5
-    })
-    candidateArchetypes.push({ 
-      archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
-      score: 0.4
-    })
+  }
+  
+  // 6. Fall back to diversity-based analysis
+  if (candidateArchetypes.length === 0) {
+    if (diversityRatio < 0.3) {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'zealous-devotee') || COLLECTOR_ARCHETYPES[0],
+        score: 0.8
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
+        score: 0.5
+      })
+    } else if (diversityRatio > 0.8) {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+        score: 0.9
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
+        score: 0.6
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'vanguard-visionary') || COLLECTOR_ARCHETYPES[0],
+        score: 0.4
+      })
+    } else {
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'instinctive-curator') || COLLECTOR_ARCHETYPES[0],
+        score: 0.7
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'horizon-seeker') || COLLECTOR_ARCHETYPES[0],
+        score: 0.5
+      })
+      candidateArchetypes.push({ 
+        archetype: COLLECTOR_ARCHETYPES.find(a => a.id === 'benevolent-patron') || COLLECTOR_ARCHETYPES[0],
+        score: 0.4
+      })
+    }
   }
   
   // Add some variation based on collection size and composition
@@ -332,15 +396,24 @@ export function analyzeCollectionForArchetype(artworks: any[]): CollectorArchety
   const collectionHash = artworks.length + uniqueArtists + totalArtworks % 10
   const variationFactor = collectionHash % 3
   
-  // Select from top candidates with weighted randomness
+  // Select from top candidates with weighted selection
   if (candidateArchetypes.length > 0) {
     // Sort by score and take top 2-3
     candidateArchetypes.sort((a, b) => b.score - a.score)
     const topCandidates = candidateArchetypes.slice(0, Math.min(3, candidateArchetypes.length))
     
-    // Use variation factor to select from top candidates
-    const selectedIndex = variationFactor % topCandidates.length
-    return topCandidates[selectedIndex].archetype
+    // Use variation factor to select from top candidates (weighted toward higher scores)
+    // Higher scores get more chances
+    const weightedSelection = []
+    topCandidates.forEach((candidate, index) => {
+      const weight = Math.ceil((candidate.score * 10) - (index * 2))
+      for (let i = 0; i < weight; i++) {
+        weightedSelection.push(candidate)
+      }
+    })
+    
+    const selectedIndex = variationFactor % weightedSelection.length
+    return weightedSelection[selectedIndex].archetype
   }
   
   // Final fallback
