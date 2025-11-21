@@ -224,11 +224,20 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       setCollectorLoading(true);
       
       // First check if user is a gallery from Artists table
-      const { data: artistData } = await supabase
+      const { data: artistData, error: artistError } = await supabase
         .from('Artists')
         .select('*')
         .eq('id', user.id)
         .single();
+      
+      // Log errors for debugging
+      if (artistError) {
+        console.error('Error fetching Artists record:', artistError);
+        // If it's a permission error, the SELECT policy might be blocking access
+        if (artistError.code === '42501' || artistError.message?.includes('policy')) {
+          console.error('RLS policy error - user may not have SELECT permission on Artists table');
+        }
+      }
       
       if (artistData && artistData.is_gallery) {
         setIsGallery(true);
@@ -537,6 +546,15 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         .select('*')
         .eq('id', user.id)
         .single();
+
+      // Log errors for debugging
+      if (error) {
+        console.error('Error in checkIfArtistOrGallery:', error);
+        // If it's a permission error, the SELECT policy might be blocking access
+        if (error.code === '42501' || error.message?.includes('policy')) {
+          console.error('RLS policy error - user may not have SELECT permission on Artists table');
+        }
+      }
 
       if (!error && data) {
         if (data.is_gallery) {
