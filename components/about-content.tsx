@@ -111,7 +111,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
                 Save what speaks to you. Build your own visual album to inspire you, click to explore the artist's site, get a personalised artistic profile, artwork recommendations curated for you, and support artists you like.
               </p>
               
-              {/* CTA Buttons */}
+              {/* CTA Button */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   onClick={() => router.push('/register')}
@@ -119,13 +119,6 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Register as a Collector
-                </Button>
-                <Button 
-                  onClick={() => setView("discover")}
-                  className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
-                  style={{fontFamily: 'Arial, sans-serif'}}
-                >
-                  Start Discovering
                 </Button>
               </div>
             </div>

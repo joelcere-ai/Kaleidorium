@@ -2949,6 +2949,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </Card>
                 </div>
               </div>
+
+              {/* Invitation Section */}
+              <div className="py-8 px-4 bg-gray-50">
+                <div className="max-w-3xl mx-auto text-center">
+                  <h2 
+                    className="text-lg font-serif font-bold text-black mb-4"
+                    style={{fontFamily: 'Times New Roman, serif'}}
+                  >
+                    Have you received your invitation?
+                  </h2>
+                  <p className="text-sm font-sans text-black mb-6 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                    If you've received an invitation email with a token, click below to register.
+                  </p>
+                  <Button
+                    onClick={() => router.push('/for-artists/register')}
+                    className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium mb-4"
+                    style={{fontFamily: 'Arial, sans-serif'}}
+                  >
+                    Register as an Artist
+                  </Button>
+                  <p className="text-xs font-sans text-gray-600" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Note: You'll need both your email address and the invitation token we sent you to complete registration.
+                  </p>
+                </div>
+              </div>
             </div>
         ) : (
           // Desktop For Artists Page

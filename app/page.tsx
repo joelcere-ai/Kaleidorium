@@ -1373,7 +1373,7 @@ function HomeContent() {
                           We're a new kind of discovery platform, powered by AI and built to match your artwork with the right eyes.
                         </p>
                         
-                        {/* CTA Buttons */}
+                        {/* CTA Button */}
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
@@ -1381,14 +1381,6 @@ function HomeContent() {
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the Founding 100 Artists
-                          </Button>
-                          <Button 
-                            variant="outline"
-                            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="border-black text-black hover:bg-gray-50 px-6 py-2 text-sm font-medium"
-                            style={{fontFamily: 'Arial, sans-serif'}}
-                          >
-                            How it Works
                           </Button>
                         </div>
                       </div>
@@ -1608,8 +1600,33 @@ function HomeContent() {
                   </div>
                 </div>
 
-                {/* FAQ Section */}
+                {/* Invitation Section */}
                 <div className="py-12 bg-gray-50">
+                  <div className="container mx-auto px-4 max-w-4xl text-center">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black mb-4"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Have you received your invitation?
+                    </h2>
+                    <p className="text-base font-sans text-black mb-6 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      If you've received an invitation email with a token, click below to register.
+                    </p>
+                    <Button
+                      onClick={() => router.push('/for-artists/register')}
+                      className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                      style={{fontFamily: 'Arial, sans-serif'}}
+                    >
+                      Register as an Artist
+                    </Button>
+                    <p className="text-sm font-sans text-gray-600 mt-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Note: You'll need both your email address and the invitation token we sent you to complete registration.
+                    </p>
+                  </div>
+                </div>
+
+                {/* FAQ Section */}
+                <div className="py-12 bg-white">
                   <div className="container mx-auto px-4 max-w-4xl">
                     <InteractiveFAQ />
                   </div>
@@ -1925,7 +1942,7 @@ function HomeContent() {
                       We're a discovery engine built to expand your collector base, quietly, effectively, and without fees.
                     </p>
                     
-                    {/* CTA Buttons */}
+                    {/* CTA Button */}
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
@@ -1933,14 +1950,6 @@ function HomeContent() {
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         Join the first 50 partner galleries
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="border-black text-black hover:bg-black hover:text-white px-6 py-2 text-sm font-medium"
-                        style={{fontFamily: 'Arial, sans-serif'}}
-                      >
-                        How It Works
                       </Button>
                     </div>
                   </div>
@@ -2225,7 +2234,7 @@ function HomeContent() {
                           We're a discovery engine built to expand your collector base, quietly, effectively, and without fees.
                         </p>
                         
-                        {/* CTA Buttons */}
+                        {/* CTA Button */}
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
@@ -2233,14 +2242,6 @@ function HomeContent() {
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the first 50 partner galleries
-                          </Button>
-                          <Button 
-                            variant="outline"
-                            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="border-black text-black hover:bg-gray-50 px-6 py-2 text-sm font-medium"
-                            style={{fontFamily: 'Arial, sans-serif'}}
-                          >
-                            How It Works
                           </Button>
                         </div>
                       </div>
