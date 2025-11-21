@@ -677,8 +677,13 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           <Button
             variant="ghost"
             onClick={handleLogoClick}
-            className="text-black hover:bg-gray-100 px-2"
+            className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2"
           >
+            <img 
+              src="/logos/logo-desktop-32x32.svg" 
+              alt="Kaleidorium Logo" 
+              className="w-6 h-6"
+            />
             <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
           </Button>
           <Button

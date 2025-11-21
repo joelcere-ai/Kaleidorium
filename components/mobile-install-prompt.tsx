@@ -62,21 +62,23 @@ export function MobileInstallPrompt() {
   const handleInstallClick = async () => {
     console.log('Install button clicked', { deferredPrompt: !!deferredPrompt, isAndroid, isIOS });
     
-    if (deferredPrompt && isAndroid) {
+    if (deferredPrompt) {
       try {
-        // Android - use the deferred prompt
-        console.log('Triggering Android install prompt');
-        deferredPrompt.prompt()
-        const { outcome } = await deferredPrompt.userChoice
+        // Show the install prompt (works on Android Chrome, Edge, etc.)
+        console.log('Triggering install prompt');
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
         
         console.log('Install prompt outcome:', outcome);
         
         if (outcome === 'accepted') {
-          console.log('User accepted the install prompt')
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
         }
         
-        setDeferredPrompt(null)
-        setShowPrompt(false)
+        setDeferredPrompt(null);
+        setShowPrompt(false);
       } catch (error) {
         console.error('Error during install:', error);
         // Still dismiss the prompt even if there's an error
