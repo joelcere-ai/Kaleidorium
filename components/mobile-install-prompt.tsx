@@ -33,22 +33,19 @@ export function MobileInstallPrompt() {
     setIsAndroid(android)
     setIsStandalone(isInStandaloneMode)
 
+    // Store the deferred prompt globally so we can access it even if component re-renders
+    let capturedPrompt: BeforeInstallPromptEvent | null = null;
+
     // Listen for the beforeinstallprompt event (Android/Chrome)
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('beforeinstallprompt event fired!', e);
       e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
-      console.log('Deferred prompt set:', !!e);
+      capturedPrompt = e as BeforeInstallPromptEvent
+      setDeferredPrompt(capturedPrompt)
+      console.log('Deferred prompt captured and set');
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
-    // Also check if prompt is already available (sometimes it fires before component mounts)
-    // Wait a bit for the event to potentially fire
-    const checkPrompt = setTimeout(() => {
-      console.log('Checking for deferred prompt availability...');
-      // The event listener above will set it if available
-    }, 1000);
 
     // Only show prompt on mobile devices that aren't already installed
     if ((iOS || android) && !isInStandaloneMode) {
@@ -58,42 +55,40 @@ export function MobileInstallPrompt() {
       const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
       
       if (!dismissed || dismissedTime < oneWeekAgo) {
-        // Show prompt after a short delay to not interrupt registration
-        // Wait a bit longer to ensure beforeinstallprompt has time to fire
+        // Show prompt after a delay to ensure beforeinstallprompt has time to fire
         setTimeout(() => {
-          console.log('Showing install prompt, deferredPrompt available:', !!deferredPrompt);
+          // Check if we have a prompt (it might have been captured)
+          if (capturedPrompt) {
+            setDeferredPrompt(capturedPrompt);
+          }
           setShowPrompt(true);
-        }, 4000)
+        }, 3000)
       }
     }
 
     return () => {
-      clearTimeout(checkPrompt);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
   }, [])
 
   const handleInstallClick = async () => {
-    console.log('Install button clicked', { 
+    console.log('Add Shortcut button clicked', { 
       deferredPrompt: !!deferredPrompt, 
       isAndroid, 
-      isIOS,
-      userAgent: navigator.userAgent 
+      isIOS
     });
     
     if (deferredPrompt) {
       try {
-        // Show the install prompt (works on Android Chrome, Edge, etc.)
-        console.log('Calling deferredPrompt.prompt()...');
+        // Automatically trigger the install prompt
+        console.log('Triggering install prompt automatically...');
         await deferredPrompt.prompt();
-        console.log('Prompt shown, waiting for user choice...');
         const { outcome } = await deferredPrompt.userChoice;
         
         console.log('Install prompt outcome:', outcome);
         
         if (outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-          // The browser will handle the installation
+          console.log('User accepted - installation will proceed');
         } else {
           console.log('User dismissed the install prompt');
         }
@@ -102,24 +97,12 @@ export function MobileInstallPrompt() {
         setShowPrompt(false);
       } catch (error: any) {
         console.error('Error during install:', error);
-        console.error('Error details:', {
-          message: error?.message,
-          name: error?.name,
-          stack: error?.stack
-        });
-        // Show user-friendly error message
-        alert('Installation failed. Please try using your browser\'s menu to "Add to Home Screen".');
+        // If automatic install fails, just dismiss the prompt
         setShowPrompt(false);
       }
-    } else if (isIOS) {
-      // iOS - show instructions
-      console.log('Showing iOS install instructions');
-      setShowPrompt(false);
-      // iOS instructions will be shown via the prompt itself
     } else {
+      // If no prompt available, just dismiss
       console.log('No install prompt available');
-      // Show manual instructions for other browsers
-      alert('To install this app:\n\n1. Tap the menu button (three dots)\n2. Select "Add to Home Screen" or "Install App"\n3. Follow the prompts');
       setShowPrompt(false);
     }
   }
@@ -167,81 +150,28 @@ export function MobileInstallPrompt() {
           </Button>
         </div>
 
-        {isIOS ? (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-700">
-              Install this app on your home screen for quick and easy access when you're on the go.
-            </p>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 text-sm">
-                <Share className="h-5 w-5 text-blue-500" />
-                <span>Tap the Share button in Safari</span>
-              </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <Plus className="h-5 w-5 text-blue-500" />
-                <span>Then tap "Add to Home Screen"</span>
-              </div>
-            </div>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-700">
+            Add Kaleidorium to your home screen for quick and easy access.
+          </p>
+          <div className="space-y-3">
+            <Button 
+              onClick={handleInstallClick}
+              className="w-full bg-black text-white hover:bg-gray-800"
+              disabled={!deferredPrompt}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Add Shortcut
+            </Button>
             <Button 
               onClick={handleDismiss}
               className="w-full"
               variant="outline"
             >
-              Got it
+              Maybe later
             </Button>
           </div>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-700">
-              Install Kaleidorium as an app for the best experience discovering and collecting art.
-            </p>
-            {deferredPrompt ? (
-              <div className="space-y-3">
-                <Button 
-                  onClick={handleInstallClick}
-                  className="w-full bg-black text-white hover:bg-gray-800"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Install App
-                </Button>
-                <Button 
-                  onClick={handleDismiss}
-                  className="w-full"
-                  variant="outline"
-                >
-                  Maybe later
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-gray-600">
-                  To install manually: Tap your browser menu (⋮) and select "Add to Home Screen" or "Install App"
-                </p>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="font-semibold">Chrome:</span>
-                    <span>Menu → "Add to Home Screen"</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="font-semibold">Safari:</span>
-                    <span>Share → "Add to Home Screen"</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="font-semibold">Firefox:</span>
-                    <span>Menu → "Install"</span>
-                  </div>
-                </div>
-                <Button 
-                  onClick={handleDismiss}
-                  className="w-full"
-                  variant="outline"
-                >
-                  Got it
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )
