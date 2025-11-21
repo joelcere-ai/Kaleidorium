@@ -1,22 +1,13 @@
 import { NextResponse } from "next/server";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { validatePortfolioSubmission } from '@/lib/validation';
 import { emailRateLimit } from '@/lib/rate-limit';
 
-const hasSesCredentials =
-  Boolean(process.env.AWS_REGION) &&
-  Boolean(process.env.AWS_ACCESS_KEY_ID) &&
-  Boolean(process.env.AWS_SECRET_ACCESS_KEY);
-
-const ses = hasSesCredentials
-  ? new SESClient({
-      region: process.env.AWS_REGION!,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
-      }
-    })
-  : null;
+const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
+const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || 'service_za8v4ih';
+const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID || 'CRMHpV3s39teTwijy';
+const EMAILJS_ARTIST_TEMPLATE_ID = process.env.EMAILJS_ARTIST_TEMPLATE_ID;
+const EMAILJS_GALLERY_TEMPLATE_ID = process.env.EMAILJS_GALLERY_TEMPLATE_ID || 'template_lg9e0us';
+const EMAIL_RECIPIENT = process.env.ARTIST_SUBMISSION_RECIPIENT || 'kurator@kaleidorium.com';
 
 const sanitizeOptionalText = (value: unknown, maxLength: number) => {
   if (typeof value !== 'string') return '';
@@ -54,64 +45,38 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!ses) {
-      console.warn("Submission SES credentials are not configured. Submission logged but no email sent.", {
-        hasRegion: Boolean(process.env.AWS_REGION),
-        hasAccessKey: Boolean(process.env.AWS_ACCESS_KEY_ID),
-        hasSecret: Boolean(process.env.AWS_SECRET_ACCESS_KEY),
-      });
-
-      return NextResponse.json({
-        success: true,
-        message: "Submission received (email notifications not configured)."
-      });
-    }
-
     const { name, email, portfolioLink } = validation.sanitized!;
-    const recipientEmail = process.env.ARTIST_SUBMISSION_RECIPIENT ?? 'kurator@kaleidorium.com';
-    const sourceEmail = process.env.SES_SOURCE_EMAIL || recipientEmail;
-    const replyToAddresses = email ? [email] : [];
+    const templateId = submissionType === 'gallery'
+      ? EMAILJS_GALLERY_TEMPLATE_ID
+      : EMAILJS_ARTIST_TEMPLATE_ID || EMAILJS_GALLERY_TEMPLATE_ID;
 
-    const subject = submissionType === 'gallery'
-      ? "New Gallery Submission"
-      : "New Artist Portfolio Submission";
-
-    const linkLabel = submissionType === 'gallery' ? 'Website' : 'Portfolio Link';
-
-    const textBody = `
-New ${submissionType} submission received:
-
-Name: ${name}
-${contactName ? `Contact Name: ${contactName}\n` : ''}Email: ${email}
-${linkLabel}: ${portfolioLink}
-${message ? `\nMessage:\n${message}\n` : ''}
-Please review this submission at your earliest convenience.
-`.trim();
-
-    const htmlBody = `
-      <h2>New ${submissionType === 'gallery' ? 'Gallery' : 'Artist'} Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      ${contactName ? `<p><strong>Contact Name:</strong> ${contactName}</p>` : ''}
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>${linkLabel}:</strong> <a href="${portfolioLink}">${portfolioLink}</a></p>
-      ${message ? `<p><strong>Message:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>` : ''}
-      <p>Please review this submission at your earliest convenience.</p>
-    `;
-
-    const emailParams = {
-      Source: sourceEmail,
-      Destination: { ToAddresses: [recipientEmail] },
-      ...(replyToAddresses.length ? { ReplyToAddresses: replyToAddresses } : {}),
-      Message: {
-        Subject: { Data: subject },
-        Body: {
-          Text: { Data: textBody },
-          Html: { Data: htmlBody },
+    const emailResponse = await fetch(EMAILJS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: templateId,
+        user_id: EMAILJS_USER_ID,
+        template_params: {
+          to_email: EMAIL_RECIPIENT,
+          submission_type: submissionType,
+          from_name: name,
+          contact_name: contactName,
+          from_email: email,
+          portfolio_link: portfolioLink,
+          gallery_message: message,
         },
-      },
-    };
+      }),
+    });
 
-    await ses.send(new SendEmailCommand(emailParams));
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error('EmailJS submission error:', errorText);
+      return NextResponse.json(
+        { error: 'Failed to send submission notification' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
