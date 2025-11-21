@@ -2019,5 +2019,3 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     </div>
   )
 }
-
-}
