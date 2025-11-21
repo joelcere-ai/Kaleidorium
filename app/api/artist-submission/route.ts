@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import { validatePortfolioSubmission } from '@/lib/validation';
 import { emailRateLimit } from '@/lib/rate-limit';
-import sgMail from '@sendgrid/mail';
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+// EmailJS configuration
+const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID || 'CRMHpV3s39teTwijy';
+const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
+const EMAILJS_GALLERY_TEMPLATE_ID = process.env.EMAILJS_GALLERY_TEMPLATE_ID || 'template_lg9e0us';
+const EMAILJS_ARTIST_TEMPLATE_ID = process.env.EMAILJS_ARTIST_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
 const EMAIL_RECIPIENT = process.env.ARTIST_SUBMISSION_RECIPIENT || 'kurator@kaleidorium.com';
-const EMAIL_FROM = process.env.SENDGRID_FROM_EMAIL || EMAIL_RECIPIENT;
-
-if (SENDGRID_API_KEY) {
-  sgMail.setApiKey(SENDGRID_API_KEY);
-}
 
 const sanitizeOptionalText = (value: unknown, maxLength: number) => {
   if (typeof value !== 'string') return '';
@@ -47,53 +46,72 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not configured. Submission email cannot be sent.');
+    // Check EmailJS configuration
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_USER_ID) {
+      console.error('EmailJS service ID or user ID is not configured.');
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 500 }
       );
     }
 
-    const { name, email, portfolioLink } = validation.sanitized!;
-    const subject = submissionType === 'gallery'
-      ? 'New Gallery Submission'
-      : 'New Artist Portfolio Submission';
+    const templateId = submissionType === 'gallery' 
+      ? EMAILJS_GALLERY_TEMPLATE_ID 
+      : EMAILJS_ARTIST_TEMPLATE_ID;
 
-    const linkLabel = submissionType === 'gallery' ? 'Website' : 'Portfolio Link';
-
-    const textBody = `
-New ${submissionType} submission received.
-
-Name: ${name}
-${contactName ? `Contact Name: ${contactName}\n` : ''}Email: ${email}
-${linkLabel}: ${portfolioLink}
-${message ? `\nMessage:\n${message}` : ''}
-`.trim();
-
-    const htmlBody = `
-      <h2>New ${submissionType === 'gallery' ? 'Gallery' : 'Artist'} Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      ${contactName ? `<p><strong>Contact Name:</strong> ${contactName}</p>` : ''}
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>${linkLabel}:</strong> <a href="${portfolioLink}">${portfolioLink}</a></p>
-      ${message ? `<p><strong>Message:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>` : ''}
-    `;
-
-    try {
-      await sgMail.send({
-        to: EMAIL_RECIPIENT,
-        from: EMAIL_FROM,
-        replyTo: email || EMAIL_FROM,
-        subject,
-        text: textBody,
-        html: htmlBody,
-      });
-    } catch (emailError: any) {
-      console.error('SendGrid submission error:', emailError?.response?.body || emailError);
+    if (!templateId) {
+      console.error(`EmailJS template ID for ${submissionType} is not configured.`);
       return NextResponse.json(
-        { error: 'Failed to send submission notification' },
-        { status: 502 }
+        { error: 'Email template not configured' },
+        { status: 500 }
+      );
+    }
+
+    const { name, email, portfolioLink } = validation.sanitized!;
+
+    // Prepare template parameters for EmailJS
+    const templateParams: Record<string, string> = {
+      to_email: EMAIL_RECIPIENT,
+      from_name: name,
+      from_email: email,
+      contact_name: contactName || name,
+      portfolio_link: portfolioLink,
+      website: portfolioLink,
+      gallery_message: message || '',
+      message: message || '',
+      submission_type: submissionType,
+    };
+
+    // Build the request payload
+    const payload = {
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: templateId,
+      user_id: EMAILJS_USER_ID,
+      template_params: templateParams,
+    };
+
+    // Prepare headers with Authorization if private key is available
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (EMAILJS_PRIVATE_KEY) {
+      headers['Authorization'] = `Bearer ${EMAILJS_PRIVATE_KEY.trim()}`;
+    }
+
+    // Send email via EmailJS API
+    const emailResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error('EmailJS submission error:', errorText);
+      return NextResponse.json(
+        { error: 'Failed to send submission notification', details: errorText },
+        { status: emailResponse.status || 502 }
       );
     }
 
