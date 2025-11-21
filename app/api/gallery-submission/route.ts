@@ -4,13 +4,20 @@ import { validatePortfolioSubmission } from '@/lib/validation';
 import { emailRateLimit } from '@/lib/rate-limit';
 
 // Reuse the same SES configuration as artist submissions
-const ses = new SESClient({
-  region: process.env.AWS_REGION || 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
-  }
-});
+const hasSesCredentials =
+  Boolean(process.env.AWS_REGION) &&
+  Boolean(process.env.AWS_ACCESS_KEY_ID) &&
+  Boolean(process.env.AWS_SECRET_ACCESS_KEY);
+
+const ses = hasSesCredentials
+  ? new SESClient({
+      region: process.env.AWS_REGION!,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
+      }
+    })
+  : null;
 
 export async function POST(request: Request) {
   // SECURITY: Apply rate limiting for gallery submissions
@@ -29,6 +36,19 @@ export async function POST(request: Request) {
         { error: 'Validation failed', details: validation.errors },
         { status: 400 }
       );
+    }
+
+    if (!ses) {
+      console.warn("Gallery submission SES credentials are not configured. Submission logged but no email sent.", {
+        hasRegion: Boolean(process.env.AWS_REGION),
+        hasAccessKey: Boolean(process.env.AWS_ACCESS_KEY_ID),
+        hasSecret: Boolean(process.env.AWS_SECRET_ACCESS_KEY),
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Submission received (email notifications not configured)."
+      });
     }
 
     const { name, email, portfolioLink } = validation.sanitized!;
