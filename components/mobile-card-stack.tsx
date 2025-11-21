@@ -609,13 +609,66 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   useEffect(() => {
     if (typeof window === "undefined") return
     const hasSeenIntro = localStorage.getItem("kaleidorium_swipe_intro_seen")
-    if (!hasSeenIntro) {
-      setShowGestureIntro(true)
-      const timer = setTimeout(() => {
-        setShowGestureIntro(false)
-        localStorage.setItem("kaleidorium_swipe_intro_seen", "true")
-      }, 4500)
-      return () => clearTimeout(timer)
+    if (hasSeenIntro) return // Already seen, don't show again
+    
+    let gestureTimer: NodeJS.Timeout | null = null
+    let autoDismissTimer: NodeJS.Timeout | null = null
+    let checkInterval: NodeJS.Timeout | null = null
+    
+    const showGestureIntroAfterDelay = () => {
+      // Clear any existing timers
+      if (gestureTimer) clearTimeout(gestureTimer)
+      if (autoDismissTimer) clearTimeout(autoDismissTimer)
+      
+      // Wait 3 seconds after install prompt dismissal before showing gesture intro
+      gestureTimer = setTimeout(() => {
+        setShowGestureIntro(true)
+        // Auto-dismiss after 5 seconds
+        autoDismissTimer = setTimeout(() => {
+          setShowGestureIntro(false)
+          localStorage.setItem("kaleidorium_swipe_intro_seen", "true")
+        }, 5000)
+      }, 3000)
+    }
+    
+    // Check if install prompt has already been interacted with
+    const installPromptInteracted = localStorage.getItem('pwa-prompt-interacted')
+    const installPromptDismissed = localStorage.getItem('pwa-prompt-dismissed')
+    
+    if (installPromptInteracted === 'true' || installPromptDismissed) {
+      // Install prompt was already dismissed, show gesture intro after delay
+      showGestureIntroAfterDelay()
+    } else {
+      // Install prompt hasn't been dismissed yet, wait for it
+      // Check periodically
+      checkInterval = setInterval(() => {
+        const interacted = localStorage.getItem('pwa-prompt-interacted')
+        if (interacted === 'true') {
+          if (checkInterval) clearInterval(checkInterval)
+          showGestureIntroAfterDelay()
+        }
+      }, 500)
+      
+      // Also listen for the custom event (faster response)
+      const handleInstallPromptDismissed = () => {
+        if (checkInterval) clearInterval(checkInterval)
+        showGestureIntroAfterDelay()
+      }
+      
+      window.addEventListener('pwa-prompt-dismissed', handleInstallPromptDismissed)
+      
+      return () => {
+        if (gestureTimer) clearTimeout(gestureTimer)
+        if (autoDismissTimer) clearTimeout(autoDismissTimer)
+        if (checkInterval) clearInterval(checkInterval)
+        window.removeEventListener('pwa-prompt-dismissed', handleInstallPromptDismissed)
+      }
+    }
+    
+    return () => {
+      if (gestureTimer) clearTimeout(gestureTimer)
+      if (autoDismissTimer) clearTimeout(autoDismissTimer)
+      if (checkInterval) clearInterval(checkInterval)
     }
   }, [])
 
@@ -628,30 +681,41 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }
   }
 
-  // Collection View
-  const gestureIntroOverlay = showGestureIntro ? (
+  // Discovery View - Gesture Intro Overlay (positioned near buttons)
+  const gestureIntroOverlay = showGestureIntro && view === "discover" ? (
     <div
-      className="fixed inset-0 z-[150] pointer-events-none flex flex-col justify-between"
+      className="fixed inset-0 z-[150] pointer-events-none"
     >
-      <div className="flex justify-center pt-6 px-4">
-        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-top duration-500">
+      {/* Position instructions near the actual button locations */}
+      {/* Buttons are in a flex container with justify-center and gap-6, roughly at 30%, 50%, 70% */}
+      {/* Swipe left instruction - positioned near dislike button (left side, ~30% from left) */}
+      <div className="absolute bottom-36 left-[30%] transform -translate-x-1/2">
+        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 shadow-lg whitespace-nowrap">
+          <ThumbsDown className="w-3.5 h-3.5 text-white flex-shrink-0" />
           <span>Swipe left to pass</span>
-          <ThumbsDown className="w-4 h-4 text-white" />
         </div>
       </div>
-      <div className="flex justify-between items-center px-4 pb-28">
-        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-left duration-500 delay-200">
-          <ThumbsUp className="w-4 h-4 text-white" />
-          <span>Swipe right to like &amp; save</span>
-        </div>
-        <div className="bg-black/70 text-white text-xs font-sans rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-right duration-500 delay-200">
-          <Info className="w-4 h-4 text-white" />
+      
+      {/* Tap for details instruction - positioned near info button (center, ~50%) */}
+      <div className="absolute bottom-36 left-1/2 transform -translate-x-1/2">
+        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-200 shadow-lg whitespace-nowrap">
+          <Info className="w-3.5 h-3.5 text-white flex-shrink-0" />
           <span>Tap for details</span>
         </div>
       </div>
-      <div className="flex justify-center pb-12">
+      
+      {/* Swipe right instruction - positioned near like button (right side, ~70% from left) */}
+      <div className="absolute bottom-36 left-[70%] transform -translate-x-1/2">
+        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-300 shadow-lg whitespace-nowrap">
+          <ThumbsUp className="w-3.5 h-3.5 text-white flex-shrink-0" />
+          <span>Swipe right to like</span>
+        </div>
+      </div>
+      
+      {/* Dismiss button - centered at bottom */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <button
-          className="pointer-events-auto bg-white/90 text-gray-800 text-xs font-semibold px-4 py-2 rounded-full shadow"
+          className="pointer-events-auto bg-white/95 text-gray-800 text-xs font-semibold px-6 py-2.5 rounded-full shadow-lg hover:bg-white transition-colors"
           onClick={dismissGestureIntro}
         >
           Got it
@@ -1954,4 +2018,6 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       )}
     </div>
   )
+}
+
 }

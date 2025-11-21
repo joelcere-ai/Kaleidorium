@@ -67,10 +67,10 @@ export function MobileInstallPrompt() {
           const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
           
           if (!dismissed || dismissedTime < oneWeekAgo) {
-            // Show prompt after a delay to ensure beforeinstallprompt has time to fire
+            // Show prompt immediately (or very quickly) to appear before gesture intro
             const timeoutId = setTimeout(() => {
               setShowPrompt(true);
-            }, 3000)
+            }, 500) // Reduced from 3000ms to 500ms to show first
             
             return () => {
               clearTimeout(timeoutId);
@@ -122,6 +122,9 @@ export function MobileInstallPrompt() {
         setDeferredPrompt(null);
         (window as any).__deferredPrompt = null;
         setShowPrompt(false);
+        // Signal that install prompt was interacted with
+        localStorage.setItem('pwa-prompt-interacted', 'true')
+        window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
         return;
       } catch (error: any) {
         console.error('Error during install:', error);
@@ -163,6 +166,10 @@ export function MobileInstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false)
     localStorage.setItem('pwa-prompt-dismissed', Date.now().toString())
+    // Signal that install prompt was dismissed so gesture intro can show
+    localStorage.setItem('pwa-prompt-interacted', 'true')
+    // Dispatch custom event for immediate communication
+    window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
   }
 
   if (!showPrompt || isStandalone) {
