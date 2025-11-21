@@ -117,7 +117,7 @@ export function PricingContent() {
                 </h2>
                 <div className="mb-4">
                   <span className="text-4xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
-                    $9.99
+                    $9
                   </span>
                   <span className="text-lg font-sans text-gray-600 ml-1" style={{fontFamily: 'Arial, sans-serif'}}>
                     /month
@@ -195,7 +195,7 @@ export function PricingContent() {
                 </h2>
                 <div className="mb-4">
                   <span className="text-4xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
-                    $49.99
+                    $49
                   </span>
                   <span className="text-lg font-sans text-gray-600 ml-1" style={{fontFamily: 'Arial, sans-serif'}}>
                     /month
