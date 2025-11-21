@@ -189,6 +189,19 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
+      // First check if user is a gallery (profile picture in Artists table)
+      const { data: artistData } = await supabase
+        .from('Artists')
+        .select('profilepix, is_gallery')
+        .eq('id', user.id)
+        .single()
+
+      if (artistData?.is_gallery && artistData?.profilepix) {
+        setProfilePicture(artistData.profilepix)
+        return
+      }
+
+      // Otherwise check Collectors table
       const { data } = await supabase
         .from('Collectors')
         .select('profilepix')

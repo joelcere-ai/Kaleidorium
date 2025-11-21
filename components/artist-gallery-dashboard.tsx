@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { SecureArtworkUpload } from "@/components/secure-artwork-upload";
+import { validateURL } from "@/lib/validation";
 
 interface ArtistGalleryDashboardProps {
   userId: string;
@@ -196,6 +197,23 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
         return;
       }
 
+      // Validate and format website URL if provided
+      let websiteUrl = null;
+      if (newArtistWebsite.trim()) {
+        const urlResult = validateURL(newArtistWebsite.trim());
+        if (urlResult.valid && urlResult.sanitized) {
+          websiteUrl = urlResult.sanitized;
+        } else {
+          toast({
+            title: "Invalid URL",
+            description: urlResult.error || "Please enter a valid URL",
+            variant: "destructive",
+          });
+          setCreatingArtist(false);
+          return;
+        }
+      }
+
       // Create new artist profile managed by this gallery
       const { data: newArtist, error } = await supabase
         .from("Artists")
@@ -204,7 +222,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           firstname: newArtistName.trim().split(" ")[0] || newArtistName.trim(),
           surname: newArtistName.trim().split(" ").slice(1).join(" ") || "",
           biog: newArtistBio.trim() || null,
-          website: newArtistWebsite.trim() || null,
+          website: websiteUrl,
           managed_by_gallery_id: userId,
           is_gallery: false,
         })
@@ -531,10 +549,10 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                   <Label htmlFor="artistWebsite">Website/Social Media (Optional)</Label>
                   <Input
                     id="artistWebsite"
-                    type="url"
+                    type="text"
                     value={newArtistWebsite}
                     onChange={(e) => setNewArtistWebsite(e.target.value)}
-                    placeholder="https://..."
+                    placeholder="www.example.com or https://example.com"
                   />
                 </div>
                 <div className="flex gap-2">
