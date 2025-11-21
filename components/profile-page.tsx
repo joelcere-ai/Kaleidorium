@@ -26,6 +26,7 @@ import type { Artwork } from "@/types/artwork"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ArtistGalleryDashboard } from "@/components/artist-gallery-dashboard"
 
 interface ProfilePageProps {
   collection: Artwork[]
@@ -73,8 +74,10 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   const [portfolioLoading, setPortfolioLoading] = useState(false);
   const [notificationConsent, setNotificationConsent] = useState(false);
   const [updatingConsent, setUpdatingConsent] = useState(false);
+  const [isGallery, setIsGallery] = useState(false);
+  const [galleryData, setGalleryData] = useState<any>(null);
   
-  const defaultTab = tabParam === "account" ? "account" : (isArtist ? "portfolio" : "account");
+  const defaultTab = tabParam === "account" ? "account" : (isArtist || isGallery ? "dashboard" : "account");
 
   const handleProfilePictureUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -206,15 +209,113 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       setCollectorLoading(true);
-      const { data, error } = await supabase
-        .from('Collectors')
+      
+      // First check if user is a gallery from Artists table
+      const { data: artistData } = await supabase
+        .from('Artists')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('id', user.id)
         .single();
-      if (!error && data) {
-        setCollector(data);
-        setNotificationConsent(data.notification_consent || false);
+      
+      if (artistData && artistData.is_gallery) {
+        setIsGallery(true);
+        setGalleryData(artistData);
+        
+        // Check Collectors record and fix if needed
+        const { data: collectorData } = await supabase
+          .from('Collectors')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (collectorData) {
+          if (collectorData.role !== 'gallery') {
+            // Fix the role
+            await supabase
+              .from('Collectors')
+              .update({ role: 'gallery' })
+              .eq('user_id', user.id);
+            setCollector({ ...collectorData, role: 'gallery' });
+          } else {
+            setCollector(collectorData);
+          }
+          setNotificationConsent(collectorData.notification_consent || false);
+        } else {
+          // Try old format
+          const { data: oldCollector } = await supabase
+            .from('Collectors')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          
+          if (oldCollector) {
+            // Migrate to new format
+            await supabase
+              .from('Collectors')
+              .update({
+                user_id: user.id,
+                role: 'gallery'
+              })
+              .eq('id', user.id);
+            
+            const { data: updatedCollector } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', user.id)
+              .single();
+            
+            if (updatedCollector) {
+              setCollector(updatedCollector);
+              setNotificationConsent(updatedCollector.notification_consent || false);
+            }
+          } else {
+            // Create new Collectors record
+            const { error: insertError } = await supabase
+              .from('Collectors')
+              .insert({
+                user_id: user.id,
+                email: user.email || '',
+                role: 'gallery',
+                username: artistData.username || '',
+                first_name: artistData.firstname || '',
+                surname: artistData.surname || '',
+                country: artistData.country || '',
+                profilepix: artistData.profilepix || null,
+                notification_consent: artistData.notification_consent || false,
+                preferences: {
+                  artists: {}, genres: {}, styles: {}, subjects: {},
+                  colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+                },
+                is_temporary: false,
+              });
+            
+            if (!insertError) {
+              const { data: newCollector } = await supabase
+                .from('Collectors')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+              
+              if (newCollector) {
+                setCollector(newCollector);
+                setNotificationConsent(newCollector.notification_consent || false);
+              }
+            }
+          }
+        }
+      } else {
+        // Regular collector or artist
+        const { data, error } = await supabase
+          .from('Collectors')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        if (!error && data) {
+          setCollector(data);
+          setNotificationConsent(data.notification_consent || false);
+        }
       }
+      
       setCollectorLoading(false);
     };
     fetchCollector();
@@ -222,11 +323,155 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
   // Helper: check if user is authenticated
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-  }, []);
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
 
-  // Auth state changes are handled by parent component (page.tsx)
-  // No need for duplicate auth listeners here
+    // Listen for auth state changes (sign in, sign out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        // Re-fetch user data when auth state changes
+        const fetchUserData = async () => {
+          // First check Artists table to see if user is a gallery
+          const { data: artistData } = await supabase
+            .from('Artists')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (artistData && artistData.is_gallery) {
+            // User is a gallery - ensure Collectors record is correct
+            setIsGallery(true);
+            setGalleryData(artistData);
+            
+            // Check and fix Collectors record
+            const { data: collectorData } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', session.user.id)
+              .single();
+            
+            if (!collectorData) {
+              // Try to find by id (old format) and migrate it
+              const { data: oldCollectorData } = await supabase
+                .from('Collectors')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              if (oldCollectorData) {
+                // Update the record to use user_id and set role to gallery
+                await supabase
+                  .from('Collectors')
+                  .update({
+                    user_id: session.user.id,
+                    role: 'gallery'
+                  })
+                  .eq('id', session.user.id);
+                
+                // Re-fetch with correct user_id
+                const { data: updatedCollector } = await supabase
+                  .from('Collectors')
+                  .select('*')
+                  .eq('user_id', session.user.id)
+                  .single();
+                
+                if (updatedCollector) {
+                  setCollector(updatedCollector);
+                  setNotificationConsent(updatedCollector.notification_consent || false);
+                }
+              } else {
+                // Create new Collectors record for gallery
+                const { error: insertError } = await supabase
+                  .from('Collectors')
+                  .insert({
+                    user_id: session.user.id,
+                    email: session.user.email || '',
+                    role: 'gallery',
+                    username: artistData.username || '',
+                    first_name: artistData.firstname || '',
+                    surname: artistData.surname || '',
+                    country: artistData.country || '',
+                    profilepix: artistData.profilepix || null,
+                    notification_consent: artistData.notification_consent || false,
+                    preferences: {
+                      artists: {}, genres: {}, styles: {}, subjects: {},
+                      colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+                    },
+                    is_temporary: false,
+                  });
+                
+                if (!insertError) {
+                  const { data: newCollector } = await supabase
+                    .from('Collectors')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .single();
+                  
+                  if (newCollector) {
+                    setCollector(newCollector);
+                    setNotificationConsent(newCollector.notification_consent || false);
+                  }
+                }
+              }
+            } else {
+              // Collector record exists - ensure role is correct
+              if (collectorData.role !== 'gallery') {
+                await supabase
+                  .from('Collectors')
+                  .update({ role: 'gallery' })
+                  .eq('user_id', session.user.id);
+                
+                setCollector({ ...collectorData, role: 'gallery' });
+              } else {
+                setCollector(collectorData);
+              }
+              setNotificationConsent(collectorData.notification_consent || false);
+            }
+          } else if (artistData && !artistData.is_gallery) {
+            // User is an artist
+            setIsArtist(true);
+            
+            // Fetch collector data
+            const { data: collectorData } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', session.user.id)
+              .single();
+            if (collectorData) {
+              setCollector(collectorData);
+              setNotificationConsent(collectorData.notification_consent || false);
+            }
+          } else {
+            // Regular collector - fetch collector data
+            const { data: collectorData } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', session.user.id)
+              .single();
+            if (collectorData) {
+              setCollector(collectorData);
+              setNotificationConsent(collectorData.notification_consent || false);
+            }
+          }
+        };
+        fetchUserData();
+      } else {
+        // Clear user data on sign out
+        setCollector(null);
+        setIsArtist(false);
+        setIsGallery(false);
+        setGalleryData(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Fetch artist's artworks if user is artist
   useEffect(() => {
@@ -268,9 +513,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
     fetchArtist();
   }, [collector]);
 
-  // Check if user is an artist (regardless of collector role)
+  // Check if user is an artist or gallery (regardless of collector role)
   useEffect(() => {
-    const checkIfArtist = async () => {
+    const checkIfArtistOrGallery = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -281,13 +526,107 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
         .single();
 
       if (!error && data) {
-        setIsArtist(true);
-        fetchPortfolioArtworks(user.id);
+        if (data.is_gallery) {
+          setIsGallery(true);
+          setGalleryData(data);
+          
+          // Ensure Collectors record has correct role - try multiple approaches
+          let collectorData = null;
+          
+          // First try by user_id
+          const { data: collectorByUserId } = await supabase
+            .from('Collectors')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (collectorByUserId) {
+            collectorData = collectorByUserId;
+          } else {
+            // Try by id (old format)
+            const { data: collectorById } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('id', user.id)
+              .single();
+            
+            if (collectorById) {
+              collectorData = collectorById;
+              // Migrate to new format
+              await supabase
+                .from('Collectors')
+                .update({
+                  user_id: user.id,
+                  role: 'gallery'
+                })
+                .eq('id', user.id);
+              
+              // Re-fetch with user_id
+              const { data: updated } = await supabase
+                .from('Collectors')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+              
+              if (updated) collectorData = updated;
+            }
+          }
+          
+          // Update role if needed
+          if (collectorData) {
+            if (collectorData.role !== 'gallery') {
+              await supabase
+                .from('Collectors')
+                .update({ role: 'gallery' })
+                .eq(collectorData.user_id ? 'user_id' : 'id', user.id);
+              
+              // Update local state
+              setCollector({ ...collectorData, role: 'gallery' });
+            } else {
+              setCollector(collectorData);
+            }
+          } else {
+            // Create new Collectors record if it doesn't exist
+            const { error: insertError } = await supabase
+              .from('Collectors')
+              .insert({
+                user_id: user.id,
+                email: user.email || '',
+                role: 'gallery',
+                username: data.username || '',
+                first_name: data.firstname || '',
+                surname: data.surname || '',
+                country: data.country || '',
+                profilepix: data.profilepix || null,
+                notification_consent: data.notification_consent || false,
+                preferences: {
+                  artists: {}, genres: {}, styles: {}, subjects: {},
+                  colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+                },
+                is_temporary: false,
+              });
+            
+            if (!insertError) {
+              const { data: newCollector } = await supabase
+                .from('Collectors')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+              
+              if (newCollector) {
+                setCollector(newCollector);
+              }
+            }
+          }
+        } else {
+          setIsArtist(true);
+          fetchPortfolioArtworks(user.id);
+        }
       }
     };
 
-    checkIfArtist();
-  }, []);
+    checkIfArtistOrGallery();
+  }, [user]);
 
   // Fetch portfolio artworks for artists
   const fetchPortfolioArtworks = async (artistId: string) => {
@@ -470,6 +809,100 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
     router.push('/');
   }
 
+  // Automatically fix gallery role on profile load if needed
+  useEffect(() => {
+    const autoFixGalleryRole = async () => {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) return;
+      
+      // Only try to fix if user is not already detected as gallery
+      if (isGallery) return;
+      
+      // Check if user should be a gallery by checking:
+      // 1. Artists table has is_gallery=true but we didn't detect it
+      // 2. Collectors table has role='gallery' but Artists table doesn't have is_gallery=true
+      const { data: artistCheck } = await supabase
+        .from('Artists')
+        .select('*')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+      
+      const { data: collectorCheck } = await supabase
+        .from('Collectors')
+        .select('*')
+        .or(`user_id.eq.${currentUser.id},id.eq.${currentUser.id}`)
+        .maybeSingle();
+      
+      // Determine if user should be a gallery
+      const shouldBeGallery = 
+        (artistCheck && artistCheck.is_gallery) || // Has Artists record marked as gallery
+        (collectorCheck && collectorCheck.role === 'gallery') || // Has Collectors record with gallery role
+        (currentUser.email?.toLowerCase().includes('gallery')); // Email suggests gallery
+      
+      // Only fix if there's a mismatch
+      const needsFix = shouldBeGallery && !isGallery && (
+        (artistCheck && !artistCheck.is_gallery) || // Artists record exists but is_gallery is false
+        (collectorCheck && collectorCheck.role === 'gallery' && (!artistCheck || !artistCheck.is_gallery)) || // Collectors says gallery but Artists doesn't
+        (!artistCheck && collectorCheck?.role === 'gallery') // No Artists record but Collectors says gallery
+      );
+      
+      if (needsFix) {
+        try {
+          const response = await fetch('/api/fix-gallery-role', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            // Re-fetch user data after a short delay
+            setTimeout(async () => {
+              const { data: { user: refreshedUser } } = await supabase.auth.getUser();
+              if (refreshedUser) {
+                setUser(refreshedUser);
+                // Re-check gallery status
+                const { data: artistData } = await supabase
+                  .from('Artists')
+                  .select('*')
+                  .eq('id', refreshedUser.id)
+                  .maybeSingle();
+                
+                if (artistData && artistData.is_gallery) {
+                  setIsGallery(true);
+                  setGalleryData(artistData);
+                }
+                
+                // Re-fetch collector
+                const { data: collectorData } = await supabase
+                  .from('Collectors')
+                  .select('*')
+                  .eq('user_id', refreshedUser.id)
+                  .maybeSingle();
+                
+                if (collectorData) {
+                  setCollector(collectorData);
+                }
+                
+                router.refresh();
+              }
+            }, 1000);
+          }
+        } catch (error) {
+          // Silent fail - don't show error to user
+          console.error('Auto-fix gallery role failed:', error);
+        }
+      }
+    };
+    
+    // Run after a short delay to let other data load first
+    const timer = setTimeout(() => {
+      autoFixGalleryRole();
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, [user, isGallery, router]);
+
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
@@ -599,16 +1032,58 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       return;
     }
     
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: signInEmail,
       password: signInPassword,
     });
+    
     if (error) {
       setSignInError(error.message);
+      setSigningIn(false);
     } else {
-      router.refresh();
+      // Update user state immediately after successful sign-in
+      if (data.user) {
+        setUser(data.user);
+        // Clear form fields
+        setSignInEmail("");
+        setSignInPassword("");
+        // Refresh router to update the page
+        router.refresh();
+        // Also trigger a re-fetch of collector/artist/gallery data
+        const fetchUserData = async () => {
+          const { data: { user: currentUser } } = await supabase.auth.getUser();
+          if (currentUser) {
+            setUser(currentUser);
+            // Re-fetch collector data
+            const { data: collectorData } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', currentUser.id)
+              .single();
+            if (collectorData) {
+              setCollector(collectorData);
+              setNotificationConsent(collectorData.notification_consent || false);
+            }
+            // Re-check if artist or gallery
+            const { data: artistData } = await supabase
+              .from('Artists')
+              .select('*')
+              .eq('id', currentUser.id)
+              .single();
+            if (artistData) {
+              if (artistData.is_gallery) {
+                setIsGallery(true);
+                setGalleryData(artistData);
+              } else {
+                setIsArtist(true);
+              }
+            }
+          }
+        };
+        fetchUserData();
+      }
+      setSigningIn(false);
     }
-    setSigningIn(false);
   };
 
   const handlePasswordReset = async (e: React.FormEvent) => {
@@ -920,6 +1395,29 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
             </div>
           </CardContent>
         </Card>
+
+        {/* Register as Gallery Section */}
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="font-sans text-sm">Register as a Gallery</CardTitle>
+            <CardDescription className="font-sans text-sm text-black">Join Kaleidorium as a gallery to showcase multiple artists and their artworks.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center">
+              <Button 
+                onClick={() => router.push('/for-galleries/register')}
+                className="w-full bg-black text-white hover:bg-gray-800"
+                style={{
+                  color: 'white !important', 
+                  backgroundColor: 'black !important',
+                  borderColor: 'black !important'
+                }}
+              >
+                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as a Gallery</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     )
   }
@@ -961,7 +1459,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     />
                 </div>
                 <h2 className="text-sm font-semibold font-sans">{collector?.username || user?.email}</h2>
-                <p className="text-sm text-muted-foreground">{isArtist ? 'Artist' : (collector?.role || 'Collector')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {isGallery ? 'Gallery' : isArtist ? 'Artist' : (collector?.role || 'Collector')}
+                </p>
                 <Button variant="outline" className="mt-4 w-full" onClick={handleLogout}>
                   Logout
                       </Button>
@@ -972,9 +1472,10 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
         <div className="lg:w-3/4">
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className={`grid w-full ${isArtist ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            <TabsList className={`grid w-full ${isArtist || isGallery ? 'grid-cols-2' : 'grid-cols-1'}`}>
               {/* Art Preferences tab hidden - functionality moved to Collection page */}
               {/* <TabsTrigger value="preferences">Art Preferences</TabsTrigger> */}
+              {(isArtist || isGallery) && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
               {isArtist && <TabsTrigger value="portfolio">Portfolio</TabsTrigger>}
               <TabsTrigger value="account">Account Information</TabsTrigger>
             </TabsList>
@@ -1092,6 +1593,17 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* Dashboard Tab - For Artists and Galleries */}
+            {(isArtist || isGallery) && (
+              <TabsContent value="dashboard" className="mt-6">
+                <ArtistGalleryDashboard
+                  userId={user?.id || ""}
+                  isGallery={isGallery}
+                  artistId={isArtist ? user?.id : undefined}
+                />
+              </TabsContent>
+            )}
 
             {/* Portfolio Tab - Only for Artists */}
             {isArtist && (

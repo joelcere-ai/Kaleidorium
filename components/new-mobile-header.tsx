@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Search, Heart, Palette, Info, Mail } from "lucide-react";
+import { Menu, X, User, Search, Heart, Palette, Info, Mail, DollarSign } from "lucide-react";
 
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
 }
 
 export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
@@ -16,7 +16,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => {
+  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     setView(view);
     setIsMenuOpen(false);
   };
@@ -56,8 +56,13 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
           <Button
             variant="ghost"
             onClick={handleLogoClick}
-            className="text-black hover:bg-gray-100 px-2"
+            className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2"
           >
+            <img 
+              src="/logos/logo-desktop-32x32.svg" 
+              alt="Kaleidorium Logo" 
+              className="w-6 h-6"
+            />
             <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
           </Button>
 
@@ -133,12 +138,34 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
+                  isCurrentPage("for-galleries") ? "bg-gray-100" : ""
+                }`}
+                onClick={() => handleNavigation("for-galleries")}
+              >
+                <Palette className="mr-3 h-5 w-5" />
+                For Galleries
+              </Button>
+
+              <Button
+                variant="ghost"
+                className={`w-full justify-start text-black hover:bg-gray-100 ${
                   isCurrentPage("about") ? "bg-gray-100" : ""
                 }`}
                 onClick={() => handleNavigation("about")}
               >
                 <Info className="mr-3 h-5 w-5" />
                 For Collectors
+              </Button>
+
+              <Button
+                variant="ghost"
+                className={`w-full justify-start text-black hover:bg-gray-100 ${
+                  isCurrentPage("pricing") ? "bg-gray-100" : ""
+                }`}
+                onClick={() => handleNavigation("pricing")}
+              >
+                <DollarSign className="mr-3 h-5 w-5" />
+                Pricing
               </Button>
 
               <Button
