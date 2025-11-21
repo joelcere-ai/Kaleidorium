@@ -19,68 +19,56 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Check if user has an Artists record
-    const { data: artistData, error: artistError } = await adminSupabase
-      .from('Artists')
+    // Check if user has a Galleries record (new separate table)
+    const { data: galleryData, error: galleryError } = await adminSupabase
+      .from('Galleries')
       .select('*')
       .eq('id', user.id)
       .single();
 
-    let finalArtistData = artistData;
+    let finalGalleryData = galleryData;
 
-    // If no Artists record exists, or if is_gallery is not true, create/update it
-    if (artistError || !artistData || !artistData.is_gallery) {
-      // Get collector info to use for Artists record
+    // If no Galleries record exists, create it
+    if (galleryError || !galleryData) {
+      // Get collector info to use for Galleries record
       const { data: collectorInfo } = await adminSupabase
         .from('Collectors')
         .select('*')
         .or(`user_id.eq.${user.id},id.eq.${user.id}`)
         .maybeSingle();
 
-      if (!artistData) {
-        // Create new Artists record
-        const { data: insertedData, error: insertError } = await adminSupabase
-          .from('Artists')
-          .insert({
-            id: user.id,
-            username: collectorInfo?.username || user.email?.split('@')[0] || 'gallery',
-            firstname: collectorInfo?.first_name || '',
-            surname: collectorInfo?.surname || '',
-            email: user.email || '',
-            country: collectorInfo?.country || '',
-            biog: '',
-            website: '',
-            profilepix: collectorInfo?.profilepix || null,
-            notification_consent: collectorInfo?.notification_consent || false,
-            is_gallery: true,
-          })
-          .select()
-          .single();
+      // Also check old Artists table for migration
+      const { data: oldArtistData } = await adminSupabase
+        .from('Artists')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
 
-        if (insertError) {
-          return NextResponse.json(
-            { error: "Failed to create Artists record", details: insertError.message },
-            { status: 500 }
-          );
-        }
-        finalArtistData = insertedData;
-      } else if (!artistData.is_gallery) {
-        // Update existing record
-        const { data: updatedData, error: updateError } = await adminSupabase
-          .from('Artists')
-          .update({ is_gallery: true })
-          .eq('id', user.id)
-          .select()
-          .single();
+      // Create new Galleries record
+      const { data: insertedData, error: insertError } = await adminSupabase
+        .from('Galleries')
+        .insert({
+          id: user.id,
+          username: oldArtistData?.username || collectorInfo?.username || user.email?.split('@')[0] || 'gallery',
+          firstname: oldArtistData?.firstname || collectorInfo?.first_name || '',
+          surname: oldArtistData?.surname || collectorInfo?.surname || '',
+          email: user.email || '',
+          country: oldArtistData?.country || collectorInfo?.country || '',
+          biog: oldArtistData?.biog || '',
+          website: oldArtistData?.website || '',
+          profilepix: oldArtistData?.profilepix || collectorInfo?.profilepix || null,
+          notification_consent: oldArtistData?.notification_consent || collectorInfo?.notification_consent || false,
+        })
+        .select()
+        .single();
 
-        if (updateError) {
-          return NextResponse.json(
-            { error: "Failed to update Artists record", details: updateError.message },
-            { status: 500 }
-          );
-        }
-        finalArtistData = updatedData;
+      if (insertError) {
+        return NextResponse.json(
+          { error: "Failed to create Galleries record", details: insertError.message },
+          { status: 500 }
+        );
       }
+      finalGalleryData = insertedData;
     }
 
     // Now ensure Collectors record is correct
@@ -137,12 +125,12 @@ export async function POST(request: NextRequest) {
           user_id: user.id,
           email: user.email || '',
           role: 'gallery',
-          username: finalArtistData?.username || '',
-          first_name: finalArtistData?.firstname || '',
-          surname: finalArtistData?.surname || '',
-          country: finalArtistData?.country || '',
-          profilepix: finalArtistData?.profilepix || null,
-          notification_consent: finalArtistData?.notification_consent || false,
+          username: finalGalleryData?.username || '',
+          first_name: finalGalleryData?.firstname || '',
+          surname: finalGalleryData?.surname || '',
+          country: finalGalleryData?.country || '',
+          profilepix: finalGalleryData?.profilepix || null,
+          notification_consent: finalGalleryData?.notification_consent || false,
           preferences: {
             artists: {}, genres: {}, styles: {}, subjects: {},
             colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],

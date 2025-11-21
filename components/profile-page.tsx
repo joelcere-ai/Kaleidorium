@@ -189,25 +189,19 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // First check if user is a gallery (profile picture in Artists table)
-      const { data: artistData, error: artistError } = await supabase
-        .from('Artists')
-        .select('profilepix, is_gallery')
+      // First check if user is a gallery (profile picture in Galleries table)
+      const { data: galleryData, error: galleryError } = await supabase
+        .from('Galleries')
+        .select('profilepix')
         .eq('id', user.id)
         .single()
 
-      if (artistError) {
-        console.error('Error fetching Artists record for profile picture:', artistError);
+      if (galleryError && galleryError.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error fetching Galleries record for profile picture:', galleryError);
       }
 
-      if (artistData?.is_gallery && artistData?.profilepix) {
-        setProfilePicture(artistData.profilepix)
-        return
-      }
-
-      // Also check if is_gallery is true but profilepix is null (use default)
-      if (artistData?.is_gallery) {
-        // Gallery exists but no profile picture - that's okay, just return
+      if (galleryData?.profilepix) {
+        setProfilePicture(galleryData.profilepix)
         return
       }
 
@@ -233,25 +227,21 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       if (!user) return;
       setCollectorLoading(true);
       
-      // First check if user is a gallery from Artists table
-      const { data: artistData, error: artistError } = await supabase
-        .from('Artists')
+      // First check if user is a gallery from Galleries table (new separate table)
+      const { data: galleryData, error: galleryError } = await supabase
+        .from('Galleries')
         .select('*')
         .eq('id', user.id)
         .single();
       
       // Log errors for debugging
-      if (artistError) {
-        console.error('Error fetching Artists record:', artistError);
-        // If it's a permission error, the SELECT policy might be blocking access
-        if (artistError.code === '42501' || artistError.message?.includes('policy')) {
-          console.error('RLS policy error - user may not have SELECT permission on Artists table');
-        }
+      if (galleryError && galleryError.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error fetching Galleries record:', galleryError);
       }
       
-      if (artistData && artistData.is_gallery) {
+      if (galleryData) {
         setIsGallery(true);
-        setGalleryData(artistData);
+        setGalleryData(galleryData);
         
         // Check Collectors record and fix if needed
         const { data: collectorData } = await supabase
@@ -308,12 +298,12 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 user_id: user.id,
                 email: user.email || '',
                 role: 'gallery',
-                username: artistData.username || '',
-                first_name: artistData.firstname || '',
-                surname: artistData.surname || '',
-                country: artistData.country || '',
-                profilepix: artistData.profilepix || null,
-                notification_consent: artistData.notification_consent || false,
+                username: galleryData.username || '',
+                first_name: galleryData.firstname || '',
+                surname: galleryData.surname || '',
+                country: galleryData.country || '',
+                profilepix: galleryData.profilepix || null,
+                notification_consent: galleryData.notification_consent || false,
                 preferences: {
                   artists: {}, genres: {}, styles: {}, subjects: {},
                   colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -367,17 +357,17 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       if (session?.user) {
         // Re-fetch user data when auth state changes
         const fetchUserData = async () => {
-          // First check Artists table to see if user is a gallery
-          const { data: artistData } = await supabase
-            .from('Artists')
+          // First check Galleries table to see if user is a gallery
+          const { data: galleryData } = await supabase
+            .from('Galleries')
             .select('*')
             .eq('id', session.user.id)
             .single();
           
-          if (artistData && artistData.is_gallery) {
+          if (galleryData) {
             // User is a gallery - ensure Collectors record is correct
             setIsGallery(true);
-            setGalleryData(artistData);
+            setGalleryData(galleryData);
             
             // Check and fix Collectors record
             const { data: collectorData } = await supabase
@@ -420,15 +410,15 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 const { error: insertError } = await supabase
                   .from('Collectors')
                   .insert({
-                    user_id: session.user.id,
-                    email: session.user.email || '',
-                    role: 'gallery',
-                    username: artistData.username || '',
-                    first_name: artistData.firstname || '',
-                    surname: artistData.surname || '',
-                    country: artistData.country || '',
-                    profilepix: artistData.profilepix || null,
-                    notification_consent: artistData.notification_consent || false,
+                user_id: session.user.id,
+                email: session.user.email || '',
+                role: 'gallery',
+                username: galleryData.username || '',
+                first_name: galleryData.firstname || '',
+                surname: galleryData.surname || '',
+                country: galleryData.country || '',
+                profilepix: galleryData.profilepix || null,
+                notification_consent: galleryData.notification_consent || false,
                     preferences: {
                       artists: {}, genres: {}, styles: {}, subjects: {},
                       colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -551,118 +541,80 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      // First check if user is a gallery (new Galleries table)
+      const { data: galleryData, error: galleryError } = await supabase
+        .from('Galleries')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!galleryError && galleryData) {
+        setIsGallery(true);
+        setGalleryData(galleryData);
+        
+        // Ensure Collectors record has correct role
+        const { data: collectorData } = await supabase
+          .from('Collectors')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (collectorData) {
+          if (collectorData.role !== 'gallery') {
+            await supabase
+              .from('Collectors')
+              .update({ role: 'gallery' })
+              .eq('user_id', user.id);
+            setCollector({ ...collectorData, role: 'gallery' });
+          } else {
+            setCollector(collectorData);
+          }
+        } else {
+          // Create new Collectors record if it doesn't exist
+          const { error: insertError } = await supabase
+            .from('Collectors')
+            .insert({
+              user_id: user.id,
+              email: user.email || '',
+              role: 'gallery',
+              username: galleryData.username || '',
+              first_name: galleryData.firstname || '',
+              surname: galleryData.surname || '',
+              country: galleryData.country || '',
+              profilepix: galleryData.profilepix || null,
+              notification_consent: galleryData.notification_consent || false,
+              preferences: {
+                artists: {}, genres: {}, styles: {}, subjects: {},
+                colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+              },
+              is_temporary: false,
+            });
+          
+          if (!insertError) {
+            const { data: newCollector } = await supabase
+              .from('Collectors')
+              .select('*')
+              .eq('user_id', user.id)
+              .single();
+            
+            if (newCollector) {
+              setCollector(newCollector);
+            }
+          }
+        }
+        return; // Gallery found, don't check Artists table
+      }
+
+      // If not a gallery, check if user is an artist
+      const { data: artistData, error: artistError } = await supabase
         .from('Artists')
         .select('*')
         .eq('id', user.id)
         .single();
 
-      // Log errors for debugging
-      if (error) {
-        console.error('Error in checkIfArtistOrGallery:', error);
-        // If it's a permission error, the SELECT policy might be blocking access
-        if (error.code === '42501' || error.message?.includes('policy')) {
-          console.error('RLS policy error - user may not have SELECT permission on Artists table');
-        }
-      }
-
-      if (!error && data) {
-        if (data.is_gallery) {
-          setIsGallery(true);
-          setGalleryData(data);
-          
-          // Ensure Collectors record has correct role - try multiple approaches
-          let collectorData = null;
-          
-          // First try by user_id
-          const { data: collectorByUserId } = await supabase
-            .from('Collectors')
-            .select('*')
-            .eq('user_id', user.id)
-            .single();
-          
-          if (collectorByUserId) {
-            collectorData = collectorByUserId;
-          } else {
-            // Try by id (old format)
-            const { data: collectorById } = await supabase
-              .from('Collectors')
-              .select('*')
-              .eq('id', user.id)
-              .single();
-            
-            if (collectorById) {
-              collectorData = collectorById;
-              // Migrate to new format
-              await supabase
-                .from('Collectors')
-                .update({
-                  user_id: user.id,
-                  role: 'gallery'
-                })
-                .eq('id', user.id);
-              
-              // Re-fetch with user_id
-              const { data: updated } = await supabase
-                .from('Collectors')
-                .select('*')
-                .eq('user_id', user.id)
-                .single();
-              
-              if (updated) collectorData = updated;
-            }
-          }
-          
-          // Update role if needed
-          if (collectorData) {
-            if (collectorData.role !== 'gallery') {
-              await supabase
-                .from('Collectors')
-                .update({ role: 'gallery' })
-                .eq(collectorData.user_id ? 'user_id' : 'id', user.id);
-              
-              // Update local state
-              setCollector({ ...collectorData, role: 'gallery' });
-            } else {
-              setCollector(collectorData);
-            }
-          } else {
-            // Create new Collectors record if it doesn't exist
-            const { error: insertError } = await supabase
-              .from('Collectors')
-              .insert({
-                user_id: user.id,
-                email: user.email || '',
-                role: 'gallery',
-                username: data.username || '',
-                first_name: data.firstname || '',
-                surname: data.surname || '',
-                country: data.country || '',
-                profilepix: data.profilepix || null,
-                notification_consent: data.notification_consent || false,
-                preferences: {
-                  artists: {}, genres: {}, styles: {}, subjects: {},
-                  colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
-                },
-                is_temporary: false,
-              });
-            
-            if (!insertError) {
-              const { data: newCollector } = await supabase
-                .from('Collectors')
-                .select('*')
-                .eq('user_id', user.id)
-                .single();
-              
-              if (newCollector) {
-                setCollector(newCollector);
-              }
-            }
-          }
-        } else {
-          setIsArtist(true);
-          fetchPortfolioArtworks(user.id);
-        }
+      if (!artistError && artistData && !artistData.is_gallery) {
+        setIsArtist(true);
+        fetchPortfolioArtworks(user.id);
       }
     };
 

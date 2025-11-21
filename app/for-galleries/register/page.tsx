@@ -209,9 +209,9 @@ function GalleryRegisterContent() {
         }
       }
 
-      // 3. Insert into Artists table with is_gallery = true
-      const { data: insertedArtist, error: galleryError } = await supabase
-        .from("Artists")
+      // 3. Insert into Galleries table (new separate table)
+      const { data: insertedGallery, error: galleryError } = await supabase
+        .from("Galleries")
         .insert({
           id: userId,
           username: gallery.username,
@@ -223,41 +223,31 @@ function GalleryRegisterContent() {
           website: gallery.website,
           profilepix: profilePictureUrl,
           notification_consent: gallery.notificationConsent,
-          is_gallery: true, // Mark as gallery
         })
         .select()
         .single();
       
       if (galleryError) {
-        console.error('Artists table insert error:', galleryError);
-        // Check if it's an RLS policy issue
-        if (galleryError.message?.includes('infinite recursion') || 
-            galleryError.message?.includes('policy') ||
-            galleryError.code === '42501') {
-          toast({ 
-            title: "Registration Error", 
-            description: "Database policy error. Please contact support or try the 'Fix Gallery Role' button after signing in.", 
-            variant: "destructive" 
-          });
-        } else {
-          toast({ 
-            title: "Registration Error", 
-            description: `Failed to create gallery profile: ${galleryError.message}`, 
-            variant: "destructive" 
-          });
-        }
+        console.error('Galleries table insert error:', galleryError);
+        toast({ 
+          title: "Registration Error", 
+          description: `Failed to create gallery profile: ${galleryError.message}`, 
+          variant: "destructive" 
+        });
         setIsSubmitting(false);
         return;
       }
       
-      // Verify the record was created with is_gallery = true
-      if (!insertedArtist || !insertedArtist.is_gallery) {
-        console.error('Artists record created but is_gallery is not true:', insertedArtist);
+      // Verify the record was created
+      if (!insertedGallery) {
+        console.error('Gallery record was not created:', insertedGallery);
         toast({ 
-          title: "Registration Warning", 
-          description: "Gallery profile created but may need verification. Use 'Fix Gallery Role' button if needed.", 
-          variant: "default" 
+          title: "Registration Error", 
+          description: "Gallery profile was not created. Please try again.", 
+          variant: "destructive" 
         });
+        setIsSubmitting(false);
+        return;
       }
 
       // 4. Create Collectors record for the gallery (reuse same profile picture)
