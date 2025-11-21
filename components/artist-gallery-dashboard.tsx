@@ -214,22 +214,48 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
         }
       }
 
+      // Generate a UUID for the artist (gallery-managed artists don't have auth users yet)
+      // Using crypto.randomUUID() which is available in modern browsers
+      let artistId: string;
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        artistId = crypto.randomUUID();
+      } else {
+        // Fallback for older browsers
+        artistId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+
+      console.log('Creating artist with id:', artistId);
+
       // Create new artist profile managed by this gallery
+      // Note: id is a generated UUID for gallery-managed artists (not linked to auth.users)
+      // Artists who register themselves will set id = auth.uid() during registration
+      const insertData = {
+        id: artistId, // Generate UUID for gallery-managed artists
+        username: newArtistName.trim(),
+        firstname: newArtistName.trim().split(" ")[0] || newArtistName.trim(),
+        surname: newArtistName.trim().split(" ").slice(1).join(" ") || "",
+        biog: newArtistBio.trim() || null,
+        website: websiteUrl,
+        managed_by_gallery_id: userId,
+        is_gallery: false,
+      };
+
+      console.log('Insert data:', insertData);
+
       const { data: newArtist, error } = await supabase
         .from("Artists")
-        .insert({
-          username: newArtistName.trim(),
-          firstname: newArtistName.trim().split(" ")[0] || newArtistName.trim(),
-          surname: newArtistName.trim().split(" ").slice(1).join(" ") || "",
-          biog: newArtistBio.trim() || null,
-          website: websiteUrl,
-          managed_by_gallery_id: userId,
-          is_gallery: false,
-        })
+        .insert(insertData)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating artist:', error);
+        throw error;
+      }
 
       toast({
         title: "Success",
