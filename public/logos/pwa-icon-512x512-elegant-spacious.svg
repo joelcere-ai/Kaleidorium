@@ -3,12 +3,12 @@
   <!-- Background -->
   <rect width="512" height="512" fill="#000000" rx="102.4"/>
   
-  <!-- K Letter - Elegant and centered -->
+  <!-- K Letter -->
   <text 
     x="256" 
-    y="321.2288" 
+    y="303.3088" 
     font-family="Playfair Display, serif" 
-    font-size="186.36800000000002" 
+    font-size="135.16799999999998" 
     font-weight="bold" 
     fill="#FFFFFF" 
     text-anchor="middle" 

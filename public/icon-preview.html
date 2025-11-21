@@ -1,105 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaleidorium Icon Preview</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .icon-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-        .icon-item {
-            text-align: center;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: white;
-        }
-        .icon-item img {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .description {
-            color: #666;
-            margin-bottom: 30px;
-        }
-        .note {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #2196f3;
-            margin: 20px 0;
-            text-align: left;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaleidorium PWA Icon Preview</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+    
+    .variations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .variation-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .variation-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .variation-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+      text-transform: capitalize;
+    }
+    
+    .variation-description {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    .icon-preview {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .icon-size {
+      text-align: center;
+    }
+    
+    .icon-size-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .icon-display {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+    }
+    
+    .icon-display.large {
+      width: 120px;
+      height: 120px;
+      border-radius: 26px;
+    }
+    
+    .icon-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .mobile-preview {
+      margin-top: 20px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .mobile-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 13px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+    }
+    
+    .mobile-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .mobile-label {
+      color: white;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      text-align: center;
+    }
+    
+    .instructions {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+    }
+    
+    .instructions h2 {
+      color: #1a1a1a;
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+    
+    .instructions ol {
+      margin-left: 20px;
+      color: #333;
+      line-height: 2;
+    }
+    
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    .selected {
+      border: 3px solid #000;
+      background: #f0f0f0;
+    }
+    
+    .select-btn {
+      width: 100%;
+      padding: 12px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.2s;
+    }
+    
+    .select-btn:hover {
+      background: #333;
+    }
+    
+    .select-btn.selected {
+      background: #4CAF50;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎨 Kaleidorium New Icon Design</h1>
-        <p class="description">This is how your mobile app shortcut icon should look:</p>
-        
-        <div class="icon-preview">
-            <div class="icon-item">
-                <img src="/android-chrome-192x192.png" alt="192x192 Icon" width="96" height="96">
-                <h3>192x192 (Mobile)</h3>
-                <p>Main app icon</p>
-            </div>
-            
-            <div class="icon-item">
-                <img src="/android-chrome-512x512.png" alt="512x512 Icon" width="96" height="96">
-                <h3>512x512 (High-res)</h3>
-                <p>High resolution</p>
-            </div>
-            
-            <div class="icon-item">
-                <img src="/apple-touch-icon.png" alt="Apple Touch Icon" width="96" height="96">
-                <h3>180x180 (iOS)</h3>
-                <p>Apple devices</p>
-            </div>
-        </div>
-        
-        <div class="note">
-            <strong>📱 Icon Features:</strong>
-            <ul>
-                <li>White square background</li>
-                <li>Thin black border (2px)</li>
-                <li>Centered black "K" in serif font</li>
-                <li>Rounded corners for modern look</li>
-            </ul>
-        </div>
-        
-        <div class="note">
-            <strong>🔧 If you see the old icon:</strong>
-            <ol>
-                <li>Uninstall the current PWA from your home screen</li>
-                <li>Clear your browser cache</li>
-                <li>Visit the website again and reinstall</li>
-                <li>The new icon should appear</li>
-            </ol>
-        </div>
+  <div class="container">
+    <h1>🎨 Kaleidorium PWA Icon Preview</h1>
+    <p class="subtitle">Review and select the best icon design for mobile shortcuts</p>
+    
+    <div class="variations-grid" id="variationsGrid">
+      <!-- Variations will be inserted here by JavaScript -->
     </div>
+    
+    <div class="instructions">
+      <h2>📋 How to Use</h2>
+      <ol>
+        <li><strong>Review</strong> all icon variations above</li>
+        <li><strong>Click "Select This Design"</strong> on your preferred variation</li>
+        <li><strong>Test on mobile</strong> by installing the PWA with the selected icons</li>
+        <li><strong>Finalize</strong> by renaming the chosen files to replace the current icons</li>
+      </ol>
+      <p style="margin-top: 20px; color: #666; font-size: 0.95rem;">
+        <strong>Tip:</strong> Icons with more padding (spacious/ultra-spacious) look more elegant but the K will be smaller. 
+        Icons with less padding (minimal/balanced) are more visible but may look less refined.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const variations = [
+      {
+        name: 'elegant-minimal',
+        description: 'Minimal padding (15%) - K fills more space, more visible',
+        padding: '15%',
+      },
+      {
+        name: 'elegant-balanced',
+        description: 'Balanced padding (22%) - Recommended balance',
+        padding: '22%',
+      },
+      {
+        name: 'elegant-spacious',
+        description: 'Spacious padding (28%) - Very elegant, refined look',
+        padding: '28%',
+      },
+      {
+        name: 'elegant-ultra-spacious',
+        description: 'Ultra spacious padding (35%) - Maximum elegance',
+        padding: '35%',
+      },
+    ];
+
+    let selectedVariation = null;
+
+    function createVariationCard(variation) {
+      const card = document.createElement('div');
+      card.className = 'variation-card';
+      card.id = `card-${variation.name}`;
+      
+      card.innerHTML = `
+        <div class="variation-name">${variation.name.replace(/-/g, ' ')}</div>
+        <div class="variation-description">${variation.description}</div>
+        <div class="icon-preview">
+          <div class="icon-size">
+            <div class="icon-size-label">192×192</div>
+            <div class="icon-display">
+              <img src="/logos/pwa-icon-192x192-${variation.name}.svg" alt="${variation.name} 192">
+            </div>
+          </div>
+          <div class="icon-size">
+            <div class="icon-size-label">512×512</div>
+            <div class="icon-display large">
+              <img src="/logos/pwa-icon-512x512-${variation.name}.svg" alt="${variation.name} 512">
+            </div>
+          </div>
+        </div>
+        <div class="mobile-preview">
+          <div class="mobile-icon">
+            <img src="/logos/pwa-icon-192x192-${variation.name}.svg" alt="${variation.name} mobile">
+          </div>
+        </div>
+        <div class="mobile-label">Mobile Home Screen Preview</div>
+        <button class="select-btn" onclick="selectVariation('${variation.name}')">
+          Select This Design
+        </button>
+      `;
+      
+      return card;
+    }
+
+    function selectVariation(name) {
+      // Remove previous selection
+      if (selectedVariation) {
+        const prevCard = document.getElementById(`card-${selectedVariation}`);
+        const prevBtn = prevCard.querySelector('.select-btn');
+        prevCard.classList.remove('selected');
+        prevBtn.classList.remove('selected');
+        prevBtn.textContent = 'Select This Design';
+      }
+      
+      // Add new selection
+      selectedVariation = name;
+      const card = document.getElementById(`card-${name}`);
+      const btn = card.querySelector('.select-btn');
+      card.classList.add('selected');
+      btn.classList.add('selected');
+      btn.textContent = '✓ Selected';
+      
+      // Show instructions
+      alert(`Selected: ${name}\n\nTo use this design:\n1. Rename pwa-icon-192x192-${name}.svg to pwa-icon-192x192.svg\n2. Rename pwa-icon-512x512-${name}.svg to pwa-icon-512x512.svg\n3. Update manifest.json version number`);
+    }
+
+    // Render all variations
+    const grid = document.getElementById('variationsGrid');
+    variations.forEach(variation => {
+      grid.appendChild(createVariationCard(variation));
+    });
+  </script>
 </body>
 </html>
-
