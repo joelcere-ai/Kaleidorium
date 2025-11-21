@@ -46,8 +46,8 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!EMAILJS_PRIVATE_KEY) {
-      console.error('EMAILJS_PRIVATE_KEY is not configured. Email cannot be sent.');
+    if (!EMAILJS_PRIVATE_KEY || !EMAILJS_PRIVATE_KEY.trim()) {
+      console.error('EMAILJS_PRIVATE_KEY is missing or empty. Email cannot be sent.');
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 500 }
@@ -62,9 +62,7 @@ export async function POST(request: Request) {
     const payload = {
       service_id: EMAILJS_SERVICE_ID,
       template_id: templateId,
-      ...(EMAILJS_PRIVATE_KEY
-        ? { accessToken: EMAILJS_PRIVATE_KEY }
-        : { user_id: EMAILJS_USER_ID }),
+      accessToken: EMAILJS_PRIVATE_KEY.trim(),
       template_params: {
         to_email: EMAIL_RECIPIENT,
         submission_type: submissionType,
