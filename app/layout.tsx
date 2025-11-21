@@ -157,12 +157,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 window.addEventListener('load', () => {
                   navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
-                      console.log('Service Worker registered:', registration.scope);
+                      console.log('Service Worker registered successfully:', registration.scope);
+                      console.log('Service Worker state:', registration.active?.state);
                     })
                     .catch((error) => {
-                      console.log('Service Worker registration failed:', error);
+                      console.error('Service Worker registration failed:', error);
                     });
                 });
+              } else {
+                console.log('Service Worker not supported in this browser');
               }
             `,
           }}

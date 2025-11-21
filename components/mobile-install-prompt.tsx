@@ -33,6 +33,23 @@ export function MobileInstallPrompt() {
     setIsAndroid(android)
     setIsStandalone(isInStandaloneMode)
 
+    // Listen for the beforeinstallprompt event (Android/Chrome)
+    const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('beforeinstallprompt event fired!', e);
+      e.preventDefault()
+      setDeferredPrompt(e as BeforeInstallPromptEvent)
+      console.log('Deferred prompt set:', !!e);
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
+    // Also check if prompt is already available (sometimes it fires before component mounts)
+    // Wait a bit for the event to potentially fire
+    const checkPrompt = setTimeout(() => {
+      console.log('Checking for deferred prompt availability...');
+      // The event listener above will set it if available
+    }, 1000);
+
     // Only show prompt on mobile devices that aren't already installed
     if ((iOS || android) && !isInStandaloneMode) {
       // Check if user has already dismissed the prompt recently
@@ -42,46 +59,56 @@ export function MobileInstallPrompt() {
       
       if (!dismissed || dismissedTime < oneWeekAgo) {
         // Show prompt after a short delay to not interrupt registration
-        setTimeout(() => setShowPrompt(true), 3000)
+        // Wait a bit longer to ensure beforeinstallprompt has time to fire
+        setTimeout(() => {
+          console.log('Showing install prompt, deferredPrompt available:', !!deferredPrompt);
+          setShowPrompt(true);
+        }, 4000)
       }
     }
 
-    // Listen for the beforeinstallprompt event (Android)
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
-    }
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
     return () => {
+      clearTimeout(checkPrompt);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
   }, [])
 
   const handleInstallClick = async () => {
-    console.log('Install button clicked', { deferredPrompt: !!deferredPrompt, isAndroid, isIOS });
+    console.log('Install button clicked', { 
+      deferredPrompt: !!deferredPrompt, 
+      isAndroid, 
+      isIOS,
+      userAgent: navigator.userAgent 
+    });
     
     if (deferredPrompt) {
       try {
         // Show the install prompt (works on Android Chrome, Edge, etc.)
-        console.log('Triggering install prompt');
+        console.log('Calling deferredPrompt.prompt()...');
         await deferredPrompt.prompt();
+        console.log('Prompt shown, waiting for user choice...');
         const { outcome } = await deferredPrompt.userChoice;
         
         console.log('Install prompt outcome:', outcome);
         
         if (outcome === 'accepted') {
           console.log('User accepted the install prompt');
+          // The browser will handle the installation
         } else {
           console.log('User dismissed the install prompt');
         }
         
         setDeferredPrompt(null);
         setShowPrompt(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error during install:', error);
-        // Still dismiss the prompt even if there's an error
+        console.error('Error details:', {
+          message: error?.message,
+          name: error?.name,
+          stack: error?.stack
+        });
+        // Show user-friendly error message
+        alert('Installation failed. Please try using your browser\'s menu to "Add to Home Screen".');
         setShowPrompt(false);
       }
     } else if (isIOS) {
@@ -90,8 +117,9 @@ export function MobileInstallPrompt() {
       setShowPrompt(false);
       // iOS instructions will be shown via the prompt itself
     } else {
-      console.log('No install prompt available or not on mobile device');
-      // Dismiss the prompt if no install method is available
+      console.log('No install prompt available');
+      // Show manual instructions for other browsers
+      alert('To install this app:\n\n1. Tap the menu button (three dots)\n2. Select "Add to Home Screen" or "Install App"\n3. Follow the prompts');
       setShowPrompt(false);
     }
   }
@@ -167,25 +195,55 @@ export function MobileInstallPrompt() {
             <p className="text-sm text-gray-700">
               Install Kaleidorium as an app for the best experience discovering and collecting art.
             </p>
-            <div className="space-y-3">
-              <Button 
-                onClick={handleInstallClick}
-                className="w-full bg-black text-white hover:bg-gray-800"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Install App
-              </Button>
-              <Button 
-                onClick={handleDismiss}
-                className="w-full"
-                variant="outline"
-              >
-                Maybe later
-              </Button>
-            </div>
+            {deferredPrompt ? (
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleInstallClick}
+                  className="w-full bg-black text-white hover:bg-gray-800"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Install App
+                </Button>
+                <Button 
+                  onClick={handleDismiss}
+                  className="w-full"
+                  variant="outline"
+                >
+                  Maybe later
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-xs text-gray-600">
+                  To install manually: Tap your browser menu (⋮) and select "Add to Home Screen" or "Install App"
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="font-semibold">Chrome:</span>
+                    <span>Menu → "Add to Home Screen"</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="font-semibold">Safari:</span>
+                    <span>Share → "Add to Home Screen"</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="font-semibold">Firefox:</span>
+                    <span>Menu → "Install"</span>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleDismiss}
+                  className="w-full"
+                  variant="outline"
+                >
+                  Got it
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>
     </div>
   )
+} 
 } 
