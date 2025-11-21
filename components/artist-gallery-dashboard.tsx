@@ -387,7 +387,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           artwork_link: artworkLinkUrl,
           artwork_image: artworkImageUrl,
           uploaded_by_gallery_id: isGallery ? userId : null,
-          tags: artworkTags.join(", "),
+          tags: artworkTags.length > 0 ? artworkTags : null,
           genre: artworkGenre || null,
           style: artworkStyle || null,
           subject: artworkSubject || null,
