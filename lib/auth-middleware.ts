@@ -8,7 +8,7 @@ export interface AuthContext {
   user: any
   isAdmin: boolean
   isAuthenticated: boolean
-  userRole?: 'admin' | 'artist' | 'collector'
+  userRole?: 'admin' | 'artist' | 'gallery' | 'collector'
   dbVerified: boolean
 }
 
@@ -16,7 +16,7 @@ export interface AuthContext {
  * SECURITY: Enhanced role verification with database backing
  */
 async function verifyUserRole(supabase: any, userId: string, userEmail: string): Promise<{
-  role: 'admin' | 'artist' | 'collector' | null,
+  role: 'admin' | 'artist' | 'gallery' | 'collector' | null,
   dbVerified: boolean
 }> {
   try {
@@ -32,19 +32,24 @@ async function verifyUserRole(supabase: any, userId: string, userEmail: string):
       userId, 
       role: collectorData.role 
     });
-    return { role: collectorData.role as 'admin' | 'artist' | 'collector', dbVerified: true };
+    return { role: collectorData.role as 'admin' | 'artist' | 'gallery' | 'collector', dbVerified: true };
     }
 
-    // Fallback: Check Artists table for artist status
+    // Fallback: Check Artists table for artist or gallery status
     const { data: artistData, error: artistError } = await supabase
       .from('Artists')
-      .select('id')
+      .select('id, is_gallery')
       .eq('id', userId)
       .single();
 
     if (!artistError && artistData) {
-      secureLog('info', 'Artist role verified from Artists table', { userId });
-      return { role: 'artist', dbVerified: true };
+      if (artistData.is_gallery) {
+        secureLog('info', 'Gallery role verified from Artists table', { userId });
+        return { role: 'gallery', dbVerified: true };
+      } else {
+        secureLog('info', 'Artist role verified from Artists table', { userId });
+        return { role: 'artist', dbVerified: true };
+      }
     }
 
     // Final fallback: Admin email check (legacy support)

@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
       }
       userId = authResult.user.id;
       
-      // Verify user has artist role
-      if (!authResult.isAdmin && authResult.userRole !== 'artist') {
-        return SecureErrors.authorization({ reason: 'not_artist' });
+      // Verify user has artist or gallery role
+      if (!authResult.isAdmin && authResult.userRole !== 'artist' && authResult.userRole !== 'gallery') {
+        return SecureErrors.authorization({ reason: 'not_artist_or_gallery' });
       }
     }
 

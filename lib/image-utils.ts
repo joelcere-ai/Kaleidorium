@@ -187,7 +187,7 @@ export async function uploadProfilePicture(
   supabase: any,
   userId: string,
   file: File,
-  userType: 'collector' | 'artist' = 'collector'
+  userType: 'collector' | 'artist' | 'gallery' = 'collector'
 ): Promise<{ url: string; path: string }> {
   
   // SECURITY: Validate file with comprehensive security checks

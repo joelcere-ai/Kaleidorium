@@ -4,6 +4,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 import { ProfilePage } from '@/components/profile-page';
 import { AboutContent } from "@/components/about-content";
+import { PricingContent } from "@/components/pricing-content";
 import { NewMobileHeader } from "@/components/new-mobile-header";
 import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
@@ -27,9 +28,9 @@ function HomeContent() {
   const { toast } = useToast();
   
   // Determine current view from search params
-  const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy" => {
+  const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy" => {
     const viewParam = searchParams.get("view");
-    if (viewParam && ["collection", "profile", "for-artists", "about", "contact", "terms", "privacy"].includes(viewParam)) {
+    if (viewParam && ["collection", "profile", "for-artists", "for-galleries", "about", "contact", "pricing", "terms", "privacy"].includes(viewParam)) {
       return viewParam as any;
     }
     return "discover";
@@ -41,7 +42,7 @@ function HomeContent() {
   };
 
   
-  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy">(getCurrentView());
+  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy">(getCurrentView());
   const [collectionCount, setCollectionCount] = useState(0);
   const [collection, setCollection] = useState<any[]>([]);
   const [dbCollection, setDbCollection] = useState<any[]>([]);
@@ -72,7 +73,7 @@ function HomeContent() {
 
 
   // Create a setView function that updates both state and URL
-  const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => {
+  const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     setViewState(newView);
     // Use shallow routing to avoid page reloads
     if (newView === "discover") {
@@ -1618,6 +1619,890 @@ function HomeContent() {
           </div>
         );
       
+      case "for-galleries":
+        // Gallery submission form component
+        const ForGalleriesForm = () => {
+          const [formData, setFormData] = useState({
+            name: "",
+            website: "",
+            contactName: "",
+            email: "",
+            message: ""
+          });
+          const [isSubmitting, setIsSubmitting] = useState(false);
+          const [submitStatus, setSubmitStatus] = useState<string | null>(null);
+
+          const handleSubmit = async (e: React.FormEvent) => {
+            e.preventDefault();
+            setIsSubmitting(true);
+            setSubmitStatus(null);
+
+            // Ensure website has protocol
+            let websiteUrl = formData.website.trim();
+            if (websiteUrl && !/^https?:\/\//i.test(websiteUrl)) {
+              websiteUrl = `https://${websiteUrl}`;
+            }
+
+            try {
+              const response = await fetch('/api/gallery-submission', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  name: formData.name,
+                  email: formData.email,
+                  portfolioLink: websiteUrl,
+                  contactName: formData.contactName,
+                  message: formData.message
+                }),
+              });
+
+              if (response.ok) {
+                setSubmitStatus("Thank you! Your gallery has been submitted for review. We'll be in touch soon.");
+                setFormData({ name: "", website: "", contactName: "", email: "", message: "" });
+              } else {
+                setSubmitStatus("There was an error submitting your gallery. Please try again.");
+              }
+            } catch (error) {
+              console.error('Submission error:', error);
+              setSubmitStatus("There was an error submitting your gallery. Please try again.");
+            } finally {
+              setIsSubmitting(false);
+            }
+          };
+
+          const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            setFormData({
+              ...formData,
+              [e.target.name]: e.target.value
+            });
+          };
+
+          const handleWebsiteBlur = () => {
+            setFormData((prev) => {
+              const trimmedLink = prev.website.trim();
+
+              if (!trimmedLink) {
+                return prev;
+              }
+
+              if (/^https?:\/\//i.test(trimmedLink)) {
+                return prev.website === trimmedLink ? prev : { ...prev, website: trimmedLink };
+              }
+
+              return {
+                ...prev,
+                website: `https://${trimmedLink}`
+              };
+            });
+          };
+
+          return (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Gallery</CardTitle>
+                <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                  Submit your gallery details and which artists you would like to list.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-black mb-1">Gallery Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Your gallery name"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-black mb-1">Website</label>
+                    <input
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      onBlur={handleWebsiteBlur}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="www.yourgallery.com"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-black mb-1">Contact Name</label>
+                    <input
+                      type="text"
+                      name="contactName"
+                      value={formData.contactName}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Your name"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-black mb-1">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-black mb-1">Message</label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Tell us about your gallery and which artists you would like to list..."
+                      rows={4}
+                      required
+                    />
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-black text-white hover:bg-gray-800"
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit Gallery"}
+                  </Button>
+                </form>
+
+                <div className="mt-6">
+                  <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                    We will only use the information to review your gallery and to notify you. If you are not invited, we will delete this information within 1 week.
+                  </p>
+                  <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                    If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
+                  </p>
+                </div>
+                
+                {submitStatus && (
+                  <div className={`mt-4 p-3 rounded-md text-sm ${
+                    submitStatus.includes("Thank you") 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-red-100 text-red-800"
+                  }`}>
+                    {submitStatus}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        };
+
+        // Gallery-specific FAQ component
+        const GalleryFAQ = () => {
+          const [openFAQ, setOpenFAQ] = useState<string | null>(null);
+
+          const faqs = [
+            {
+              id: 'marketplace',
+              question: 'Are you a marketplace or an online gallery?',
+              answer: 'No. Kaleidorium is not a gallery or a selling platform. We don\'t take payments, negotiate deals, or participate in transactions. We simply connect collectors with the right artists and send them directly to you.'
+            },
+            {
+              id: 'cost',
+              question: 'What does it cost?',
+              answer: 'Nothing during beta and we do not charge commissions. In 2027, we may introduce a modest subscription model for artists and galleries (see our pricing page). Collector access will always be free.'
+            },
+            {
+              id: 'matching',
+              question: 'How does Kaleidorium match collectors with artists?',
+              answer: 'We analyze each artwork\'s visual signature and compare it with collectors\' taste profiles. This helps surface artists to collectors who are genuinely aligned with their aesthetics.'
+            },
+            {
+              id: 'upload',
+              question: 'Do I need to upload all my artists manually?',
+              answer: 'You can, but you don\'t have to. If you represent many artists, contact us and we\'ll do it for you, from the information already on your website.'
+            },
+            {
+              id: 'interested',
+              question: 'What happens when collectors are interested in an artwork?',
+              answer: 'They are redirected straight to your gallery website, online store, or inquiry page. We never sit between you and the buyer.'
+            },
+            {
+              id: 'accept',
+              question: 'Do you accept all galleries?',
+              answer: 'We evaluate each submission to ensure a high-quality, intentional, and diverse selection of artists. We welcome galleries of all sizes, from boutique spaces to established institutions.'
+            },
+            {
+              id: 'rights',
+              question: 'Who owns the rights to the artwork and images?',
+              answer: 'The artists retain full ownership and copyright. Kaleidorium does not claim rights over any images, descriptions, or data submitted.'
+            },
+            {
+              id: 'why-create',
+              question: 'Why did you create Kaleidorium?',
+              answer: 'Because great artists deserve to make a living. Collectors often never discover the artists they would love most. We built Kaleidorium to change that, one match at a time.'
+            }
+          ];
+
+          const toggleFAQ = (id: string) => {
+            setOpenFAQ(openFAQ === id ? null : id);
+          };
+
+          return (
+            <div>
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-serif font-bold text-black mb-3">
+                  Frequently Asked Questions
+                </h2>
+                <p className="font-sans text-sm text-gray-600 leading-relaxed">
+                  We're building Kaleidorium for people who care about art, not algorithms. Reach out anytime.
+                </p>
+              </div>
+              
+              <div>
+                {faqs.map((faq) => (
+                  <div key={faq.id} className="mb-2">
+                    <div 
+                      className="p-4 cursor-pointer bg-white border border-gray-200 rounded-lg"
+                      onClick={() => toggleFAQ(faq.id)}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-sans font-bold text-black text-sm">
+                          {faq.question}
+                        </span>
+                        <span className="text-gray-500">
+                          {openFAQ === faq.id ? '−' : '+'}
+                        </span>
+                      </div>
+                    </div>
+                    {openFAQ === faq.id && (
+                      <div className="p-4 bg-gray-50 border-l-4 border-gray-300 mt-1">
+                        <p className="font-sans text-gray-700 text-sm leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        };
+
+        return (
+          <div className="flex-1 overflow-y-auto" data-view="for-galleries">
+            {isMobile ? (
+              <div>
+            {/* Hero Section */}
+            <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+              <div className="container mx-auto px-4 max-w-5xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                  {/* Left Column - Text */}
+                  <div className="lg:pr-8">
+                    <h1 
+                      className="text-2xl lg:text-3xl font-serif font-bold text-black mb-4"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Grow your collector base, effortlessly.
+                    </h1>
+                    <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      You represent talented artists whose work deserves the right eyes, not to be buried in costly online art platforms or drowned beneath larger gallery budgets. Kaleidorium helps collectors who already love your artists' styles finally find them.
+                    </p>
+                    <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                      We're not a gallery, marketplace, or agent.
+                    </p>
+                    <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                      We're a discovery engine built to expand your collector base, quietly, effectively, and without fees.
+                    </p>
+                    
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button 
+                        onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                        style={{fontFamily: 'Arial, sans-serif'}}
+                      >
+                        Join the first 50 partner galleries
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="border-black text-black hover:bg-black hover:text-white px-6 py-2 text-sm font-medium"
+                        style={{fontFamily: 'Arial, sans-serif'}}
+                      >
+                        How It Works
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Right Column - Compact Artwork Grid */}
+                  <div className="relative">
+                    <div className="bg-gray-100 rounded-lg p-4">
+                      <p className="text-sm font-sans text-gray-600 text-center mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                        Your artists find their perfect audience
+                      </p>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                            alt="Artwork 1"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                            alt="Artwork 2"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                            alt="Artwork 3"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                            alt="Artwork 4"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                            alt="Artwork 5"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                          <img 
+                            src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                            alt="Artwork 6"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* How It Works Section */}
+            <div id="how-it-works" className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-5xl">
+                <h2 
+                  className="text-xl font-serif font-bold text-black text-center mb-8"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  How It Works
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                  {/* Step 1 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Create profiles for your artists
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Add a picture of each artwork and a link to your gallery site or artist page. That's all you need to get started.
+                    </p>
+                  </div>
+                  
+                  {/* Step 2 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      AI matches them with collectors
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Our algorithm analyzes visual signatures, subject, composition, palette, style, etc… and surfaces your artists' work to collectors most likely to appreciate it.
+                    </p>
+                  </div>
+                  
+                  {/* Step 3 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Receive qualified interest directly
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Collectors who like an artwork are redirected straight to your gallery website or contact page. We do not handle communication or transactions.
+                    </p>
+                  </div>
+                  
+                  {/* Step 4 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Track performance
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      See how often your artists' work is viewed, liked, and clicked, insights you can use for curation, pricing, and promotion.
+                    </p>
+                  </div>
+                  
+                  {/* Step 5 */}
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Let us onboard your whole roster
+                    </h3>
+                    <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      If you represent many artists, we'll import their portfolios directly for you. Just reach out.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Partner Gallery Benefits Section */}
+            <div className="py-12 bg-gray-50">
+              <div className="container mx-auto px-4 max-w-4xl">
+                <h2 
+                  className="text-xl font-serif font-bold text-black text-center mb-6"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  Partner Gallery Benefits
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-start">
+                    <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                    <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Qualified leads straight to your gallery website or sales channels
+                    </span>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                    <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                      No fees, no commissions during Beta phase (see pricing)
+                    </span>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                    <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Priority placement during beta
+                    </span>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                    <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Support for multi-artist galleries
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Get Started Section */}
+            <div className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-4xl">
+                <h2 
+                  className="text-xl font-serif font-bold text-black text-center mb-4"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  Get Started
+                </h2>
+                <div className="space-y-3 text-center mb-8">
+                  <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Submit your gallery details and which artists you would like to list
+                  </p>
+                  <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    We review your submission
+                  </p>
+                  <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    If selected, your gallery receives early access and onboarding support
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Gallery Submission Form */}
+            <div id="gallery-form" className="py-12 bg-gray-50">
+              <div className="container mx-auto px-4 max-w-2xl">
+                <div className="text-center mb-8">
+                  <h2 
+                    className="text-xl font-serif font-bold text-black mb-3"
+                    style={{fontFamily: 'Times New Roman, serif'}}
+                  >
+                    Join the first 50 partner galleries
+                  </h2>
+                  <p className="text-base font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Submit Your Gallery
+                  </p>
+                </div>
+                <ForGalleriesForm />
+              </div>
+            </div>
+
+            {/* Invitation Section */}
+            <div className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-4xl text-center">
+                <h2 
+                  className="text-xl font-serif font-bold text-black mb-4"
+                  style={{fontFamily: 'Times New Roman, serif'}}
+                >
+                  Have you received your invitation?
+                </h2>
+                <p className="text-base font-sans text-black mb-6 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                  If you've received an invitation email with a token, click below to register.
+                </p>
+                <Button
+                  onClick={() => router.push('/for-galleries/register')}
+                  className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                  style={{fontFamily: 'Arial, sans-serif'}}
+                >
+                  Register as a Gallery
+                </Button>
+                <p className="text-sm font-sans text-gray-600 mt-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                  Note: You'll need both your email address and the invitation token we sent you to complete registration.
+                </p>
+              </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="py-12 bg-white">
+              <div className="container mx-auto px-4 max-w-4xl">
+                <GalleryFAQ />
+              </div>
+            </div>
+          </div>
+            ) : (
+              // Desktop FOR GALLERIES content
+              <>
+                {/* Hero Section */}
+                <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+                  <div className="container mx-auto px-4 max-w-5xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      {/* Left Column - Text */}
+                      <div className="lg:pr-8">
+                        <h1 
+                          className="text-2xl lg:text-3xl font-serif font-bold text-black mb-4"
+                          style={{fontFamily: 'Times New Roman, serif'}}
+                        >
+                          Grow your collector base, effortlessly.
+                        </h1>
+                        <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          You represent talented artists whose work deserves the right eyes, not to be buried in costly online art platforms or drowned beneath larger gallery budgets. Kaleidorium helps collectors who already love your artists' styles finally find them.
+                        </p>
+                        <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+                          We're not a gallery, marketplace, or agent.
+                        </p>
+                        <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
+                          We're a discovery engine built to expand your collector base, quietly, effectively, and without fees.
+                        </p>
+                        
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <Button 
+                            onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                            style={{fontFamily: 'Arial, sans-serif'}}
+                          >
+                            Join the first 50 partner galleries
+                          </Button>
+                          <Button 
+                            variant="outline"
+                            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="border-black text-black hover:bg-gray-50 px-6 py-2 text-sm font-medium"
+                            style={{fontFamily: 'Arial, sans-serif'}}
+                          >
+                            How It Works
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Right Column - Compact Artwork Grid */}
+                      <div className="relative">
+                        <div className="bg-gray-100 rounded-lg p-4">
+                          <p className="text-sm font-sans text-gray-600 text-center mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                            Your artists find their perfect audience
+                          </p>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg"
+                                alt="Artwork 1"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg"
+                                alt="Artwork 2"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif"
+                                alt="Artwork 3"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Steampunk3_1755249065054.png"
+                                alt="Artwork 4"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg"
+                                alt="Artwork 5"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+                              <img 
+                                src="/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif"
+                                alt="Artwork 6"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* How It Works Section */}
+                <div id="how-it-works" className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-5xl">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black text-center mb-8"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      How It Works
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                      {/* Step 1 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Create profiles for your artists
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Add a picture of each artwork and a link to your gallery site or artist page. That's all you need to get started.
+                        </p>
+                      </div>
+                      
+                      {/* Step 2 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          AI matches them with collectors
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Our algorithm analyzes visual signatures, subject, composition, palette, style, etc… and surfaces your artists' work to collectors most likely to appreciate it.
+                        </p>
+                      </div>
+                      
+                      {/* Step 3 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Receive qualified interest directly
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Collectors who like an artwork are redirected straight to your gallery website or contact page. We do not handle communication or transactions.
+                        </p>
+                      </div>
+                      
+                      {/* Step 4 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Track performance
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          See how often your artists' work is viewed, liked, and clicked, insights you can use for curation, pricing, and promotion.
+                        </p>
+                      </div>
+                      
+                      {/* Step 5 */}
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                          </svg>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-black mb-2" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Let us onboard your whole roster
+                        </h3>
+                        <p className="text-xs font-sans text-gray-600 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                          If you represent many artists, we'll import their portfolios directly for you. Just reach out.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Partner Gallery Benefits Section */}
+                <div className="py-12 bg-gray-50">
+                  <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black text-center mb-6"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Partner Gallery Benefits
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-start">
+                        <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                        <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Qualified leads straight to your gallery website or sales channels
+                        </span>
+                      </div>
+                      <div className="flex items-start">
+                        <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                        <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                          No fees, no commissions during Beta phase (see pricing)
+                        </span>
+                      </div>
+                      <div className="flex items-start">
+                        <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                        <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Priority placement during beta
+                        </span>
+                      </div>
+                      <div className="flex items-start">
+                        <span className="text-black mr-3 flex-shrink-0 mt-1" style={{fontFamily: 'Arial, sans-serif'}}>✓</span>
+                        <span className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                          Support for multi-artist galleries
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Get Started Section */}
+                <div className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black text-center mb-4"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Get Started
+                    </h2>
+                    <div className="space-y-3 text-center mb-8">
+                      <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        Submit your gallery details and which artists you would like to list
+                      </p>
+                      <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        We review your submission
+                      </p>
+                      <p className="text-sm font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        If selected, your gallery receives early access and onboarding support
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gallery Submission Form */}
+                <div id="gallery-form" className="py-12 bg-gray-50">
+                  <div className="container mx-auto px-4 max-w-2xl">
+                    <div className="text-center mb-8">
+                      <h2 
+                        className="text-xl font-serif font-bold text-black mb-3"
+                        style={{fontFamily: 'Times New Roman, serif'}}
+                      >
+                        Join the first 50 partner galleries
+                      </h2>
+                      <p className="text-base font-sans text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                        Submit Your Gallery
+                      </p>
+                    </div>
+                    <ForGalleriesForm />
+                  </div>
+                </div>
+
+                {/* Invitation Section */}
+                <div className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-4xl text-center">
+                    <h2 
+                      className="text-xl font-serif font-bold text-black mb-4"
+                      style={{fontFamily: 'Times New Roman, serif'}}
+                    >
+                      Have you received your invitation?
+                    </h2>
+                    <p className="text-base font-sans text-black mb-6 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+                      If you've received an invitation email with a token, click below to register.
+                    </p>
+                    <Button
+                      onClick={() => router.push('/for-galleries/register')}
+                      className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                      style={{fontFamily: 'Arial, sans-serif'}}
+                    >
+                      Register as a Gallery
+                    </Button>
+                    <p className="text-sm font-sans text-gray-600 mt-4" style={{fontFamily: 'Arial, sans-serif'}}>
+                      Note: You'll need both your email address and the invitation token we sent you to complete registration.
+                    </p>
+                  </div>
+                </div>
+
+                {/* FAQ Section */}
+                <div className="py-12 bg-white">
+                  <div className="container mx-auto px-4 max-w-4xl">
+                    <GalleryFAQ />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        );
+      
       case "about":
         return (
           <div className="flex-1 overflow-y-auto">
@@ -1637,6 +2522,13 @@ function HomeContent() {
             <div className="container mx-auto px-4 py-8 max-w-lg">
               <ContactForm />
             </div>
+          </div>
+        );
+      
+      case "pricing":
+        return (
+          <div className="flex-1 overflow-y-auto">
+            <PricingContent />
           </div>
         );
       

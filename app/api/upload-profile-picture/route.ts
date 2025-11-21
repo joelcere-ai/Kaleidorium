@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Parse form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const userType = formData.get('userType') as 'collector' | 'artist' || 'collector';
+    const userType = formData.get('userType') as 'collector' | 'artist' | 'gallery' || 'collector';
 
     if (!file) {
       return SecureErrors.validation('No file provided');
@@ -56,22 +56,27 @@ export async function POST(request: NextRequest) {
     }
 
     // SECURITY: Enhanced role-based access control with database verification
-    if (userType === 'artist') {
-      // Verify user has artist role
-      if (!authResult.isAdmin && authResult.userRole !== 'artist') {
-        return SecureErrors.authorization({ reason: 'not_artist' });
+    if (userType === 'artist' || userType === 'gallery') {
+      // Verify user has artist or gallery role
+      if (!authResult.isAdmin && authResult.userRole !== 'artist' && authResult.userRole !== 'gallery') {
+        return SecureErrors.authorization({ reason: userType === 'gallery' ? 'not_gallery' : 'not_artist' });
       }
       
       // Additional database verification for non-admin users
       if (!authResult.isAdmin) {
         const { data: artistCheck } = await supabase
           .from('Artists')
-          .select('id')
+          .select('id, is_gallery')
           .eq('id', userId)
           .single();
           
         if (!artistCheck) {
-          return SecureErrors.authorization({ reason: 'not_artist' });
+          return SecureErrors.authorization({ reason: userType === 'gallery' ? 'not_gallery' : 'not_artist' });
+        }
+
+        // Ensure user type matches record type
+        if (userType === 'gallery' && !artistCheck.is_gallery) {
+          return SecureErrors.authorization({ reason: 'not_gallery' });
         }
       }
     } else {
@@ -96,18 +101,18 @@ export async function POST(request: NextRequest) {
     );
 
     // Update user profile with new picture URL
-    if (userType === 'artist') {
+    if (userType === 'artist' || userType === 'gallery') {
       const { error: updateError } = await supabase
         .from('Artists')
         .update({ profilepix: uploadResult.url })
         .eq('id', userId);
         
       if (updateError) {
-        secureLog('error', 'Failed to update artist profile picture URL', {
+        secureLog('error', `Failed to update ${userType} profile picture URL`, {
           userId,
           error: updateError.message
         });
-        return SecureErrors.database({ operation: 'update_artist_profile' });
+        return SecureErrors.database({ operation: `update_${userType}_profile` });
       }
     } else {
       const { error: updateError } = await supabase

@@ -61,7 +61,7 @@ export function validateURL(url: string): ValidationResult {
     return { valid: false, error: 'URL is required' };
   }
 
-  const trimmed = url.trim();
+  let trimmed = url.trim();
   
   if (trimmed.length === 0) {
     return { valid: false, error: 'URL cannot be empty' };
@@ -71,8 +71,13 @@ export function validateURL(url: string): ValidationResult {
     return { valid: false, error: 'URL is too long' };
   }
 
+  // Auto-prepend https:// if URL starts with www. or doesn't have a protocol
+  if (trimmed.startsWith('www.') || (!trimmed.startsWith('http://') && !trimmed.startsWith('https://'))) {
+    trimmed = `https://${trimmed}`;
+  }
+
   if (!URL_REGEX.test(trimmed)) {
-    return { valid: false, error: 'Please enter a valid URL starting with http:// or https://' };
+    return { valid: false, error: 'Please enter a valid URL' };
   }
 
   return { valid: true, sanitized: trimmed };

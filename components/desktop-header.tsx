@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Search, Heart, User, Palette, Info, Mail } from "lucide-react";
+import { Search, Heart, User, Palette, Info, Mail, DollarSign } from "lucide-react";
 
 // Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
-  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "login" | "register" | "terms" | "privacy";
+  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   onFilterChange?: (filters: any) => void;
   onClearFilters?: () => void;
   isFiltering?: boolean;
@@ -32,7 +32,7 @@ export function DesktopHeader({
 
   const isSelected = (view: string) => currentPage === view;
 
-  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact") => {
+  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing") => {
     setView(view);
     setShowMenu(false);
   };
@@ -60,7 +60,7 @@ export function DesktopHeader({
         </Button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-4">
           <Button 
             variant="ghost" 
             className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
@@ -103,11 +103,29 @@ export function DesktopHeader({
           
           <Button 
             variant="ghost" 
+            className={`text-sm ${isSelected("for-galleries") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("for-galleries")}
+          >
+            <Palette className="w-4 h-4 mr-1" />
+            For Galleries
+          </Button>
+          
+          <Button 
+            variant="ghost" 
             className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
             onClick={() => handleNavigation("about")}
           >
             <Info className="w-4 h-4 mr-1" />
             For Collectors
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className={`text-sm ${isSelected("pricing") ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("pricing")}
+          >
+            <DollarSign className="w-4 h-4 mr-1" />
+            Pricing
           </Button>
           
           <Button 
@@ -161,10 +179,26 @@ export function DesktopHeader({
             <Button
               variant="ghost"
               className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("for-galleries")}
+            >
+              <Palette className="mr-3 h-5 w-5" />
+              For Galleries
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("about")}
             >
               <Info className="mr-3 h-5 w-5" />
               For Collectors
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("pricing")}
+            >
+              <DollarSign className="mr-3 h-5 w-5" />
+              Pricing
             </Button>
             <Button
               variant="ghost"
