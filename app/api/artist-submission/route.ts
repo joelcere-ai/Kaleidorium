@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { validatePortfolioSubmission } from '@/lib/validation';
 import { emailRateLimit } from '@/lib/rate-limit';
+import sgMail from '@sendgrid/mail';
 
-const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
-const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || 'service_za8v4ih';
-const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID || 'CRMHpV3s39teTwijy';
-const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
-const EMAILJS_ARTIST_TEMPLATE_ID = process.env.EMAILJS_ARTIST_TEMPLATE_ID;
-const EMAILJS_GALLERY_TEMPLATE_ID = process.env.EMAILJS_GALLERY_TEMPLATE_ID || 'template_lg9e0us';
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const EMAIL_RECIPIENT = process.env.ARTIST_SUBMISSION_RECIPIENT || 'kurator@kaleidorium.com';
+const EMAIL_FROM = process.env.SENDGRID_FROM_EMAIL || EMAIL_RECIPIENT;
+
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
 
 const sanitizeOptionalText = (value: unknown, maxLength: number) => {
   if (typeof value !== 'string') return '';
@@ -46,8 +47,8 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!EMAILJS_PRIVATE_KEY || !EMAILJS_PRIVATE_KEY.trim()) {
-      console.error('EMAILJS_PRIVATE_KEY is missing or empty. Email cannot be sent.');
+    if (!SENDGRID_API_KEY) {
+      console.error('SENDGRID_API_KEY is not configured. Submission email cannot be sent.');
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 500 }
@@ -55,35 +56,41 @@ export async function POST(request: Request) {
     }
 
     const { name, email, portfolioLink } = validation.sanitized!;
-    const templateId = submissionType === 'gallery'
-      ? EMAILJS_GALLERY_TEMPLATE_ID
-      : EMAILJS_ARTIST_TEMPLATE_ID || EMAILJS_GALLERY_TEMPLATE_ID;
+    const subject = submissionType === 'gallery'
+      ? 'New Gallery Submission'
+      : 'New Artist Portfolio Submission';
 
-    const emailResponse = await fetch(EMAILJS_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${EMAILJS_PRIVATE_KEY.trim()}`,
-      },
-      body: JSON.stringify({
-        service_id: EMAILJS_SERVICE_ID,
-        template_id: templateId,
-        user_id: EMAILJS_USER_ID,
-        template_params: {
-          to_email: EMAIL_RECIPIENT,
-          submission_type: submissionType,
-          from_name: name,
-          contact_name: contactName,
-          from_email: email,
-          portfolio_link: portfolioLink,
-          gallery_message: message,
-        },
-      }),
-    });
+    const linkLabel = submissionType === 'gallery' ? 'Website' : 'Portfolio Link';
 
-    if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error('EmailJS submission error:', errorText);
+    const textBody = `
+New ${submissionType} submission received.
+
+Name: ${name}
+${contactName ? `Contact Name: ${contactName}\n` : ''}Email: ${email}
+${linkLabel}: ${portfolioLink}
+${message ? `\nMessage:\n${message}` : ''}
+`.trim();
+
+    const htmlBody = `
+      <h2>New ${submissionType === 'gallery' ? 'Gallery' : 'Artist'} Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      ${contactName ? `<p><strong>Contact Name:</strong> ${contactName}</p>` : ''}
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>${linkLabel}:</strong> <a href="${portfolioLink}">${portfolioLink}</a></p>
+      ${message ? `<p><strong>Message:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>` : ''}
+    `;
+
+    try {
+      await sgMail.send({
+        to: EMAIL_RECIPIENT,
+        from: EMAIL_FROM,
+        replyTo: email || EMAIL_FROM,
+        subject,
+        text: textBody,
+        html: htmlBody,
+      });
+    } catch (emailError: any) {
+      console.error('SendGrid submission error:', emailError?.response?.body || emailError);
       return NextResponse.json(
         { error: 'Failed to send submission notification' },
         { status: 502 }
