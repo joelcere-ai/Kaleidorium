@@ -5,6 +5,7 @@ import { emailRateLimit } from '@/lib/rate-limit';
 const EMAILJS_ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send';
 const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || 'service_za8v4ih';
 const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID || 'CRMHpV3s39teTwijy';
+const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
 const EMAILJS_ARTIST_TEMPLATE_ID = process.env.EMAILJS_ARTIST_TEMPLATE_ID;
 const EMAILJS_GALLERY_TEMPLATE_ID = process.env.EMAILJS_GALLERY_TEMPLATE_ID || 'template_lg9e0us';
 const EMAIL_RECIPIENT = process.env.ARTIST_SUBMISSION_RECIPIENT || 'kurator@kaleidorium.com';
@@ -45,6 +46,14 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!EMAILJS_PRIVATE_KEY) {
+      console.error('EMAILJS_PRIVATE_KEY is not configured. Email cannot be sent.');
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      );
+    }
+
     const { name, email, portfolioLink } = validation.sanitized!;
     const templateId = submissionType === 'gallery'
       ? EMAILJS_GALLERY_TEMPLATE_ID
@@ -52,7 +61,10 @@ export async function POST(request: Request) {
 
     const emailResponse = await fetch(EMAILJS_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${EMAILJS_PRIVATE_KEY}`,
+      },
       body: JSON.stringify({
         service_id: EMAILJS_SERVICE_ID,
         template_id: templateId,
