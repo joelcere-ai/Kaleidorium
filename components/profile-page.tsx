@@ -27,6 +27,13 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ArtistGalleryDashboard } from "@/components/artist-gallery-dashboard"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface ProfilePageProps {
   collection: Artwork[]
@@ -53,6 +60,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
   const [resetEmail, setResetEmail] = useState("");
   const [resetMessage, setResetMessage] = useState("");
   const [resetting, setResetting] = useState(false);
+  const [selectedRegistrationType, setSelectedRegistrationType] = useState<string>("");
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [artistArtworks, setArtistArtworks] = useState<any[]>([]);
@@ -1338,77 +1346,59 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
           </CardContent>
         </Card>
 
-        {/* Register as Collector Section */}
+        {/* Registration Section */}
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="font-sans text-sm">Register as a Collector</CardTitle>
-            <CardDescription className="font-sans text-sm text-black">Create an account to save your favorite artworks and build your collection.</CardDescription>
+            <CardTitle className="font-sans text-sm">Register</CardTitle>
+            <CardDescription className="font-sans text-sm text-black">
+              Choose your account type to get started with Kaleidorium.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <Button 
-                onClick={() => router.push('/register')}
-                className="w-full bg-black text-white hover:bg-gray-800"
-                style={{
-                  color: 'white !important', 
-                  backgroundColor: 'black !important',
-                  borderColor: 'black !important'
-                }}
-              >
-                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as a Collector</span>
-              </Button>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="registrationType" className="font-sans text-sm">I want to register as:</Label>
+              <Select value={selectedRegistrationType} onValueChange={setSelectedRegistrationType}>
+                <SelectTrigger id="registrationType" className="font-sans text-sm">
+                  <SelectValue placeholder="Select account type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="collector">Collector</SelectItem>
+                  <SelectItem value="artist">Artist</SelectItem>
+                  <SelectItem value="gallery">Gallery</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Register as Artist Section */}
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="font-sans text-sm">Register as an Artist</CardTitle>
-            <CardDescription className="font-sans text-sm text-black">If you've received an invitation email with a token, click below to register.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <Button 
-                onClick={() => router.push('/for-artists/register')}
-                className="w-full bg-black text-white hover:bg-gray-800"
-                style={{
-                  color: 'white !important', 
-                  backgroundColor: 'black !important',
-                  borderColor: 'black !important'
-                }}
-              >
-                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as an Artist</span>
-              </Button>
-            </div>
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-              <p className="text-blue-700 font-sans text-sm">
-                <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            {(selectedRegistrationType === "artist" || selectedRegistrationType === "gallery") && (
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                <p className="text-blue-700 font-sans text-sm">
+                  <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
+                </p>
+              </div>
+            )}
 
-        {/* Register as Gallery Section */}
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="font-sans text-sm">Register as a Gallery</CardTitle>
-            <CardDescription className="font-sans text-sm text-black">Join Kaleidorium as a gallery to showcase multiple artists and their artworks.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <Button 
-                onClick={() => router.push('/for-galleries/register')}
-                className="w-full bg-black text-white hover:bg-gray-800"
-                style={{
-                  color: 'white !important', 
-                  backgroundColor: 'black !important',
-                  borderColor: 'black !important'
-                }}
-              >
-                <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as a Gallery</span>
-              </Button>
-            </div>
+            <Button 
+              onClick={() => {
+                if (selectedRegistrationType === "collector") {
+                  router.push('/register')
+                } else if (selectedRegistrationType === "artist") {
+                  router.push('/for-artists/register')
+                } else if (selectedRegistrationType === "gallery") {
+                  router.push('/for-galleries/register')
+                }
+              }}
+              disabled={!selectedRegistrationType}
+              className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                color: 'white !important', 
+                backgroundColor: selectedRegistrationType ? 'black !important' : 'gray !important',
+                borderColor: selectedRegistrationType ? 'black !important' : 'gray !important'
+              }}
+            >
+              <span style={{color: 'white !important', fontWeight: 'normal'}}>
+                {selectedRegistrationType ? `Register as a ${selectedRegistrationType === "collector" ? "Collector" : selectedRegistrationType === "artist" ? "Artist" : "Gallery"}` : "Select account type to continue"}
+              </span>
+            </Button>
           </CardContent>
         </Card>
       </div>
