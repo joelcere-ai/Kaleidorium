@@ -1098,7 +1098,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             }}
           >
           <div
-            className="bg-white rounded-t-2xl w-full max-h-[70vh] min-h-[50vh] overflow-y-auto overscroll-contain mx-4 mb-4 shadow-xl"
+            className="bg-white rounded-t-2xl w-full h-[70%] overflow-y-auto overscroll-contain shadow-xl"
             style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
