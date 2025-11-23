@@ -1091,15 +1091,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         {/* Artwork Info Modal */}
         {showInfoModal && selectedArtwork && (
           <div
-            className="fixed inset-0 bg-black/50 flex items-end z-[100]"
+            className="fixed inset-0 bg-black/50 z-[100]"
             onClick={() => {
               setShowInfoModal(false)
               setSelectedArtwork(null)
             }}
           >
           <div
-            className="bg-white rounded-t-2xl w-full h-[70%] overflow-y-auto overscroll-contain shadow-xl"
-            style={{ WebkitOverflowScrolling: 'touch' }}
+            className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl w-full overflow-y-auto overscroll-contain shadow-xl"
+            style={{ 
+              height: '70%',
+              maxHeight: '70%',
+              WebkitOverflowScrolling: 'touch' 
+            }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 pb-8">
