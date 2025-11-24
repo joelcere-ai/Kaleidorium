@@ -271,6 +271,55 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [collection.length, dbCollection.length, user, setCollectionCount]);
 
+  // Session storage helpers for preserving Discover state
+  const saveDiscoverSession = useCallback(() => {
+    try {
+      if (artworks.length > 0) {
+        const sessionData = {
+          artworks: artworks,
+          currentIndex: currentIndex,
+          timestamp: Date.now(),
+          userId: user?.id || 'anonymous'
+        };
+        sessionStorage.setItem('kaleidorium_discover_session', JSON.stringify(sessionData));
+        console.log('💾 Saved Discover session:', { artworksCount: artworks.length, currentIndex, userId: sessionData.userId });
+      }
+    } catch (error) {
+      console.error('Error saving Discover session:', error);
+    }
+  }, [artworks, currentIndex, user?.id]);
+
+  const restoreDiscoverSession = useCallback((): { artworks: Artwork[]; currentIndex: number } | null => {
+    try {
+      const sessionDataStr = sessionStorage.getItem('kaleidorium_discover_session');
+      if (!sessionDataStr) return null;
+
+      const sessionData = JSON.parse(sessionDataStr);
+      const sessionAge = Date.now() - sessionData.timestamp;
+      const maxSessionAge = 24 * 60 * 60 * 1000; // 24 hours
+
+      // Check if session is for the same user (or both anonymous)
+      const isSameUser = (user?.id || 'anonymous') === (sessionData.userId || 'anonymous');
+
+      // Only restore if session is recent and for the same user
+      if (sessionAge < maxSessionAge && isSameUser && sessionData.artworks && sessionData.artworks.length > 0) {
+        console.log('📂 Restored Discover session:', { artworksCount: sessionData.artworks.length, currentIndex: sessionData.currentIndex, userId: sessionData.userId });
+        return {
+          artworks: sessionData.artworks,
+          currentIndex: sessionData.currentIndex || 0
+        };
+      } else {
+        // Clear stale session
+        sessionStorage.removeItem('kaleidorium_discover_session');
+        console.log('🗑️ Cleared stale Discover session');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error restoring Discover session:', error);
+      return null;
+    }
+  }, [user?.id]);
+
   // Debug logging for mobile menu state
   useEffect(() => {
     console.log('Mobile menu state:', { showMenuModal, isMobile, isTablet, view });
@@ -695,6 +744,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
@@ -706,6 +757,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
@@ -713,7 +766,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession]);
 
   // Refactored handleLike
   const handleLike = useCallback(async (artworkParam?: Artwork) => {
@@ -740,6 +793,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
@@ -788,6 +843,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (addPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       if (checkEndOfMatches(recommendedArtworks, addPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
@@ -813,7 +870,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     updatePreferences,
     fetchUserCollection,
     getRecommendations,
-    setCollection
+    setCollection,
+    saveDiscoverSession
   ]);
 
   // Enhanced handleAddToCollection with localStorage persistence
@@ -839,6 +897,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
@@ -850,6 +910,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
+      // Save session after updating artworks
+      setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
@@ -898,7 +960,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences, trackInteraction]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession]);
 
   // Load recommendations in background without blocking the main loading
   const loadRecommendationsInBackground = useCallback(async (userId: string, defaultArtworks: Artwork[]) => {
@@ -922,6 +984,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           const recommendedArtworks = await getRecommendations(userId, defaultArtworks);
           console.log('✅ Background: Recommendations loaded, updating artworks');
           setArtworks(recommendedArtworks);
+          // Save session after recommendations are loaded
+          setTimeout(() => {
+            if (view === "discover") {
+              saveDiscoverSession();
+            }
+          }, 100);
         } catch (recError) {
           console.error('🚨 Background: Error getting recommendations:', recError);
           // Keep default artworks if recommendations fail
@@ -933,7 +1001,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.error('🚨 Background: Error in background recommendations fetch:', prefError);
       // Continue with default artworks - don't let this block the app
     }
-  }, []);
+  }, [view, saveDiscoverSession]);
 
   // Update fetchArtworks to use recommendations if user exists
   const fetchArtworks = useCallback(async () => {
@@ -1097,13 +1165,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       });
 
       
-      setArtworks(transformedArtworks);
-
-      // Load recommendations in background after setting default artworks
+      // For registered users, check if they have preferences and get recommendations first
+      // For anonymous users or users without preferences, use default artworks
       if (user) {
-        console.log('Starting background recommendations fetch for user:', user.id);
-        // Don't await this - let it run in background
-        loadRecommendationsInBackground(user.id, transformedArtworks);
+        console.log('Registered user detected, checking for personalized recommendations...');
+        try {
+          const { data: collector } = await supabase
+            .from('Collectors')
+            .select('preferences')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (collector?.preferences) {
+            console.log('✅ Found user preferences, loading personalized recommendations...');
+            // User has preferences, get recommendations
+            const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
+            setArtworks(recommendedArtworks);
+            // Save session after recommendations are loaded
+            setTimeout(() => saveDiscoverSession(), 100);
+          } else {
+            console.log('No preferences found, using default artworks');
+            setArtworks(transformedArtworks);
+          }
+        } catch (error) {
+          console.error('Error checking for user preferences:', error);
+          // Fallback to default artworks
+          setArtworks(transformedArtworks);
+        }
+      } else {
+        // Anonymous user - use default artworks
+        setArtworks(transformedArtworks);
       }
     } catch (error) {
       console.error('🚨 EMERGENCY: Error in fetchArtworks:', error);
@@ -1127,7 +1218,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       fetchingRef.current = false;
       setLoading(false);
     }
-  }, [user?.id]) // Only depend on user ID
+  }, [user?.id, getRecommendations, saveDiscoverSession]) // Dependencies for recommendations
+
+  // Save session when navigating away from Discover
+  useEffect(() => {
+    if (view !== "discover" && artworks.length > 0) {
+      saveDiscoverSession();
+    }
+  }, [view, artworks, saveDiscoverSession]);
 
   // Simplified initialization with tab visibility handling
   useEffect(() => {
@@ -1138,16 +1236,37 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: No visibility change handler - preventing tab switch issues');
     
     return () => {
-      // No cleanup needed
+      // Save session on unmount if on Discover page
+      if (view === "discover") {
+        saveDiscoverSession();
+      }
     };
   }, [])
   
   useEffect(() => {
-    if (mounted && artworks.length === 0) {
+    // Try to restore session when returning to Discover
+    if (mounted && view === "discover") {
+      const restored = restoreDiscoverSession();
+      if (restored && restored.artworks.length > 0) {
+        console.log('✅ Restored Discover session, using saved artworks');
+        setArtworks(restored.artworks);
+        setCurrentIndex(restored.currentIndex);
+        setLoading(false);
+        // For registered users, still load recommendations in background to update preferences
+        if (user) {
+          console.log('🔄 Loading fresh recommendations in background for registered user');
+          loadRecommendationsInBackground(user.id, restored.artworks);
+        }
+        return;
+      }
+    }
+
+    // Only fetch if no artworks and no restored session
+    if (mounted && artworks.length === 0 && view === "discover") {
       console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
-  }, [mounted, user?.id]) // Only depend on mounted and user ID
+  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground]) // Added dependencies
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
