@@ -54,6 +54,22 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
       <div className="space-y-3">
         <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
         <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
+        {/* Artwork Information: Year, Medium, Dimensions, Price */}
+        <div className="flex flex-wrap items-center gap-4 text-base text-muted-foreground font-normal">
+          {artwork.year && <span>{artwork.year}</span>}
+          {artwork.medium && <span>{artwork.medium}</span>}
+          {artwork.dimensions && <span>{artwork.dimensions}</span>}
+          {artwork.price && (
+            <span>
+              {artwork.price.toLowerCase() === 'sold' || artwork.price.toLowerCase() === 'enquire' || artwork.price.toLowerCase() === 'not for sale'
+                ? artwork.price
+                : artwork.currency
+                  ? `${artwork.price} ${artwork.currency}`
+                  : artwork.price
+              }
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Enhanced Tags */}
@@ -75,21 +91,6 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
           )}
         </div>
       </div>
-
-      {/* Price Section */}
-      {artwork.price && (
-        <div className="space-y-3">
-          <h3 className="text-lg font-serif font-semibold text-foreground">Price</h3>
-          <p className="text-base leading-relaxed text-muted-foreground font-normal">
-            {artwork.price.toLowerCase() === 'sold' || artwork.price.toLowerCase() === 'enquire' || artwork.price.toLowerCase() === 'not for sale'
-              ? artwork.price
-              : artwork.currency
-                ? `${artwork.price} ${artwork.currency}`
-                : artwork.price
-            }
-          </p>
-        </div>
-      )}
 
       {/* View on Artist Website Button - Always show if link exists */}
       {artwork.link && artwork.link.trim() !== '' && (

@@ -256,6 +256,16 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
                           {artwork.dimensions && <span>{formatDimensions(artwork.dimensions)}</span>}
+                          {artwork.price && (
+                            <span>
+                              {artwork.price.toLowerCase() === 'sold' || artwork.price.toLowerCase() === 'enquire' || artwork.price.toLowerCase() === 'not for sale'
+                                ? artwork.price
+                                : artwork.currency
+                                  ? `${artwork.price} ${artwork.currency}`
+                                  : artwork.price
+                              }
+                            </span>
+                          )}
                         </div>
                       </div>
 
