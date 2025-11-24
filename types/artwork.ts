@@ -6,6 +6,7 @@ export interface Artwork {
   dimensions: string
   year: string
   price: string
+  currency?: string
   description: string
   tags: string[]
   artwork_image: string

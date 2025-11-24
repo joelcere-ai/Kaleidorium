@@ -284,45 +284,34 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                         </div>
                       </div>
 
-                      {/* Enhanced Price Display / Sale Status */}
-                      {artwork.price && (
+                      {/* View on Artist Website Button - Always show if link exists */}
+                      {artwork.link && artwork.link.trim() !== '' && (
                         <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-                          {artwork.price.toLowerCase() === 'not for sale'
-                            ? <div className="text-center">
-                                <Button
-                                  size="lg"
-                                  onClick={() => {
-                                    if (artwork.link && artwork.link.trim() !== '') {
-                                      // Validate and fix URL before opening
-                                      try {
-                                        let url = artwork.link.trim()
-                                        // Add https:// if no protocol is specified
-                                        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                                          url = 'https://' + url
-                                        }
-                                        // Validate the URL
-                                        new URL(url)
-                                        window.open(url, '_blank', 'noopener,noreferrer');
-                                      } catch (error) {
-                                        console.error('Invalid artist URL:', artwork.link)
-                                        // Could show a toast message here if needed
-                                      }
-                                    }
-                                  }}
-                                  className={`min-w-[120px] ${
-                                    artwork.link && artwork.link.trim() !== ''
-                                      ? 'border border-black bg-white text-black hover:bg-black hover:text-white' 
-                                      : 'bg-gray-200 text-black hover:bg-gray-300'
-                                  } transition-all duration-200`}
-                                  style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
-                                >
-                                  {artwork.link && artwork.link.trim() !== '' ? 'View on artist\'s website' : 'Not for sale'}
-                                </Button>
-                              </div>
-                            : <div className="text-center">
-                                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
-                              </div>
-                          }
+                          <div className="text-center">
+                            <Button
+                              size="lg"
+                              onClick={() => {
+                                // Validate and fix URL before opening
+                                try {
+                                  let url = artwork.link!.trim()
+                                  // Add https:// if no protocol is specified
+                                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                                    url = 'https://' + url
+                                  }
+                                  // Validate the URL
+                                  new URL(url)
+                                  window.open(url, '_blank', 'noopener,noreferrer');
+                                } catch (error) {
+                                  console.error('Invalid artist URL:', artwork.link)
+                                  // Could show a toast message here if needed
+                                }
+                              }}
+                              className="min-w-[120px] border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
+                              style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                            >
+                              View on artist's website
+                            </Button>
+                          </div>
                         </div>
                       )}
 

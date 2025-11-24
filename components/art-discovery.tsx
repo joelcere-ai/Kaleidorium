@@ -993,7 +993,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         // Since direct REST works, use it instead of the hanging Supabase client
         console.log('Step 2: Using direct REST API since Supabase client is hanging...');
         
-        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=50`;
+        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=50`;
         
         console.log('Fetching full artwork data via REST API...');
         
@@ -1082,6 +1082,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           dimensions: artwork.dimensions || '1920x1080',
           year: artwork.year || "2025",
           price: artwork.price || 'Price on request',
+          currency: artwork.currency || undefined,
           description: artwork.description || 'No description available',
           tags: artwork.tags || [],
           artwork_image: artwork.artwork_image || "/placeholder.svg",

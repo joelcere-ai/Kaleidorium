@@ -1180,71 +1180,34 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   })()}
                 </div>
                 
-                {/* Artist Website Button - Always Visible */}
-                <div className="pt-4">
-                  {(() => {
-                    console.log('Rendering artist website button for artwork:', selectedArtwork.title);
-                    console.log('Artwork object:', selectedArtwork);
-                    console.log('Link property:', selectedArtwork.link);
-                    console.log('Price property:', selectedArtwork.price);
-                    
-                    const hasValidLink = selectedArtwork.link && selectedArtwork.link.trim() !== '';
-                    const hasPrice = selectedArtwork.price && selectedArtwork.price.trim() !== '' && selectedArtwork.price.toLowerCase() !== 'not for sale';
-                    
-                    console.log('Has valid link:', hasValidLink);
-                    console.log('Has price:', hasPrice);
-                    
-                    // Determine button text and behavior
-                    let buttonText = '';
-                    let isClickable = false;
-                    
-                    if (hasValidLink) {
-                      buttonText = 'View on artist\'s website';
-                      isClickable = true;
-                    } else if (hasPrice) {
-                      buttonText = selectedArtwork.price;
-                      isClickable = false;
-                    } else {
-                      buttonText = 'Not for sale';
-                      isClickable = false;
-                    }
-                    
-                    return (
-                      <Button 
-                        className={`w-full py-3 text-sm font-medium ${
-                          isClickable
-                            ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
-                            : 'bg-gray-200 text-gray-600 cursor-not-allowed'
-                        } transition-all duration-200`}
-                        disabled={!isClickable}
-                        onClick={() => {
-                          if (isClickable && hasValidLink && selectedArtwork.link) {
-                            const linkUrl = selectedArtwork.link;
-                            console.log('Artist website button clicked, link:', linkUrl);
-                            // Validate and fix URL before opening
-                            try {
-                              let url = linkUrl.trim()
-                              // Add https:// if no protocol is specified
-                              if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                                url = 'https://' + url
-                              }
-                              // Validate the URL
-                              new URL(url)
-                              console.log('Opening URL:', url);
-                              // On mobile, use location.href to avoid the K logo screen
-                              window.location.href = url
-                            } catch (error) {
-                              console.error('Invalid artist URL:', linkUrl)
-                              // Could show a toast message here if needed
-                            }
+                {/* Artist Website Button - Always show if link exists */}
+                {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
+                  <div className="pt-4">
+                    <Button 
+                      className="w-full py-3 text-sm font-medium border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
+                      onClick={() => {
+                        const linkUrl = selectedArtwork.link!;
+                        // Validate and fix URL before opening
+                        try {
+                          let url = linkUrl.trim()
+                          // Add https:// if no protocol is specified
+                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://' + url
                           }
-                        }}
-                      >
-                        {buttonText}
-                      </Button>
-                    );
-                  })()}
-                </div>
+                          // Validate the URL
+                          new URL(url)
+                          // On mobile, use location.href to avoid the K logo screen
+                          window.location.href = url
+                        } catch (error) {
+                          console.error('Invalid artist URL:', linkUrl)
+                          // Could show a toast message here if needed
+                        }
+                      }}
+                    >
+                      View on artist's website
+                    </Button>
+                  </div>
+                )}
                 
                 {/* Social Media Share Buttons */}
                 <div className="pt-4">
@@ -1892,43 +1855,33 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   )
                 })()}
                 
-                {/* Artist Website Button */}
-                <div className="pt-4">
-                  <Button 
-                    className={`w-full py-3 text-sm font-medium ${
-                      selectedArtwork.link && selectedArtwork.link.trim() !== ''
-                        ? 'border border-black bg-white text-black hover:bg-black hover:text-white'
-                        : 'bg-gray-200 text-gray-600 cursor-not-allowed'
-                    } transition-all duration-200`}
-                    disabled={!selectedArtwork.link || selectedArtwork.link.trim() === ''}
-                    onClick={() => {
-                      console.log('Artist website button clicked, link:', selectedArtwork.link);
-                      if (selectedArtwork.link && selectedArtwork.link.trim() !== '') {
+                {/* Artist Website Button - Only show if link exists */}
+                {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
+                  <div className="pt-4">
+                    <Button 
+                      className="w-full py-3 text-sm font-medium border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
+                      onClick={() => {
                         // Validate and fix URL before opening
                         try {
-                          let url = selectedArtwork.link.trim()
+                          let url = selectedArtwork.link!.trim()
                           // Add https:// if no protocol is specified
                           if (!url.startsWith('http://') && !url.startsWith('https://')) {
                             url = 'https://' + url
                           }
                           // Validate the URL
                           new URL(url)
-                          console.log('Opening URL:', url);
                           // On mobile, use location.href to avoid the K logo screen
                           window.location.href = url
                         } catch (error) {
                           console.error('Invalid artist URL:', selectedArtwork.link)
                           // Could show a toast message here if needed
                         }
-                      }
-                    }}
-                  >
-                    {selectedArtwork.link && selectedArtwork.link.trim() !== '' 
-                      ? 'View on artist\'s website' 
-                      : 'Not for sale'
-                    }
-                  </Button>
-                </div>
+                      }}
+                    >
+                      View on artist's website
+                    </Button>
+                  </div>
+                )}
                 
                 {/* Social Media Share Buttons */}
                 <div className="pt-4">

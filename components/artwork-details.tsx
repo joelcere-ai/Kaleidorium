@@ -14,12 +14,14 @@ interface ArtworkDetailsProps {
     dimensions: string
     year: string
     price: string
+    currency?: string
     description: string
     tags: string[]
     genre?: string
     style?: string
     subject?: string
     colour?: string
+    link?: string
   }
   showShareButton?: boolean
 }
@@ -74,17 +76,41 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
         </div>
       </div>
 
-      {/* Enhanced Price Display / Sale Status */}
+      {/* Price Section */}
       {artwork.price && (
-        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-          {artwork.price.toLowerCase() === 'not for sale'
-            ? <div className="text-center">
-                <span className="text-lg font-medium text-muted-foreground">Not for sale</span>
-              </div>
-            : <div className="text-center">
-                <span className="text-3xl font-bold text-foreground">{artwork.price}</span>
-              </div>
-          }
+        <div className="space-y-3">
+          <h3 className="text-lg font-serif font-semibold text-foreground">Price</h3>
+          <p className="text-base leading-relaxed text-muted-foreground font-normal">
+            {artwork.price.toLowerCase() === 'sold' || artwork.price.toLowerCase() === 'enquire' || artwork.price.toLowerCase() === 'not for sale'
+              ? artwork.price
+              : artwork.currency
+                ? `${artwork.price} ${artwork.currency}`
+                : artwork.price
+            }
+          </p>
+        </div>
+      )}
+
+      {/* View on Artist Website Button - Always show if link exists */}
+      {artwork.link && artwork.link.trim() !== '' && (
+        <div className="mt-6">
+          <Button
+            variant="default"
+            className="w-full"
+            onClick={() => {
+              try {
+                let url = artwork.link!.trim();
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  url = 'https://' + url;
+                }
+                window.open(url, '_blank', 'noopener,noreferrer');
+              } catch (error) {
+                console.error('Invalid artist URL:', artwork.link);
+              }
+            }}
+          >
+            View on artist's website
+          </Button>
         </div>
       )}
 
