@@ -1424,7 +1424,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       src={profilePicture || "/placeholder.svg"}
                       alt="Profile"
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
                     <label 
                       htmlFor="profile-picture-upload"

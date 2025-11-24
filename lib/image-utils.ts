@@ -115,6 +115,7 @@ export async function validateSecureImageFile(file: File): Promise<{ valid: bool
 
 /**
  * Optimizes image by resizing and compressing
+ * Creates square images for profile pictures to fit nicely in circular containers
  */
 export function optimizeImageForProfile(file: File, maxWidth: number = 400, quality: number = 0.8): Promise<OptimizedImage> {
   return new Promise((resolve, reject) => {
@@ -123,28 +124,39 @@ export function optimizeImageForProfile(file: File, maxWidth: number = 400, qual
     const img = new Image();
 
     img.onload = () => {
-      // Calculate new dimensions while maintaining aspect ratio
+      // Calculate dimensions to fit within maxWidth while maintaining aspect ratio
       let { width, height } = img;
+      let targetWidth = width;
+      let targetHeight = height;
       
-      if (width > height) {
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxWidth) {
-          width = (width * maxWidth) / height;
-          height = maxWidth;
+      // Scale down if larger than maxWidth
+      if (width > maxWidth || height > maxWidth) {
+        if (width > height) {
+          targetWidth = maxWidth;
+          targetHeight = (height * maxWidth) / width;
+        } else {
+          targetHeight = maxWidth;
+          targetWidth = (width * maxWidth) / height;
         }
       }
 
-      // Set canvas dimensions
-      canvas.width = width;
-      canvas.height = height;
+      // Create square canvas (use the larger dimension to ensure nothing is cropped)
+      const squareSize = Math.max(targetWidth, targetHeight);
+      canvas.width = squareSize;
+      canvas.height = squareSize;
 
-      // Draw and compress image
+      // Fill with white background (or transparent for logos)
       if (ctx) {
-        ctx.drawImage(img, 0, 0, width, height);
+        // Use white background for better logo visibility
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, squareSize, squareSize);
+        
+        // Calculate centered position
+        const x = (squareSize - targetWidth) / 2;
+        const y = (squareSize - targetHeight) / 2;
+        
+        // Draw image centered
+        ctx.drawImage(img, x, y, targetWidth, targetHeight);
         
         canvas.toBlob(
           (blob) => {

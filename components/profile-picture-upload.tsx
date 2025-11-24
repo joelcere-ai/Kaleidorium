@@ -123,7 +123,7 @@ export function ProfilePictureUpload({
               <img
                 src={preview}
                 alt="Profile preview"
-                className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                className="w-32 h-32 rounded-full object-contain border-4 border-gray-200 bg-white"
               />
               {!disabled && (
                 <button
