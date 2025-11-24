@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2, Plus, Upload, X } from "lucide-react";
+import { Trash2, Plus, Upload, X, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import {
@@ -41,6 +41,8 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
   const [newArtistWebsite, setNewArtistWebsite] = useState("");
   const [creatingArtist, setCreatingArtist] = useState(false);
   const [uploadingArtwork, setUploadingArtwork] = useState(false);
+  const [editingArtist, setEditingArtist] = useState<string | null>(null);
+  const [editingArtwork, setEditingArtwork] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Artwork form state
@@ -298,32 +300,260 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
         return;
       }
 
-      const { error } = await supabase
+      console.log('Attempting to delete artist:', { artistId, userId, managed_by_gallery_id: userId });
+      
+      const { data, error } = await supabase
         .from("Artists")
         .delete()
         .eq("id", artistId)
-        .eq("managed_by_gallery_id", userId);
+        .eq("managed_by_gallery_id", userId)
+        .select();
 
-      if (error) throw error;
+      console.log('Delete result:', { data, error });
+
+      if (error) {
+        console.error('Delete error details:', error);
+        throw error;
+      }
 
       toast({
         title: "Success",
         description: `Artist "${artistName}" deleted successfully`,
       });
 
-      loadData();
+      // Force refresh by clearing state and reloading
+      setManagedArtists([]);
+      await loadData();
     } catch (error: any) {
       console.error("Error deleting artist:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to delete artist",
+        description: error.message || "Failed to delete artist. Please check console for details.",
         variant: "destructive",
       });
     }
   };
 
+  const handleEditArtist = (artist: any) => {
+    setEditingArtist(artist.id);
+    setNewArtistName(artist.username);
+    setNewArtistBio(artist.biog || "");
+    setNewArtistWebsite(artist.website || "");
+    setShowAddArtist(true);
+  };
+
+  const handleUpdateArtist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingArtist || !newArtistName.trim()) {
+      toast({
+        title: "Error",
+        description: "Artist name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCreatingArtist(true);
+    try {
+      // Validate and format website URL if provided
+      let websiteUrl = null;
+      if (newArtistWebsite.trim()) {
+        const urlResult = validateURL(newArtistWebsite.trim());
+        if (urlResult.valid && urlResult.sanitized) {
+          websiteUrl = urlResult.sanitized;
+        } else {
+          toast({
+            title: "Invalid URL",
+            description: urlResult.error || "Please enter a valid URL",
+            variant: "destructive",
+          });
+          setCreatingArtist(false);
+          return;
+        }
+      }
+
+      const { error } = await supabase
+        .from("Artists")
+        .update({
+          username: newArtistName.trim(),
+          firstname: newArtistName.trim().split(" ")[0] || newArtistName.trim(),
+          surname: newArtistName.trim().split(" ").slice(1).join(" ") || "",
+          biog: newArtistBio.trim() || null,
+          website: websiteUrl,
+        })
+        .eq("id", editingArtist)
+        .eq("managed_by_gallery_id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Artist "${newArtistName}" updated successfully`,
+      });
+
+      // Reset form
+      setNewArtistName("");
+      setNewArtistBio("");
+      setNewArtistWebsite("");
+      setEditingArtist(null);
+      setShowAddArtist(false);
+      loadData();
+    } catch (error: any) {
+      console.error("Error updating artist:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update artist",
+        variant: "destructive",
+      });
+    } finally {
+      setCreatingArtist(false);
+    }
+  };
+
+  const handleEditArtwork = (artwork: any) => {
+    setEditingArtwork(artwork.id);
+    setArtworkTitle(artwork.artwork_title || "");
+    setArtworkYear(artwork.year || "");
+    setArtworkMedium(artwork.medium || "");
+    setArtworkDimensions(artwork.dimensions || "");
+    setArtworkDescription(artwork.description || "");
+    setArtworkPrice(artwork.price || "");
+    setArtworkCurrency(artwork.currency || "USD");
+    setArtworkUrl(artwork.artwork_link || "");
+    setArtworkImageUrl(artwork.artwork_image || null);
+    setArtworkTags(artwork.tags || []);
+    setArtworkGenre(artwork.genre || "");
+    setArtworkStyle(artwork.style || "");
+    setArtworkSubject(artwork.subject || "");
+    setArtworkColour(artwork.colour || "");
+    if (isGallery) {
+      setSelectedArtistId(artwork.artist_id);
+    }
+    setShowUploadArtwork(true);
+  };
+
+  const handleUpdateArtwork = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingArtwork || !artworkTitle.trim() || !artworkImageUrl) {
+      toast({
+        title: "Error",
+        description: "Artwork title and image are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const targetArtistId = isGallery ? selectedArtistId : (artistId || userId);
+    if (!targetArtistId) {
+      toast({
+        title: "Error",
+        description: "Please select an artist",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingArtwork(true);
+    try {
+      // Get artist info for the artwork
+      const { data: artistData, error: artistError } = await supabase
+        .from("Artists")
+        .select("username")
+        .eq("id", targetArtistId)
+        .single();
+
+      if (artistError || !artistData) throw new Error("Artist not found");
+
+      // Validate and format URL if provided
+      let artworkLinkUrl = null;
+      if (artworkUrl.trim()) {
+        const urlResult = validateURL(artworkUrl.trim());
+        if (urlResult.valid && urlResult.sanitized) {
+          artworkLinkUrl = urlResult.sanitized;
+        } else {
+          toast({
+            title: "Invalid URL",
+            description: urlResult.error || "Please enter a valid URL",
+            variant: "destructive",
+          });
+          setUploadingArtwork(false);
+          return;
+        }
+      }
+
+      // Update artwork
+      const { error: artworkError } = await supabase
+        .from("Artwork")
+        .update({
+          artwork_title: artworkTitle.trim(),
+          artist: artistData.username,
+          artist_id: targetArtistId,
+          year: artworkYear.trim() || new Date().getFullYear().toString(),
+          medium: artworkMedium.trim() || null,
+          dimensions: artworkDimensions.trim() || null,
+          description: artworkDescription.trim() || null,
+          price: artworkPrice.trim() || null,
+          currency: artworkCurrency || null,
+          artwork_link: artworkLinkUrl,
+          artwork_image: artworkImageUrl,
+          tags: artworkTags.length > 0 ? artworkTags : null,
+          genre: artworkGenre || null,
+          style: artworkStyle || null,
+          subject: artworkSubject || null,
+          colour: artworkColour || null,
+        })
+        .eq("id", editingArtwork);
+
+      if (artworkError) throw artworkError;
+
+      toast({
+        title: "Success",
+        description: "Artwork updated successfully",
+      });
+
+      // Reset form
+      setArtworkTitle("");
+      setArtworkYear("");
+      setArtworkMedium("");
+      setArtworkDimensions("");
+      setArtworkDescription("");
+      setArtworkPrice("");
+      setArtworkUrl("");
+      setArtworkImageUrl(null);
+      setAiDescription("");
+      setArtworkTags([]);
+      setArtworkGenre("");
+      setArtworkStyle("");
+      setArtworkSubject("");
+      setArtworkColour("");
+      setAiLoading(false);
+      setAiTimeout(false);
+      setAiError("");
+      setEditingArtwork(null);
+      setShowUploadArtwork(false);
+      if (isGallery) setSelectedArtistId(null);
+
+      loadData();
+    } catch (error: any) {
+      console.error("Error updating artwork:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update artwork",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingArtwork(false);
+    }
+  };
+
   const handleUploadArtwork = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // If editing, use update handler
+    if (editingArtwork) {
+      return handleUpdateArtwork(e);
+    }
+
     if (!artworkTitle.trim() || !artworkImageUrl) {
       toast({
         title: "Error",
@@ -567,7 +797,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           </CardHeader>
           <CardContent>
             {showAddArtist ? (
-              <form onSubmit={handleCreateArtist} className="space-y-4">
+              <form onSubmit={editingArtist ? handleUpdateArtist : handleCreateArtist} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="artistName">Artist Name *</Label>
                   <Input
@@ -600,7 +830,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 </div>
                 <div className="flex gap-2">
                   <Button type="submit" disabled={creatingArtist}>
-                    {creatingArtist ? "Creating..." : "Create Artist"}
+                    {creatingArtist ? (editingArtist ? "Updating..." : "Creating...") : (editingArtist ? "Update Artist" : "Create Artist")}
                   </Button>
                   <Button
                     type="button"
@@ -610,6 +840,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                       setNewArtistName("");
                       setNewArtistBio("");
                       setNewArtistWebsite("");
+                      setEditingArtist(null);
                     }}
                   >
                     Cancel
@@ -632,30 +863,39 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                           <p className="text-sm text-muted-foreground line-clamp-1">{artist.biog}</p>
                         )}
                       </div>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Artist</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{artist.username}"? This cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteArtist(artist.id, artist.username)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEditArtist(artist)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Artist</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{artist.username}"? This cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteArtist(artist.id, artist.username)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                   ))
                 )}
@@ -850,9 +1090,9 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 />
               </div>
 
-              <div className="flex gap-2">
+                <div className="flex gap-2">
                 <Button type="submit" disabled={uploadingArtwork || (isGallery && !selectedArtistId)}>
-                  {uploadingArtwork ? "Uploading..." : "Upload Artwork"}
+                  {uploadingArtwork ? (editingArtwork ? "Updating..." : "Uploading...") : (editingArtwork ? "Update Artwork" : "Upload Artwork")}
                 </Button>
                 <Button
                   type="button"
@@ -876,6 +1116,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                     setAiLoading(false);
                     setAiTimeout(false);
                     setAiError("");
+                    setEditingArtwork(null);
                     if (isGallery) setSelectedArtistId(null);
                   }}
                 >
@@ -900,31 +1141,42 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                         <p className="font-medium">{artwork.artwork_title}</p>
                         <p className="text-sm text-muted-foreground">by {artwork.artist}</p>
                       </div>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="w-full">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Artwork</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{artwork.artwork_title}"? This cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteArtwork(artwork.id, artwork.artwork_title)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleEditArtwork(artwork)}
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <Trash2 className="mr-2 h-4 w-4" />
                               Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Artwork</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{artwork.artwork_title}"? This cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteArtwork(artwork.id, artwork.artwork_title)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                   ))}
                 </div>
