@@ -145,7 +145,10 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           .order("created_at", { ascending: false });
 
         if (artworksError) throw artworksError;
-        setArtworks(artworksData || []);
+        
+        // Fetch analytics for all artworks
+        const artworksWithAnalytics = await fetchArtworkAnalytics(artworksData || []);
+        setArtworks(artworksWithAnalytics);
       } else {
         // Load artist's own artworks
         const { data: artworksData, error: artworksError } = await supabase
@@ -155,7 +158,10 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
           .order("created_at", { ascending: false });
 
         if (artworksError) throw artworksError;
-        setArtworks(artworksData || []);
+        
+        // Fetch analytics for all artworks
+        const artworksWithAnalytics = await fetchArtworkAnalytics(artworksData || []);
+        setArtworks(artworksWithAnalytics);
       }
     } catch (error: any) {
       console.error("Error loading dashboard data:", error);
@@ -166,6 +172,48 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchArtworkAnalytics = async (artworks: any[]) => {
+    if (!artworks || artworks.length === 0) return artworks;
+
+    try {
+      const artworkIds = artworks.map(a => a.id);
+      
+      // Fetch analytics for all artworks at once
+      const { data: analytics, error: analyticsError } = await supabase
+        .from("ArtworkAnalytics")
+        .select("artwork_id, views, leads")
+        .in("artwork_id", artworkIds);
+
+      if (analyticsError) {
+        console.error("Error fetching analytics:", analyticsError);
+        // Return artworks without analytics if fetch fails
+        return artworks.map(artwork => ({
+          ...artwork,
+          views: 0,
+          leads: 0
+        }));
+      }
+
+      // Merge analytics with artworks
+      return artworks.map(artwork => {
+        const artworkAnalytics = analytics?.find(a => a.artwork_id === artwork.id);
+        return {
+          ...artwork,
+          views: artworkAnalytics?.views || 0,
+          leads: artworkAnalytics?.leads || 0
+        };
+      });
+    } catch (error) {
+      console.error("Error in fetchArtworkAnalytics:", error);
+      // Return artworks without analytics if there's an error
+      return artworks.map(artwork => ({
+        ...artwork,
+        views: 0,
+        leads: 0
+      }));
     }
   };
 
@@ -1140,6 +1188,15 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                       <div>
                         <p className="font-medium">{artwork.artwork_title}</p>
                         <p className="text-sm text-muted-foreground">by {artwork.artist}</p>
+                      </div>
+                      {/* Performance Metrics */}
+                      <div className="flex gap-4 text-sm text-muted-foreground pt-2 border-t">
+                        <div>
+                          <span className="font-medium">Views:</span> {artwork.views || 0}
+                        </div>
+                        <div>
+                          <span className="font-medium">Leads:</span> {artwork.leads || 0}
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <Button 
