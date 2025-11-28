@@ -30,6 +30,7 @@ export interface CollectorPreferences {
   priceRanges: { [key: string]: number }
   interactionCount: number
   viewed_artworks: string[]
+  disliked_artworks?: string[] // Never reset - permanently excluded artworks
 }
 
 export interface Collector {

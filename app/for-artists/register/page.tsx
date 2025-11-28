@@ -421,7 +421,7 @@ function ArtistRegisterPage() {
           notification_consent: artist.notificationConsent,
           preferences: {
               artists: {}, genres: {}, styles: {}, subjects: {},
-              colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+              colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [], disliked_artworks: [],
           },
           is_temporary: false,
       });
