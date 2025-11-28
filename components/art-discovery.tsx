@@ -673,6 +673,55 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     return true
   }
 
+  // Helper to extract style/genre/subject from tags when fields are missing
+  const extractFromTags = (tags: string[] | undefined, field: 'style' | 'genre' | 'subject' | 'colour'): string | undefined => {
+    if (!tags || tags.length === 0) return undefined;
+    
+    const tagString = tags.join(' ').toLowerCase();
+    
+    // Common style keywords
+    if (field === 'style') {
+      const styleKeywords = ['abstract', 'realism', 'impressionism', 'expressionism', 'surrealism', 'pop art', 'minimalism', 'contemporary', 'modern', 'classical', 'baroque', 'renaissance'];
+      for (const keyword of styleKeywords) {
+        if (tagString.includes(keyword)) {
+          return keyword;
+        }
+      }
+    }
+    
+    // Common genre keywords
+    if (field === 'genre') {
+      const genreKeywords = ['portrait', 'landscape', 'still life', 'figure', 'cityscape', 'seascape', 'abstract', 'nude'];
+      for (const keyword of genreKeywords) {
+        if (tagString.includes(keyword)) {
+          return keyword;
+        }
+      }
+    }
+    
+    // Common subject keywords
+    if (field === 'subject') {
+      const subjectKeywords = ['portrait', 'landscape', 'still life', 'figure', 'cityscape', 'seascape', 'nature', 'urban', 'animal', 'flower'];
+      for (const keyword of subjectKeywords) {
+        if (tagString.includes(keyword)) {
+          return keyword;
+        }
+      }
+    }
+    
+    // Common color keywords
+    if (field === 'colour') {
+      const colorKeywords = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'brown', 'grey', 'gray', 'gold', 'silver'];
+      for (const keyword of colorKeywords) {
+        if (tagString.includes(keyword)) {
+          return keyword;
+        }
+      }
+    }
+    
+    return undefined;
+  };
+
   // Helper to update local preferences
   const updateLocalPreferences = (
     artwork: Artwork,
@@ -700,10 +749,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       updated[category] = categoryMap as any;
     }
     updateCount('artists', artwork.artist);
-    updateCount('genres', artwork.genre);
-    updateCount('styles', artwork.style);
-    updateCount('subjects', artwork.subject);
-    updateCount('colors', artwork.colour);
+    
+    // Use field value if available, otherwise try to extract from tags
+    const genre = artwork.genre || extractFromTags(artwork.tags, 'genre');
+    const style = artwork.style || extractFromTags(artwork.tags, 'style');
+    const subject = artwork.subject || extractFromTags(artwork.tags, 'subject');
+    const colour = artwork.colour || extractFromTags(artwork.tags, 'colour');
+    
+    updateCount('genres', genre);
+    updateCount('styles', style);
+    updateCount('subjects', subject);
+    updateCount('colors', colour);
     const priceValue = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""));
     if (!isNaN(priceValue)) {
       const priceRange = Math.floor(priceValue / 1000) * 1000;
@@ -739,16 +795,27 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       ): number => {
         if (!value) return 0;
         let score = 0;
+        // Check both the exact value and lowercase version for matching
+        const valueLower = value.toLowerCase();
         if (preferences[category]?.[value]) {
           score += preferences[category][value];
+        } else if (preferences[category]?.[valueLower]) {
+          score += preferences[category][valueLower];
         }
         return score;
       };
       score += calculateCategoryScore('artists', artwork.artist) * 2.5;
-      score += calculateCategoryScore('genres', artwork.genre) * 2.0;
-      score += calculateCategoryScore('styles', artwork.style) * 2.0;
-      score += calculateCategoryScore('subjects', artwork.subject) * 1.5;
-      score += calculateCategoryScore('colors', artwork.colour) * 1.0;
+      
+      // Use field value if available, otherwise try to extract from tags (same logic as updateLocalPreferences)
+      const genre = artwork.genre || extractFromTags(artwork.tags, 'genre');
+      const style = artwork.style || extractFromTags(artwork.tags, 'style');
+      const subject = artwork.subject || extractFromTags(artwork.tags, 'subject');
+      const colour = artwork.colour || extractFromTags(artwork.tags, 'colour');
+      
+      score += calculateCategoryScore('genres', genre) * 2.0;
+      score += calculateCategoryScore('styles', style) * 2.0;
+      score += calculateCategoryScore('subjects', subject) * 1.5;
+      score += calculateCategoryScore('colors', colour) * 1.0;
       const priceValue = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""));
       if (!isNaN(priceValue)) {
         const priceRange = Math.floor(priceValue / 1000) * 1000;
