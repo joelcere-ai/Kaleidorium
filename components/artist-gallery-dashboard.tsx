@@ -1138,6 +1138,53 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 />
               </div>
 
+              {/* Style, Genre, Subject, and Colour fields - auto-populated by AI but can be edited */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="artworkStyle">Style</Label>
+                  <Input
+                    id="artworkStyle"
+                    value={artworkStyle}
+                    onChange={(e) => setArtworkStyle(e.target.value)}
+                    placeholder="e.g., Abstract, Realism, Contemporary"
+                  />
+                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="artworkGenre">Genre</Label>
+                  <Input
+                    id="artworkGenre"
+                    value={artworkGenre}
+                    onChange={(e) => setArtworkGenre(e.target.value)}
+                    placeholder="e.g., Portrait, Landscape, Still Life"
+                  />
+                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="artworkSubject">Subject</Label>
+                  <Input
+                    id="artworkSubject"
+                    value={artworkSubject}
+                    onChange={(e) => setArtworkSubject(e.target.value)}
+                    placeholder="e.g., Nature, Urban, Abstract Figure"
+                  />
+                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="artworkColour">Colour</Label>
+                  <Input
+                    id="artworkColour"
+                    value={artworkColour}
+                    onChange={(e) => setArtworkColour(e.target.value)}
+                    placeholder="e.g., Blue, Warm tones, Monochrome"
+                  />
+                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
+                </div>
+              </div>
+
                 <div className="flex gap-2">
                 <Button type="submit" disabled={uploadingArtwork || (isGallery && !selectedArtistId)}>
                   {uploadingArtwork ? (editingArtwork ? "Updating..." : "Uploading...") : (editingArtwork ? "Update Artwork" : "Upload Artwork")}
