@@ -194,6 +194,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   })
   const [isFiltering, setIsFiltering] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false) // Track if search has completed
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
   const [showFallbackMessage, setShowFallbackMessage] = useState(false)
 
@@ -1443,8 +1444,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length, fetchArtworks]) // Added fetchArtworks to deps
 
   // Load more artworks for infinite scroll/prefetching
+  // Only load more when NOT filtering/searching
   const loadMoreArtworks = useCallback(async () => {
-    if (loading) return
+    if (loading || isFiltering || isSearching) {
+      console.log('⏸️ Skipping loadMoreArtworks: loading=', loading, 'isFiltering=', isFiltering, 'isSearching=', isSearching)
+      return
+    }
     
     try {
       setLoading(true)
@@ -1465,7 +1470,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     } finally {
       setLoading(false)
     }
-  }, [loading, artworks])
+  }, [loading, artworks, isFiltering, isSearching])
 
   // Handle moving to the next artwork
   const handleNext = () => {
@@ -1525,10 +1530,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isSearchFromAPI = false
       } finally {
         setIsSearching(false) // Clear loading state
+        setHasSearched(true) // Mark that search has completed
       }
     } else {
       console.log('🔍 No search term provided, using local artworks')
       setIsSearching(false)
+      setHasSearched(false) // Reset when no search
       isSearchFromAPI = false
     }
     
@@ -1672,11 +1679,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log(`🔍 Filtered ${uniqueFiltered.length} unique artworks from ${artworksToFilter.length} total (${filtered.length - uniqueFiltered.length} duplicates removed)`)
     
     // Strategy 3: If still no matches, show empty list with fallback message
-    // But only if we're not currently searching (to prevent flashing "no results" message)
-    if (uniqueFiltered.length === 0 && !isSearching) {
+    // Only show if search has completed (not currently searching) and we have no results
+    // Use a small delay to ensure state has settled
+    if (uniqueFiltered.length === 0 && !isSearching && hasSearched) {
       console.log('No matches found, showing fallback message')
-      setShowFallbackMessage(true)
-    } else {
+      // Use setTimeout to ensure this happens after state updates
+      setTimeout(() => {
+        setShowFallbackMessage(true)
+      }, 50)
+    } else if (uniqueFiltered.length > 0 || !hasSearched) {
       setShowFallbackMessage(false)
     }
     
@@ -1713,6 +1724,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setFilteredArtworks([])
     setCurrentIndex(0)
     setShowFallbackMessage(false)
+    setHasSearched(false) // Reset search state
     
     toast({
       title: "Filters Cleared",

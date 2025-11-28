@@ -88,12 +88,13 @@ export default function CardStack({
   const visibleCards = getVisibleCards()
 
   // Prefetch more artworks when running low
+  // Only if we're not showing fallback message (which means we're filtering/searching)
   useEffect(() => {
     const remainingCards = artworks.length - currentIndex
-    if (remainingCards <= 3) {
+    if (remainingCards <= 3 && !showFallbackMessage) {
       onLoadMore()
     }
-  }, [currentIndex, artworks.length, onLoadMore])
+  }, [currentIndex, artworks.length, onLoadMore, showFallbackMessage])
 
   // Scroll-based card loading
   useEffect(() => {
@@ -420,7 +421,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
         </div>
 
         {/* Loading indicator and end of cards message */}
-        {loading && (
+        {/* Only show loading spinner when not showing fallback message (i.e., not filtering/searching) */}
+        {loading && !showFallbackMessage && (
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 text-sm text-gray-500">
               <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
