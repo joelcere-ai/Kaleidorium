@@ -2090,7 +2090,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       artwork_image: artwork.artwork_image || '',
       created_at: artwork.created_at || '',
       updated_at: artwork.updated_at || '',
-      link: artwork.link || undefined,
+      link: artwork.artwork_link || artwork.link || undefined, // Map artwork_link to link
       style: artwork.style || undefined,
       genre: artwork.genre || undefined,
       subject: artwork.subject || undefined,
