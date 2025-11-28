@@ -739,15 +739,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await trackAnalytics(artwork.id, 'dislike', user?.id);
     
     if (!user) {
-      updateLocalPreferences(artwork, 'dislike');
-      const recommendedArtworks = getLocalRecommendations(artworks);
+      const updatedPreferences = updateLocalPreferences(artwork, 'dislike');
+      // Filter out the disliked artwork immediately before getting recommendations
+      // This ensures it doesn't appear even if state hasn't updated yet
+      const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
+      const recommendedArtworks = getLocalRecommendations(filteredArtworks);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Save session after updating artworks
       setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
+      if (checkEndOfMatches(recommendedArtworks, updatedPreferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
       return;
@@ -755,7 +758,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!await handleAuthAction('dislike', artwork)) return;
     const newPreferences = await updatePreferences(user.id, artwork, 'dislike');
     if (newPreferences) {
-      const recommendedArtworks = await getRecommendations(user.id, artworks);
+      // Filter out the disliked artwork immediately before getting recommendations
+      // This ensures it doesn't appear even if there's a database caching delay
+      const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
+      const recommendedArtworks = await getRecommendations(user.id, filteredArtworks);
       setArtworks(recommendedArtworks);
       // Save session after updating artworks
       setTimeout(() => saveDiscoverSession(), 100);
