@@ -59,6 +59,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [loading, setLoading] = useState(true)
   const [loadingError, setLoadingError] = useState<string | null>(null)
   const fetchingRef = useRef(false)
+  const isUpdatingArtworksRef = useRef(false) // Prevent session restoration during updates
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [collection, setCollection] = useState<Artwork[]>([])
@@ -774,6 +775,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await trackAnalytics(artwork.id, 'dislike', user?.id);
     
     if (!user) {
+      isUpdatingArtworksRef.current = true; // Prevent session restoration during update
       const updatedPreferences = updateLocalPreferences(artwork, 'dislike');
       // Filter out the disliked artwork immediately before getting recommendations
       // This ensures it doesn't appear even if state hasn't updated yet
@@ -798,6 +800,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (checkEndOfMatches(recommendedArtworks, updatedPreferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
+      // Reset flag after a short delay to allow state updates to complete
+      setTimeout(() => {
+        isUpdatingArtworksRef.current = false;
+      }, 1000);
       return;
     }
     if (!await handleAuthAction('dislike', artwork)) return;
@@ -847,6 +853,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await trackAnalytics(artwork.id, 'add_to_collection', user?.id);
     
     if (!user) {
+      isUpdatingArtworksRef.current = true; // Prevent session restoration during update
       updateLocalPreferences(artwork, 'add');
       
       if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
@@ -864,6 +871,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
+      // Reset flag after a short delay to allow state updates to complete
+      setTimeout(() => {
+        isUpdatingArtworksRef.current = false;
+      }, 1000);
       return;
     }
 
@@ -1325,8 +1336,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [view, artworks, currentIndex, user?.id])
   
   useEffect(() => {
+    // Don't restore session if we're actively updating artworks (prevents loops)
+    if (isUpdatingArtworksRef.current) {
+      return;
+    }
+
     // Try to restore session when returning to Discover
-    if (mounted && view === "discover") {
+    if (mounted && view === "discover" && artworks.length === 0) {
       const restored = restoreDiscoverSession();
       if (restored && restored.artworks.length > 0) {
         console.log('✅ Restored Discover session, using saved artworks');
@@ -1347,7 +1363,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
-  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground]) // Added dependencies
+  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length]) // Added artworks.length to deps
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
