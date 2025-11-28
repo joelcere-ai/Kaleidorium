@@ -1504,14 +1504,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       }
       
       // Filter by subject
+      // Note: Also check genre field since terms like "still life", "portrait", "landscape" are genres
       if (filters.subject.trim()) {
         const subjectKeywords = filters.subject.toLowerCase().split(',').map(s => s.trim())
         const artworkSubject = (artwork.subject || '').toLowerCase()
+        const artworkGenre = (artwork.genre || '').toLowerCase() // Also check genre field
         const artworkTitle = artwork.title.toLowerCase()
         const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
         
         const subjectMatch = subjectKeywords.some(keyword => 
           artworkSubject.includes(keyword) || 
+          artworkGenre.includes(keyword) || // Check genre field too (e.g., "still life" is a genre)
           artworkTitle.includes(keyword) ||
           artworkTags.some(tag => tag.includes(keyword))
         )
@@ -1556,14 +1559,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         }
         
         // Check subject
+        // Note: Also check genre field since terms like "still life", "portrait", "landscape" are genres
         if (filters.subject.trim()) {
           const subjectKeywords = filters.subject.toLowerCase().split(',').map(s => s.trim())
           const artworkSubject = (artwork.subject || '').toLowerCase()
+          const artworkGenre = (artwork.genre || '').toLowerCase() // Also check genre field
           const artworkTitle = artwork.title.toLowerCase()
           const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
           
           const subjectMatch = subjectKeywords.some(keyword => 
             artworkSubject.includes(keyword) || 
+            artworkGenre.includes(keyword) || // Check genre field too (e.g., "still life" is a genre)
             artworkTitle.includes(keyword) ||
             artworkTags.some(tag => tag.includes(keyword))
           )
