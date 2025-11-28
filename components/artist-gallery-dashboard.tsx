@@ -611,6 +611,17 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
       return;
     }
 
+    // Ensure Kurator has analyzed the artwork (description should be populated by AI)
+    // Style, genre, subject, and colour are automatically populated by Kurator in the background
+    if (!artworkDescription && !aiDescription) {
+      toast({
+        title: "AI Analysis Required",
+        description: "Please wait for the Kurator to analyze your artwork. The analysis runs automatically when you upload an image.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const targetArtistId = isGallery ? selectedArtistId : (artistId || userId);
     if (!targetArtistId) {
       toast({
@@ -743,8 +754,13 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
       setArtworkImageUrl(result.url);
       toast({ 
         title: "Secure artwork upload complete!", 
-        description: "Your artwork is ready for AI description generation." 
+        description: "The Kurator is analyzing your artwork..." 
       });
+      // Automatically trigger AI description generation in the background
+      // This ensures style, genre, subject, and colour are populated automatically
+      setTimeout(() => {
+        handleAIDescription();
+      }, 500); // Small delay to ensure state is updated
     } else {
       setArtworkImageUrl(null);
     }
@@ -1069,7 +1085,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                   id="artworkDescription"
                   value={artworkDescription || aiDescription}
                   onChange={(e) => setArtworkDescription(e.target.value)}
-                  placeholder="Describe your artwork - the concept, technique, inspiration, and meaning behind the piece"
+                  placeholder="The Kurator will automatically analyze your artwork when you upload an image. You can edit the description if needed."
                   rows={4}
                   className="min-h-[120px]"
                   required
@@ -1081,9 +1097,12 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                     className="mt-2 px-4 py-2 text-sm" 
                     disabled={aiLoading || !artworkImageUrl}
                   >
-                    {aiLoading ? "The Kurator is studying..." : "Generate AI Description"}
+                    {aiLoading ? "The Kurator is studying..." : "Regenerate AI Description"}
                   </Button>
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Note: Style, Genre, Subject, and Colour are automatically populated by the Kurator when you upload an image.
+                </p>
                 {artworkTags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {artworkTags.map((tag) => (
@@ -1138,52 +1157,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 />
               </div>
 
-              {/* Style, Genre, Subject, and Colour fields - auto-populated by AI but can be edited */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="artworkStyle">Style</Label>
-                  <Input
-                    id="artworkStyle"
-                    value={artworkStyle}
-                    onChange={(e) => setArtworkStyle(e.target.value)}
-                    placeholder="e.g., Abstract, Realism, Contemporary"
-                  />
-                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="artworkGenre">Genre</Label>
-                  <Input
-                    id="artworkGenre"
-                    value={artworkGenre}
-                    onChange={(e) => setArtworkGenre(e.target.value)}
-                    placeholder="e.g., Portrait, Landscape, Still Life"
-                  />
-                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="artworkSubject">Subject</Label>
-                  <Input
-                    id="artworkSubject"
-                    value={artworkSubject}
-                    onChange={(e) => setArtworkSubject(e.target.value)}
-                    placeholder="e.g., Nature, Urban, Abstract Figure"
-                  />
-                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="artworkColour">Colour</Label>
-                  <Input
-                    id="artworkColour"
-                    value={artworkColour}
-                    onChange={(e) => setArtworkColour(e.target.value)}
-                    placeholder="e.g., Blue, Warm tones, Monochrome"
-                  />
-                  <p className="text-xs text-muted-foreground">Auto-filled by AI, but you can edit</p>
-                </div>
-              </div>
+              {/* Note: Style, Genre, Subject, and Colour are automatically populated by the Kurator AI when you click "Generate AI Description" */}
 
                 <div className="flex gap-2">
                 <Button type="submit" disabled={uploadingArtwork || (isGallery && !selectedArtistId)}>
