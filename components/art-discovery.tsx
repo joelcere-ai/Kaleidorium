@@ -1475,15 +1475,92 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }
 
   // Handle filter changes with intelligent fallback
-  const handleFilterChange = (filters: FilterState) => {
+  const handleFilterChange = async (filters: FilterState) => {
     console.log('🔍 Applying filters:', filters)
     console.log('🔍 Total artworks available:', artworks.length)
     setActiveFilters(filters)
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
     
+    // If search term is provided, query Supabase directly for better results
+    let artworksToFilter = artworks
+    if (filters.search && filters.search.trim()) {
+      console.log('🔍 Search term detected, querying Supabase directly...')
+      try {
+        const searchTerm = filters.search.trim()
+        // Query Supabase for artworks matching title or artist
+        const { data: searchResultsByTitle, error: titleError } = await supabase
+          .from('Artwork')
+          .select('*')
+          .ilike('artwork_title', `%${searchTerm}%`)
+          .limit(50)
+        
+        const { data: searchResultsByArtist, error: artistError } = await supabase
+          .from('Artwork')
+          .select('*')
+          .ilike('artist', `%${searchTerm}%`)
+          .limit(50)
+        
+        // Combine results and remove duplicates
+        const allSearchResults: any[] = []
+        const seenIds = new Set<number>()
+        
+        if (!titleError && searchResultsByTitle) {
+          searchResultsByTitle.forEach((art: any) => {
+            if (!seenIds.has(art.id)) {
+              seenIds.add(art.id)
+              allSearchResults.push(art)
+            }
+          })
+        }
+        
+        if (!artistError && searchResultsByArtist) {
+          searchResultsByArtist.forEach((art: any) => {
+            if (!seenIds.has(art.id)) {
+              seenIds.add(art.id)
+              allSearchResults.push(art)
+            }
+          })
+        }
+        
+        const searchResults = allSearchResults
+        const searchError = titleError || artistError
+        
+        if (!searchError && searchResults && searchResults.length > 0) {
+          console.log(`🔍 Found ${searchResults.length} artworks from Supabase search`)
+          // Transform Supabase data to match Artwork interface
+          const transformedResults = searchResults.map((artwork: any) => ({
+            id: artwork.id.toString(),
+            title: artwork.artwork_title || '',
+            artist: artwork.artist || '',
+            medium: artwork.medium || '',
+            dimensions: artwork.dimensions || '',
+            year: artwork.year || '',
+            price: artwork.price || '',
+            currency: artwork.currency || undefined,
+            description: artwork.description || '',
+            tags: artwork.tags || [],
+            artwork_image: artwork.artwork_image || '',
+            created_at: artwork.created_at || '',
+            updated_at: artwork.updated_at || '',
+            link: artwork.link || undefined,
+            style: artwork.style || undefined,
+            genre: artwork.genre || undefined,
+            subject: artwork.subject || undefined,
+            colour: artwork.colour || undefined,
+          }))
+          artworksToFilter = transformedResults
+        } else {
+          console.log('🔍 No results from Supabase search, using local artworks')
+        }
+      } catch (error) {
+        console.error('🔍 Error querying Supabase for search:', error)
+        // Fall back to local artworks if search fails
+      }
+    }
+    
     // Strategy 1: Try exact matching (all filters must match)
-    let filtered = artworks.filter(artwork => {
+    let filtered = artworksToFilter.filter(artwork => {
       let matches = true
       
       // Filter by search (title or artist)
@@ -1548,7 +1625,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     // Strategy 2: If no exact matches, try partial matching (any filter can match)
     if (filtered.length === 0) {
       console.log('No exact matches found, trying partial matching...')
-      filtered = artworks.filter(artwork => {
+      filtered = artworksToFilter.filter(artwork => {
         let hasAnyMatch = false
         
         // Check search (title or artist)
@@ -1620,7 +1697,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setShowFallbackMessage(false)
     }
     
-    console.log(`🔍 Filtered ${filtered.length} artworks from ${artworks.length} total`)
+    console.log(`🔍 Filtered ${filtered.length} artworks from ${artworksToFilter.length} total`)
     if (filtered.length === 0) {
       console.log('🔍 No matches found. Sample artwork data for debugging:', artworks.slice(0, 3).map(a => ({
         title: a.title,
