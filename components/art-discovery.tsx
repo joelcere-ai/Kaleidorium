@@ -172,7 +172,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     priceRanges: Record<string, number>;
     interactionCount: number;
     viewed_artworks: string[];
-    disliked_artworks: string[]; // Never reset - permanently excluded artworks
   }>({
     artists: {},
     genres: {},
@@ -181,8 +180,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     colors: {},
     priceRanges: {},
     interactionCount: 0,
-    viewed_artworks: [],
-    disliked_artworks: []
+    viewed_artworks: []
   });
 
   // Add state for filtered artworks and active filters
@@ -381,21 +379,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         colors: {},
         priceRanges: {},
         interactionCount: 0,
-        viewed_artworks: [],
-        disliked_artworks: []
+        viewed_artworks: []
       }
 
       // Add artwork to viewed list if not already there
       if (!preferences.viewed_artworks.includes(artwork.id)) {
         preferences.viewed_artworks.push(artwork.id)
-      }
-      
-      // Track disliked artworks separately - never reset
-      if (action === 'dislike' && !preferences.disliked_artworks?.includes(artwork.id)) {
-        if (!preferences.disliked_artworks) {
-          preferences.disliked_artworks = [];
-        }
-        preferences.disliked_artworks.push(artwork.id);
       }
 
       // Update counts and scores
@@ -478,24 +467,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       const preferences = collector.preferences || {}
       const viewedArtworks = preferences.viewed_artworks || []
-      const dislikedArtworks = preferences.disliked_artworks || []
       
-      // Always filter out disliked artworks first (never show them again)
-      const availableArtworks = artworks.filter(artwork => !dislikedArtworks.includes(artwork.id))
+      // Filter out viewed artworks
+      const unviewedArtworks = artworks.filter(artwork => !viewedArtworks.includes(artwork.id))
       
-      // Then filter out viewed artworks
-      const unviewedArtworks = availableArtworks.filter(artwork => !viewedArtworks.includes(artwork.id))
-      
-      // If no unviewed artworks left, reset viewed_artworks but keep disliked_artworks
+      // If no unviewed artworks left, reset viewed_artworks and use all artworks
       if (unviewedArtworks.length === 0) {
-        console.log('All artworks viewed, resetting viewed_artworks (keeping disliked_artworks)')
+        console.log('All artworks viewed, resetting viewed_artworks')
         preferences.viewed_artworks = []
         await supabase
           .from('Collectors')
           .update({ preferences })
           .eq('user_id', userId)
-        // Return available artworks (excluding disliked ones)
-        return availableArtworks
+        return artworks
       }
 
       // Call the OpenAI recommendations API
@@ -670,10 +654,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!updated.viewed_artworks.includes(artwork.id)) {
       updated.viewed_artworks.push(artwork.id);
     }
-    // Track disliked artworks separately - never reset
-    if (action === 'dislike' && !updated.disliked_artworks.includes(artwork.id)) {
-      updated.disliked_artworks.push(artwork.id);
-    }
     function updateCount(
       category: 'artists' | 'genres' | 'styles' | 'subjects' | 'colors' | 'priceRanges',
       value: string | undefined
@@ -704,20 +684,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const getLocalRecommendations = (artworks: Artwork[]) => {
     const preferences = localPreferences;
     const viewedArtworks = preferences.viewed_artworks || [];
-    const dislikedArtworks = preferences.disliked_artworks || [];
-    
-    // Always filter out disliked artworks first (never show them again)
-    const availableArtworks = artworks.filter(artwork => !dislikedArtworks.includes(artwork.id));
-    
-    // Then filter out viewed artworks
-    const unviewedArtworks = availableArtworks.filter(artwork => !viewedArtworks.includes(artwork.id));
-    
+    const unviewedArtworks = artworks.filter(artwork => !viewedArtworks.includes(artwork.id));
     if (unviewedArtworks.length === 0) {
-      // Reset viewed_artworks but keep disliked_artworks
       preferences.viewed_artworks = [];
       setLocalPreferences({ ...preferences });
-      // Return available artworks (excluding disliked ones)
-      return availableArtworks;
+      return artworks;
     }
     // Score logic (same as before)
     const scoredArtworks = unviewedArtworks.map(artwork => {

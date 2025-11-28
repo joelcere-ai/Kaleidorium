@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
           notification_consent: finalGalleryData?.notification_consent || false,
           preferences: {
             artists: {}, genres: {}, styles: {}, subjects: {},
-            colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [], disliked_artworks: [],
+            colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
           },
           is_temporary: false,
         });
