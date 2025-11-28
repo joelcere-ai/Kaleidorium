@@ -432,10 +432,23 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         })
 
       if (upsertError) {
-        console.error('Error updating collector preferences:', upsertError)
+        console.error('❌ Error updating collector preferences:', upsertError);
+        console.error('❌ Update data that failed:', JSON.stringify(updateData, null, 2));
+        console.error('❌ Error details:', {
+          code: upsertError.code,
+          message: upsertError.message,
+          details: upsertError.details,
+          hint: upsertError.hint
+        });
         return null
       }
-      console.log('updatePreferences: success', updateData);
+      console.log('✅ updatePreferences: success', {
+        userId,
+        artworkId: artwork.id,
+        action,
+        viewed_artworks_count: preferences.viewed_artworks.length,
+        viewed_artworks: preferences.viewed_artworks
+      });
       return updateData
     } catch (error) {
       console.error('Error updating preferences:', error)
@@ -456,20 +469,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         .maybeSingle()
 
       if (fetchError) {
-        console.error('Error fetching collector preferences:', fetchError)
+        console.error('❌ Error fetching collector preferences:', fetchError)
         return artworks
       }
 
       if (!collector) {
-        console.log('No collector found for recommendations')
+        console.log('⚠️ No collector found for recommendations')
         return artworks
       }
 
       const preferences = collector.preferences || {}
       const viewedArtworks = preferences.viewed_artworks || []
       
+      console.log('📊 getRecommendations: preferences', {
+        viewed_artworks_count: viewedArtworks.length,
+        viewed_artworks: viewedArtworks.slice(0, 5), // Log first 5 for debugging
+        artworks_input_count: artworks.length
+      });
+      
       // Filter out viewed artworks
       const unviewedArtworks = artworks.filter(artwork => !viewedArtworks.includes(artwork.id))
+      
+      console.log('📊 getRecommendations: filtered', {
+        unviewed_count: unviewedArtworks.length,
+        filtered_out_count: artworks.length - unviewedArtworks.length
+      });
       
       // If no unviewed artworks left, reset viewed_artworks and use all artworks
       if (unviewedArtworks.length === 0) {
@@ -744,8 +768,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       // This ensures it doesn't appear even if state hasn't updated yet
       const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
       const recommendedArtworks = getLocalRecommendations(filteredArtworks);
+      
+      // Calculate the new index: if current artwork was removed, stay at 0, otherwise adjust
+      let newIndex = currentIndex;
+      if (currentIndex >= filteredArtworks.length) {
+        // If the removed artwork was at or near the end, reset to 0
+        newIndex = 0;
+      } else if (artworks[currentIndex]?.id === artwork.id) {
+        // If we're currently viewing the disliked artwork, move to next (or 0 if at end)
+        newIndex = currentIndex >= filteredArtworks.length ? 0 : currentIndex;
+      }
+      
       setArtworks(recommendedArtworks);
-      const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Save session after updating artworks
       setTimeout(() => saveDiscoverSession(), 100);
@@ -762,16 +796,31 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       // This ensures it doesn't appear even if there's a database caching delay
       const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
       const recommendedArtworks = await getRecommendations(user.id, filteredArtworks);
+      
+      // Calculate the new index: if current artwork was removed, stay at 0, otherwise adjust
+      let newIndex = currentIndex;
+      if (currentIndex >= filteredArtworks.length) {
+        // If the removed artwork was at or near the end, reset to 0
+        newIndex = 0;
+      } else if (artworks[currentIndex]?.id === artwork.id) {
+        // If we're currently viewing the disliked artwork, move to next (or 0 if at end)
+        newIndex = currentIndex >= filteredArtworks.length ? 0 : currentIndex;
+      }
+      
       setArtworks(recommendedArtworks);
+      setCurrentIndex(newIndex);
+      
       // Save session after updating artworks
       setTimeout(() => saveDiscoverSession(), 100);
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
+    } else {
+      // If updatePreferences failed, still move to next artwork
+      const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
+      setCurrentIndex(newIndex);
     }
-    const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
   }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession]);
 
   // Refactored handleLike
