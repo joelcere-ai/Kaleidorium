@@ -1413,7 +1413,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   
   useEffect(() => {
     // Only fetch if no artworks and on discover view
-    if (mounted && artworks.length === 0 && view === "discover") {
+    // Skip if we have a selectedArtworkId - let fetchSpecificArtwork handle it
+    if (mounted && artworks.length === 0 && view === "discover" && !selectedArtworkId) {
       // Don't restore session if we're actively updating artworks (prevents loops)
       // But allow initial fetch even if flag is set (in case it got stuck)
       if (!isUpdatingArtworksRef.current) {
@@ -1441,13 +1442,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
-  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length, fetchArtworks]) // Added fetchArtworks to deps
+  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length, fetchArtworks, selectedArtworkId]) // Added selectedArtworkId to skip fetch when loading specific artwork
 
   // Load more artworks for infinite scroll/prefetching
-  // Only load more when NOT filtering/searching
+  // Only load more when NOT filtering/searching and NOT loading a specific artwork
   const loadMoreArtworks = useCallback(async () => {
-    if (loading || isFiltering || isSearching) {
-      console.log('⏸️ Skipping loadMoreArtworks: loading=', loading, 'isFiltering=', isFiltering, 'isSearching=', isSearching)
+    if (loading || isFiltering || isSearching || isLoadingSpecificArtwork || selectedArtworkId) {
+      console.log('⏸️ Skipping loadMoreArtworks: loading=', loading, 'isFiltering=', isFiltering, 'isSearching=', isSearching, 'isLoadingSpecificArtwork=', isLoadingSpecificArtwork, 'selectedArtworkId=', selectedArtworkId)
       return
     }
     
@@ -1992,9 +1993,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [currentIndex, artworks])
 
+  // Track if we're loading a specific artwork to prevent duplicates
+  const [isLoadingSpecificArtwork, setIsLoadingSpecificArtwork] = useState(false)
+
   // Handle selectedArtworkId - find and display the specific artwork
   useEffect(() => {
-    if (selectedArtworkId) {
+    if (selectedArtworkId && !isLoadingSpecificArtwork) {
       // First, try to find in already loaded artworks (handle both string and number IDs)
       const artworkIndex = artworks.findIndex(artwork => 
         artwork.id === selectedArtworkId || 
@@ -2009,16 +2013,20 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         if (view !== 'discover') {
           setView('discover')
         }
+        setIsLoadingSpecificArtwork(false) // Reset flag
       } else if (artworks.length > 0) {
         // Artwork not in loaded list, fetch it specifically
         console.log('🔍 Artwork not in loaded list, fetching specific artwork:', selectedArtworkId)
+        setIsLoadingSpecificArtwork(true) // Set flag to prevent duplicate fetches
         fetchSpecificArtwork(selectedArtworkId)
       } else {
-        // Artworks not loaded yet, wait for them to load
-        console.log('⏳ Waiting for artworks to load before searching for:', selectedArtworkId)
+        // Artworks not loaded yet, fetch the specific artwork directly
+        console.log('⏳ No artworks loaded, fetching specific artwork directly:', selectedArtworkId)
+        setIsLoadingSpecificArtwork(true) // Set flag to prevent duplicate fetches
+        fetchSpecificArtwork(selectedArtworkId)
       }
     }
-  }, [selectedArtworkId, artworks, view, setView])
+  }, [selectedArtworkId, artworks, view, setView, isLoadingSpecificArtwork])
 
   // Fetch a specific artwork by ID
   const fetchSpecificArtwork = async (artworkId: string) => {
@@ -2062,15 +2070,30 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (artworkData) {
         // Transform and add to artworks
         const transformedArtwork = transformArtworkData(artworkData)
-        setArtworks([transformedArtwork])
-        setCurrentIndex(0)
+        // Check if artwork is already in the list to prevent duplicates
+        const existingIndex = artworks.findIndex(a => 
+          a.id === transformedArtwork.id || 
+          String(a.id) === String(transformedArtwork.id)
+        )
+        
+        if (existingIndex !== -1) {
+          console.log('✅ Artwork already in list at index:', existingIndex)
+          setCurrentIndex(existingIndex)
+        } else {
+          // Only set artworks if not already present
+          setArtworks([transformedArtwork])
+          setCurrentIndex(0)
+        }
         setView('discover')
+        setIsLoadingSpecificArtwork(false) // Reset flag after loading
         console.log('✅ Artwork loaded and displayed:', transformedArtwork.title)
       } else {
         console.error('❌ Artwork not found with ID:', artworkId)
+        setIsLoadingSpecificArtwork(false) // Reset flag on error
       }
     } catch (error) {
       console.error('❌ Error fetching specific artwork:', error)
+      setIsLoadingSpecificArtwork(false) // Reset flag on error
     }
   }
 
