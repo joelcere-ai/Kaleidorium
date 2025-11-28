@@ -186,14 +186,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Add state for filtered artworks and active filters
   const [filteredArtworks, setFilteredArtworks] = useState<Artwork[]>([])
-  const [activeFilters, setActiveFilters] = useState<{
-    style: string;
-    subject: string;
-    colors: string;
-  }>({
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
     style: '',
     subject: '',
-    colors: ''
+    colors: '',
+    search: ''
   })
   const [isFiltering, setIsFiltering] = useState(false)
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
@@ -1489,6 +1486,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     let filtered = artworks.filter(artwork => {
       let matches = true
       
+      // Filter by search (title or artist)
+      if (filters.search && filters.search.trim()) {
+        const searchTerm = filters.search.toLowerCase().trim()
+        const artworkTitle = (artwork.title || '').toLowerCase()
+        const artworkArtist = (artwork.artist || '').toLowerCase()
+        const searchMatch = artworkTitle.includes(searchTerm) || artworkArtist.includes(searchTerm)
+        matches = matches && searchMatch
+      }
+      
       // Filter by style
       if (filters.style.trim()) {
         const styleKeywords = filters.style.toLowerCase().split(',').map(s => s.trim())
@@ -1544,6 +1550,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('No exact matches found, trying partial matching...')
       filtered = artworks.filter(artwork => {
         let hasAnyMatch = false
+        
+        // Check search (title or artist)
+        if (filters.search && filters.search.trim()) {
+          const searchTerm = filters.search.toLowerCase().trim()
+          const artworkTitle = (artwork.title || '').toLowerCase()
+          const artworkArtist = (artwork.artist || '').toLowerCase()
+          if (artworkTitle.includes(searchTerm) || artworkArtist.includes(searchTerm)) {
+            hasAnyMatch = true
+          }
+        }
         
         // Check style
         if (filters.style.trim()) {
@@ -1621,7 +1637,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   // Clear filters function
   const clearFilters = () => {
     setIsFiltering(false)
-    setActiveFilters({ style: '', subject: '', colors: '' })
+    setActiveFilters({ style: '', subject: '', colors: '', search: '' })
     setFilteredArtworks([])
     setCurrentIndex(0)
     setShowFallbackMessage(false)
@@ -1637,7 +1653,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     const filterState = {
       style: filters.style.join(', '),
       subject: filters.subject.join(', '),
-      colors: filters.colors.join(', ')
+      colors: filters.colors.join(', '),
+      search: '' // Mobile doesn't have search yet
     }
     handleFilterChange(filterState)
   }

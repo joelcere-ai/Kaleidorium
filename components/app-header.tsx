@@ -14,6 +14,7 @@ interface FilterState {
   style: string
   subject: string
   colors: string
+  search: string
 }
 
 function AppHeaderContent({ 
@@ -42,7 +43,8 @@ function AppHeaderContent({
   const [filters, setFilters] = useState<FilterState>({
     style: '',
     subject: '',
-    colors: ''
+    colors: '',
+    search: ''
   })
   const [showAutocomplete, setShowAutocomplete] = useState({
     style: false,
@@ -147,7 +149,7 @@ function AppHeaderContent({
   }
 
   // Get filtered suggestions based on current input
-  const getFilteredSuggestions = (category: keyof FilterState, input: string) => {
+  const getFilteredSuggestions = (category: 'style' | 'subject' | 'colors', input: string) => {
     if (!input.trim()) return EXAMPLE_TAGS[category].slice(0, 10) // Show first 10 by default
     
     const searchTerm = input.toLowerCase()
@@ -158,7 +160,10 @@ function AppHeaderContent({
 
   const handleInputChange = (category: keyof FilterState, value: string) => {
     setFilters(prev => ({ ...prev, [category]: value }))
-    setShowAutocomplete(prev => ({ ...prev, [category]: value.length > 0 }))
+    // Only show autocomplete for style, subject, colors (not search)
+    if (category !== 'search') {
+      setShowAutocomplete(prev => ({ ...prev, [category]: value.length > 0 }))
+    }
   }
 
   const selectSuggestion = (category: keyof FilterState, suggestion: string) => {
@@ -379,6 +384,17 @@ function AppHeaderContent({
       {showFilters && (
         <div className="border-t bg-gray-50 absolute w-full z-40 shadow-lg" data-filter-panel>
           <div className="p-6 max-w-4xl mx-auto">
+            {/* Search Field - Full Width */}
+            <div className="mb-6">
+              <label className="block text-sm font-sans font-bold text-black mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Search</label>
+              <Input
+                placeholder="Search by artwork title or artist name (e.g. Cool it down, Lisawong)..."
+                value={filters.search}
+                onChange={(e) => handleInputChange('search', e.target.value)}
+                className="w-full"
+              />
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Style Filter */}
               <div className="relative">
