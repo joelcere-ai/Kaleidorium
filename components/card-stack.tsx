@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { Badge } from "@/components/ui/badge"
@@ -333,9 +333,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
-                              const url = encodeURIComponent(window.location.href);
-                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                              window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
+                              const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
+                              const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
+                              const text = `Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`
+                              window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer');
                             }}
                             title="Share on X"
                           >
@@ -344,9 +345,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
-                              const url = encodeURIComponent(window.location.href);
-                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'noopener,noreferrer');
+                              const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
+                              const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
+                              const text = `Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`
+                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
                             }}
                             title="Share on Facebook"
                           >
@@ -354,25 +356,57 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                           </button>
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
-                            onClick={() => {
-                              const url = encodeURIComponent(window.location.href);
-                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                              window.open(`https://www.instagram.com/`, '_blank', 'noopener,noreferrer');
+                            onClick={async () => {
+                              const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
+                              const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
+                              const text = `Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium\n\n${shareUrl}`
+                              try {
+                                await navigator.clipboard.writeText(text)
+                                alert('Link copied! Paste it in your Instagram story or post.')
+                              } catch (err) {
+                                console.error('Failed to copy:', err)
+                              }
                             }}
-                            title="Share on Instagram"
+                            title="Share on Instagram (Copy Link)"
                           >
                             <Instagram className="w-5 h-5" />
                           </button>
                           <button 
                             className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
                             onClick={() => {
-                              const url = encodeURIComponent(window.location.href);
-                              const text = encodeURIComponent(`Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`);
-                              window.open(`https://wa.me/?text=${text}%20${url}`, '_blank', 'noopener,noreferrer');
+                              const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
+                              const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
+                              const text = `Check out "${artwork.title}" by ${artwork.artist} on Kaleidorium`
+                              const whatsappText = `${text}\n\n${shareUrl}`
+                              window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank', 'noopener,noreferrer');
                             }}
                             title="Share on WhatsApp"
                           >
                             <MessageCircle className="w-5 h-5" />
+                          </button>
+                          <button 
+                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            onClick={async () => {
+                              const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
+                              const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
+                              try {
+                                await navigator.clipboard.writeText(shareUrl)
+                                alert('Link copied to clipboard!')
+                              } catch (err) {
+                                console.error('Failed to copy:', err)
+                                // Fallback for older browsers
+                                const textArea = document.createElement('textarea')
+                                textArea.value = shareUrl
+                                document.body.appendChild(textArea)
+                                textArea.select()
+                                document.execCommand('copy')
+                                document.body.removeChild(textArea)
+                                alert('Link copied to clipboard!')
+                              }
+                            }}
+                            title="Copy Link"
+                          >
+                            <Copy className="w-5 h-5" />
                           </button>
                         </div>
                       </div>

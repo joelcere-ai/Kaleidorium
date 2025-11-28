@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
 
 interface ArtworkDetailsProps {
   artwork: {
+    id?: string
     title: string
     artist: string
     medium: string
@@ -29,7 +30,16 @@ interface ArtworkDetailsProps {
 export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDetailsProps) {
   const [showShare, setShowShare] = useState(false)
   const { toast } = useToast()
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+  // Generate share URL with artwork ID if available
+  const getShareUrl = () => {
+    if (typeof window === 'undefined') return 'https://kaleidorium.com'
+    const baseUrl = window.location.origin
+    // Try to get artwork ID from URL params or artwork object
+    const urlParams = new URLSearchParams(window.location.search)
+    const artworkId = urlParams.get('artworkId') || artwork.id
+    return artworkId ? `${baseUrl}/?artworkId=${artworkId}` : baseUrl
+  }
+  const shareUrl = getShareUrl()
   const shareText = `Check out this artwork: ${artwork.title} by ${artwork.artist}`
 
   const handleCopy = () => {
@@ -135,7 +145,10 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
                 <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer')}>
                   <Twitter className="h-5 w-5 text-sky-500" /> X (Twitter)
                 </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`, '_blank', 'noopener,noreferrer')}>
+                <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+                  const whatsappText = `${shareText}\n\n${shareUrl}`
+                  window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank', 'noopener,noreferrer')
+                }}>
                   <Smartphone className="h-5 w-5 text-green-500" /> WhatsApp
                 </Button>
                 <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')}>
