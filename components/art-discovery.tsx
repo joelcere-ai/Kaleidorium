@@ -1310,6 +1310,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: ArtDiscovery component mounting...');
     setMounted(true);
     
+    // Reset the update flag on mount to prevent it from being stuck
+    isUpdatingArtworksRef.current = false;
+    
     // NO VISIBILITY CHANGE HANDLING - this was causing tab switch reloads
     console.log('🚨 SIMPLE: No visibility change handler - preventing tab switch issues');
     
@@ -1336,34 +1339,36 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [view, artworks, currentIndex, user?.id])
   
   useEffect(() => {
-    // Don't restore session if we're actively updating artworks (prevents loops)
-    if (isUpdatingArtworksRef.current) {
-      return;
-    }
-
-    // Try to restore session when returning to Discover
-    if (mounted && view === "discover" && artworks.length === 0) {
-      const restored = restoreDiscoverSession();
-      if (restored && restored.artworks.length > 0) {
-        console.log('✅ Restored Discover session, using saved artworks');
-        setArtworks(restored.artworks);
-        setCurrentIndex(restored.currentIndex);
-        setLoading(false);
-        // For registered users, still load recommendations in background to update preferences
-        if (user) {
-          console.log('🔄 Loading fresh recommendations in background for registered user');
-          loadRecommendationsInBackground(user.id, restored.artworks);
-        }
-        return;
-      }
-    }
-
-    // Only fetch if no artworks and no restored session
+    // Only fetch if no artworks and on discover view
     if (mounted && artworks.length === 0 && view === "discover") {
+      // Don't restore session if we're actively updating artworks (prevents loops)
+      // But allow initial fetch even if flag is set (in case it got stuck)
+      if (!isUpdatingArtworksRef.current) {
+        // Try to restore session first
+        const restored = restoreDiscoverSession();
+        if (restored && restored.artworks.length > 0) {
+          console.log('✅ Restored Discover session, using saved artworks');
+          setArtworks(restored.artworks);
+          setCurrentIndex(restored.currentIndex);
+          setLoading(false);
+          // For registered users, still load recommendations in background to update preferences
+          if (user) {
+            console.log('🔄 Loading fresh recommendations in background for registered user');
+            loadRecommendationsInBackground(user.id, restored.artworks);
+          }
+          return;
+        }
+      } else {
+        // If flag is stuck, reset it and proceed with fetch
+        console.log('⚠️ isUpdatingArtworksRef was stuck, resetting and fetching');
+        isUpdatingArtworksRef.current = false;
+      }
+
+      // If no session to restore, fetch artworks
       console.log('useEffect: Triggering fetchArtworks because mounted=', mounted, 'artworks.length=', artworks.length);
       fetchArtworks()
     }
-  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length]) // Added artworks.length to deps
+  }, [mounted, user?.id, view, restoreDiscoverSession, loadRecommendationsInBackground, artworks.length, fetchArtworks]) // Added fetchArtworks to deps
 
   // Load more artworks for infinite scroll/prefetching
   const loadMoreArtworks = useCallback(async () => {
