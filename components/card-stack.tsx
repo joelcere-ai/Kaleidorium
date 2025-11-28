@@ -422,7 +422,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
         {/* Loading indicator and end of cards message */}
         {/* Only show loading spinner when not showing fallback message (i.e., not filtering/searching) */}
-        {loading && !showFallbackMessage && (
+        {/* Also hide when there's only one artwork (likely a specific artwork loaded via URL) */}
+        {loading && !showFallbackMessage && artworks.length > 1 && (
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 text-sm text-gray-500">
               <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>

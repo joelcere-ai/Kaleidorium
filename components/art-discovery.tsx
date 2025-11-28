@@ -1995,6 +1995,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Track if we're loading a specific artwork to prevent duplicates
   const [isLoadingSpecificArtwork, setIsLoadingSpecificArtwork] = useState(false)
+  
+  // Reset loading state when view changes (to allow navigation)
+  useEffect(() => {
+    if (view !== 'discover') {
+      setIsLoadingSpecificArtwork(false)
+      setLoading(false)
+    }
+  }, [view])
 
   // Handle selectedArtworkId - find and display the specific artwork
   useEffect(() => {
@@ -2014,6 +2022,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           setView('discover')
         }
         setIsLoadingSpecificArtwork(false) // Reset flag
+        setLoading(false) // Ensure loading is false
       } else if (artworks.length > 0) {
         // Artwork not in loaded list, fetch it specifically
         console.log('🔍 Artwork not in loaded list, fetching specific artwork:', selectedArtworkId)
@@ -2086,14 +2095,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         }
         setView('discover')
         setIsLoadingSpecificArtwork(false) // Reset flag after loading
+        setLoading(false) // Ensure loading is false
         console.log('✅ Artwork loaded and displayed:', transformedArtwork.title)
       } else {
         console.error('❌ Artwork not found with ID:', artworkId)
         setIsLoadingSpecificArtwork(false) // Reset flag on error
+        setLoading(false) // Ensure loading is false on error
       }
     } catch (error) {
       console.error('❌ Error fetching specific artwork:', error)
       setIsLoadingSpecificArtwork(false) // Reset flag on error
+      setLoading(false) // Ensure loading is false on error
     }
   }
 
