@@ -272,21 +272,32 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [collection.length, dbCollection.length, user, setCollectionCount]);
 
   // Session storage helpers for preserving Discover state
+  // Debounce timer for session saves to prevent excessive saves
+  const saveSessionTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const saveDiscoverSession = useCallback(() => {
-    try {
-      if (artworks.length > 0) {
-        const sessionData = {
-          artworks: artworks,
-          currentIndex: currentIndex,
-          timestamp: Date.now(),
-          userId: user?.id || 'anonymous'
-        };
-        sessionStorage.setItem('kaleidorium_discover_session', JSON.stringify(sessionData));
-        console.log('💾 Saved Discover session:', { artworksCount: artworks.length, currentIndex, userId: sessionData.userId });
-      }
-    } catch (error) {
-      console.error('Error saving Discover session:', error);
+    // Clear any pending save
+    if (saveSessionTimerRef.current) {
+      clearTimeout(saveSessionTimerRef.current);
     }
+    
+    // Debounce the save to prevent excessive writes
+    saveSessionTimerRef.current = setTimeout(() => {
+      try {
+        if (artworks.length > 0) {
+          const sessionData = {
+            artworks: artworks,
+            currentIndex: currentIndex,
+            timestamp: Date.now(),
+            userId: user?.id || 'anonymous'
+          };
+          sessionStorage.setItem('kaleidorium_discover_session', JSON.stringify(sessionData));
+          console.log('💾 Saved Discover session:', { artworksCount: artworks.length, currentIndex, userId: sessionData.userId });
+        }
+      } catch (error) {
+        console.error('Error saving Discover session:', error);
+      }
+    }, 500); // 500ms debounce
   }, [artworks, currentIndex, user?.id]);
 
   const restoreDiscoverSession = useCallback((): { artworks: Artwork[]; currentIndex: number } | null => {
@@ -781,8 +792,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       
       setArtworks(recommendedArtworks);
       setCurrentIndex(newIndex);
-      // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      // Save session after updating artworks (debounced)
+      saveDiscoverSession();
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, updatedPreferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
@@ -810,8 +821,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setArtworks(recommendedArtworks);
       setCurrentIndex(newIndex);
       
-      // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      // Save session after updating artworks (debounced)
+      saveDiscoverSession();
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
@@ -849,7 +860,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      saveDiscoverSession();
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
       }
@@ -899,7 +910,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
       // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      saveDiscoverSession();
       if (checkEndOfMatches(recommendedArtworks, addPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
       }
@@ -953,7 +964,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
       // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      saveDiscoverSession();
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
         setShowEndOfMatchesOverlay(true);
@@ -966,7 +977,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
       // Save session after updating artworks
-      setTimeout(() => saveDiscoverSession(), 100);
+      saveDiscoverSession();
       // Check for end of matches
       if (checkEndOfMatches(recommendedArtworks, newPreferences.preferences.viewed_artworks)) {
         setShowEndOfMatchesOverlay(true);
@@ -1237,7 +1248,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
             setArtworks(recommendedArtworks);
             // Save session after recommendations are loaded
-            setTimeout(() => saveDiscoverSession(), 100);
+            saveDiscoverSession();
           } else {
             console.log('No preferences found, using default artworks');
             setArtworks(transformedArtworks);
@@ -1276,11 +1287,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [user?.id, getRecommendations, saveDiscoverSession]) // Dependencies for recommendations
 
   // Save session when navigating away from Discover
+  // Only save when view changes, not when artworks change (to prevent loops)
   useEffect(() => {
     if (view !== "discover" && artworks.length > 0) {
       saveDiscoverSession();
     }
-  }, [view, artworks, saveDiscoverSession]);
+  }, [view]); // Removed artworks and saveDiscoverSession from deps to prevent loops
 
   // Simplified initialization with tab visibility handling
   useEffect(() => {
@@ -1291,12 +1303,26 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     console.log('🚨 SIMPLE: No visibility change handler - preventing tab switch issues');
     
     return () => {
-      // Save session on unmount if on Discover page
-      if (view === "discover") {
-        saveDiscoverSession();
+      // Clean up any pending session save
+      if (saveSessionTimerRef.current) {
+        clearTimeout(saveSessionTimerRef.current);
+      }
+      // Save session on unmount if on Discover page (immediate, no debounce)
+      if (view === "discover" && artworks.length > 0) {
+        try {
+          const sessionData = {
+            artworks: artworks,
+            currentIndex: currentIndex,
+            timestamp: Date.now(),
+            userId: user?.id || 'anonymous'
+          };
+          sessionStorage.setItem('kaleidorium_discover_session', JSON.stringify(sessionData));
+        } catch (error) {
+          console.error('Error saving Discover session on unmount:', error);
+        }
       }
     };
-  }, [])
+  }, [view, artworks, currentIndex, user?.id])
   
   useEffect(() => {
     // Try to restore session when returning to Discover
