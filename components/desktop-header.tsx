@@ -33,6 +33,14 @@ export function DesktopHeader({
   const isSelected = (view: string) => currentPage === view;
 
   const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing") => {
+    // Clear filters when navigating to Discover
+    if (view === "discover" && (window as any).clearArtDiscoveryFilters) {
+      (window as any).clearArtDiscoveryFilters();
+    }
+    // Also clear via callback if provided
+    if (view === "discover" && onClearFilters) {
+      onClearFilters();
+    }
     setView(view);
     setShowMenu(false);
   };
@@ -43,7 +51,7 @@ export function DesktopHeader({
   };
 
   return (
-    <header className="border-b bg-background relative app-header z-10">
+    <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
         <Button 

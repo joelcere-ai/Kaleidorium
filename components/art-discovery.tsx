@@ -1655,6 +1655,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [toggleDesktopFilters])
 
+  // Expose clearFilters function globally so header can access it
+  useEffect(() => {
+    (window as any).clearArtDiscoveryFilters = clearFilters
+    return () => {
+      delete (window as any).clearArtDiscoveryFilters
+    }
+  }, [clearFilters])
+
   // Setup keyboard shortcuts only on the client side
   useEffect(() => {
     if (!mounted) return

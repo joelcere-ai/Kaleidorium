@@ -89,6 +89,16 @@ function AppHeaderContent({
       searchParams: searchParams.toString()
     });
     
+    // Clear filters when navigating to Discover (or if already on Discover, clear them)
+    if (target === "discover" && (window as any).clearArtDiscoveryFilters) {
+      (window as any).clearArtDiscoveryFilters();
+    }
+    
+    // Also clear filters via callback if provided
+    if (target === "discover" && onClearFilters) {
+      onClearFilters();
+    }
+    
     if (pathname === "/" && setView) {
       console.log('🔧 Using setView for:', target);
       setView(target);
@@ -171,7 +181,7 @@ function AppHeaderContent({
   };
 
   return (
-    <header className="border-b bg-background relative app-header z-10">
+    <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
         <Link href="/" className="flex items-center space-x-1 py-2 px-1 md:py-0 md:px-0">
