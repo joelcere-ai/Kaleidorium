@@ -66,7 +66,11 @@ function HomeContent() {
   // Update view when pathname changes
   useEffect(() => {
     const currentView = getCurrentView();
-    if (currentView !== view) {
+    // If artworkId is present, ensure we're on discover view
+    const artworkId = getArtworkId();
+    if (artworkId && currentView !== "discover") {
+      setViewState("discover");
+    } else if (currentView !== view) {
       setViewState(currentView);
     }
   }, [pathname, searchParams]);

@@ -1962,13 +1962,109 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle selectedArtworkId - find and display the specific artwork
   useEffect(() => {
-    if (selectedArtworkId && artworks.length > 0) {
-      const artworkIndex = artworks.findIndex(artwork => artwork.id === selectedArtworkId);
+    if (selectedArtworkId) {
+      // First, try to find in already loaded artworks (handle both string and number IDs)
+      const artworkIndex = artworks.findIndex(artwork => 
+        artwork.id === selectedArtworkId || 
+        artwork.id === String(selectedArtworkId) || 
+        String(artwork.id) === selectedArtworkId
+      );
+      
       if (artworkIndex !== -1) {
+        console.log('✅ Found artwork in loaded list at index:', artworkIndex)
         setCurrentIndex(artworkIndex);
+        // Ensure we're on discover view
+        if (view !== 'discover') {
+          setView('discover')
+        }
+      } else if (artworks.length > 0) {
+        // Artwork not in loaded list, fetch it specifically
+        console.log('🔍 Artwork not in loaded list, fetching specific artwork:', selectedArtworkId)
+        fetchSpecificArtwork(selectedArtworkId)
+      } else {
+        // Artworks not loaded yet, wait for them to load
+        console.log('⏳ Waiting for artworks to load before searching for:', selectedArtworkId)
       }
     }
-  }, [selectedArtworkId, artworks])
+  }, [selectedArtworkId, artworks, view, setView])
+
+  // Fetch a specific artwork by ID
+  const fetchSpecificArtwork = async (artworkId: string) => {
+    try {
+      console.log('🔍 Fetching artwork with ID:', artworkId)
+      
+      // Try as integer first (most common case)
+      const artworkIdInt = parseInt(artworkId, 10)
+      let artworkData = null
+      let error = null
+      
+      if (!isNaN(artworkIdInt)) {
+        const { data, error: err } = await supabase
+          .from('Artwork')
+          .select('*')
+          .eq('id', artworkIdInt)
+          .single()
+        
+        artworkData = data
+        error = err
+      }
+      
+      // If not found as integer or ID is not numeric, try as string
+      if ((error && error.code === 'PGRST116') || !artworkData) {
+        const { data: artworkDataStr, error: errorStr } = await supabase
+          .from('Artwork')
+          .select('*')
+          .eq('id', artworkId)
+          .single()
+        
+        if (errorStr && errorStr.code !== 'PGRST116') {
+          console.error('❌ Artwork not found:', errorStr)
+          return
+        }
+        
+        if (artworkDataStr) {
+          artworkData = artworkDataStr
+        }
+      }
+      
+      if (artworkData) {
+        // Transform and add to artworks
+        const transformedArtwork = transformArtworkData(artworkData)
+        setArtworks([transformedArtwork])
+        setCurrentIndex(0)
+        setView('discover')
+        console.log('✅ Artwork loaded and displayed:', transformedArtwork.title)
+      } else {
+        console.error('❌ Artwork not found with ID:', artworkId)
+      }
+    } catch (error) {
+      console.error('❌ Error fetching specific artwork:', error)
+    }
+  }
+
+  // Helper function to transform Supabase artwork data to Artwork interface
+  const transformArtworkData = (artwork: any): Artwork => {
+    return {
+      id: String(artwork.id),
+      title: artwork.artwork_title || '',
+      artist: artwork.artist || '',
+      medium: artwork.medium || '',
+      dimensions: artwork.dimensions || '',
+      year: artwork.year || '',
+      price: artwork.price || '',
+      currency: artwork.currency || undefined,
+      description: artwork.description || '',
+      tags: artwork.tags || [],
+      artwork_image: artwork.artwork_image || '',
+      created_at: artwork.created_at || '',
+      updated_at: artwork.updated_at || '',
+      link: artwork.link || undefined,
+      style: artwork.style || undefined,
+      genre: artwork.genre || undefined,
+      subject: artwork.subject || undefined,
+      colour: artwork.colour || undefined,
+    }
+  }
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
