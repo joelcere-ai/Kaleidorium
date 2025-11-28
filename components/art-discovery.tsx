@@ -193,6 +193,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     search: ''
   })
   const [isFiltering, setIsFiltering] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
   const [showFallbackMessage, setShowFallbackMessage] = useState(false)
 
@@ -1486,6 +1487,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     let artworksToFilter = artworks
     if (filters.search && filters.search.trim()) {
       console.log('🔍 Search term detected, querying API...', filters.search)
+      setIsSearching(true) // Set loading state
       try {
         const searchTerm = filters.search.trim()
         console.log('🔍 Calling API with search term:', searchTerm)
@@ -1510,9 +1512,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       } catch (error) {
         console.error('❌ Error calling search API:', error)
         // Fall back to local artworks if API call fails
+      } finally {
+        setIsSearching(false) // Clear loading state
       }
     } else {
       console.log('🔍 No search term provided, using local artworks')
+      setIsSearching(false)
     }
     
     // Strategy 1: Try exact matching (all filters must match)
@@ -1646,7 +1651,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
     
     // Strategy 3: If still no matches, show empty list with fallback message
-    if (filtered.length === 0) {
+    // But only if we're not currently searching (to prevent flashing "no results" message)
+    if (filtered.length === 0 && !isSearching) {
       console.log('No matches found, showing fallback message')
       setShowFallbackMessage(true)
     } else {
@@ -2350,7 +2356,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               onNext={handleNext}
               onLoadMore={loadMoreArtworks}
               onImageClick={openImageOverlay}
-              loading={loading}
+              loading={loading || isSearching}
               showFallbackMessage={showFallbackMessage}
             />
 
