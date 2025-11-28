@@ -1482,81 +1482,37 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
     
-    // If search term is provided, query Supabase directly for better results
+    // If search term is provided, query API endpoint for better results
     let artworksToFilter = artworks
     if (filters.search && filters.search.trim()) {
-      console.log('🔍 Search term detected, querying Supabase directly...')
+      console.log('🔍 Search term detected, querying API...', filters.search)
       try {
         const searchTerm = filters.search.trim()
-        // Query Supabase for artworks matching title or artist
-        const { data: searchResultsByTitle, error: titleError } = await supabase
-          .from('Artwork')
-          .select('*')
-          .ilike('artwork_title', `%${searchTerm}%`)
-          .limit(50)
+        console.log('🔍 Calling API with search term:', searchTerm)
+        const response = await fetch(`/api/search-artworks?q=${encodeURIComponent(searchTerm)}`)
+        console.log('🔍 API response status:', response.status)
         
-        const { data: searchResultsByArtist, error: artistError } = await supabase
-          .from('Artwork')
-          .select('*')
-          .ilike('artist', `%${searchTerm}%`)
-          .limit(50)
-        
-        // Combine results and remove duplicates
-        const allSearchResults: any[] = []
-        const seenIds = new Set<number>()
-        
-        if (!titleError && searchResultsByTitle) {
-          searchResultsByTitle.forEach((art: any) => {
-            if (!seenIds.has(art.id)) {
-              seenIds.add(art.id)
-              allSearchResults.push(art)
-            }
-          })
-        }
-        
-        if (!artistError && searchResultsByArtist) {
-          searchResultsByArtist.forEach((art: any) => {
-            if (!seenIds.has(art.id)) {
-              seenIds.add(art.id)
-              allSearchResults.push(art)
-            }
-          })
-        }
-        
-        const searchResults = allSearchResults
-        const searchError = titleError || artistError
-        
-        if (!searchError && searchResults && searchResults.length > 0) {
-          console.log(`🔍 Found ${searchResults.length} artworks from Supabase search`)
-          // Transform Supabase data to match Artwork interface
-          const transformedResults = searchResults.map((artwork: any) => ({
-            id: artwork.id.toString(),
-            title: artwork.artwork_title || '',
-            artist: artwork.artist || '',
-            medium: artwork.medium || '',
-            dimensions: artwork.dimensions || '',
-            year: artwork.year || '',
-            price: artwork.price || '',
-            currency: artwork.currency || undefined,
-            description: artwork.description || '',
-            tags: artwork.tags || [],
-            artwork_image: artwork.artwork_image || '',
-            created_at: artwork.created_at || '',
-            updated_at: artwork.updated_at || '',
-            link: artwork.link || undefined,
-            style: artwork.style || undefined,
-            genre: artwork.genre || undefined,
-            subject: artwork.subject || undefined,
-            colour: artwork.colour || undefined,
-          }))
-          artworksToFilter = transformedResults
+        if (response.ok) {
+          const data = await response.json()
+          console.log('🔍 API response data:', data)
+          if (data.results && data.results.length > 0) {
+            console.log(`✅ Found ${data.results.length} artworks from API search`)
+            artworksToFilter = data.results
+          } else {
+            console.log('⚠️ No results from API search, using local artworks')
+            console.log('🔍 API returned:', data)
+          }
         } else {
-          console.log('🔍 No results from Supabase search, using local artworks')
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+          console.error('❌ API search error:', response.status, errorData)
+          // Fall back to local artworks if API fails
         }
       } catch (error) {
-        console.error('🔍 Error querying Supabase for search:', error)
-        // Fall back to local artworks if search fails
+        console.error('❌ Error calling search API:', error)
+        // Fall back to local artworks if API call fails
       }
+    } else {
+      console.log('🔍 No search term provided, using local artworks')
     }
     
     // Strategy 1: Try exact matching (all filters must match)
@@ -1628,8 +1584,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       filtered = artworksToFilter.filter(artwork => {
         let hasAnyMatch = false
         
-        // Check search (title or artist)
-        if (filters.search && filters.search.trim()) {
+        // Check search (title or artist) - only if we didn't already query API
+        if (filters.search && filters.search.trim() && artworksToFilter === artworks) {
           const searchTerm = filters.search.toLowerCase().trim()
           const artworkTitle = (artwork.title || '').toLowerCase()
           const artworkArtist = (artwork.artist || '').toLowerCase()
@@ -1699,14 +1655,27 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     console.log(`🔍 Filtered ${filtered.length} artworks from ${artworksToFilter.length} total`)
     if (filtered.length === 0) {
-      console.log('🔍 No matches found. Sample artwork data for debugging:', artworks.slice(0, 3).map(a => ({
-        title: a.title,
-        artist: a.artist,
-        subject: a.subject,
-        genre: a.genre,
-        style: a.style,
-        tags: a.tags
-      })))
+      console.log('🔍 No matches found.')
+      if (filters.search && filters.search.trim()) {
+        console.log(`🔍 Search term was: "${filters.search}"`)
+        console.log('🔍 Sample artwork data for debugging:', artworksToFilter.slice(0, 3).map(a => ({
+          title: a.title,
+          artist: a.artist,
+          subject: a.subject,
+          genre: a.genre,
+          style: a.style,
+          tags: a.tags
+        })))
+      } else {
+        console.log('🔍 Sample artwork data for debugging:', artworksToFilter.slice(0, 3).map(a => ({
+          title: a.title,
+          artist: a.artist,
+          subject: a.subject,
+          genre: a.genre,
+          style: a.style,
+          tags: a.tags
+        })))
+      }
     }
     setFilteredArtworks(filtered)
   }
