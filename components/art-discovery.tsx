@@ -1485,9 +1485,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     // If search term is provided, query API endpoint for better results
     let artworksToFilter = artworks
+    let isSearchFromAPI = false // Track if we got results from API
     if (filters.search && filters.search.trim()) {
       console.log('🔍 Search term detected, querying API...', filters.search)
       setIsSearching(true) // Set loading state
+      setShowFallbackMessage(false) // Hide fallback message while searching
       try {
         const searchTerm = filters.search.trim()
         console.log('🔍 Calling API with search term:', searchTerm)
@@ -1499,33 +1501,44 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           console.log('🔍 API response data:', data)
           if (data.results && data.results.length > 0) {
             console.log(`✅ Found ${data.results.length} artworks from API search`)
-            artworksToFilter = data.results
+            // Deduplicate by ID to prevent duplicates
+            const uniqueResults = data.results.filter((artwork: Artwork, index: number, self: Artwork[]) => 
+              index === self.findIndex((a: Artwork) => a.id === artwork.id)
+            )
+            console.log(`✅ Deduplicated to ${uniqueResults.length} unique artworks`)
+            artworksToFilter = uniqueResults
+            isSearchFromAPI = true // Mark that we're using API results
           } else {
             console.log('⚠️ No results from API search, using local artworks')
             console.log('🔍 API returned:', data)
+            isSearchFromAPI = false
           }
         } else {
           const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
           console.error('❌ API search error:', response.status, errorData)
           // Fall back to local artworks if API fails
+          isSearchFromAPI = false
         }
       } catch (error) {
         console.error('❌ Error calling search API:', error)
         // Fall back to local artworks if API call fails
+        isSearchFromAPI = false
       } finally {
         setIsSearching(false) // Clear loading state
       }
     } else {
       console.log('🔍 No search term provided, using local artworks')
       setIsSearching(false)
+      isSearchFromAPI = false
     }
     
     // Strategy 1: Try exact matching (all filters must match)
     let filtered = artworksToFilter.filter(artwork => {
       let matches = true
       
-      // Filter by search (title or artist)
-      if (filters.search && filters.search.trim()) {
+      // Filter by search (title or artist) - only if we didn't get results from API
+      // API results are already filtered by search, so skip this step
+      if (filters.search && filters.search.trim() && !isSearchFromAPI) {
         const searchTerm = filters.search.toLowerCase().trim()
         const artworkTitle = (artwork.title || '').toLowerCase()
         const artworkArtist = (artwork.artist || '').toLowerCase()
@@ -1584,13 +1597,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     })
     
     // Strategy 2: If no exact matches, try partial matching (any filter can match)
-    if (filtered.length === 0) {
+    // Skip this if we got results from API (API already filtered by search)
+    if (filtered.length === 0 && !isSearchFromAPI) {
       console.log('No exact matches found, trying partial matching...')
       filtered = artworksToFilter.filter(artwork => {
         let hasAnyMatch = false
         
         // Check search (title or artist) - only if we didn't already query API
-        if (filters.search && filters.search.trim() && artworksToFilter === artworks) {
+        if (filters.search && filters.search.trim() && !isSearchFromAPI) {
           const searchTerm = filters.search.toLowerCase().trim()
           const artworkTitle = (artwork.title || '').toLowerCase()
           const artworkArtist = (artwork.artist || '').toLowerCase()
@@ -1650,17 +1664,23 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       })
     }
     
+    // Deduplicate filtered results by ID to prevent duplicates
+    const uniqueFiltered = filtered.filter((artwork, index, self) => 
+      index === self.findIndex((a) => a.id === artwork.id)
+    )
+    
+    console.log(`🔍 Filtered ${uniqueFiltered.length} unique artworks from ${artworksToFilter.length} total (${filtered.length - uniqueFiltered.length} duplicates removed)`)
+    
     // Strategy 3: If still no matches, show empty list with fallback message
     // But only if we're not currently searching (to prevent flashing "no results" message)
-    if (filtered.length === 0 && !isSearching) {
+    if (uniqueFiltered.length === 0 && !isSearching) {
       console.log('No matches found, showing fallback message')
       setShowFallbackMessage(true)
     } else {
       setShowFallbackMessage(false)
     }
     
-    console.log(`🔍 Filtered ${filtered.length} artworks from ${artworksToFilter.length} total`)
-    if (filtered.length === 0) {
+    if (uniqueFiltered.length === 0) {
       console.log('🔍 No matches found.')
       if (filters.search && filters.search.trim()) {
         console.log(`🔍 Search term was: "${filters.search}"`)
@@ -1683,7 +1703,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         })))
       }
     }
-    setFilteredArtworks(filtered)
+    setFilteredArtworks(uniqueFiltered)
   }
 
   // Clear filters function
