@@ -1479,7 +1479,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Handle filter changes with intelligent fallback
   const handleFilterChange = (filters: FilterState) => {
-    console.log('Applying filters:', filters)
+    console.log('🔍 Applying filters:', filters)
+    console.log('🔍 Total artworks available:', artworks.length)
     setActiveFilters(filters)
     setIsFiltering(true)
     setCurrentIndex(0) // Reset to first artwork
@@ -1512,12 +1513,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         const artworkTitle = artwork.title.toLowerCase()
         const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
         
-        const subjectMatch = subjectKeywords.some(keyword => 
-          artworkSubject.includes(keyword) || 
-          artworkGenre.includes(keyword) || // Check genre field too (e.g., "still life" is a genre)
-          artworkTitle.includes(keyword) ||
-          artworkTags.some(tag => tag.includes(keyword))
-        )
+        const subjectMatch = subjectKeywords.some(keyword => {
+          const keywordNormalized = keyword.replace(/\s+/g, ' ').trim() // Normalize multiple spaces to single space
+          return artworkSubject.includes(keywordNormalized) || 
+                 artworkGenre.includes(keywordNormalized) || // Check genre field too (e.g., "still life" is a genre)
+                 artworkTitle.includes(keywordNormalized) ||
+                 artworkTags.some(tag => tag.includes(keywordNormalized))
+        })
         matches = matches && subjectMatch
       }
       
@@ -1567,12 +1569,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           const artworkTitle = artwork.title.toLowerCase()
           const artworkTags = (artwork.tags || []).map(tag => tag.toLowerCase())
           
-          const subjectMatch = subjectKeywords.some(keyword => 
-            artworkSubject.includes(keyword) || 
-            artworkGenre.includes(keyword) || // Check genre field too (e.g., "still life" is a genre)
-            artworkTitle.includes(keyword) ||
-            artworkTags.some(tag => tag.includes(keyword))
-          )
+          const subjectMatch = subjectKeywords.some(keyword => {
+            const keywordNormalized = keyword.replace(/\s+/g, ' ').trim() // Normalize multiple spaces to single space
+            return artworkSubject.includes(keywordNormalized) || 
+                   artworkGenre.includes(keywordNormalized) || // Check genre field too (e.g., "still life" is a genre)
+                   artworkTitle.includes(keywordNormalized) ||
+                   artworkTags.some(tag => tag.includes(keywordNormalized))
+          })
           if (subjectMatch) hasAnyMatch = true
         }
         
@@ -1601,7 +1604,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       setShowFallbackMessage(false)
     }
     
-    console.log(`Filtered ${filtered.length} artworks from ${artworks.length} total`)
+    console.log(`🔍 Filtered ${filtered.length} artworks from ${artworks.length} total`)
+    if (filtered.length === 0) {
+      console.log('🔍 No matches found. Sample artwork data for debugging:', artworks.slice(0, 3).map(a => ({
+        title: a.title,
+        artist: a.artist,
+        subject: a.subject,
+        genre: a.genre,
+        style: a.style,
+        tags: a.tags
+      })))
+    }
     setFilteredArtworks(filtered)
   }
 
@@ -2255,7 +2268,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             screenWidth={screenWidth}
             screenHeight={screenHeight}
           />
-        ) : currentArtwork ? (
+        ) : (currentArtwork || (isFiltering && currentArtworkList.length === 0)) ? (
           <>
             <CardStack
               artworks={currentArtworkList}
