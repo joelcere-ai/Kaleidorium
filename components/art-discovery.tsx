@@ -2371,6 +2371,37 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </Button>
                 </div>
                 
+                {/* Search Field - Full Width */}
+                <div className="mb-6">
+                  <label className="block text-sm font-bold text-black mb-2">Search</label>
+                  <Input
+                    placeholder="Search by artwork title or artist name (e.g. Cool it down, Lisawong)..."
+                    value={activeFilters.search || ''}
+                    onChange={(e) => {
+                      const newFilters = { ...activeFilters, search: e.target.value }
+                      setActiveFilters(newFilters)
+                    }}
+                    onKeyDown={(e) => {
+                      // Prevent form submission on Enter
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        // Auto-apply filters when Enter is pressed
+                        if (activeFilters.search?.trim()) {
+                          handleFilterChange(activeFilters)
+                          setShowDesktopFilters(false)
+                        }
+                      }
+                    }}
+                    className="w-full"
+                  />
+                  {activeFilters.search && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Press Enter to search, or click "Apply Filters" below
+                    </p>
+                  )}
+                </div>
+                
                 <div className="space-y-6">
                   {/* Style Filter */}
                   <div className="relative">
