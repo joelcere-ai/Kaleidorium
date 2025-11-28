@@ -717,13 +717,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   };
 
   // Helper to get recommendations for anonymous users
-  const getLocalRecommendations = (artworks: Artwork[]) => {
-    const preferences = localPreferences;
+  // Accepts optional preferences parameter to use updated preferences immediately (fixes stale state issue)
+  const getLocalRecommendations = (artworks: Artwork[], preferencesOverride?: typeof localPreferences) => {
+    const preferences = preferencesOverride || localPreferences; // Use override if provided, otherwise use state
     const viewedArtworks = preferences.viewed_artworks || [];
     const unviewedArtworks = artworks.filter(artwork => !viewedArtworks.includes(artwork.id));
     if (unviewedArtworks.length === 0) {
-      preferences.viewed_artworks = [];
-      setLocalPreferences({ ...preferences });
+      const prefsToUpdate = preferencesOverride || { ...localPreferences };
+      prefsToUpdate.viewed_artworks = [];
+      if (!preferencesOverride) {
+        setLocalPreferences(prefsToUpdate);
+      }
       return artworks;
     }
     // Score logic (same as before)
@@ -780,7 +784,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       // Filter out the disliked artwork immediately before getting recommendations
       // This ensures it doesn't appear even if state hasn't updated yet
       const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
-      const recommendedArtworks = getLocalRecommendations(filteredArtworks);
+      // Pass updatedPreferences directly to use fresh dislike weights (fixes stale state issue)
+      const recommendedArtworks = getLocalRecommendations(filteredArtworks, updatedPreferences);
       
       // Calculate the new index: if current artwork was removed, stay at 0, otherwise adjust
       let newIndex = currentIndex;
@@ -854,7 +859,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     if (!user) {
       isUpdatingArtworksRef.current = true; // Prevent session restoration during update
-      updateLocalPreferences(artwork, 'add');
+      const updatedPreferences = updateLocalPreferences(artwork, 'add');
       
       if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
         const newCollection = [...collection, artwork];
@@ -862,7 +867,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         saveTemporaryCollection(newCollection);
       }
 
-      const recommendedArtworks = getLocalRecommendations(artworks);
+      // Pass updatedPreferences directly to use fresh like/add weights (fixes stale state issue)
+      const recommendedArtworks = getLocalRecommendations(artworks, updatedPreferences);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
@@ -963,14 +969,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await trackAnalytics(artwork.id, 'add_to_collection', user?.id);
     
     if (!user) {
-      updateLocalPreferences(artwork, 'add');
+      const updatedPreferences = updateLocalPreferences(artwork, 'add');
       if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
         const newCollection = [...collection, artwork];
         setCollection(newCollection);
         saveTemporaryCollection(newCollection); // Persist to localStorage
         // Note: Toast message is handled by the calling component (CardStack/MobileCardStack)
       }
-      const recommendedArtworks = getLocalRecommendations(artworks);
+      // Pass updatedPreferences directly to use fresh add weights (fixes stale state issue)
+      const recommendedArtworks = getLocalRecommendations(artworks, updatedPreferences);
       setArtworks(recommendedArtworks);
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
