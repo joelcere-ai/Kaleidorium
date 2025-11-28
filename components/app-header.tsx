@@ -391,8 +391,24 @@ function AppHeaderContent({
                 placeholder="Search by artwork title or artist name (e.g. Cool it down, Lisawong)..."
                 value={filters.search}
                 onChange={(e) => handleInputChange('search', e.target.value)}
+                onKeyDown={(e) => {
+                  // Prevent form submission on Enter
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    // Optionally auto-apply filters when Enter is pressed
+                    if (filters.search.trim()) {
+                      handleFilterRefresh()
+                    }
+                  }
+                }}
                 className="w-full"
               />
+              {filters.search && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Press Enter to search, or click "Apply Filters" below
+                </p>
+              )}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
