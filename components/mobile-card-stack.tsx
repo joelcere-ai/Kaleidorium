@@ -718,21 +718,22 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
   // Button Onboarding Overlay - Shows tooltips for each button (small windows, no full-screen backdrop)
   const buttonOnboardingOverlay = showButtonOnboarding && view === "discover" && currentOnboardingStep ? (
-    <div className="fixed inset-0 z-[160] pointer-events-none">
+    <div className="fixed inset-0 z-[160] pointer-events-none" style={{ zIndex: 160 }}>
       {/* Tooltip positioned near the active button - no backdrop, just the tooltip */}
       {currentOnboardingStep === 'dislike' && (
-        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
+        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2">
-              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
-              <div className="flex-1">
-                <p className="font-semibold mb-1 text-white text-sm">Dislike</p>
-                <p className="text-xs text-gray-300 leading-relaxed">Dislike an artwork to see fewer of the same</p>
+              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff', fill: 'none', stroke: 'currentColor' }} />
+              <div className="flex-1" style={{ color: '#ffffff' }}>
+                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff', fontWeight: 600 }}>Dislike</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db' }}>Dislike an artwork to see fewer of the same</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline hover:no-underline"
+                className="text-xs font-semibold underline hover:no-underline"
+                style={{ color: '#ffffff', textDecoration: 'underline' }}
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -740,23 +741,24 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             </div>
           </div>
           {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
         </div>
       )}
       
       {currentOnboardingStep === 'info' && (
-        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2">
-              <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
-              <div className="flex-1">
-                <p className="font-semibold mb-1 text-white text-sm">Information</p>
-                <p className="text-xs text-gray-300 leading-relaxed">Find out more about an artwork</p>
+              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff', fill: 'none', stroke: 'currentColor' }} />
+              <div className="flex-1" style={{ color: '#ffffff' }}>
+                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff', fontWeight: 600 }}>Information</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db' }}>Find out more about an artwork</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline hover:no-underline"
+                className="text-xs font-semibold underline hover:no-underline"
+                style={{ color: '#ffffff', textDecoration: 'underline' }}
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -764,23 +766,24 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             </div>
           </div>
           {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
         </div>
       )}
       
       {currentOnboardingStep === 'like' && (
-        <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
+        <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2">
-              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
-              <div className="flex-1">
-                <p className="font-semibold mb-1 text-white text-sm">Like</p>
-                <p className="text-xs text-gray-300 leading-relaxed">Like an artwork to add it to your collection</p>
+              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff', fill: 'none', stroke: 'currentColor' }} />
+              <div className="flex-1" style={{ color: '#ffffff' }}>
+                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff', fontWeight: 600 }}>Like</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db' }}>Like an artwork to add it to your collection</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline hover:no-underline"
+                className="text-xs font-semibold underline hover:no-underline"
+                style={{ color: '#ffffff', textDecoration: 'underline' }}
                 onClick={dismissButtonOnboarding}
               >
                 Got it ✓
@@ -788,7 +791,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             </div>
           </div>
           {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
         </div>
       )}
     </div>
