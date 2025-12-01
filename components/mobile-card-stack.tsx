@@ -798,7 +798,8 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   ) : null
 
   // Discovery View - Gesture Intro Overlay (positioned near buttons)
-  const gestureIntroOverlay = showGestureIntro && view === "discover" ? (
+  // DISABLED: Replaced by button onboarding overlays
+  const gestureIntroOverlay = false && showGestureIntro && view === "discover" ? (
     <div
       className="fixed inset-0 z-[150] pointer-events-none"
     >
