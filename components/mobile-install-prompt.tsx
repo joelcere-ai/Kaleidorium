@@ -33,7 +33,7 @@ export function MobileInstallPrompt() {
     setIsAndroid(android)
     setIsStandalone(isInStandaloneMode)
 
-    // Store the deferred prompt locally so we can access it even if component re-renders
+    // Store the deferred prompt locally and globally so we can access it even if component re-renders
     let capturedPrompt: BeforeInstallPromptEvent | null = null;
 
     // Listen for the beforeinstallprompt event (Android/Chrome)
@@ -42,6 +42,8 @@ export function MobileInstallPrompt() {
       e.preventDefault()
       capturedPrompt = e as BeforeInstallPromptEvent
       setDeferredPrompt(capturedPrompt)
+      // Also store globally as backup
+      (window as any).__deferredPrompt = capturedPrompt;
       console.log('Deferred prompt captured and set');
     }
 
@@ -197,8 +199,7 @@ export function MobileInstallPrompt() {
           <div className="space-y-3">
             <Button 
               onClick={handleInstallClick}
-              className="w-full bg-black text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={!deferredPrompt && !isIOS}
+              className="w-full bg-black text-white hover:bg-gray-800"
             >
               <Download className="h-4 w-4 mr-2" />
               Add Shortcut
