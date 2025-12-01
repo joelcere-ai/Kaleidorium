@@ -721,7 +721,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     <div className="fixed inset-0 z-[160] pointer-events-none" style={{ zIndex: 160 }}>
       {/* Tooltip positioned near the active button - no backdrop, just the tooltip */}
       {currentOnboardingStep === 'dislike' && (
-        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
+        <div className="absolute bottom-32 left-[calc(50%-40px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
           <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
               <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />

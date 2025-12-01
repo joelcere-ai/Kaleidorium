@@ -61,6 +61,7 @@ export function MobileInstallPrompt() {
           if (capturedPrompt) {
             setDeferredPrompt(capturedPrompt);
           }
+          // Show prompt even if we don't have capturedPrompt yet (for iOS or if event fires later)
           setShowPrompt(true);
         }, 3000)
       }
@@ -75,8 +76,18 @@ export function MobileInstallPrompt() {
     console.log('Add Shortcut button clicked', { 
       deferredPrompt: !!deferredPrompt, 
       isAndroid, 
-      isIOS
+      isIOS,
+      userAgent: navigator.userAgent
     });
+    
+    // For iOS, show instructions or dismiss (iOS doesn't support beforeinstallprompt)
+    if (isIOS) {
+      console.log('iOS detected - manual installation required');
+      setShowPrompt(false);
+      localStorage.setItem('pwa-prompt-interacted', 'true')
+      window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
+      return;
+    }
     
     if (deferredPrompt) {
       try {
@@ -102,11 +113,33 @@ export function MobileInstallPrompt() {
         console.error('Error during install:', error);
         // If automatic install fails, just dismiss the prompt
         setShowPrompt(false);
+        localStorage.setItem('pwa-prompt-interacted', 'true')
+        window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
       }
     } else {
+      // Check if prompt might be available in global scope (captured before component mounted)
+      const globalPrompt = (window as any).__deferredPrompt;
+      if (globalPrompt) {
+        try {
+          console.log('Using global deferred prompt');
+          await globalPrompt.prompt();
+          const { outcome } = await globalPrompt.userChoice;
+          console.log('Install prompt outcome:', outcome);
+          (window as any).__deferredPrompt = null;
+          setShowPrompt(false);
+          localStorage.setItem('pwa-prompt-interacted', 'true')
+          window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
+          return;
+        } catch (error: any) {
+          console.error('Error using global prompt:', error);
+        }
+      }
+      
       // If no prompt available, just dismiss
-      console.log('No install prompt available');
+      console.log('No install prompt available - dismissing');
       setShowPrompt(false);
+      localStorage.setItem('pwa-prompt-interacted', 'true')
+      window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
     }
   }
 
@@ -164,8 +197,8 @@ export function MobileInstallPrompt() {
           <div className="space-y-3">
             <Button 
               onClick={handleInstallClick}
-              className="w-full bg-black text-white hover:bg-gray-800"
-              disabled={!deferredPrompt}
+              className="w-full bg-black text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={!deferredPrompt && !isIOS}
             >
               <Download className="h-4 w-4 mr-2" />
               Add Shortcut
