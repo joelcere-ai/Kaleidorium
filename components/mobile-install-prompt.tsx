@@ -100,6 +100,9 @@ export function MobileInstallPrompt() {
         
         if (outcome === 'accepted') {
           console.log('User accepted - installation will proceed');
+          // On some Android devices, the shortcut may not appear immediately
+          // It might be in the app drawer or require a page refresh
+          console.log('Note: If shortcut does not appear on home screen, check your app drawer or refresh the page');
         } else {
           console.log('User dismissed the install prompt');
         }
@@ -192,7 +195,7 @@ export function MobileInstallPrompt() {
 
         <div className="space-y-4">
           <p className="text-sm text-gray-700">
-            Add Kaleidorium to your home screen for quick and easy access.
+            Add Kaleidorium to your home screen for quick and easy access. After installation, check your home screen or app drawer for the Kaleidorium icon.
           </p>
           <div className="space-y-3">
             <Button 
