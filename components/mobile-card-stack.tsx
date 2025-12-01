@@ -722,7 +722,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       {/* Tooltip positioned near the active button - no backdrop, just the tooltip */}
       {currentOnboardingStep === 'dislike' && (
         <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000 !important', color: '#ffffff !important' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
               <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
               <div className="flex-1" style={{ color: '#ffffff !important' }}>
@@ -747,7 +747,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {currentOnboardingStep === 'info' && (
         <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000 !important', color: '#ffffff !important' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
               <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
               <div className="flex-1" style={{ color: '#ffffff !important' }}>
@@ -772,7 +772,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {currentOnboardingStep === 'like' && (
         <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white" style={{ backgroundColor: '#000000 !important', color: '#ffffff !important' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
             <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
               <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
               <div className="flex-1" style={{ color: '#ffffff !important' }}>

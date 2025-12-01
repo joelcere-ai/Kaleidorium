@@ -608,3 +608,23 @@ button[class*="w-full"] {
   background-color: black !important;
 }
 
+/* Force onboarding tooltip visibility - override any conflicting styles */
+.onboarding-tooltip,
+.onboarding-tooltip *,
+.onboarding-tooltip p,
+.onboarding-tooltip button,
+.onboarding-tooltip svg {
+  color: #ffffff !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.onboarding-tooltip p.text-gray-300 {
+  color: #d1d5db !important;
+}
+
+.onboarding-tooltip svg {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
