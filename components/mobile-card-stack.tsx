@@ -92,6 +92,8 @@ export default function MobileCardStack({
   const [fullscreenImageLoaded, setFullscreenImageLoaded] = useState(false)
   const [currentCollectionIndex, setCurrentCollectionIndex] = useState(0)
   const [showGestureIntro, setShowGestureIntro] = useState(false)
+  const [showButtonOnboarding, setShowButtonOnboarding] = useState(false)
+  const [currentOnboardingStep, setCurrentOnboardingStep] = useState<'dislike' | 'info' | 'like' | null>(null)
   
   // Art Preferences state (copied from desktop)
   const [insights, setInsights] = useState({
@@ -681,6 +683,87 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }
   }
 
+  // Button Onboarding Overlay - Shows tooltips for each button
+  const buttonOnboardingOverlay = showButtonOnboarding && view === "discover" && currentOnboardingStep ? (
+    <div className="fixed inset-0 z-[160] pointer-events-none">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40" onClick={nextOnboardingStep} style={{ pointerEvents: 'auto' }} />
+      
+      {/* Tooltip positioned near the active button */}
+      {currentOnboardingStep === 'dislike' && (
+        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+            <div className="flex items-start gap-2">
+              <ThumbsDown className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold mb-1">Dislike</p>
+                <p className="text-xs text-gray-300">Tap to skip this artwork</p>
+              </div>
+            </div>
+            <div className="mt-3 flex justify-end">
+              <button
+                className="text-xs font-semibold text-white underline"
+                onClick={nextOnboardingStep}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+          {/* Arrow pointing to button */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+        </div>
+      )}
+      
+      {currentOnboardingStep === 'info' && (
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+            <div className="flex items-start gap-2">
+              <Info className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold mb-1">Learn More</p>
+                <p className="text-xs text-gray-300">Tap to see artwork details</p>
+              </div>
+            </div>
+            <div className="mt-3 flex justify-end">
+              <button
+                className="text-xs font-semibold text-white underline"
+                onClick={nextOnboardingStep}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+          {/* Arrow pointing to button */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+        </div>
+      )}
+      
+      {currentOnboardingStep === 'like' && (
+        <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+            <div className="flex items-start gap-2">
+              <ThumbsUp className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold mb-1">Like</p>
+                <p className="text-xs text-gray-300">Tap to save to your collection</p>
+              </div>
+            </div>
+            <div className="mt-3 flex justify-end">
+              <button
+                className="text-xs font-semibold text-white underline"
+                onClick={dismissButtonOnboarding}
+              >
+                Got it ✓
+              </button>
+            </div>
+          </div>
+          {/* Arrow pointing to button */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+        </div>
+      )}
+    </div>
+  ) : null
+
   // Discovery View - Gesture Intro Overlay (positioned near buttons)
   const gestureIntroOverlay = showGestureIntro && view === "discover" ? (
     <div
@@ -727,6 +810,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   if (view === "collection") {
     return (
       <div className={getContainerClasses()}>
+        {buttonOnboardingOverlay}
         {gestureIntroOverlay}
         {/* Header */}
         <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
@@ -1184,7 +1268,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-medium border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
+                      className="w-full py-3 text-sm font-medium border border-black bg-black text-white hover:bg-gray-800 transition-all duration-200"
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
                         // Validate and fix URL before opening
@@ -1407,13 +1491,20 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center justify-center gap-6">
+                <div className="flex items-center justify-center gap-6 relative">
             <Button
               size="icon"
+              id="dislike-button"
               className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.dislike ? 'bg-black scale-95' : 'bg-white hover:bg-black'}`}
-              onClick={() => handleButtonAction('dislike', artwork)}
+                ${buttonStates.dislike ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${currentOnboardingStep === 'dislike' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              onClick={() => {
+                handleButtonAction('dislike', artwork)
+                if (currentOnboardingStep === 'dislike') {
+                  nextOnboardingStep()
+                }
+              }}
               disabled={isAnimating}
             >
               <ThumbsDown className={`w-12 h-12 transition-colors duration-200 ${
@@ -1423,10 +1514,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             
             <Button
               size="icon"
+              id="info-button"
               className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.info ? 'bg-black scale-95' : 'bg-white hover:bg-black'}`}
-              onClick={() => handleButtonAction('info', artwork)}
+                ${buttonStates.info ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${currentOnboardingStep === 'info' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              onClick={() => {
+                handleButtonAction('info', artwork)
+                if (currentOnboardingStep === 'info') {
+                  nextOnboardingStep()
+                }
+              }}
               disabled={isAnimating}
             >
               <Info className={`w-12 h-12 transition-colors duration-200 ${
@@ -1436,10 +1534,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             
             <Button
               size="icon"
+              id="like-button"
               className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.like ? 'bg-black scale-95' : 'bg-white hover:bg-black'}`}
-              onClick={() => handleButtonAction('like', artwork)}
+                ${buttonStates.like ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${currentOnboardingStep === 'like' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              onClick={() => {
+                handleButtonAction('like', artwork)
+                if (currentOnboardingStep === 'like') {
+                  nextOnboardingStep()
+                }
+              }}
               disabled={isAnimating}
             >
               <ThumbsUp className={`w-12 h-12 transition-colors duration-200 ${
@@ -1469,6 +1574,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           )}
         </div>
       </div>
+      
+      {/* Button Onboarding Overlay */}
+      {buttonOnboardingOverlay}
 
       {/* Mobile Filter Panel */}
       {showFilters && (view === "discover" || (!view)) && (
