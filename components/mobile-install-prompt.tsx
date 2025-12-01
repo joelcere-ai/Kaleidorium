@@ -21,93 +21,53 @@ export function MobileInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    try {
-      // Check if device is iOS
-      const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      const isInStandaloneMode = (window.navigator as any).standalone === true || 
-        window.matchMedia('(display-mode: standalone)').matches
+    // Check if device is iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const isInStandaloneMode = (window.navigator as any).standalone === true || 
+      window.matchMedia('(display-mode: standalone)').matches
 
-      // Check if device is Android
-      const android = /Android/.test(navigator.userAgent)
+    // Check if device is Android
+    const android = /Android/.test(navigator.userAgent)
+    
+    setIsIOS(iOS)
+    setIsAndroid(android)
+    setIsStandalone(isInStandaloneMode)
+
+    // Store the deferred prompt locally so we can access it even if component re-renders
+    let capturedPrompt: BeforeInstallPromptEvent | null = null;
+
+    // Listen for the beforeinstallprompt event (Android/Chrome)
+    const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('beforeinstallprompt event fired!', e);
+      e.preventDefault()
+      capturedPrompt = e as BeforeInstallPromptEvent
+      setDeferredPrompt(capturedPrompt)
+      console.log('Deferred prompt captured and set');
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
+    // Only show prompt on mobile devices that aren't already installed
+    if ((iOS || android) && !isInStandaloneMode) {
+      // Check if user has already dismissed the prompt recently
+      const dismissed = localStorage.getItem('pwa-prompt-dismissed')
+      const dismissedTime = dismissed ? parseInt(dismissed) : 0
+      const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
       
-      setIsIOS(iOS)
-      setIsAndroid(android)
-      setIsStandalone(isInStandaloneMode)
-
-      // Listen for the beforeinstallprompt event (Android/Chrome)
-      const handleBeforeInstallPrompt = (e: Event) => {
-        try {
-          console.log('beforeinstallprompt event fired!', e);
-          e.preventDefault()
-          const promptEvent = e as BeforeInstallPromptEvent;
-          setDeferredPrompt(promptEvent)
-          console.log('Deferred prompt captured and set');
-          
-          // Also store it in a global variable as backup
-          (window as any).__deferredPrompt = promptEvent;
-          
-          // If prompt should be shown, show it now that we have the deferred prompt
-          if ((iOS || android) && !isInStandaloneMode) {
-            try {
-              const dismissed = localStorage.getItem('pwa-prompt-dismissed')
-              const dismissedTime = dismissed ? parseInt(dismissed) : 0
-              const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
-              
-              if (!dismissed || dismissedTime < oneWeekAgo) {
-                setShowPrompt(true);
-              }
-            } catch (error) {
-              console.error('Error checking localStorage:', error);
-            }
+      if (!dismissed || dismissedTime < oneWeekAgo) {
+        // Show prompt after a delay to ensure beforeinstallprompt has time to fire
+        setTimeout(() => {
+          // Check if we have a prompt (it might have been captured)
+          if (capturedPrompt) {
+            setDeferredPrompt(capturedPrompt);
           }
-        } catch (error) {
-          console.error('Error handling beforeinstallprompt:', error);
-        }
+          setShowPrompt(true);
+        }, 3000)
       }
+    }
 
-      // Check if prompt was already captured (before component mounted)
-      if ((window as any).__deferredPrompt) {
-        console.log('Found existing deferred prompt');
-        setDeferredPrompt((window as any).__deferredPrompt);
-      }
-
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
-      // Only show prompt on mobile devices that aren't already installed
-      if ((iOS || android) && !isInStandaloneMode) {
-        try {
-          // Check if user has already dismissed the prompt recently
-          const dismissed = localStorage.getItem('pwa-prompt-dismissed')
-          const dismissedTime = dismissed ? parseInt(dismissed) : 0
-          const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
-          
-          if (!dismissed || dismissedTime < oneWeekAgo) {
-            // Wait for beforeinstallprompt event before showing prompt (give it 3 seconds)
-            // This ensures the deferred prompt is available when user clicks the button
-            const timeoutId = setTimeout(() => {
-              // Only show if we have a deferred prompt (Android) or it's iOS
-              if ((window as any).__deferredPrompt || iOS) {
-                setShowPrompt(true);
-              }
-            }, 3000) // Wait 3 seconds to ensure beforeinstallprompt has fired
-            
-            return () => {
-              clearTimeout(timeoutId);
-              window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-            }
-          }
-        } catch (error) {
-          console.error('Error checking localStorage:', error);
-        }
-      }
-
-      return () => {
-        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-      }
-    } catch (error) {
-      console.error('Error in MobileInstallPrompt useEffect:', error);
-      // Don't crash the app - just return cleanup
-      return () => {};
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
   }, [])
 
@@ -115,20 +75,15 @@ export function MobileInstallPrompt() {
     console.log('Add Shortcut button clicked', { 
       deferredPrompt: !!deferredPrompt, 
       isAndroid, 
-      isIOS,
-      userAgent: navigator.userAgent
+      isIOS
     });
     
-    // Check for deferred prompt in state or global variable
-    const prompt = deferredPrompt || (window as any).__deferredPrompt;
-    
-    // Try to use the deferred prompt if available
-    if (prompt) {
+    if (deferredPrompt) {
       try {
         // Automatically trigger the install prompt
         console.log('Triggering install prompt automatically...');
-        await prompt.prompt();
-        const { outcome } = await prompt.userChoice;
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
         
         console.log('Install prompt outcome:', outcome);
         
@@ -139,45 +94,18 @@ export function MobileInstallPrompt() {
         }
         
         setDeferredPrompt(null);
-        (window as any).__deferredPrompt = null;
         setShowPrompt(false);
         // Signal that install prompt was interacted with
         localStorage.setItem('pwa-prompt-interacted', 'true')
         window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
-        return;
       } catch (error: any) {
         console.error('Error during install:', error);
-      }
-    }
-    
-    // Fallback: Try to check if the browser has native install support
-    // Some browsers might support installation even without beforeinstallprompt
-    try {
-      // Check if we're in a standalone mode (already installed)
-      const isStandalone = (window.navigator as any).standalone === true || 
-        window.matchMedia('(display-mode: standalone)').matches;
-      
-      if (isStandalone) {
-        console.log('App is already installed');
+        // If automatic install fails, just dismiss the prompt
         setShowPrompt(false);
-        return;
       }
-      
-      // For Android Chrome, try to show a message directing to browser menu
-      if (isAndroid) {
-        // The browser might show its own install prompt in the menu
-        // We can't programmatically trigger it, but we can guide the user
-        console.log('Android detected - install prompt may be in browser menu');
-        // Dismiss our prompt - the browser's native prompt should be available
-        setShowPrompt(false);
-        return;
-      }
-      
-      // If we get here, no install method is available
-      console.log('No install prompt available - dismissing');
-      setShowPrompt(false);
-    } catch (error) {
-      console.error('Error in install fallback:', error);
+    } else {
+      // If no prompt available, just dismiss
+      console.log('No install prompt available');
       setShowPrompt(false);
     }
   }
@@ -237,6 +165,7 @@ export function MobileInstallPrompt() {
             <Button 
               onClick={handleInstallClick}
               className="w-full bg-black text-white hover:bg-gray-800"
+              disabled={!deferredPrompt}
             >
               <Download className="h-4 w-4 mr-2" />
               Add Shortcut
