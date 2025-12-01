@@ -724,18 +724,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {/* Tooltip positioned near the active button */}
       {currentOnboardingStep === 'dislike' && (
-        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+        <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
             <div className="flex items-start gap-2">
-              <ThumbsDown className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
               <div>
-                <p className="font-semibold mb-1">Dislike</p>
-                <p className="text-xs text-gray-300">Tap to skip this artwork</p>
+                <p className="font-semibold mb-1" style={{ color: 'white' }}>Dislike</p>
+                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to skip this artwork</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline"
+                className="text-xs font-semibold underline"
+                style={{ color: 'white' }}
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -748,18 +749,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       )}
       
       {currentOnboardingStep === 'info' && (
-        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[170]">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
             <div className="flex items-start gap-2">
-              <Info className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
               <div>
-                <p className="font-semibold mb-1">Learn More</p>
-                <p className="text-xs text-gray-300">Tap to see artwork details</p>
+                <p className="font-semibold mb-1" style={{ color: 'white' }}>Learn More</p>
+                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to see artwork details</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline"
+                className="text-xs font-semibold underline"
+                style={{ color: 'white' }}
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -772,18 +774,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       )}
       
       {currentOnboardingStep === 'like' && (
-        <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] animate-in fade-in slide-in-from-bottom duration-300">
+        <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
+          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
             <div className="flex items-start gap-2">
-              <ThumbsUp className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
               <div>
-                <p className="font-semibold mb-1">Like</p>
-                <p className="text-xs text-gray-300">Tap to save to your collection</p>
+                <p className="font-semibold mb-1" style={{ color: 'white' }}>Like</p>
+                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to save to your collection</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold text-white underline"
+                className="text-xs font-semibold underline"
+                style={{ color: 'white' }}
                 onClick={dismissButtonOnboarding}
               >
                 Got it ✓
