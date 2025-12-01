@@ -33,18 +33,14 @@ export function MobileInstallPrompt() {
     setIsAndroid(android)
     setIsStandalone(isInStandaloneMode)
 
-    // Store the deferred prompt locally and globally so we can access it even if component re-renders
-    let capturedPrompt: BeforeInstallPromptEvent | null = null;
-
     // Listen for the beforeinstallprompt event (Android/Chrome)
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('beforeinstallprompt event fired!', e);
       e.preventDefault()
-      const promptEvent = e as BeforeInstallPromptEvent
-      capturedPrompt = promptEvent
-      setDeferredPrompt(promptEvent)
-      // Also store globally as backup
-      (window as any).__deferredPrompt = promptEvent;
+      // Store globally first
+      (window as any).__deferredPrompt = e as BeforeInstallPromptEvent;
+      // Then update state
+      setDeferredPrompt(e as BeforeInstallPromptEvent)
       console.log('Deferred prompt captured and set');
     }
 
@@ -60,11 +56,11 @@ export function MobileInstallPrompt() {
       if (!dismissed || dismissedTime < oneWeekAgo) {
         // Show prompt after a delay to ensure beforeinstallprompt has time to fire
         setTimeout(() => {
-          // Check if we have a prompt (it might have been captured)
-          if (capturedPrompt) {
-            setDeferredPrompt(capturedPrompt);
+          // Check if we have a prompt in global scope
+          if ((window as any).__deferredPrompt) {
+            setDeferredPrompt((window as any).__deferredPrompt);
           }
-          // Show prompt even if we don't have capturedPrompt yet (for iOS or if event fires later)
+          // Show prompt even if we don't have prompt yet (for iOS or if event fires later)
           setShowPrompt(true);
         }, 3000)
       }
