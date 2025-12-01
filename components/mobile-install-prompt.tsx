@@ -45,6 +45,21 @@ export function MobileInstallPrompt() {
           
           // Also store it in a global variable as backup
           (window as any).__deferredPrompt = promptEvent;
+          
+          // If prompt should be shown, show it now that we have the deferred prompt
+          if ((iOS || android) && !isInStandaloneMode) {
+            try {
+              const dismissed = localStorage.getItem('pwa-prompt-dismissed')
+              const dismissedTime = dismissed ? parseInt(dismissed) : 0
+              const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+              
+              if (!dismissed || dismissedTime < oneWeekAgo) {
+                setShowPrompt(true);
+              }
+            } catch (error) {
+              console.error('Error checking localStorage:', error);
+            }
+          }
         } catch (error) {
           console.error('Error handling beforeinstallprompt:', error);
         }
@@ -67,10 +82,14 @@ export function MobileInstallPrompt() {
           const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
           
           if (!dismissed || dismissedTime < oneWeekAgo) {
-            // Show prompt immediately (or very quickly) to appear before gesture intro
+            // Wait for beforeinstallprompt event before showing prompt (give it 3 seconds)
+            // This ensures the deferred prompt is available when user clicks the button
             const timeoutId = setTimeout(() => {
-              setShowPrompt(true);
-            }, 500) // Reduced from 3000ms to 500ms to show first
+              // Only show if we have a deferred prompt (Android) or it's iOS
+              if ((window as any).__deferredPrompt || iOS) {
+                setShowPrompt(true);
+              }
+            }, 3000) // Wait 3 seconds to ensure beforeinstallprompt has fired
             
             return () => {
               clearTimeout(timeoutId);

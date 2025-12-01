@@ -146,7 +146,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="build-version" content="v8-force-active-2024-09-26-1135" />
+        <meta name="build-version" content="v9-cache-bust-2024-12-19-1200" />
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}
