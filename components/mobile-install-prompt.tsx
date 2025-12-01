@@ -40,10 +40,11 @@ export function MobileInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('beforeinstallprompt event fired!', e);
       e.preventDefault()
-      capturedPrompt = e as BeforeInstallPromptEvent
-      setDeferredPrompt(capturedPrompt)
+      const promptEvent = e as BeforeInstallPromptEvent
+      capturedPrompt = promptEvent
+      setDeferredPrompt(promptEvent)
       // Also store globally as backup
-      (window as any).__deferredPrompt = capturedPrompt;
+      (window as any).__deferredPrompt = promptEvent;
       console.log('Deferred prompt captured and set');
     }
 
