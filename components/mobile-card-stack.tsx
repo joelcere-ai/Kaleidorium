@@ -683,6 +683,39 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }
   }
 
+  // Check if user has completed button onboarding
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onboardingCompleted = localStorage.getItem('mobile-button-onboarding-completed')
+      if (!onboardingCompleted && view === 'discover' && artworks.length > 0) {
+        // Wait a bit after page load, then show onboarding
+        const timer = setTimeout(() => {
+          setShowButtonOnboarding(true)
+          setCurrentOnboardingStep('dislike')
+        }, 1500)
+        return () => clearTimeout(timer)
+      }
+    }
+  }, [view, artworks.length])
+
+  const dismissButtonOnboarding = () => {
+    setShowButtonOnboarding(false)
+    setCurrentOnboardingStep(null)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mobile-button-onboarding-completed', 'true')
+    }
+  }
+
+  const nextOnboardingStep = () => {
+    if (currentOnboardingStep === 'dislike') {
+      setCurrentOnboardingStep('info')
+    } else if (currentOnboardingStep === 'info') {
+      setCurrentOnboardingStep('like')
+    } else if (currentOnboardingStep === 'like') {
+      dismissButtonOnboarding()
+    }
+  }
+
   // Button Onboarding Overlay - Shows tooltips for each button
   const buttonOnboardingOverlay = showButtonOnboarding && view === "discover" && currentOnboardingStep ? (
     <div className="fixed inset-0 z-[160] pointer-events-none">
