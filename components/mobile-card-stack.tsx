@@ -1575,6 +1575,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         </div>
       </div>
       
+      {/* Button Onboarding Overlay for Discover View */}
+      {buttonOnboardingOverlay}
+      
       {/* Button Onboarding Overlay */}
       {buttonOnboardingOverlay}
 
