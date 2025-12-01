@@ -716,27 +716,23 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }
   }
 
-  // Button Onboarding Overlay - Shows tooltips for each button
+  // Button Onboarding Overlay - Shows tooltips for each button (small windows, no full-screen backdrop)
   const buttonOnboardingOverlay = showButtonOnboarding && view === "discover" && currentOnboardingStep ? (
     <div className="fixed inset-0 z-[160] pointer-events-none">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40" onClick={nextOnboardingStep} style={{ pointerEvents: 'auto' }} />
-      
-      {/* Tooltip positioned near the active button */}
+      {/* Tooltip positioned near the active button - no backdrop, just the tooltip */}
       {currentOnboardingStep === 'dislike' && (
         <div className="absolute bottom-32 left-[calc(50%-96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
             <div className="flex items-start gap-2">
-              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
-              <div>
-                <p className="font-semibold mb-1" style={{ color: 'white' }}>Dislike</p>
-                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to skip this artwork</p>
+              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-white text-sm">Dislike</p>
+                <p className="text-xs text-gray-300 leading-relaxed">Dislike an artwork to see fewer of the same</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold underline"
-                style={{ color: 'white' }}
+                className="text-xs font-semibold text-white underline hover:no-underline"
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -750,18 +746,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {currentOnboardingStep === 'info' && (
         <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
             <div className="flex items-start gap-2">
-              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
-              <div>
-                <p className="font-semibold mb-1" style={{ color: 'white' }}>Learn More</p>
-                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to see artwork details</p>
+              <Info className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-white text-sm">Information</p>
+                <p className="text-xs text-gray-300 leading-relaxed">Find out more about an artwork</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold underline"
-                style={{ color: 'white' }}
+                className="text-xs font-semibold text-white underline hover:no-underline"
                 onClick={nextOnboardingStep}
               >
                 Next →
@@ -775,18 +770,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {currentOnboardingStep === 'like' && (
         <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto z-[170]">
-          <div className="bg-black text-white text-sm font-sans rounded-lg px-4 py-3 shadow-2xl max-w-[200px] relative" style={{ color: 'white' }}>
+          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white">
             <div className="flex items-start gap-2">
-              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'white' }} />
-              <div>
-                <p className="font-semibold mb-1" style={{ color: 'white' }}>Like</p>
-                <p className="text-xs" style={{ color: '#d1d5db' }}>Tap to save to your collection</p>
+              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5 text-white" />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-white text-sm">Like</p>
+                <p className="text-xs text-gray-300 leading-relaxed">Like an artwork to add it to your collection</p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
-                className="text-xs font-semibold underline"
-                style={{ color: 'white' }}
+                className="text-xs font-semibold text-white underline hover:no-underline"
                 onClick={dismissButtonOnboarding}
               >
                 Got it ✓
