@@ -1211,7 +1211,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         // Since direct REST works, use it instead of the hanging Supabase client
         console.log('Step 2: Using direct REST API since Supabase client is hanging...');
         
-        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=50`;
+        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&order=created_at.desc&limit=50`;
         
         console.log('Fetching full artwork data via REST API...');
         
