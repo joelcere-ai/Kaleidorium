@@ -60,6 +60,12 @@ self.addEventListener('fetch', (event) => {
   
   const url = new URL(event.request.url);
   
+  // Always bypass cache for favicon files to prevent old favicon flash
+  if (url.pathname.includes('favicon') || url.pathname === '/favicon.ico') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
   // URLs with query parameters (versioned assets) should bypass cache
   const hasQueryParams = url.search.length > 0;
   

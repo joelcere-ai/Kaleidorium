@@ -130,6 +130,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Favicon - Load FIRST to prevent flash of old favicon */}
+        <link rel="icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=7" />
+        <link rel="shortcut icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=7" />
+        <link rel="icon" type="image/jpeg" sizes="16x16" href="/logos/favicon-16x16-v4.jpg?v=7" />
+        <link rel="icon" type="image/jpeg" sizes="32x32" href="/logos/favicon-32x32-v4.jpg?v=7" />
+        <link rel="icon" type="image/jpeg" sizes="48x48" href="/logos/favicon-48x48-v4.jpg?v=7" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon-180x180-v3.jpg?v=7" />
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NYJYN06VB"></script>
         <script
@@ -147,13 +154,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
         <meta name="build-version" content="v9-cache-bust-2024-12-19-1200" />
-        {/* Favicon Links - Explicit to override browser cache - v4 with white background */}
-        <link rel="icon" type="image/jpeg" sizes="16x16" href="/logos/favicon-16x16-v4.jpg?v=6" />
-        <link rel="icon" type="image/jpeg" sizes="32x32" href="/logos/favicon-32x32-v4.jpg?v=6" />
-        <link rel="icon" type="image/jpeg" sizes="48x48" href="/logos/favicon-48x48-v4.jpg?v=6" />
-        <link rel="shortcut icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=6" />
-        <link rel="icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=6" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon-180x180-v3.jpg?v=6" />
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}
