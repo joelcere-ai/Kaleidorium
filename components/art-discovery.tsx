@@ -2321,7 +2321,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <img 
                     src="/logos/logo-medium-48x48-v3.jpg" 
                     alt="Kaleidorium Logo" 
-                    className="h-8 w-auto"
+                    className="h-10 md:h-12 w-auto"
                   />
                 </div>
                 <p className="text-lg text-black text-center">Your Personal Art Curator</p>
@@ -2361,7 +2361,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <img 
                     src="/logos/logo-desktop-32x32-v3.jpg" 
                     alt="Kaleidorium Logo" 
-                    className="h-8 w-auto mr-3"
+                    className="h-10 md:h-12 w-auto mr-3"
                   />
                   <div className="text-black text-xl">Loading Artwork...</div>
                 </div>

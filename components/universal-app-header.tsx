@@ -73,7 +73,7 @@ export function UniversalAppHeader({
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="h-6 w-auto"
+              className="h-8 md:h-10 w-auto"
             />
           </Button>
         </div>
