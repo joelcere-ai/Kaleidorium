@@ -131,7 +131,7 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
             <img
-              src="/logos/logo-mobile-20x20.svg"
+              src="/logos/logo-mobile-20x20.svg?v=3"
               alt="Kaleidorium Logo"
               className="w-6 h-6"
             />
