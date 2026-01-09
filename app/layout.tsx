@@ -148,10 +148,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Expires" content="0" />
         <meta name="build-version" content="v9-cache-bust-2024-12-19-1200" />
         {/* Favicon Links - Explicit to override browser cache */}
-        <link rel="icon" type="image/jpeg" sizes="16x16" href="/logos/favicon-16x16-v3.jpg?v=4" />
-        <link rel="icon" type="image/jpeg" sizes="32x32" href="/logos/favicon-32x32-v3.jpg?v=4" />
-        <link rel="shortcut icon" href="/logos/favicon-32x32-v3.jpg?v=4" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon-180x180-v3.jpg?v=4" />
+        <link rel="icon" type="image/jpeg" sizes="16x16" href="/logos/favicon-16x16-v3.jpg?v=5" />
+        <link rel="icon" type="image/jpeg" sizes="32x32" href="/logos/favicon-32x32-v3.jpg?v=5" />
+        <link rel="shortcut icon" type="image/jpeg" href="/logos/favicon-32x32-v3.jpg?v=5" />
+        <link rel="icon" type="image/jpeg" href="/logos/favicon-32x32-v3.jpg?v=5" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon-180x180-v3.jpg?v=5" />
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}

@@ -5,8 +5,8 @@
 const CACHE_NAME = 'kaleidorium-v3';
 const urlsToCache = [
   '/manifest.json',
-  '/logos/pwa-icon-192x192.svg',
-  '/logos/pwa-icon-512x512.svg'
+  '/logos/pwa-icon-192x192-v3.jpg',
+  '/logos/pwa-icon-512x512-v3.jpg'
 ];
 
 // Install event - cache resources
