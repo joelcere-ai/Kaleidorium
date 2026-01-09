@@ -60,6 +60,9 @@ self.addEventListener('fetch', (event) => {
   
   const url = new URL(event.request.url);
   
+  // URLs with query parameters (versioned assets) should bypass cache
+  const hasQueryParams = url.search.length > 0;
+  
   // Only cache static assets (images, icons, fonts)
   const shouldCache = url.pathname.startsWith('/logos/') || 
                       url.pathname.startsWith('/_next/static/') ||
@@ -68,8 +71,8 @@ self.addEventListener('fetch', (event) => {
                       url.pathname.endsWith('.jpg') ||
                       url.pathname.endsWith('.webp');
   
-  if (shouldCache) {
-    // Cache static assets - try cache first, then network
+  if (shouldCache && !hasQueryParams) {
+    // Cache static assets without query params - try cache first, then network
     event.respondWith(
       caches.match(event.request)
         .then((response) => {
@@ -89,6 +92,22 @@ self.addEventListener('fetch', (event) => {
             });
           });
         })
+    );
+  } else if (shouldCache && hasQueryParams) {
+    // For versioned assets (with query params), always fetch from network first to bypass cache
+    event.respondWith(
+      fetch(event.request).then((fetchResponse) => {
+        // Don't cache versioned assets - they should always be fresh
+        return fetchResponse;
+      }).catch(() => {
+        // Fallback to cache only if network fails
+        return caches.match(event.request).then((response) => {
+          return response || new Response('Network error', { 
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
+        });
+      })
     );
   } else {
     // For dynamic content, always use network first (no caching)
