@@ -39,12 +39,11 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
           onClick={handleLogoClick}
           className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2"
         >
-            <img 
-              src="/logos/logo-desktop-32x32-v3.jpg" 
-              alt="Kaleidorium Logo" 
-              className="w-6 h-6"
-            />
-          <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
+          <img 
+            src="/logos/logo-desktop-32x32-v3.jpg" 
+            alt="Kaleidorium Logo" 
+            className="h-6 w-auto"
+          />
         </Button>
         <Button
           variant="ghost"

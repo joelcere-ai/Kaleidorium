@@ -189,13 +189,12 @@ function AppHeaderContent({
     <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
-        <Link href="/" className="flex items-center space-x-1 py-2 px-1 md:py-0 md:px-0">
+        <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0">
           <img 
             src="/logos/logo-desktop-32x32-v3.jpg" 
             alt="Kaleidorium Logo" 
-            className="w-6 h-6"
+            className="h-6 w-auto"
           />
-          <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -859,14 +859,13 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           <Button
             variant="ghost"
             onClick={handleLogoClick}
-            className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2"
+            className="flex items-center text-black hover:bg-gray-100 px-2"
           >
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="w-6 h-6"
+              className="h-6 w-auto"
             />
-            <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
           </Button>
           <Button
             variant="ghost"
@@ -1450,13 +1449,12 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         >
           <Menu className="w-6 h-6" />
         </Button>
-        <h1 className="font-serif text-xl font-semibold text-black flex items-center space-x-2">
+        <h1 className="font-serif text-xl font-semibold text-black flex items-center">
           <img 
             src="/logos/logo-mobile-20x20-v3.jpg" 
             alt="Kaleidorium Logo" 
-            className="w-5 h-5"
+            className="h-5 w-auto"
           />
-          Kaleidorium
         </h1>
         <Button
           variant="ghost"

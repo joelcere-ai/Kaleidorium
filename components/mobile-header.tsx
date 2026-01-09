@@ -38,9 +38,8 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="w-6 h-6"
+              className="h-6 w-auto"
             />
-          <span className="font-serif text-xl font-semibold text-black">Kaleidorium</span>
         </Button>
         <Button
           variant="ghost"
