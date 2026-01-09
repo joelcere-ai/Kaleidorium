@@ -170,11 +170,11 @@ export function MobileInstallPrompt() {
       >
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-white border-2 border-black rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
               <img
-                src="/logos/logo-desktop-32x32-v3.jpg"
+                src="/logos/app-logo-48x48-v4.jpg"
                 alt="Kaleidorium Logo"
-                className="w-8 h-8"
+                className="w-10 h-10"
               />
             </div>
             <div>
