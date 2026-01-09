@@ -38,3 +38,4 @@ AND tablename = 'Artists'
 AND cmd = 'DELETE'
 ORDER BY policyname;
 
+

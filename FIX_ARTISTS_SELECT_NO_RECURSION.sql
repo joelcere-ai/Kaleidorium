@@ -37,3 +37,4 @@ ORDER BY policyname;
 -- The galleries_select_managed_artists policy can be added later with a different approach
 -- (e.g., using a security definer function) to avoid recursion
 
+

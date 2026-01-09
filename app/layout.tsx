@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'Kaleidorium',
     images: [
       {
-        url: '/logos/pwa-icon-512x512.svg?v=2',
+        url: '/logos/pwa-icon-512x512-v3.jpg',
         width: 512,
         height: 512,
         alt: 'Kaleidorium - Art Discovery Platform',
@@ -83,38 +83,38 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/logos/favicon-32x32.svg?v=2',
-        type: 'image/svg+xml',
+        url: '/logos/favicon-32x32-v3.jpg',
+        type: 'image/jpeg',
       },
       {
-        url: '/logos/favicon-16x16.svg?v=2',
+        url: '/logos/favicon-16x16-v3.jpg',
         sizes: '16x16',
-        type: 'image/svg+xml',
+        type: 'image/jpeg',
       },
       {
-        url: '/logos/favicon-32x32.svg?v=2',
+        url: '/logos/favicon-32x32-v3.jpg',
         sizes: '32x32',
-        type: 'image/svg+xml',
+        type: 'image/jpeg',
       },
       {
-        url: '/logos/pwa-icon-192x192.svg?v=2',
+        url: '/logos/pwa-icon-192x192-v3.jpg',
         sizes: '192x192',
-        type: 'image/svg+xml',
+        type: 'image/jpeg',
       },
       {
-        url: '/logos/pwa-icon-512x512.svg?v=2',
+        url: '/logos/pwa-icon-512x512-v3.jpg',
         sizes: '512x512',
-        type: 'image/svg+xml',
+        type: 'image/jpeg',
       }
     ],
     apple: [
       {
-        url: '/logos/apple-touch-icon-180x180.svg?v=2',
+        url: '/logos/apple-touch-icon-180x180-v3.jpg',
         sizes: '180x180',
-        type: 'image/svg+xml',
+        type: 'image/jpeg',
       }
     ],
-    shortcut: '/logos/favicon-32x32.svg?v=2'
+    shortcut: '/logos/favicon-32x32-v3.jpg'
   },
   other: {
     'mobile-web-app-capable': 'yes',

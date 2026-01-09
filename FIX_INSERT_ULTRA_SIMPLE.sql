@@ -33,3 +33,4 @@ AND cmd = 'INSERT';
 -- User registration will need a separate policy or this needs to be expanded
 -- But let's test if this works first for gallery-created artists
 
+

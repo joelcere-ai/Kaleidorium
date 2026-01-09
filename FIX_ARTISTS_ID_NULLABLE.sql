@@ -60,3 +60,4 @@ WHERE table_schema = 'public'
 AND table_name = 'Artists'
 AND column_name = 'id';
 
+

@@ -145,3 +145,4 @@ SELECT
 FROM "public"."Artwork"
 WHERE uploaded_by_gallery_id IS NOT NULL;
 
+

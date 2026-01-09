@@ -114,3 +114,4 @@ if (!searchTerm) {
 
 findArtwork(searchTerm);
 
+

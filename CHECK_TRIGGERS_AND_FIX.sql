@@ -60,3 +60,4 @@ AND cmd = 'INSERT';
 -- Try creating an artist now - if this works, the issue is with the policy condition
 -- If this doesn't work, there's something else blocking (trigger, function, etc.)
 
+

@@ -42,3 +42,4 @@ AND column_name = 'id';
 -- - Artists who register themselves will set id = auth.uid()
 -- - Gallery-managed artists will have a generated UUID (not linked to auth.users)
 
+

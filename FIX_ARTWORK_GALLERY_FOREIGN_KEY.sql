@@ -31,3 +31,4 @@ WHERE tc.constraint_type = 'FOREIGN KEY'
   AND kcu.column_name = 'uploaded_by_gallery_id'
 ORDER BY tc.constraint_name;
 
+

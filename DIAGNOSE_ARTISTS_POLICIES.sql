@@ -47,3 +47,4 @@ WHERE pn.nspname = 'public'
 AND pc.relname = 'Artists'
 ORDER BY pol.polcmd, pol.polname;
 
+

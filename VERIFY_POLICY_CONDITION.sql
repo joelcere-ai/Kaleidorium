@@ -36,3 +36,4 @@ SELECT
 FROM "public"."Artists"
 WHERE id = auth.uid();
 
+

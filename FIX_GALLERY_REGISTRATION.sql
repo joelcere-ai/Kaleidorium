@@ -99,3 +99,4 @@ WHERE schemaname = 'public'
 AND tablename = 'Artists'
 AND policyname = 'artists_insert_own_or_managed';
 
+

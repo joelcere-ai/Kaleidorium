@@ -34,7 +34,7 @@ SELECT
   user_id,
   preferences,
   last_interaction,
-  updated_at
+  created_at
 FROM "public"."Collectors"
 WHERE last_interaction > NOW() - INTERVAL '1 hour'
 ORDER BY last_interaction DESC

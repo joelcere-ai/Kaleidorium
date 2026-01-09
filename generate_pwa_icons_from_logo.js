@@ -148,3 +148,4 @@ console.log('  2. Check icon-preview.html to see all variations');
 console.log('  3. Test on mobile device');
 console.log('  4. Update manifest.json version after finalizing\n');
 
+

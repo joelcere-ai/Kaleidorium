@@ -91,3 +91,4 @@ console.log('  3. Choose your preferred variation');
 console.log('  4. Rename chosen files to pwa-icon-192x192.svg and pwa-icon-512x512.svg');
 console.log('  5. Update manifest.json version number\n');
 
+

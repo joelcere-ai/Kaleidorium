@@ -100,3 +100,4 @@ AND tablename = 'Artists'
 AND cmd = 'UPDATE'
 ORDER BY policyname;
 
+

@@ -55,3 +55,4 @@ AND tc.table_schema = 'public'
 AND tc.table_name = 'Artists'
 AND kcu.column_name = 'id';
 
+

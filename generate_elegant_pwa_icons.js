@@ -86,3 +86,4 @@ console.log('  2. Test them on mobile devices');
 console.log('  3. Adjust safeZonePercent if needed (currently 22%)');
 console.log('  4. Update manifest.json version number after approval\n');
 
+

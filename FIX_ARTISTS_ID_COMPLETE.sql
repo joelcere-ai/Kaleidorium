@@ -44,3 +44,4 @@ AND kcu.column_name = 'id';
 -- Expected result: No rows (foreign key should be dropped)
 -- If rows are returned, the constraint still exists and needs to be dropped manually
 
+

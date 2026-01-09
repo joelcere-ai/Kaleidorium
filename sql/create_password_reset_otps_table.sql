@@ -24,3 +24,4 @@ CREATE POLICY "Allow OTP verification" ON password_reset_otps
   FOR ALL USING (true);
 
 
+
