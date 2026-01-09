@@ -172,7 +172,7 @@ export function MobileInstallPrompt() {
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-white border-2 border-black rounded-lg flex items-center justify-center">
               <img
-                src="/logos/logo-desktop-32x32.svg?v=3"
+                src="/logos/logo-desktop-32x32-v3.svg"
                 alt="Kaleidorium Logo"
                 className="w-8 h-8"
               />
