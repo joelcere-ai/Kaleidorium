@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Kaleidorium – Your Personal Art Curator',
     description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
-    images: ['/logos/pwa-icon-512x512.svg?v=2'],
+    images: ['/logos/pwa-icon-512x512-v3.jpg'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
   },
