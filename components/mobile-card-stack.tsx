@@ -1999,6 +1999,22 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   </div>
                 )}
                 
+                {selectedArtwork.price && (
+                  <div>
+                    <span className="font-semibold text-black">Price:</span>
+                    <span className="ml-2 text-gray-700">
+                      {selectedArtwork.price.toLowerCase() === 'sold' || 
+                       selectedArtwork.price.toLowerCase() === 'enquire' || 
+                       selectedArtwork.price.toLowerCase() === 'not for sale'
+                        ? selectedArtwork.price
+                        : selectedArtwork.currency
+                          ? `${selectedArtwork.price} ${selectedArtwork.currency}`
+                          : selectedArtwork.price
+                      }
+                    </span>
+                  </div>
+                )}
+                
                 {selectedArtwork.description && (
                   <div>
                     <span className="font-semibold text-black">Description:</span>
