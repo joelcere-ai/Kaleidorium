@@ -72,6 +72,47 @@ export function MobileInstallPrompt() {
     }
   }, [])
 
+  const showIOSInstructions = () => {
+    // Create iOS instruction overlay
+    const instructionOverlay = document.createElement('div')
+    instructionOverlay.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] flex items-center justify-center p-4'
+    instructionOverlay.innerHTML = `
+      <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 text-center">
+        <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-black mb-2">Add Kaleidorium to Home Screen</h3>
+        <p class="text-sm text-gray-600 mb-4">
+          <strong>Step 1:</strong> Tap the Share button <svg class="inline w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> at the bottom of your screen<br><br>
+          <strong>Step 2:</strong> Scroll down and tap "Add to Home Screen"<br><br>
+          <strong>Step 3:</strong> Tap "Add" in the top right corner
+        </p>
+        <button onclick="this.parentElement.parentElement.remove(); arguments[0].stopPropagation()" 
+                class="w-full bg-black hover:bg-gray-800 text-white font-medium py-3 px-4 rounded-xl transition-colors">
+          Got it!
+        </button>
+      </div>
+    `
+    
+    // Handle click outside to close
+    instructionOverlay.addEventListener('click', (e) => {
+      if (e.target === instructionOverlay) {
+        document.body.removeChild(instructionOverlay)
+      }
+    })
+    
+    document.body.appendChild(instructionOverlay)
+    
+    // Auto-remove after 15 seconds
+    setTimeout(() => {
+      if (document.body.contains(instructionOverlay)) {
+        document.body.removeChild(instructionOverlay)
+      }
+    }, 15000)
+  }
+
   const handleInstallClick = async () => {
     console.log('Add Shortcut button clicked', { 
       deferredPrompt: !!deferredPrompt, 
@@ -80,12 +121,16 @@ export function MobileInstallPrompt() {
       userAgent: navigator.userAgent
     });
     
-    // For iOS, show instructions or dismiss (iOS doesn't support beforeinstallprompt)
+    // For iOS, show installation instructions (iOS doesn't support beforeinstallprompt)
     if (isIOS) {
-      console.log('iOS detected - manual installation required');
+      console.log('iOS detected - showing installation instructions');
       setShowPrompt(false);
       localStorage.setItem('pwa-prompt-interacted', 'true')
       window.dispatchEvent(new CustomEvent('pwa-prompt-dismissed'))
+      // Show iOS instructions after a brief delay
+      setTimeout(() => {
+        showIOSInstructions();
+      }, 300);
       return;
     }
     
