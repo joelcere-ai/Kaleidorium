@@ -410,11 +410,22 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       }
 
       // Update all preference categories
-      updateCount('artists', artwork.artist)
-      updateCount('genres', artwork.genre)
-      updateCount('styles', artwork.style)
-      updateCount('subjects', artwork.subject)
-      updateCount('colors', artwork.colour)
+      // IMPORTANT: For dislikes, do NOT penalize the artist (artists can have diverse styles)
+      // Only apply dislike weight to style, genre, subject, and color attributes
+      if (action === 'dislike') {
+        // Skip artist for dislikes - only penalize style/genre/subject/color
+        updateCount('genres', artwork.genre)
+        updateCount('styles', artwork.style)
+        updateCount('subjects', artwork.subject)
+        updateCount('colors', artwork.colour)
+      } else {
+        // For likes and adds, update all categories including artist
+        updateCount('artists', artwork.artist)
+        updateCount('genres', artwork.genre)
+        updateCount('styles', artwork.style)
+        updateCount('subjects', artwork.subject)
+        updateCount('colors', artwork.colour)
+      }
 
       // Update price range preference
       const priceValue = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""))
@@ -749,7 +760,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       categoryMap[value] = (categoryMap[value] || 0) + weight;
       updated[category] = categoryMap as any;
     }
-    updateCount('artists', artwork.artist);
+    // IMPORTANT: For dislikes, do NOT penalize the artist (artists can have diverse styles)
+    // Only apply dislike weight to style, genre, subject, and color attributes
+    if (action !== 'dislike') {
+      updateCount('artists', artwork.artist);
+    }
     
     // Use field value if available, otherwise try to extract from tags
     const genre = artwork.genre || extractFromTags(artwork.tags, 'genre');

@@ -129,9 +129,12 @@ export async function POST(request: Request) {
 IMPORTANT INSTRUCTIONS:
 - Positive preference values indicate the user LIKES these attributes (artists, styles, genres, subjects, colors)
 - Negative preference values indicate the user DISLIKES these attributes - STRONGLY AVOID artworks matching these
-- Prioritize artworks that match positive preferences
-- Actively deprioritize or exclude artworks matching negative preferences (disliked items)
-- If an artist, style, genre, subject, or color has a negative value, avoid recommending artworks with those attributes
+- CRITICAL: Dislikes are ARTWORK-SPECIFIC, not artist-specific. An artist may have diverse styles.
+  - If a style, genre, subject, or color has a negative value, avoid artworks with those attributes
+  - Do NOT avoid an artist entirely just because one of their artworks was disliked
+  - Only avoid the specific style/genre/subject/color combinations that were disliked
+- Prioritize artworks that match positive preferences (including artists the user likes)
+- Actively deprioritize or exclude artworks matching negative preferences (disliked styles/genres/subjects/colors)
 
 Preferences (positive = likes, negative = dislikes - AVOID negative values):
 ${JSON.stringify(preferences, null, 2)}
@@ -158,7 +161,7 @@ Return format: {"recommendations": ["id1", "id2", "id3"]}`
         messages: [
           {
             role: "system",
-            content: "You are an expert art recommendation system. Analyze user preferences and artwork metadata to provide personalized recommendations. CRITICALLY IMPORTANT: Strongly avoid recommending artworks that match negative preference values (dislikes). Prioritize artworks matching positive preferences and actively deprioritize or exclude those matching negative preferences. Return only a JSON object with a 'recommendations' array of artwork IDs in order of recommendation priority."
+            content: "You are an expert art recommendation system. Analyze user preferences and artwork metadata to provide personalized recommendations. CRITICALLY IMPORTANT: Dislikes are artwork-specific (style/genre/subject/color), NOT artist-specific. An artist may have diverse styles - do not avoid an artist entirely because one artwork was disliked. Strongly avoid artworks matching negative preference values (disliked styles/genres/subjects/colors), but still consider other works by the same artist if they have different attributes. Prioritize artworks matching positive preferences and actively deprioritize those matching negative preferences. Return only a JSON object with a 'recommendations' array of artwork IDs in order of recommendation priority."
           },
           {
             role: "user",
