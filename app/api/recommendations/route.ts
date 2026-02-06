@@ -123,16 +123,24 @@ export async function POST(request: Request) {
       artworksCount: artworks.length
     })
 
-    // Construct the prompt
+    // Construct the prompt with explicit instructions to avoid disliked items
     const prompt = `Given these user preferences and artworks, return a JSON array of artwork IDs ordered by recommendation priority.
-          
-Preferences (higher = stronger preference):
+
+IMPORTANT INSTRUCTIONS:
+- Positive preference values indicate the user LIKES these attributes (artists, styles, genres, subjects, colors)
+- Negative preference values indicate the user DISLIKES these attributes - STRONGLY AVOID artworks matching these
+- Prioritize artworks that match positive preferences
+- Actively deprioritize or exclude artworks matching negative preferences (disliked items)
+- If an artist, style, genre, subject, or color has a negative value, avoid recommending artworks with those attributes
+
+Preferences (positive = likes, negative = dislikes - AVOID negative values):
 ${JSON.stringify(preferences, null, 2)}
 
 Available artworks:
 ${JSON.stringify(artworks.map((a: any) => ({
   id: a.id,
   title: a.title,
+  artist: a.artist,
   style: a.style,
   genre: a.genre,
   subject: a.subject,
@@ -150,7 +158,7 @@ Return format: {"recommendations": ["id1", "id2", "id3"]}`
         messages: [
           {
             role: "system",
-            content: "You are an art recommendation system. Analyze user preferences and artwork metadata to provide personalized recommendations. Return only a JSON array of artwork IDs in order of recommendation priority."
+            content: "You are an expert art recommendation system. Analyze user preferences and artwork metadata to provide personalized recommendations. CRITICALLY IMPORTANT: Strongly avoid recommending artworks that match negative preference values (dislikes). Prioritize artworks matching positive preferences and actively deprioritize or exclude those matching negative preferences. Return only a JSON object with a 'recommendations' array of artwork IDs in order of recommendation priority."
           },
           {
             role: "user",

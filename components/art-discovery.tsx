@@ -358,7 +358,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const WEIGHTS = {
     ADD_TO_COLLECTION: 2.0,
     LIKE: 0.6,
-    DISLIKE: -0.8,
+    DISLIKE: -2.5, // Increased from -0.8 to strongly penalize disliked items
     COLLECTION_MATCH: 1.5
   }
 
@@ -566,13 +566,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       } catch (apiError) {
         console.error('Error calling recommendations API, using fallback scoring:', apiError);
         
-        // Fallback to local scoring if API fails
+        // Fallback to local scoring if API fails - strongly penalize disliked items
         return unviewedArtworks.sort((a, b) => {
           // Simple fallback: prioritize by collection matches and preferences
+          // IMPORTANT: Negative values (dislikes) should strongly deprioritize artworks
           let scoreA = 0;
           let scoreB = 0;
           
           // Basic preference matching with proper type checking
+          // Negative values (dislikes) will reduce score, positive values (likes) increase score
           if (a.artist && preferences.artists?.[a.artist]) scoreA += preferences.artists[a.artist];
           if (b.artist && preferences.artists?.[b.artist]) scoreB += preferences.artists[b.artist];
           if (a.genre && preferences.genres?.[a.genre]) scoreA += preferences.genres[a.genre];
