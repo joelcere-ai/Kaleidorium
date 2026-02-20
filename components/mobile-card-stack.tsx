@@ -1926,12 +1926,34 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
+                  setView("for-galleries")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Palette className="mr-3 h-5 w-5" />
+                For Galleries
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
                   router.push("/about", { scroll: false })
                   setShowMenuModal(false)
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
                 For Collectors
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("pricing")
+                  setShowMenuModal(false)
+                }}
+              >
+                <DollarSign className="mr-3 h-5 w-5" />
+                Pricing
               </Button>
               <Button
                 variant="ghost"
