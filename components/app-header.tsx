@@ -189,11 +189,12 @@ function AppHeaderContent({
     <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
-        <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0">
+        <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0">
           <img 
             src="/logos/logo-desktop-32x32-v3.jpg" 
             alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto"
+            className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
+            style={{ aspectRatio: '1 / 1' }}
           />
         </Link>
 

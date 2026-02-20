@@ -64,16 +64,17 @@ export function UniversalAppHeader({
     <header className="border-b bg-background relative app-header z-10">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo */}
-        <div className="flex items-center">
+        <div className="flex items-center flex-shrink-0">
           <Button
             variant="ghost"
-            className="flex items-center space-x-1 font-serif text-xl font-semibold text-black"
+            className="flex items-center space-x-1 font-serif text-xl font-semibold text-black flex-shrink-0"
             onClick={() => handleNavigation("/", "discover")}
           >
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="h-8 md:h-10 w-auto"
+              className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
+              style={{ aspectRatio: '1 / 1' }}
             />
           </Button>
         </div>

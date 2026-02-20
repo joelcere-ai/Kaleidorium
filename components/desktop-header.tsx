@@ -56,13 +56,14 @@ export function DesktopHeader({
         {/* Logo with improved mobile spacing */}
         <Button 
           variant="ghost" 
-          className="flex items-center py-2 px-1 md:py-0 md:px-0"
+          className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0"
           onClick={handleLogoClick}
         >
           <img 
             src="/logos/logo-desktop-32x32-v3.jpg" 
             alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto"
+            className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
+            style={{ aspectRatio: '1 / 1' }}
           />
         </Button>
 

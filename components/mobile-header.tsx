@@ -33,12 +33,13 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
         <Button
           variant="ghost"
           onClick={handleLogoClick}
-          className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2"
+          className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2 flex-shrink-0"
         >
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="h-8 md:h-10 w-auto"
+              className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
+              style={{ aspectRatio: '1 / 1' }}
             />
         </Button>
         <Button
