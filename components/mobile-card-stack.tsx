@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, DollarSign } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -50,7 +50,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "about" | "contact" | "terms" | "privacy") => void
+  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -1159,12 +1159,34 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
+                    setView("for-galleries")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Palette className="mr-3 h-5 w-5" />
+                  For Galleries
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
                     router.push("/about", { scroll: false })
                     setShowMenuModal(false)
                   }}
                 >
                   <Info className="mr-3 h-5 w-5" />
                   For Collectors
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("pricing")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <DollarSign className="mr-3 h-5 w-5" />
+                  Pricing
                 </Button>
                 <Button
                   variant="ghost"
