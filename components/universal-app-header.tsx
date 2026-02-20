@@ -73,8 +73,7 @@ export function UniversalAppHeader({
             <img 
               src="/logos/logo-desktop-32x32-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="h-9 w-auto object-contain flex-shrink-0"
-              style={{ aspectRatio: '1 / 1' }}
+            className="h-8 md:h-10 w-auto flex-shrink-0"
             />
           </Button>
         </div>

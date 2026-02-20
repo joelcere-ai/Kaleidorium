@@ -36,10 +36,9 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
           className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2 flex-shrink-0"
         >
             <img 
-              src="/logos/logo-desktop-32x32-v3.jpg" 
+              src="/logos/logo-mobile-20x20-v3.jpg" 
               alt="Kaleidorium Logo" 
-              className="h-9 w-auto object-contain flex-shrink-0"
-              style={{ aspectRatio: '1 / 1' }}
+              className="h-7 w-auto flex-shrink-0"
             />
         </Button>
         <Button
