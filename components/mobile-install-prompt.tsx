@@ -208,6 +208,7 @@ export function MobileInstallPrompt() {
     <div
       className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4"
       onClick={handleDismiss}
+      data-nosnippet
     >
       <div
         className="bg-white rounded-t-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom duration-300"
