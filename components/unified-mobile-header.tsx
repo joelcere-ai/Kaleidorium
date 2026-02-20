@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, User, Search, Heart, Palette, Info, Mail } from "lucide-react";
+import { Menu, User, Search, Heart, Palette, Info, Mail, DollarSign } from "lucide-react";
 
 interface UnifiedMobileHeaderProps {
-  currentPage?: "discover" | "collection" | "for-artists" | "about" | "contact" | "profile";
+  currentPage?: "discover" | "collection" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "profile";
 }
 
 export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
@@ -108,12 +108,34 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
+                  currentPage === "for-galleries" ? "bg-gray-100" : ""
+                }`}
+                onClick={() => handleNavigation("/for-galleries")}
+              >
+                <Palette className="mr-3 h-5 w-5" />
+                For Galleries
+              </Button>
+              
+              <Button
+                variant="ghost"
+                className={`w-full justify-start text-black hover:bg-gray-100 ${
                   currentPage === "about" ? "bg-gray-100" : ""
                 }`}
                 onClick={() => handleNavigation("/?view=about")}
               >
                 <Info className="mr-3 h-5 w-5" />
                 For Collectors
+              </Button>
+
+              <Button
+                variant="ghost"
+                className={`w-full justify-start text-black hover:bg-gray-100 ${
+                  currentPage === "pricing" ? "bg-gray-100" : ""
+                }`}
+                onClick={() => handleNavigation("/pricing")}
+              >
+                <DollarSign className="mr-3 h-5 w-5" />
+                Pricing
               </Button>
               
               <Button
