@@ -864,20 +864,21 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!user) {
       isUpdatingArtworksRef.current = true; // Prevent session restoration during update
       const updatedPreferences = updateLocalPreferences(artwork, 'dislike');
-      // Filter out the disliked artwork immediately before getting recommendations
-      // This ensures it doesn't appear even if state hasn't updated yet
-      const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
+      // Move the disliked artwork to the END of the pool (don't remove it permanently).
+      // This keeps pool diversity while ensuring it won't reappear until all others are seen.
+      const otherArtworks = artworks.filter(a => a.id !== artwork.id);
+      // Pass the full pool (disliked artwork at end) so diversity is preserved.
+      // The negative preference score will naturally sort it to the back.
+      const poolWithDislikedLast = [...otherArtworks, artwork];
       // Pass updatedPreferences directly to use fresh dislike weights (fixes stale state issue)
-      const recommendedArtworks = getLocalRecommendations(filteredArtworks, updatedPreferences);
+      const recommendedArtworks = getLocalRecommendations(poolWithDislikedLast, updatedPreferences);
       
-      // Calculate the new index: if current artwork was removed, stay at 0, otherwise adjust
+      // Calculate the new index
       let newIndex = currentIndex;
-      if (currentIndex >= filteredArtworks.length) {
-        // If the removed artwork was at or near the end, reset to 0
+      if (currentIndex >= otherArtworks.length) {
         newIndex = 0;
       } else if (artworks[currentIndex]?.id === artwork.id) {
-        // If we're currently viewing the disliked artwork, move to next (or 0 if at end)
-        newIndex = currentIndex >= filteredArtworks.length ? 0 : currentIndex;
+        newIndex = currentIndex >= otherArtworks.length ? 0 : currentIndex;
       }
       
       setArtworks(recommendedArtworks);
@@ -897,19 +898,22 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!await handleAuthAction('dislike', artwork)) return;
     const newPreferences = await updatePreferences(user.id, artwork, 'dislike');
     if (newPreferences) {
-      // Filter out the disliked artwork immediately before getting recommendations
-      // This ensures it doesn't appear even if there's a database caching delay
-      const filteredArtworks = artworks.filter(a => a.id !== artwork.id);
-      const recommendedArtworks = await getRecommendations(user.id, filteredArtworks);
+      // Move the disliked artwork to the END of the pool (don't remove it permanently).
+      // This keeps pool diversity while ensuring it won't reappear until all others are seen.
+      const otherArtworks = artworks.filter(a => a.id !== artwork.id);
+      const filteredArtworks = [...otherArtworks, artwork];
+      const recommendedOther = await getRecommendations(user.id, otherArtworks);
+      // Keep the disliked artwork at the end so the full pool is preserved
+      const recommendedArtworks = [...recommendedOther, artwork];
       
       // Calculate the new index: if current artwork was removed, stay at 0, otherwise adjust
       let newIndex = currentIndex;
-      if (currentIndex >= filteredArtworks.length) {
+      if (currentIndex >= otherArtworks.length) {
         // If the removed artwork was at or near the end, reset to 0
         newIndex = 0;
       } else if (artworks[currentIndex]?.id === artwork.id) {
         // If we're currently viewing the disliked artwork, move to next (or 0 if at end)
-        newIndex = currentIndex >= filteredArtworks.length ? 0 : currentIndex;
+        newIndex = currentIndex >= otherArtworks.length ? 0 : currentIndex;
       }
       
       setArtworks(recommendedArtworks);
@@ -1228,7 +1232,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         // Since direct REST works, use it instead of the hanging Supabase client
         console.log('Step 2: Using direct REST API since Supabase client is hanging...');
         
-        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&order=created_at.desc&limit=50`;
+        const fullRestUrl = `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=500`;
         
         console.log('Fetching full artwork data via REST API...');
         
@@ -1246,7 +1250,14 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         
         const fullFetchData = await fullFetchResponse.json();
         console.log('✅ Full REST API call succeeded, got', fullFetchData?.length, 'records');
-        artworksData = fullFetchData || [];
+        // Shuffle for diversity so users see different artists every session,
+        // not just the most recently uploaded artworks
+        const shuffled = (fullFetchData || []).slice();
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        artworksData = shuffled;
         
       } catch (networkError) {
         console.error('❌ Network connectivity issue:', networkError);
