@@ -20,6 +20,237 @@ import { useToast } from "@/hooks/use-toast";
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 
+// Defined outside HomeContent to avoid remounting on every parent re-render
+// (keyboard appearing on mobile caused window.resize → HomeContent re-render → form unmount)
+function ForArtistsForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    portfolioLink: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('/api/artist-submission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus("Thank you! Your portfolio has been submitted for review. We'll be in touch soon.");
+        setFormData({ name: "", email: "", portfolioLink: "" });
+      } else {
+        setSubmitStatus("There was an error submitting your portfolio. Please try again.");
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus("There was an error submitting your portfolio. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePortfolioBlur = () => {
+    setFormData((prev) => {
+      const trimmedLink = prev.portfolioLink.trim();
+      if (!trimmedLink) return prev;
+      if (/^https?:\/\//i.test(trimmedLink)) {
+        return prev.portfolioLink === trimmedLink ? prev : { ...prev, portfolioLink: trimmedLink };
+      }
+      return { ...prev, portfolioLink: `https://${trimmedLink}` };
+    });
+  };
+
+  return (
+    <Card className="mb-8">
+      <CardHeader>
+        <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
+        <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+          Please fill out the form below to submit your portfolio for review.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your full name" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="your@email.com" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Portfolio Link</label>
+            <input type="url" name="portfolioLink" value={formData.portfolioLink}
+              onChange={handleInputChange} onBlur={handlePortfolioBlur}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="www.yourportfolio.com" required />
+          </div>
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-black text-white hover:bg-gray-800">
+            {isSubmitting ? "Submitting..." : "Submit Portfolio"}
+          </Button>
+        </form>
+        <div className="mt-6">
+          <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We will only use the information to review your portfolio and to notify you. If you are not invited, we will delete this information within 1 week.
+          </p>
+          <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
+          </p>
+        </div>
+        {submitStatus && (
+          <div className={`mt-4 p-3 rounded-md text-sm ${submitStatus.includes("Thank you") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            {submitStatus}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ForGalleriesForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    website: "",
+    contactName: "",
+    email: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    let websiteUrl = formData.website.trim();
+    if (websiteUrl && !/^https?:\/\//i.test(websiteUrl)) {
+      websiteUrl = `https://${websiteUrl}`;
+    }
+
+    try {
+      const response = await fetch('/api/artist-submission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'gallery',
+          name: formData.name,
+          website: websiteUrl,
+          email: formData.email,
+          contactName: formData.contactName,
+          message: formData.message
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus("Thank you! Your gallery has been submitted for review. We'll be in touch soon.");
+        setFormData({ name: "", website: "", contactName: "", email: "", message: "" });
+      } else {
+        setSubmitStatus("There was an error submitting your gallery. Please try again.");
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus("There was an error submitting your gallery. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleWebsiteBlur = () => {
+    setFormData((prev) => {
+      const trimmedLink = prev.website.trim();
+      if (!trimmedLink) return prev;
+      if (/^https?:\/\//i.test(trimmedLink)) {
+        return prev.website === trimmedLink ? prev : { ...prev, website: trimmedLink };
+      }
+      return { ...prev, website: `https://${trimmedLink}` };
+    });
+  };
+
+  return (
+    <Card className="mb-8">
+      <CardHeader>
+        <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Gallery</CardTitle>
+        <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+          Submit your gallery details and which artists you would like to list.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Gallery Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your gallery name" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Website</label>
+            <input type="url" name="website" value={formData.website}
+              onChange={handleInputChange} onBlur={handleWebsiteBlur}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="www.yourgallery.com" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Contact Name</label>
+            <input type="text" name="contactName" value={formData.contactName} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your name" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="your@email.com" required />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-black mb-1">Message</label>
+            <textarea name="message" value={formData.message} onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Tell us about your gallery and which artists you would like to list..."
+              rows={4} required />
+          </div>
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-black text-white hover:bg-gray-800">
+            {isSubmitting ? "Submitting..." : "Submit Gallery"}
+          </Button>
+        </form>
+        <div className="mt-6">
+          <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            We will only use the information to review your gallery and to notify you. If you are not invited, we will delete this information within 1 week.
+          </p>
+          <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+            If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
+          </p>
+        </div>
+        {submitStatus && (
+          <div className={`mt-4 p-3 rounded-md text-sm ${submitStatus.includes("Thank you") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            {submitStatus}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -376,151 +607,7 @@ function HomeContent() {
     };
   };
 
-  // For Artists Form component
-  const ForArtistsForm = () => {
-    const [formData, setFormData] = useStateContact({
-      name: "",
-      email: "",
-      portfolioLink: ""
-    });
-    const [isSubmitting, setIsSubmitting] = useStateContact(false);
-    const [submitStatus, setSubmitStatus] = useStateContact<string | null>(null);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-      setSubmitStatus(null);
-
-      try {
-        const response = await fetch('/api/artist-submission', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          setSubmitStatus("Thank you! Your portfolio has been submitted for review. We'll be in touch soon.");
-          setFormData({ name: "", email: "", portfolioLink: "" });
-        } else {
-          setSubmitStatus("There was an error submitting your portfolio. Please try again.");
-        }
-      } catch (error) {
-        console.error('Submission error:', error);
-        setSubmitStatus("There was an error submitting your portfolio. Please try again.");
-      } finally {
-        setIsSubmitting(false);
-      }
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value
-      });
-    };
-
-    const handlePortfolioBlur = () => {
-      setFormData((prev) => {
-        const trimmedLink = prev.portfolioLink.trim();
-
-        if (!trimmedLink) {
-          return prev;
-        }
-
-        if (/^https?:\/\//i.test(trimmedLink)) {
-          return prev.portfolioLink === trimmedLink ? prev : { ...prev, portfolioLink: trimmedLink };
-        }
-
-        return {
-          ...prev,
-          portfolioLink: `https://${trimmedLink}`
-        };
-      });
-    };
-
-    return (
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Portfolio</CardTitle>
-          <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-            Please fill out the form below to submit your portfolio for review.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-black mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Your full name"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-black mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="your@email.com"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-black mb-1">Portfolio Link</label>
-              <input
-                type="url"
-                name="portfolioLink"
-                value={formData.portfolioLink}
-                onChange={handleInputChange}
-                onBlur={handlePortfolioBlur}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="www.yourportfolio.com"
-                required
-              />
-            </div>
-            
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-black text-white hover:bg-gray-800"
-            >
-              {isSubmitting ? "Submitting..." : "Submit Portfolio"}
-            </Button>
-          </form>
-
-          <div className="mt-6">
-            <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              We will only use the information to review your portfolio and to notify you. If you are not invited, we will delete this information within 1 week.
-            </p>
-            <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-              If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
-            </p>
-          </div>
-          
-          {submitStatus && (
-            <div className={`mt-4 p-3 rounded-md text-sm ${
-              submitStatus.includes("Thank you") 
-                ? "bg-green-100 text-green-800" 
-                : "bg-red-100 text-red-800"
-            }`}>
-              {submitStatus}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    );
-  };
+  // ForArtistsForm is defined as a top-level component above HomeContent (avoids remounting on parent re-render)
 
 
   // Simple FAQ component
@@ -1641,192 +1728,7 @@ function HomeContent() {
         );
       
       case "for-galleries":
-        // Gallery submission form component
-        const ForGalleriesForm = () => {
-          const [formData, setFormData] = useState({
-            name: "",
-            website: "",
-            contactName: "",
-            email: "",
-            message: ""
-          });
-          const [isSubmitting, setIsSubmitting] = useState(false);
-          const [submitStatus, setSubmitStatus] = useState<string | null>(null);
-
-          const handleSubmit = async (e: React.FormEvent) => {
-            e.preventDefault();
-            setIsSubmitting(true);
-            setSubmitStatus(null);
-
-            // Ensure website has protocol
-            let websiteUrl = formData.website.trim();
-            if (websiteUrl && !/^https?:\/\//i.test(websiteUrl)) {
-              websiteUrl = `https://${websiteUrl}`;
-            }
-
-            try {
-              const response = await fetch('/api/artist-submission', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  type: 'gallery',
-                  name: formData.name,
-                  website: websiteUrl,
-                  email: formData.email,
-                  contactName: formData.contactName,
-                  message: formData.message
-                }),
-              });
-
-              if (response.ok) {
-                setSubmitStatus("Thank you! Your gallery has been submitted for review. We'll be in touch soon.");
-                setFormData({ name: "", website: "", contactName: "", email: "", message: "" });
-              } else {
-                setSubmitStatus("There was an error submitting your gallery. Please try again.");
-              }
-            } catch (error) {
-              console.error('Submission error:', error);
-              setSubmitStatus("There was an error submitting your gallery. Please try again.");
-            } finally {
-              setIsSubmitting(false);
-            }
-          };
-
-          const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            setFormData({
-              ...formData,
-              [e.target.name]: e.target.value
-            });
-          };
-
-          const handleWebsiteBlur = () => {
-            setFormData((prev) => {
-              const trimmedLink = prev.website.trim();
-
-              if (!trimmedLink) {
-                return prev;
-              }
-
-              if (/^https?:\/\//i.test(trimmedLink)) {
-                return prev.website === trimmedLink ? prev : { ...prev, website: trimmedLink };
-              }
-
-              return {
-                ...prev,
-                website: `https://${trimmedLink}`
-              };
-            });
-          };
-
-          return (
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Submit Your Gallery</CardTitle>
-                <CardDescription className="text-sm font-sans text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  Submit your gallery details and which artists you would like to list.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-black mb-1">Gallery Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Your gallery name"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-black mb-1">Website</label>
-                    <input
-                      type="url"
-                      name="website"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                      onBlur={handleWebsiteBlur}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="www.yourgallery.com"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-black mb-1">Contact Name</label>
-                    <input
-                      type="text"
-                      name="contactName"
-                      value={formData.contactName}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Your name"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-black mb-1">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-black mb-1">Message</label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Tell us about your gallery and which artists you would like to list..."
-                      rows={4}
-                      required
-                    />
-                  </div>
-                  
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-black text-white hover:bg-gray-800"
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit Gallery"}
-                  </Button>
-                </form>
-
-                <div className="mt-6">
-                  <p className="mb-2 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    We will only use the information to review your gallery and to notify you. If you are not invited, we will delete this information within 1 week.
-                  </p>
-                  <p className="text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    If you are invited and you decide to accept the invitation, we will ask you for more information and record these. If you do not accept the invitation, all the information we hold about you will be deleted.
-                  </p>
-                </div>
-                
-                {submitStatus && (
-                  <div className={`mt-4 p-3 rounded-md text-sm ${
-                    submitStatus.includes("Thank you") 
-                      ? "bg-green-100 text-green-800" 
-                      : "bg-red-100 text-red-800"
-                  }`}>
-                    {submitStatus}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        };
+        // ForGalleriesForm is defined as a top-level component above HomeContent (avoids remounting on parent re-render)
 
         // Gallery-specific FAQ component
         const GalleryFAQ = () => {
