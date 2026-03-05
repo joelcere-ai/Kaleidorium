@@ -24,7 +24,7 @@ export function PricingContent() {
           {/* FREE IN 2026 — Hero Banner */}
           <div className="bg-black text-white rounded-xl p-8 mb-6 max-w-3xl mx-auto text-center shadow-lg">
             <p className="text-xs font-sans uppercase tracking-widest text-gray-400 mb-2" style={{fontFamily: 'Arial, sans-serif'}}>Right now, in 2026</p>
-            <h1 className="text-4xl md:text-5xl font-sans font-extrabold mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+            <h1 className="text-4xl md:text-5xl font-sans font-extrabold text-white mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
               Everything is Free
             </h1>
             <p className="text-base font-sans text-gray-300 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
