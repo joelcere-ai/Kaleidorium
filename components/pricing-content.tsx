@@ -20,10 +20,22 @@ export function PricingContent() {
       {/* Hero Section */}
       <div className="bg-white py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-6xl">
-          {/* Free Until 2027 Notice */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-12 max-w-3xl mx-auto">
-            <p className="text-base font-sans text-black text-center leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
-              All features are completely free until Jan 1, 2027. You can choose to cancel your account and remove your work with one click after that if you do not want to continue using our services. Ample notice will be given before any payment plan is implemented.
+
+          {/* FREE IN 2026 — Hero Banner */}
+          <div className="bg-black text-white rounded-xl p-8 mb-6 max-w-3xl mx-auto text-center shadow-lg">
+            <p className="text-xs font-sans uppercase tracking-widest text-gray-400 mb-2" style={{fontFamily: 'Arial, sans-serif'}}>Right now, in 2026</p>
+            <h1 className="text-4xl md:text-5xl font-sans font-extrabold mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
+              Everything is Free
+            </h1>
+            <p className="text-base font-sans text-gray-300 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              All features — for collectors, artists, and galleries — are completely free throughout 2026.
+            </p>
+          </div>
+
+          {/* Fine-print reassurance */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg px-6 py-4 mb-12 max-w-3xl mx-auto">
+            <p className="text-sm font-sans text-gray-600 text-center leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
+              Plans below take effect from <strong>Jan 1, 2027</strong>. You will receive ample notice before then, and can cancel or remove your work with one click at any time.
             </p>
           </div>
 
@@ -38,6 +50,10 @@ export function PricingContent() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {/* Collectors Plan */}
             <div className="bg-white border-2 border-gray-200 rounded-lg p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+              {/* Free in 2026 badge */}
+              <div className="bg-black text-white text-xs font-sans font-bold text-center py-1.5 px-3 rounded-md mb-5 tracking-wide" style={{fontFamily: 'Arial, sans-serif'}}>
+                FREE IN 2026
+              </div>
               <div className="text-center mb-6">
                 <h2 className="text-xl font-serif font-bold text-black mb-2" style={{fontFamily: 'Times New Roman, serif'}}>
                   Collectors
@@ -110,17 +126,22 @@ export function PricingContent() {
                   Most Popular
                 </span>
               </div>
-              
+              {/* Free in 2026 badge */}
+              <div className="bg-black text-white text-xs font-sans font-bold text-center py-1.5 px-3 rounded-md mb-5 mt-2 tracking-wide" style={{fontFamily: 'Arial, sans-serif'}}>
+                FREE IN 2026
+              </div>
               <div className="text-center mb-6">
                 <h2 className="text-xl font-serif font-bold text-black mb-2" style={{fontFamily: 'Times New Roman, serif'}}>
                   Artists
                 </h2>
-                <div className="mb-4">
-                  <span className="text-4xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
-                    $9
+                <div className="mb-1">
+                  <span className="text-2xl font-sans font-bold text-gray-400 line-through" style={{fontFamily: 'Arial, sans-serif'}}>
+                    $9/month
                   </span>
-                  <span className="text-lg font-sans text-gray-600 ml-1" style={{fontFamily: 'Arial, sans-serif'}}>
-                    /month
+                </div>
+                <div className="mb-4">
+                  <span className="text-3xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Free in 2026
                   </span>
                 </div>
                 <p className="text-sm font-sans text-gray-700 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
@@ -189,16 +210,22 @@ export function PricingContent() {
 
             {/* Galleries Plan */}
             <div className="bg-white border-2 border-gray-200 rounded-lg p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+              {/* Free in 2026 badge */}
+              <div className="bg-black text-white text-xs font-sans font-bold text-center py-1.5 px-3 rounded-md mb-5 tracking-wide" style={{fontFamily: 'Arial, sans-serif'}}>
+                FREE IN 2026
+              </div>
               <div className="text-center mb-6">
                 <h2 className="text-xl font-serif font-bold text-black mb-2" style={{fontFamily: 'Times New Roman, serif'}}>
                   Galleries
                 </h2>
-                <div className="mb-4">
-                  <span className="text-4xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
-                    $49
+                <div className="mb-1">
+                  <span className="text-2xl font-sans font-bold text-gray-400 line-through" style={{fontFamily: 'Arial, sans-serif'}}>
+                    $49/month
                   </span>
-                  <span className="text-lg font-sans text-gray-600 ml-1" style={{fontFamily: 'Arial, sans-serif'}}>
-                    /month
+                </div>
+                <div className="mb-4">
+                  <span className="text-3xl font-sans font-bold text-black" style={{fontFamily: 'Arial, sans-serif'}}>
+                    Free in 2026
                   </span>
                 </div>
                 <p className="text-sm font-sans text-gray-700 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
