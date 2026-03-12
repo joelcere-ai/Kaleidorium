@@ -38,7 +38,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
             <img 
               src="/logos/kaleidorium-wordmark.png" 
               alt="Kaleidorium Logo" 
-              className="h-7 w-auto flex-shrink-0"
+              className="h-5 w-auto flex-shrink-0"
             />
         </Button>
         <Button

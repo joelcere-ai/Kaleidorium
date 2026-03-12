@@ -193,7 +193,7 @@ function AppHeaderContent({
           <img 
             src="/logos/kaleidorium-wordmark.png" 
             alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto flex-shrink-0"
+            className="h-5 md:h-6 w-auto flex-shrink-0"
           />
         </Link>
 
