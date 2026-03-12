@@ -1,126 +1,89 @@
-// Simple service worker for PWA installation
-// This is required for PWA installation to work on some browsers
-// Using minimal caching to avoid performance issues
+// Kaleidorium Service Worker
+// Cache name bump forces the browser to install the new SW and clear old caches
 
-const CACHE_NAME = 'kaleidorium-v5';
-const urlsToCache = [
+const CACHE_NAME = 'kaleidorium-v6';
+const STATIC_ASSETS = [
   '/manifest.json',
   '/logos/kaleidorium-icon-192.png',
   '/logos/kaleidorium-icon-512.png',
-  '/logos/kaleidorium-wordmark.png'
+  '/logos/kaleidorium-wordmark.png',
+  '/logos/kaleidorium-icon-180.png',
 ];
 
-// Install event - cache resources
+// Install: cache core assets then activate immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching files');
-        // Use addAll but don't fail if some files don't exist
-        return Promise.allSettled(
-          urlsToCache.map(url => 
-            cache.add(url).catch(err => {
-              console.log('Service Worker: Failed to cache', url, err);
-              return null; // Don't fail the whole install
-            })
-          )
-        );
-      })
-      .catch((error) => {
-        console.log('Service Worker: Cache failed (non-critical)', error);
-        // Don't fail installation if caching fails
-      })
-  );
-  self.skipWaiting(); // Activate immediately
-});
-
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+    caches.open(CACHE_NAME).then((cache) => {
+      return Promise.allSettled(
+        STATIC_ASSETS.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn('SW: failed to pre-cache', url, err);
+          })
+        )
       );
     })
   );
-  return self.clients.claim(); // Take control of all pages
+  // Skip waiting so the new SW activates without requiring a tab close
+  self.skipWaiting();
 });
 
-// Fetch event - network first strategy for better performance
-// Only cache specific static assets, not dynamic content
+// Activate: delete old caches then claim all open clients immediately
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((name) => name !== CACHE_NAME)
+            .map((name) => {
+              console.log('SW: deleting old cache', name);
+              return caches.delete(name);
+            })
+        )
+      )
+      .then(() => self.clients.claim()) // claim AFTER old caches are gone
+  );
+});
+
+// Fetch: network-first for HTML/API, cache-first for static assets
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
-  
+  if (event.request.method !== 'GET') return;
+
   const url = new URL(event.request.url);
-  
-  // Always bypass cache for favicon files to prevent old favicon flash
-  if (url.pathname.includes('favicon') || url.pathname === '/favicon.ico') {
-    event.respondWith(fetch(event.request));
+
+  // Always go to network for navigations (HTML pages)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match('/').then((r) => r || new Response('Offline', { status: 503 }))
+      )
+    );
     return;
   }
-  
-  // URLs with query parameters (versioned assets) should bypass cache
-  const hasQueryParams = url.search.length > 0;
-  
-  // Only cache static assets (images, icons, fonts)
-  const shouldCache = url.pathname.startsWith('/logos/') || 
-                      url.pathname.startsWith('/_next/static/') ||
-                      url.pathname.endsWith('.svg') ||
-                      url.pathname.endsWith('.png') ||
-                      url.pathname.endsWith('.jpg') ||
-                      url.pathname.endsWith('.webp');
-  
-  if (shouldCache && !hasQueryParams) {
-    // Cache static assets without query params - try cache first, then network
+
+  // Cache-first for icons and static logo assets (no query params)
+  const isStaticAsset =
+    (url.pathname.startsWith('/logos/') || url.pathname.startsWith('/icons/')) &&
+    url.search === '';
+
+  if (isStaticAsset) {
     event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          return response || fetch(event.request).then((fetchResponse) => {
-            // Cache successful responses
-            if (fetchResponse.ok) {
-              const responseToCache = fetchResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-            }
-            return fetchResponse;
-          }).catch(() => {
-            return new Response('Network error', { 
-              status: 503,
-              statusText: 'Service Unavailable'
-            });
-          });
-        })
-    );
-  } else if (shouldCache && hasQueryParams) {
-    // For versioned assets (with query params), always fetch from network first to bypass cache
-    event.respondWith(
-      fetch(event.request).then((fetchResponse) => {
-        // Don't cache versioned assets - they should always be fresh
-        return fetchResponse;
-      }).catch(() => {
-        // Fallback to cache only if network fails
-        return caches.match(event.request).then((response) => {
-          return response || new Response('Network error', { 
-            status: 503,
-            statusText: 'Service Unavailable'
-          });
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
         });
       })
     );
-  } else {
-    // For dynamic content, always use network first (no caching)
-    event.respondWith(fetch(event.request).catch(() => {
-      return new Response('Offline', { status: 503 });
-    }));
+    return;
   }
-});
 
+  // Everything else: network only
+  event.respondWith(
+    fetch(event.request).catch(() => new Response('Offline', { status: 503 }))
+  );
+});

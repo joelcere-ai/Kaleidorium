@@ -154,8 +154,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
         <meta name="build-version" content="v10-new-logo-2026-03-12" />
-        {/* PWA Manifest - versioned to bust Chrome PWA icon cache */}
-        <link rel="manifest" href="/manifest.json?v=8" />
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}
         <script
           dangerouslySetInnerHTML={{
