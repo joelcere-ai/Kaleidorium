@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { X, Download, Menu } from "lucide-react"
+import { X, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface BeforeInstallPromptEvent extends Event {
@@ -10,24 +10,120 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
 }
 
+type BrowserName = "chrome" | "samsung" | "firefox" | "edge" | "opera" | "safari" | "other"
+
+function detectBrowser(): { browser: BrowserName; isIOS: boolean; isAndroid: boolean } {
+  const ua = navigator.userAgent
+  const isIOS = /iPad|iPhone|iPod/.test(ua)
+  const isAndroid = /Android/.test(ua)
+
+  let browser: BrowserName = "other"
+  if (/SamsungBrowser/.test(ua)) browser = "samsung"
+  else if (/EdgA|EdgGA/.test(ua)) browser = "edge"          // Edge on Android/iOS
+  else if (/OPR|OPiOS/.test(ua)) browser = "opera"          // Opera
+  else if (/FxiOS|Firefox/.test(ua)) browser = "firefox"    // Firefox iOS or Android
+  else if (/CriOS|Chrome/.test(ua)) browser = "chrome"      // Chrome iOS or Android
+  else if (/Safari/.test(ua)) browser = "safari"            // Safari iOS
+
+  return { browser, isIOS, isAndroid }
+}
+
+// ─── Per-browser step-by-step instructions ──────────────────────────────────
+function BrowserInstructions({ browser, isIOS }: { browser: BrowserName; isIOS: boolean }) {
+  type Step = { text: React.ReactNode }
+  let steps: Step[] = []
+  let note: string | null = null
+
+  if (isIOS) {
+    if (browser === "chrome" || browser === "opera") {
+      // Chrome / Opera on iOS use the native share sheet too, but accessed differently
+      steps = [
+        { text: <>Tap the <strong>Share</strong> button <span className="inline-block bg-gray-100 px-1 rounded text-xs">⎋</span> at the bottom of the screen</> },
+        { text: <>Scroll down and tap <strong>"Add to Home Screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> in the top-right corner</> },
+      ]
+      note = "Make sure you're using Safari for the best experience on iOS."
+    } else if (browser === "firefox") {
+      steps = [
+        { text: <>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">⋯</span> at the bottom</> },
+        { text: <>Tap <strong>"Share"</strong>, then <strong>"Add to Home Screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> to confirm</> },
+      ]
+    } else {
+      // Safari (default iOS)
+      steps = [
+        { text: <>Tap the <strong>Share</strong> button <span className="inline-block bg-gray-100 px-1 rounded text-xs">⎋</span> at the bottom of Safari</> },
+        { text: <>Scroll down and tap <strong>"Add to Home Screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> in the top-right corner</> },
+      ]
+    }
+  } else {
+    // Android
+    if (browser === "samsung") {
+      steps = [
+        { text: <>Tap the <strong>three-line menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">☰</span> at the bottom of the screen</> },
+        { text: <>Tap <strong>"Add page to"</strong>, then <strong>"Home screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> to confirm</> },
+      ]
+    } else if (browser === "firefox") {
+      steps = [
+        { text: <>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">⋮</span> at the top right</> },
+        { text: <>Tap <strong>"Install"</strong> or <strong>"Add to Home Screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> to confirm</> },
+      ]
+    } else if (browser === "edge") {
+      steps = [
+        { text: <>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">⋯</span> at the bottom</> },
+        { text: <>Tap <strong>"Add to phone"</strong>, then <strong>"Add to Home screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> to confirm</> },
+      ]
+    } else if (browser === "opera") {
+      steps = [
+        { text: <>Tap the <strong>Opera menu</strong> (O icon) at the bottom</> },
+        { text: <>Tap <strong>"Home screen"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> to confirm</> },
+      ]
+    } else {
+      // Chrome (default Android)
+      steps = [
+        { text: <>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">⋮</span> in the top-right corner of Chrome</> },
+        { text: <>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></> },
+        { text: <>Tap <strong>"Add"</strong> or <strong>"Install"</strong> to confirm</> },
+      ]
+      note = "The Kaleidorium icon will appear on your home screen and in your app drawer."
+    }
+  }
+
+  return (
+    <>
+      <ol className="text-sm text-gray-700 space-y-2 mb-4">
+        {steps.map((s, i) => (
+          <li key={i} className="flex gap-2 items-start">
+            <span className="font-bold text-black shrink-0">{i + 1}.</span>
+            <span>{s.text}</span>
+          </li>
+        ))}
+      </ol>
+      {note && <p className="text-xs text-gray-500 mb-4">{note}</p>}
+    </>
+  )
+}
+
 export function MobileInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [isIOS, setIsIOS] = useState(false)
-  const [isAndroid, setIsAndroid] = useState(false)
+  const [browserInfo, setBrowserInfo] = useState<ReturnType<typeof detectBrowser> | null>(null)
   const [installed, setInstalled] = useState(false)
   const [showManualInstructions, setShowManualInstructions] = useState(false)
   const promptRef = useRef<BeforeInstallPromptEvent | null>(null)
 
   useEffect(() => {
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const android = /Android/.test(navigator.userAgent)
+    const info = detectBrowser()
+    setBrowserInfo(info)
+    const { isIOS, isAndroid } = info
     const standalone =
       (window.navigator as any).standalone === true ||
       window.matchMedia("(display-mode: standalone)").matches
-
-    setIsIOS(iOS)
-    setIsAndroid(android)
 
     // Already running as installed PWA — never show
     if (standalone) return
@@ -59,7 +155,7 @@ export function MobileInstallPrompt() {
     window.addEventListener("appinstalled", handleAppInstalled)
 
     // Show prompt after 3 s for mobile only
-    if (iOS || android) {
+    if (isIOS || isAndroid) {
       setTimeout(() => {
         // Use ref so we always have the latest captured prompt
         if (promptRef.current) {
@@ -78,7 +174,7 @@ export function MobileInstallPrompt() {
   const handleInstallClick = async () => {
     const prompt = deferredPrompt || promptRef.current
 
-    if (isIOS) {
+    if (browserInfo?.isIOS) {
       // iOS: always show manual Share-sheet instructions
       setShowManualInstructions(true)
       return
@@ -143,35 +239,7 @@ export function MobileInstallPrompt() {
 
           <h3 className="font-bold text-lg text-black mb-1">Install Kaleidorium</h3>
 
-          {isIOS ? (
-            <>
-              <p className="text-sm text-gray-600 mb-4">Follow these steps in Safari:</p>
-              <ol className="text-sm text-gray-700 space-y-2 mb-5">
-                <li className="flex gap-2"><span className="font-bold text-black">1.</span> Tap the <strong>Share</strong> button <span className="inline-block bg-gray-100 px-1 rounded">⎋</span> at the bottom of Safari</li>
-                <li className="flex gap-2"><span className="font-bold text-black">2.</span> Scroll down and tap <strong>"Add to Home Screen"</strong></li>
-                <li className="flex gap-2"><span className="font-bold text-black">3.</span> Tap <strong>"Add"</strong> in the top-right corner</li>
-              </ol>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-gray-600 mb-4">Follow these steps in Chrome:</p>
-              <ol className="text-sm text-gray-700 space-y-2 mb-5">
-                <li className="flex gap-2 items-start">
-                  <span className="font-bold text-black shrink-0">1.</span>
-                  <span>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono">⋮</span> in the top-right corner of Chrome</span>
-                </li>
-                <li className="flex gap-2 items-start">
-                  <span className="font-bold text-black shrink-0">2.</span>
-                  <span>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></span>
-                </li>
-                <li className="flex gap-2 items-start">
-                  <span className="font-bold text-black shrink-0">3.</span>
-                  <span>Tap <strong>"Add"</strong> or <strong>"Install"</strong> to confirm</span>
-                </li>
-              </ol>
-              <p className="text-xs text-gray-500 mb-4">The Kaleidorium icon will appear on your home screen and in your app drawer.</p>
-            </>
-          )}
+          <BrowserInstructions browser={browserInfo?.browser ?? "chrome"} isIOS={browserInfo?.isIOS ?? false} />
 
           <Button onClick={handleDismiss} className="w-full bg-black text-white hover:bg-gray-800">
             Got it
