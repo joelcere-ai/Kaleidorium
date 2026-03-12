@@ -191,7 +191,7 @@ function AppHeaderContent({
         {/* Logo with improved mobile spacing */}
         <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0">
           <img 
-            src="/logos/logo-desktop-32x32-v3.jpg" 
+            src="/logos/kaleidorium-wordmark.png" 
             alt="Kaleidorium Logo" 
             className="h-8 md:h-10 w-auto flex-shrink-0"
           />

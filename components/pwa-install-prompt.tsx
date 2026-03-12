@@ -129,13 +129,11 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
         </Button>
         
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
-            <img
-              src="/logos/app-logo-48x48-v4.jpg"
-              alt="Kaleidorium Logo"
-              className="w-8 h-8"
-            />
-          </div>
+          <img
+            src="/logos/kaleidorium-icon-64.png"
+            alt="Kaleidorium Logo"
+            className="w-10 h-10 rounded-xl flex-shrink-0"
+          />
           <div className="flex-1">
             <h3 className="font-semibold text-black text-sm">Install Kaleidorium</h3>
             <p className="text-xs text-gray-600">Quick access from your home screen</p>

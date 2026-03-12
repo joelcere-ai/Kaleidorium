@@ -2,11 +2,12 @@
 // This is required for PWA installation to work on some browsers
 // Using minimal caching to avoid performance issues
 
-const CACHE_NAME = 'kaleidorium-v4';
+const CACHE_NAME = 'kaleidorium-v5';
 const urlsToCache = [
   '/manifest.json',
-  '/logos/pwa-icon-192x192-v3.jpg',
-  '/logos/pwa-icon-512x512-v3.jpg'
+  '/logos/kaleidorium-icon-192.png',
+  '/logos/kaleidorium-icon-512.png',
+  '/logos/kaleidorium-wordmark.png'
 ];
 
 // Install event - cache resources

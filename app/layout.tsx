@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'Kaleidorium',
     images: [
       {
-        url: '/logos/pwa-icon-512x512-v3.jpg',
+        url: '/logos/kaleidorium-icon-512.png',
         width: 512,
         height: 512,
         alt: 'Kaleidorium - Art Discovery Platform',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Kaleidorium – Your Personal Art Curator',
     description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
-    images: ['/logos/pwa-icon-512x512-v3.jpg'],
+    images: ['/logos/kaleidorium-icon-512.png'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
   },
@@ -83,38 +83,38 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/logos/favicon-32x32-v4.jpg',
-        type: 'image/jpeg',
+        url: '/logos/kaleidorium-icon-32.png',
+        type: 'image/png',
       },
       {
-        url: '/logos/favicon-16x16-v4.jpg',
+        url: '/logos/kaleidorium-icon-16.png',
         sizes: '16x16',
-        type: 'image/jpeg',
+        type: 'image/png',
       },
       {
-        url: '/logos/favicon-32x32-v4.jpg',
+        url: '/logos/kaleidorium-icon-32.png',
         sizes: '32x32',
-        type: 'image/jpeg',
+        type: 'image/png',
       },
       {
-        url: '/logos/pwa-icon-192x192-v3.jpg',
+        url: '/logos/kaleidorium-icon-192.png',
         sizes: '192x192',
-        type: 'image/jpeg',
+        type: 'image/png',
       },
       {
-        url: '/logos/pwa-icon-512x512-v3.jpg',
+        url: '/logos/kaleidorium-icon-512.png',
         sizes: '512x512',
-        type: 'image/jpeg',
+        type: 'image/png',
       }
     ],
     apple: [
       {
-        url: '/logos/apple-touch-icon-180x180-v3.jpg',
+        url: '/logos/kaleidorium-icon-180.png',
         sizes: '180x180',
-        type: 'image/jpeg',
+        type: 'image/png',
       }
     ],
-    shortcut: '/logos/favicon-32x32-v4.jpg'
+    shortcut: '/logos/kaleidorium-icon-32.png'
   },
   other: {
     'mobile-web-app-capable': 'yes',
@@ -131,12 +131,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Favicon - Load FIRST to prevent flash of old favicon */}
-        <link rel="icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=7" />
-        <link rel="shortcut icon" type="image/jpeg" href="/logos/favicon-32x32-v4.jpg?v=7" />
-        <link rel="icon" type="image/jpeg" sizes="16x16" href="/logos/favicon-16x16-v4.jpg?v=7" />
-        <link rel="icon" type="image/jpeg" sizes="32x32" href="/logos/favicon-32x32-v4.jpg?v=7" />
-        <link rel="icon" type="image/jpeg" sizes="48x48" href="/logos/favicon-48x48-v4.jpg?v=7" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon-180x180-v3.jpg?v=7" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=8" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=8" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=8" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=8" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=8" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=8" />
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NYJYN06VB"></script>
         <script
@@ -153,7 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="build-version" content="v9-cache-bust-2024-12-19-1200" />
+        <meta name="build-version" content="v10-new-logo-2026-03-12" />
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}

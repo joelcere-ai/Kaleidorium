@@ -216,13 +216,11 @@ export function MobileInstallPrompt() {
       >
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
-              <img
-                src="/logos/app-logo-48x48-v4.jpg"
-                alt="Kaleidorium Logo"
-                className="w-10 h-10"
-              />
-            </div>
+            <img
+              src="/logos/kaleidorium-icon-64.png"
+              alt="Kaleidorium Logo"
+              className="w-12 h-12 rounded-xl"
+            />
             <div>
               <h3 className="font-semibold text-lg">Add Kaleidorium to Home Screen</h3>
               <p className="text-sm text-gray-600">Quick access to discover art</p>

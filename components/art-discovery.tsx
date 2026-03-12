@@ -2347,7 +2347,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <div className="flex flex-col items-center justify-center space-y-4">
                 <div className="flex items-center justify-center">
                   <img 
-                    src="/logos/logo-medium-48x48-v3.jpg" 
+                    src="/logos/kaleidorium-wordmark.png" 
                     alt="Kaleidorium Logo" 
                     className="h-10 md:h-12 w-auto"
                   />
@@ -2387,7 +2387,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               <div>
                 <div className="flex items-center justify-center mb-4">
                   <img 
-                    src="/logos/logo-desktop-32x32-v3.jpg" 
+                    src="/logos/kaleidorium-wordmark.png" 
                     alt="Kaleidorium Logo" 
                     className="h-10 md:h-12 w-auto mr-3"
                   />

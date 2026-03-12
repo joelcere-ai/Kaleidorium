@@ -60,7 +60,7 @@ export function DesktopHeader({
           onClick={handleLogoClick}
         >
           <img 
-            src="/logos/logo-desktop-32x32-v3.jpg" 
+            src="/logos/kaleidorium-wordmark.png" 
             alt="Kaleidorium Logo" 
             className="h-8 md:h-10 w-auto flex-shrink-0"
           />
