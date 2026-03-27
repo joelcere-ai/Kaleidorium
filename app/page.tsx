@@ -102,7 +102,7 @@ function ForArtistsForm() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="www.yourportfolio.com" required />
           </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-black text-white hover:bg-gray-800">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all">
             {isSubmitting ? "Submitting..." : "Submit Portfolio"}
           </Button>
         </form>
@@ -230,7 +230,7 @@ function ForGalleriesForm() {
               placeholder="Tell us about your gallery and which artists you would like to list..."
               rows={4} required />
           </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-black text-white hover:bg-gray-800">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all">
             {isSubmitting ? "Submitting..." : "Submit Gallery"}
           </Button>
         </form>
@@ -1076,7 +1076,7 @@ function HomeContent() {
                               <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
                               <p className="text-gray-600 font-medium mb-1">Your collector profile will appear here</p>
                               <p className="text-sm text-gray-400">Like artworks in the Discover feed to build your collection and unlock your profile.</p>
-                              <Button onClick={() => setView("discover")} className="mt-4 bg-black text-white hover:bg-gray-800" size="sm">
+                              <Button onClick={() => setView("discover")} className="mt-4 bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" size="sm">
                                 Discover Artwork
                               </Button>
                             </>
@@ -1189,7 +1189,7 @@ function HomeContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                        className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         Join the Founding 100 Artists
@@ -1432,7 +1432,7 @@ function HomeContent() {
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                            className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the Founding 100 Artists
@@ -1669,7 +1669,7 @@ function HomeContent() {
                     </p>
                     <Button
                       onClick={() => router.push('/for-artists/register')}
-                      className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                      className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                       style={{fontFamily: 'Arial, sans-serif'}}
                     >
                       Register as an Artist
@@ -1816,7 +1816,7 @@ function HomeContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                        className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         Join the first 50 partner galleries
@@ -2061,7 +2061,7 @@ function HomeContent() {
                 </p>
                 <Button
                   onClick={() => router.push('/for-galleries/register')}
-                  className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                  className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Register as a Gallery
@@ -2108,7 +2108,7 @@ function HomeContent() {
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                            className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the first 50 partner galleries
@@ -2353,7 +2353,7 @@ function HomeContent() {
                     </p>
                     <Button
                       onClick={() => router.push('/for-galleries/register')}
-                      className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium"
+                      className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                       style={{fontFamily: 'Arial, sans-serif'}}
                     >
                       Register as a Gallery

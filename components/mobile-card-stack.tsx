@@ -964,7 +964,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
                         <p className="text-gray-600 font-medium mb-1">Your collector profile will appear here</p>
                         <p className="text-sm text-gray-400 mb-4">Like artworks in the Discover feed to build your collection and unlock your profile.</p>
-                        <Button onClick={() => setView("discover")} className="bg-black text-white hover:bg-gray-800" size="sm">Discover Artwork</Button>
+                        <Button onClick={() => setView("discover")} className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" size="sm">Discover Artwork</Button>
                       </>
                     )}
                   </div>
@@ -1795,7 +1795,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
                 <Button 
-                  className="flex-1 bg-black text-white hover:bg-gray-800"
+                  className="flex-1 bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
                   onClick={applyFilters}
                 >
                   Apply Filters

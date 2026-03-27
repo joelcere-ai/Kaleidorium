@@ -115,7 +115,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   onClick={() => router.push('/register')}
-                  className="bg-black text-white hover:bg-gray-800 px-6 py-2 text-sm font-medium"
+                  className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Register as a Collector

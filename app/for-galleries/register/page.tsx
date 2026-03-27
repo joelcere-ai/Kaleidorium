@@ -410,7 +410,7 @@ function GalleryRegisterContent() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full bg-black text-white hover:bg-gray-800 font-sans"
+                  className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Verify Invitation
@@ -621,7 +621,7 @@ function GalleryRegisterContent() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-black text-white hover:bg-gray-800 font-sans"
+            className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans"
             style={{fontFamily: 'Arial, sans-serif'}}
           >
             {isSubmitting ? "Creating Account..." : "Register as Gallery"}

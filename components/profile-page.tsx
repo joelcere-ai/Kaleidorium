@@ -1396,7 +1396,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 }
               }}
               disabled={!selectedRegistrationType}
-              className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 color: 'white !important', 
                 backgroundColor: selectedRegistrationType ? 'black !important' : 'gray !important',
@@ -1477,7 +1477,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                   <div>
                     <CardTitle className="text-lg">Your Art Preferences</CardTitle>
                   </div>
-                  <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
+                  <Button className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" size="sm" onClick={generateInsights} disabled={isGenerating}>
                     <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
                     Refresh Insights
                   </Button>

@@ -3342,7 +3342,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 {/* CTA Button */}
                 <Button 
                   onClick={() => document.getElementById('mobile-portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full bg-black text-white hover:bg-gray-800 py-2 text-sm font-medium mb-4"
+                  className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all py-2 text-sm font-medium mb-4"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Join the Founding 100 Artists
@@ -3584,7 +3584,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button
                     onClick={() => router.push('/for-artists/register')}
-                    className="bg-black text-white hover:bg-gray-800 px-8 py-2 text-sm font-medium mb-4"
+                    className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium mb-4"
                     style={{fontFamily: 'Arial, sans-serif'}}
                   >
                     Register as an Artist
@@ -3711,7 +3711,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button 
                     onClick={() => router.push('/for-artists/register')}
-                    className="w-full bg-black text-white hover:bg-gray-800"
+                    className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
                     style={{
                       color: 'white !important', 
                       backgroundColor: 'black !important',

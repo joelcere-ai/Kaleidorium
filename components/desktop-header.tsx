@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Search, Heart, User, Palette, Info, Mail, DollarSign } from "lucide-react";
+import { Heart, User, Palette, Info, Mail, DollarSign } from "lucide-react";
 
 // Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
@@ -82,18 +82,6 @@ export function DesktopHeader({
             Discover
           </Button>
           
-          {/* Filter Button — only on discover page */}
-          {(isSelected("discover") || currentPage === "discover") && onToggleFilters && (
-            <Button 
-              variant="ghost" 
-              className={`text-sm ${showFilters ? "bg-gray-100" : ""} ${isFiltering ? "text-blue-600" : ""}`}
-              onClick={onToggleFilters}
-            >
-              <Search className="w-4 h-4 mr-1" />
-              Filters
-              {isFiltering && <span className="ml-1 w-2 h-2 bg-blue-600 rounded-full"></span>}
-            </Button>
-          )}
           
           <Button 
             variant="ghost" 

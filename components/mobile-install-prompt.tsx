@@ -241,7 +241,7 @@ export function MobileInstallPrompt() {
 
           <BrowserInstructions browser={browserInfo?.browser ?? "chrome"} isIOS={browserInfo?.isIOS ?? false} />
 
-          <Button onClick={handleDismiss} className="w-full bg-black text-white hover:bg-gray-800">
+          <Button onClick={handleDismiss} className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all">
             Got it
           </Button>
         </div>
@@ -279,7 +279,7 @@ export function MobileInstallPrompt() {
         <div className="space-y-3">
           <Button
             onClick={handleInstallClick}
-            className="w-full bg-black text-white hover:bg-gray-800"
+            className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
           >
             <Download className="h-4 w-4 mr-2" />
             {deferredPrompt || promptRef.current ? "Install App" : "Show me how"}

@@ -107,7 +107,7 @@ export function PricingContent() {
               </p>
 
               <Button 
-                className="w-full bg-black text-white hover:bg-gray-800 font-sans" 
+                className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans" 
                 style={{fontFamily: 'Arial, sans-serif'}}
                 onClick={handleGetStartedClick}
               >
@@ -196,7 +196,7 @@ export function PricingContent() {
               </div>
 
               <Button 
-                className="w-full bg-black text-white hover:bg-gray-800 font-sans" 
+                className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans" 
                 style={{fontFamily: 'Arial, sans-serif'}}
                 onClick={handleGetStartedClick}
               >
@@ -286,7 +286,7 @@ export function PricingContent() {
               </div>
 
               <Button 
-                className="w-full bg-black text-white hover:bg-gray-800 font-sans" 
+                className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans" 
                 style={{fontFamily: 'Arial, sans-serif'}}
                 onClick={handleGetStartedClick}
               >
@@ -347,7 +347,7 @@ export function PricingContent() {
             </p>
             <Button
               onClick={handleContactClick}
-              className="bg-black text-white hover:bg-gray-800 font-sans"
+              className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans"
               style={{fontFamily: 'Arial, sans-serif'}}
             >
               Contact Us
