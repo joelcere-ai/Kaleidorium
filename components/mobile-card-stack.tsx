@@ -77,6 +77,7 @@ interface MobileCardStackProps {
   localPreferences?: LocalPreferences
   isRegistered?: boolean
   newArtworkCount?: number
+  lastVisitDate?: string | null
 }
 
 export default function MobileCardStack({
@@ -99,6 +100,7 @@ export default function MobileCardStack({
   localPreferences,
   isRegistered = false,
   newArtworkCount = 0,
+  lastVisitDate,
 }: MobileCardStackProps) {
   const router = useRouter();
   const { toast } = useToast()
@@ -1570,7 +1572,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
                 {/* Kurator Insight */}
                 {localPreferences && (
-                  <KuratorInsight artwork={artwork} localPreferences={localPreferences} />
+                  <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
                 )}
 
                 {/* Action Buttons */}

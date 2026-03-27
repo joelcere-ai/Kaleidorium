@@ -43,6 +43,7 @@ interface MobileArtDiscoveryProps {
   localPreferences?: LocalPreferences
   isRegistered?: boolean
   newArtworkCount?: number
+  lastVisitDate?: string | null
 }
 
 export default function MobileArtDiscovery({
@@ -67,6 +68,7 @@ export default function MobileArtDiscovery({
   localPreferences,
   isRegistered = false,
   newArtworkCount = 0,
+  lastVisitDate,
 }: MobileArtDiscoveryProps) {
   const defaultPreferences: LocalPreferences = {
     artists: {}, genres: {}, styles: {}, subjects: {}, colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -94,6 +96,7 @@ export default function MobileArtDiscovery({
       localPreferences={prefs}
       isRegistered={isRegistered}
       newArtworkCount={newArtworkCount}
+      lastVisitDate={lastVisitDate}
     />
   )
 } 

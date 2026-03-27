@@ -63,6 +63,7 @@ interface CardStackProps {
   loading: boolean
   showFallbackMessage?: boolean
   localPreferences?: LocalPreferences
+  lastVisitDate?: string | null
 }
 
 
@@ -78,6 +79,7 @@ export default function CardStack({
   loading,
   showFallbackMessage = false,
   localPreferences,
+  lastVisitDate,
 }: CardStackProps) {
   const { toast } = useToast()
   const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
@@ -233,7 +235,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* Kurator Insight */}
                       {localPreferences && (
-                        <KuratorInsight artwork={artwork} localPreferences={localPreferences} />
+                        <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
                       )}
 
                       {/* Action Buttons */}

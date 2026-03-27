@@ -20,9 +20,10 @@ interface LocalPreferences {
 interface KuratorInsightProps {
   artwork: Artwork
   localPreferences: LocalPreferences
+  lastVisitDate?: string | null
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type MatchType = "style" | "genre" | "subject" | "color" | "artist"
 
@@ -32,17 +33,50 @@ interface MatchedAttribute {
   score: number
 }
 
+interface InsightMessage {
+  headline: string
+  reason: string
+}
+
+// ─── Message banks ────────────────────────────────────────────────────────────
+
+const NEW_DISCOVERY: InsightMessage[] = [
+  { headline: "Fresh discovery",               reason: "Newly surfaced for your profile" },
+  { headline: "New for you today",             reason: "Your Kurator found this in your favourite styles" },
+  { headline: "Recently matched to your taste", reason: "A new addition aligned to your preferences" },
+  { headline: "Freshly curated",               reason: "A new match based on your recent swipes" },
+  { headline: "New in your feed",              reason: "Chosen because it fits your visual profile" },
+  { headline: "Just added to your recommendations", reason: "A likely fit based on your taste so far" },
+]
+
+const SERENDIPITY: InsightMessage[] = [
+  { headline: "A little outside your usual taste", reason: "Chosen to broaden your visual profile" },
+  { headline: "A surprising match",            reason: "Different palette, similar energy" },
+  { headline: "A curated curveball",           reason: "Not typical for you, but likely to resonate" },
+  { headline: "Something unexpected",          reason: "A new direction your Kurator thinks you may enjoy" },
+  { headline: "A thoughtful detour",           reason: "Different style, familiar visual tension" },
+  { headline: "An intentional surprise",       reason: "Chosen to expand your taste beyond the obvious" },
+]
+
+const GENERIC: InsightMessage[] = [
+  { headline: "Your Kurator picked this",      reason: "A strong match for your recent taste profile" },
+  { headline: "Tailored to your eye",          reason: "A likely match based on your recent swipes" },
+  { headline: "A strong match for you",        reason: "Similar to artworks you've liked recently" },
+  { headline: "Curated for you",               reason: "Based on the patterns in your recent swipes" },
+  { headline: "Picked with care",              reason: "Close to the style and mood of work you've enjoyed" },
+]
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-/** Look up a value (and its lowercase form) in a score map, return score. */
 function scoreOf(map: Record<string, number>, value: string | undefined): number {
   if (!value) return 0
-  return (map[value] ?? map[value.toLowerCase()] ?? map[value.toUpperCase()] ?? 0)
+  return (map[value] ?? map[value.toLowerCase()] ?? map[capitalize(value)] ?? 0)
 }
 
-/** Find the best-matching colour from a comma-separated colour string. */
 function bestColour(
   colourField: string | undefined,
   colorMap: Record<string, number>
@@ -57,18 +91,16 @@ function bestColour(
   return best
 }
 
-/** Format a matched attribute into natural-sounding text. */
 function formatAttr(attr: MatchedAttribute): string {
   const v = attr.value.toLowerCase()
   switch (attr.type) {
     case "color":   return `${v} tones`
     case "subject": return v
-    case "artist":  return attr.value   // keep original casing for names
-    default:        return v            // style / genre
+    case "artist":  return attr.value
+    default:        return v
   }
 }
 
-/** Join an array of strings with commas and "and" before the last item. */
 function joinParts(parts: string[]): string {
   if (parts.length === 0) return ""
   if (parts.length === 1) return parts[0]
@@ -76,49 +108,53 @@ function joinParts(parts: string[]): string {
   return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`
 }
 
-// ─── Generic fallbacks (seeded by artwork id so they never flicker) ───────────
-
-interface InsightMessage { headline: string; reason: string }
-
-const GENERIC: InsightMessage[] = [
-  { headline: "Your Kurator picked this",    reason: "A strong match for your recent taste profile" },
-  { headline: "Tailored to your eye",        reason: "A likely match based on your recent swipes" },
-  { headline: "A strong match for you",      reason: "Similar to artworks you've liked recently" },
-  { headline: "Curated for you",             reason: "Based on the patterns in your recent swipes" },
-  { headline: "Picked with care",            reason: "Close to the style and mood of work you've enjoyed" },
-]
+/** Stable seed from artwork id so messages never flicker on re-render. */
+function artSeed(id: string, bank: InsightMessage[]): InsightMessage {
+  const n = parseInt(
+    (id ?? "0").toString().replace(/\D/g, "").slice(-4) || "0", 10
+  )
+  return bank[n % bank.length]
+}
 
 // ─── Core logic ───────────────────────────────────────────────────────────────
 
 function buildInsightMessage(
   artwork: Artwork,
-  preferences: LocalPreferences
+  preferences: LocalPreferences,
+  lastVisitDate?: string | null
 ): InsightMessage | null {
   if (preferences.interactionCount < 3) return null
 
+  // ── Detect if this artwork was added after the user's last visit ────────────
+  const isNew =
+    !!lastVisitDate &&
+    !!artwork.created_at &&
+    new Date(artwork.created_at) > new Date(lastVisitDate)
+
+  // ── Collect preference matches ─────────────────────────────────────────────
   const matches: MatchedAttribute[] = []
 
-  // ── Style ──────────────────────────────────────────────────────────────────
   const styleScore = scoreOf(preferences.styles, artwork.style)
   if (styleScore > 0 && artwork.style)
     matches.push({ type: "style", value: artwork.style, score: styleScore })
 
-  // ── Genre (only if different from style) ───────────────────────────────────
   const genreScore = scoreOf(preferences.genres, artwork.genre)
-  if (genreScore > 0 && artwork.genre && artwork.genre.toLowerCase() !== artwork.style?.toLowerCase())
+  if (
+    genreScore > 0 &&
+    artwork.genre &&
+    artwork.genre.toLowerCase() !== artwork.style?.toLowerCase()
+  )
     matches.push({ type: "genre", value: artwork.genre, score: genreScore })
 
-  // ── Subject ────────────────────────────────────────────────────────────────
   const subjectScore = scoreOf(preferences.subjects, artwork.subject)
   if (subjectScore > 0 && artwork.subject)
     matches.push({ type: "subject", value: artwork.subject, score: subjectScore })
 
-  // ── Colour ─────────────────────────────────────────────────────────────────
   const colourMatch = bestColour(artwork.colour, preferences.colors)
   if (colourMatch)
     matches.push({ type: "color", value: colourMatch.value, score: colourMatch.score })
 
-  // ── Tags fallback (when structured fields are missing) ─────────────────────
+  // ── Tags fallback when structured fields are missing ───────────────────────
   if (matches.length === 0 && artwork.tags?.length) {
     const allPrefKeys = [
       ...Object.keys(preferences.styles),
@@ -138,45 +174,48 @@ function buildInsightMessage(
     }
   }
 
-  // ── Artist match (adds to message if they've interacted with this artist) ──
   const artistScore = scoreOf(preferences.artists, artwork.artist)
-  const artistLiked = artistScore >= 2  // at least 2 positive interactions
+  const artistLiked = artistScore >= 2
 
-  // ── No match at all → generic ──────────────────────────────────────────────
-  if (matches.length === 0 && !artistLiked) {
-    const seed = parseInt(
-      (artwork.id ?? "0").toString().replace(/\D/g, "").slice(-3) || "0", 10
-    )
-    return GENERIC[seed % GENERIC.length]
+  // ── Route to the right message bank ───────────────────────────────────────
+  const hasMatches = matches.length > 0 || artistLiked
+
+  if (!hasMatches) {
+    if (isNew) {
+      // Newly added artwork with no obvious match → fresh-discovery framing
+      return artSeed(artwork.id, NEW_DISCOVERY)
+    }
+    if (preferences.interactionCount >= 10) {
+      // Experienced user, intentionally broadening taste → serendipity
+      return artSeed(artwork.id, SERENDIPITY)
+    }
+    // New user or early interactions → generic encouraging message
+    return artSeed(artwork.id, GENERIC)
   }
 
-  // ── Sort by score, take top 3 attributes ───────────────────────────────────
+  // ── Build "Because you liked…" message for matched artworks ───────────────
   matches.sort((a, b) => b.score - a.score)
   const top = matches.slice(0, 3)
 
-  // ── Build the "reason" sentence ────────────────────────────────────────────
   let reason: string
-
   if (top.length === 0 && artistLiked) {
-    // Artist match only
     reason = `You've engaged with ${artwork.artist}'s work before`
   } else {
     const parts = top.map(formatAttr)
-    // Append artist if liked AND not already using all 3 slots
     if (artistLiked && top.length < 3) parts.push(artwork.artist)
     reason = `Because you liked ${joinParts(parts)}`
   }
 
-  // ── Pick headline based on match quality ───────────────────────────────────
   const totalScore = matches.reduce((s, m) => s + m.score, 0)
-  const interactionCount = preferences.interactionCount
+  const ic = preferences.interactionCount
   let headline: string
-
   if (artistLiked && top.length === 0) {
     headline = "Your Kurator picked this"
-  } else if (totalScore >= 6 || interactionCount >= 20) {
+  } else if (isNew) {
+    headline = "New in your feed"
+  } else if (totalScore >= 6 || ic >= 20) {
     headline = "Chosen for your taste"
-  } else if (totalScore >= 3 || interactionCount >= 10) {
+  } else if (totalScore >= 3 || ic >= 10) {
     headline = "Picked with your taste in mind"
   } else {
     headline = "Your Kurator picked this"
@@ -187,11 +226,15 @@ function buildInsightMessage(
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function KuratorInsight({ artwork, localPreferences }: KuratorInsightProps) {
+export function KuratorInsight({
+  artwork,
+  localPreferences,
+  lastVisitDate,
+}: KuratorInsightProps) {
   const message = useMemo(
-    () => buildInsightMessage(artwork, localPreferences),
+    () => buildInsightMessage(artwork, localPreferences, lastVisitDate),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [artwork.id, localPreferences.interactionCount]
+    [artwork.id, localPreferences.interactionCount, lastVisitDate]
   )
 
   if (!message) return null

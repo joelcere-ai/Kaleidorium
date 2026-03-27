@@ -148,6 +148,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const {
     showWelcomeBack,
     newArtworkCount,
+    lastVisit,
     dismissWelcomeBack,
     loading: engagementLoading
   } = useUserEngagement()
@@ -2538,6 +2539,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             localPreferences={localPreferences}
             isRegistered={!!user}
             newArtworkCount={newArtworkCount}
+            lastVisitDate={lastVisit}
           />
         ) : (currentArtwork || (isFiltering && currentArtworkList.length === 0)) ? (
           <>
@@ -2554,6 +2556,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               loading={loading || isSearching}
               showFallbackMessage={showFallbackMessage}
               localPreferences={localPreferences}
+              lastVisitDate={lastVisit}
             />
 
             {/* Desktop Filter Panel */}
