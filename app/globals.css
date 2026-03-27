@@ -27,10 +27,9 @@
     --border: 40 10% 90%;              /* #E6E4DF */
     --input: 40 10% 90%;
     --ring: 254 33% 30%;
-    --radius: 0.75rem;                 /* 12px – standard button radius */
+    --radius: 0.75rem;                 /* 12px */
 
     /* ── Brand colour tokens ── */
-    /* Neutrals */
     --k-bg:              #FAFAF8;
     --k-white:           #FFFFFF;
     --k-text:            #1E1E1C;
@@ -38,23 +37,23 @@
     --k-text-muted:      #8A8A84;
     --k-border:          #E6E4DF;
 
-    /* Lilac – secondary / elegant action */
+    /* Lilac */
     --k-lilac-bg:        #F3EDFF;
     --k-lilac-border:    #D9CFF7;
     --k-lilac-text:      #3F3566;
     --k-lilac-strong:    #7C63C9;
 
-    /* Sage – positive / like / collector */
+    /* Sage */
     --k-sage-bg:         #EDF6F0;
     --k-sage-border:     #B8D8C1;
     --k-sage-text:       #3E7C59;
 
-    /* Rose – negative / dislike / gallery */
+    /* Rose */
     --k-rose-bg:         #FBEFF0;
     --k-rose-border:     #E7C4C7;
     --k-rose-text:       #A35D66;
 
-    /* Info / neutral accent */
+    /* Info */
     --k-info-bg:         #F6F4FB;
     --k-info-border:     #DDD6F2;
     --k-info-text:       #6E62A6;
@@ -99,28 +98,32 @@
     @apply text-base leading-relaxed bg-background text-foreground;
   }
 
-  /* ── Typography scale ── */
+  /* ── Reduced base heading scale (quieter, premium) ── */
   h1 {
-    font-size: clamp(34px, 5vw, 48px);
+    font-size: clamp(28px, 4vw, 36px);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.15;
     letter-spacing: -0.02em;
+    color: var(--k-text);
   }
   h2 {
-    font-size: clamp(26px, 4vw, 32px);
+    font-size: clamp(22px, 3.5vw, 28px);
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.015em;
+    color: var(--k-text);
   }
   h3 {
-    font-size: clamp(22px, 3vw, 24px);
-    font-weight: 600;
-    line-height: 1.25;
-  }
-  h4 {
-    font-size: clamp(18px, 2.5vw, 20px);
+    font-size: clamp(16px, 2.5vw, 18px);
     font-weight: 600;
     line-height: 1.3;
+    color: var(--k-text);
+  }
+  h4 {
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--k-text);
   }
   p, li, ul, ol, a, input, textarea, select, button, label {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
@@ -144,17 +147,18 @@
     gap: 8px;
     height: 48px;
     padding: 0 20px;
-    background-color: var(--k-text);   /* #1E1E1C */
+    background-color: var(--k-text);
     color: var(--k-white);
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.15s ease, transform 0.1s ease;
   }
   .btn-primary:hover  { background-color: #2d2d2b; }
   .btn-primary:active { transform: scale(0.97); }
+  @media (max-width: 768px) { .btn-primary { height: 44px; } }
 
   /* Secondary soft – signature Kaleidorium lilac */
   .btn-secondary-soft {
@@ -168,13 +172,14 @@
     color: var(--k-lilac-text);
     border: 1px solid var(--k-lilac-border);
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: filter 0.15s ease, transform 0.1s ease;
   }
   .btn-secondary-soft:hover  { filter: brightness(0.95); }
   .btn-secondary-soft:active { transform: scale(0.97); }
+  @media (max-width: 768px) { .btn-secondary-soft { height: 44px; } }
 
   /* Ghost / outline utility button */
   .btn-ghost {
@@ -188,7 +193,7 @@
     color: var(--k-text);
     border: 1px solid var(--k-border);
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.15s ease, transform 0.1s ease;
@@ -204,18 +209,18 @@
     border: 1px solid var(--k-border);
     border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 2px 10px rgba(20, 20, 20, 0.03);
+    box-shadow: 0 1px 6px rgba(20, 20, 20, 0.04);
   }
   @media (max-width: 768px) {
     .card-soft { padding: 18px; }
   }
 
-  /* Role selector card */
+  /* Role selector card (16px radius — compact) */
   .card-selector {
     background-color: var(--k-white);
     border: 1px solid var(--k-border);
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px;
     cursor: pointer;
     transition: border-color 0.15s ease, background-color 0.15s ease;
   }
@@ -238,24 +243,35 @@
 
   /* ── CHIPS / TAGS ── */
 
+  /* Standard chip (e.g. collection page, suggestions) */
   .chip-soft {
     display: inline-flex;
     align-items: center;
-    height: 34px;
-    padding: 0 12px;
+    height: 28px;
+    padding: 0 10px;
     background-color: var(--k-bg);
     color: #3F3F3A;
     border: 1px solid var(--k-border);
     border-radius: 999px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
+  }
+
+  /* ── EYEBROW LABEL ── */
+  .eyebrow-label {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--k-text-muted);
   }
 
   /* ── TYPOGRAPHY HELPERS ── */
 
   .section-title {
-    font-size: clamp(26px, 4vw, 32px);
+    font-size: clamp(22px, 3.5vw, 28px);
     font-weight: 700;
     line-height: 1.2;
     color: var(--k-text);
@@ -276,8 +292,8 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    height: 44px;
-    min-width: 80px;
+    height: 42px;
+    min-width: 72px;
     padding: 0 16px;
     border-radius: 12px;
     font-size: 15px;
@@ -288,6 +304,7 @@
     transition: filter 0.15s ease, transform 0.1s ease;
   }
   .reaction-btn:active { transform: scale(0.95); }
+  .reaction-btn svg { width: 16px; height: 16px; }
 
   .reaction-like {
     background-color: var(--k-sage-bg);
@@ -313,73 +330,76 @@
   .form-max     { max-width: 680px;  margin-left: auto; margin-right: auto; }
 
   /* ─────────────────────────────────────────────────────────────
-     ARTWORK DETAIL PANEL
+     ARTWORK DETAIL PANEL  (smaller, calmer, premium)
      ─────────────────────────────────────────────────────────── */
 
-  /* Panel section titles — "About this artwork", "Style & Subject", etc. */
+  /* Panel section headings — "About this artwork", "Style & Subject" */
   .artwork-section-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.3;
     color: #1E1E1C;
     letter-spacing: 0;
+  }
+  @media (max-width: 768px) {
+    .artwork-section-title { font-size: 17px; }
   }
 
   /* Body description copy inside panel */
   .artwork-description {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 400;
-    line-height: 1.65;
+    line-height: 1.7;
     color: #5F5F5A;
+  }
+  @media (max-width: 768px) {
+    .artwork-description { font-size: 14px; }
   }
 
   /* Metadata row — year, medium, dimensions, sale status */
   .artwork-meta {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 1.5;
-    color: #5F5F5A;
+    color: #8A8A84;
   }
 
-  /* Main artwork title below image */
+  /* Artwork title below image */
   .artwork-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     color: #1E1E1C;
   }
   @media (max-width: 768px) {
-    .artwork-title { font-size: 26px; }
+    .artwork-title { font-size: 18px; }
   }
 
   /* Artist name below title */
   .artwork-artist {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 400;
     line-height: 1.4;
-    color: #6A6A65;
-  }
-  @media (max-width: 768px) {
-    .artwork-artist { font-size: 18px; }
+    color: #8A8A84;
   }
 
-  /* Artwork chip / tag */
+  /* Artwork chip / tag — small and light */
   .artwork-chip {
     display: inline-flex;
     align-items: center;
-    height: 36px;
-    padding: 0 12px;
+    height: 28px;
+    padding: 0 10px;
     background-color: #FAFAF8;
     color: #3F3F3A;
     border: 1px solid #E6E4DF;
     border-radius: 999px;
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1;
     white-space: nowrap;
@@ -387,7 +407,7 @@
   }
   .artwork-chip:hover { background-color: #F0EEE9; }
 
-  /* "View on artist's website" CTA button */
+  /* "View on artist's website" CTA — lilac, full-width */
   .artwork-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -399,7 +419,7 @@
     border: 1px solid #D9CFF7;
     border-radius: 12px;
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: filter 0.15s ease, transform 0.1s ease;
@@ -413,11 +433,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border: 1px solid #E6E4DF;
     background-color: #FFFFFF;
-    color: #5F5F5A;
+    color: #8A8A84;
     border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -426,30 +446,124 @@
     background-color: #F0EEE9;
     color: #1E1E1C;
   }
-  .share-icon-btn svg { width: 16px; height: 16px; }
+  .share-icon-btn svg { width: 14px; height: 14px; }
 
   /* Artwork panel card container */
   .artwork-panel {
     background-color: #FFFFFF;
     border: 1px solid #E6E4DF;
     border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 2px 10px rgba(20, 20, 20, 0.03);
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(20, 20, 20, 0.04);
   }
   @media (max-width: 768px) {
-    .artwork-panel { padding: 18px; border-radius: 16px; }
+    .artwork-panel { padding: 16px; border-radius: 16px; }
   }
 
   /* ─────────────────────────────────────────────────────────────
-     HERO / LANDING PAGE (Join Kaleidorium, Why Kaleidorium, etc.)
+     PRICING CARDS
      ─────────────────────────────────────────────────────────── */
 
-  /* Main hero title */
+  .pricing-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E6E4DF;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 1px 6px rgba(20, 20, 20, 0.04);
+    transition: box-shadow 0.2s ease;
+  }
+  .pricing-card:hover {
+    box-shadow: 0 4px 16px rgba(20, 20, 20, 0.07);
+  }
+
+  /* Featured card (Artists) — soft lilac accent border */
+  .pricing-card-featured {
+    background-color: #FFFFFF;
+    border: 1px solid #D9CFF7;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(63, 53, 102, 0.08);
+    transition: box-shadow 0.2s ease;
+  }
+  .pricing-card-featured:hover {
+    box-shadow: 0 6px 20px rgba(63, 53, 102, 0.12);
+  }
+
+  /* Pricing plan name */
+  .pricing-plan-name {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1E1E1C;
+  }
+
+  /* Pricing main value (price or "Free Forever") */
+  .pricing-value {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #1E1E1C;
+  }
+  @media (max-width: 768px) {
+    .pricing-value { font-size: 28px; }
+  }
+
+  /* Pricing supporting copy */
+  .pricing-body {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #5F5F5A;
+  }
+
+  /* "FREE IN 2026" pill */
+  .pricing-badge-free {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    padding: 0 12px;
+    background-color: #EDF6F0;
+    color: #3E7C59;
+    border: 1px solid #B8D8C1;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* "Most Popular" badge — smaller, quieter */
+  .pricing-badge-popular {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    padding: 0 10px;
+    background-color: #F3EDFF;
+    color: #3F3566;
+    border: 1px solid #D9CFF7;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     HERO / LANDING PAGE  (Join Kaleidorium, Why Kaleidorium, etc.)
+     ─────────────────────────────────────────────────────────── */
+
+  /* Main hero title — 36px desktop / 28px mobile */
   .hero-page-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 700;
     line-height: 1.15;
+    letter-spacing: -0.02em;
     color: #1E1E1C;
     max-width: 760px;
     text-align: center;
@@ -457,64 +571,66 @@
     margin-right: auto;
   }
   @media (max-width: 768px) {
-    .hero-page-title { font-size: 30px; }
+    .hero-page-title { font-size: 28px; }
   }
 
-  /* Hero intro paragraph */
+  /* Hero intro paragraph — 18px desktop / 15px mobile */
   .hero-page-intro {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 1.6;
     color: #5F5F5A;
-    max-width: 760px;
+    max-width: 600px;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
   }
   @media (max-width: 768px) {
-    .hero-page-intro { font-size: 16px; }
+    .hero-page-intro { font-size: 15px; }
   }
 
-  /* Small strapline / sub-label ("Art, matched to taste") */
+  /* Eyebrow / strapline ("Art, matched to taste") */
   .hero-strapline {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: #8A8A84;
     text-align: center;
   }
 
-  /* Role selector section title */
+  /* Section headings on landing/info pages — 28px / 22px */
   .role-section-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.015em;
     color: #1E1E1C;
     text-align: center;
   }
   @media (max-width: 768px) {
-    .role-section-title { font-size: 24px; }
+    .role-section-title { font-size: 22px; }
   }
 
-  /* Role card title ("Collector", "Artist", "Gallery") */
+  /* Role card title */
   .role-card-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 600;
     line-height: 1.25;
     color: #1E1E1C;
   }
   @media (max-width: 768px) {
-    .role-card-title { font-size: 20px; }
+    .role-card-title { font-size: 16px; }
   }
 
   /* Role card description */
   .role-card-desc {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
     color: #5F5F5A;
@@ -523,18 +639,18 @@
   /* How It Works step card title */
   .how-it-works-title {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.35;
     color: #1E1E1C;
   }
 
   /* How It Works step body */
   .how-it-works-body {
     font-family: var(--font-inter, Arial, Helvetica, sans-serif);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
-    line-height: 1.6;
+    line-height: 1.65;
     color: #5F5F5A;
   }
 
@@ -596,13 +712,13 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, box-shadow;
 }
-.artwork-card:hover { transform: translateY(-4px) scale(1.02); }
+.artwork-card:hover { transform: translateY(-2px) scale(1.01); }
 
 /* Button micro-interactions */
 .button-bounce            { transition: transform 0.15s ease-in-out; }
 .button-bounce:active     { transform: scale(0.95); }
-.shadow-elegant           { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); }
-.shadow-elegant-hover     { box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04); }
+.shadow-elegant           { box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04); }
+.shadow-elegant-hover     { box-shadow: 0 8px 24px rgba(0,0,0,.08), 0 4px 8px rgba(0,0,0,.04); }
 
 /* Animated loading */
 @keyframes letterAppear {

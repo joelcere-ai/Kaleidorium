@@ -193,43 +193,41 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
         
 
         {/* Cards Stack - Vertical Layout */}
-        <div className="flex-1 max-w-7xl mx-auto w-full space-y-8">
+        <div className="flex-1 max-w-7xl mx-auto w-full space-y-6">
           {visibleCards.map(({ artwork, index }, cardIndex) => (
             <div
               key={artwork.id}
               className="transition-all duration-300 ease-out"
             >
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="bg-white rounded-2xl border border-[#E6E4DF] overflow-hidden" style={{ boxShadow: '0 1px 6px rgba(20,20,20,0.04)' }}>
                 <div className="flex flex-col lg:flex-row">
                   {/* Artwork Image Section */}
-                  <div className="w-full lg:w-[70%] flex-shrink-0">
+                  <div className="w-full lg:w-[65%] flex-shrink-0">
                     <div
-                      className="relative h-[400px] lg:h-[500px] cursor-zoom-in bg-gray-50"
+                      className="relative h-[360px] lg:h-[460px] cursor-zoom-in bg-[#FAFAF8]"
                       onClick={() => onImageClick(artwork.artwork_image, artwork.title)}
                     >
                       <ProgressiveImage
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
-                        className="w-full h-full p-6"
+                        className="w-full h-full p-5"
                         style={{ objectFit: 'contain' }}
                         priority={cardIndex === 0}
                       />
                     </div>
                     
                     {/* Card Info Section */}
-                    <div className="p-6 border-t border-gray-100">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                        <div className="mb-4 sm:mb-0">
-                          <h3 className="artwork-title mb-2">
-                            {artwork.title}
-                          </h3>
-                          <div className="artwork-artist mb-2">
-                            by <ArtistNameWithBadge 
-                              artistName={artwork.artist}
-                              artistId={(artwork as any).artist_id}
-                              className="inline"
-                            />
-                          </div>
+                    <div className="px-5 py-4 border-t border-[#E6E4DF]">
+                      <div className="mb-3">
+                        <h3 className="artwork-title mb-1">
+                          {artwork.title}
+                        </h3>
+                        <div className="artwork-artist">
+                          by <ArtistNameWithBadge 
+                            artistName={artwork.artist}
+                            artistId={(artwork as any).artist_id}
+                            className="inline"
+                          />
                         </div>
                       </div>
 
@@ -239,25 +237,25 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex items-center justify-center gap-4 sm:gap-8 mt-4">
+                      <div className="flex items-center justify-center gap-3 sm:gap-6 mt-4">
             <Button
-              size="lg"
+              size="default"
               onClick={() => handleAction('dislike', artwork)}
-              className="flex-1 sm:flex-none min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
-              style={{ backgroundColor: '#F8ECEC', borderColor: '#E6CACA', borderWidth: '1px', borderStyle: 'solid', color: '#9B4B4B' }}
+              className="flex-1 sm:flex-none min-w-[100px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
+              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', color: '#A35D66', height: '42px' }}
             >
-              <ThumbsDown className="w-5 h-5 mr-2" style={{ color: '#9B4B4B' }} />
+              <ThumbsDown className="w-4 h-4 mr-1.5" style={{ color: '#A35D66' }} />
               <span className="sm:hidden">👎</span>
               <span className="hidden sm:inline">Dislike</span>
             </Button>
             
             <Button
-              size="lg"
+              size="default"
               onClick={() => handleAction('like', artwork)}
-              className="flex-1 sm:flex-none min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
-              style={{ backgroundColor: '#EDF7F2', borderColor: '#CFE5D8', borderWidth: '1px', borderStyle: 'solid', color: '#2F6B4F' }}
+              className="flex-1 sm:flex-none min-w-[100px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
+              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', color: '#3E7C59', height: '42px' }}
             >
-              <ThumbsUp className="w-5 h-5 mr-2" style={{ color: '#2F6B4F' }} />
+              <ThumbsUp className="w-4 h-4 mr-1.5" style={{ color: '#3E7C59' }} />
               <span className="sm:hidden">👍</span>
               <span className="hidden sm:inline">Like</span>
             </Button>
@@ -266,17 +264,17 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                   </div>
 
                   {/* Integrated Information Panel */}
-                  <div className="w-full lg:w-[30%] border-t lg:border-t-0 lg:border-l bg-background">
-                    <div className="p-6 space-y-6">
+                  <div className="w-full lg:w-[35%] border-t lg:border-t-0 lg:border-l border-[#E6E4DF] bg-white">
+                    <div className="p-5 space-y-5">
                       {/* Enhanced Description */}
-                      <div className="space-y-4">
-                        <h3 className="artwork-section-title">About this artwork</h3>
+                      <div>
+                        <h3 className="artwork-section-title mb-3">About this artwork</h3>
                         <p className="artwork-description">{artwork.description}</p>
                       </div>
 
                       {/* Artwork Information */}
-                      <div className="mt-6">
-                        <div className="flex flex-wrap items-center gap-4 artwork-meta">
+                      <div className="mt-5">
+                        <div className="flex flex-wrap items-center gap-3 artwork-meta">
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
                           {artwork.dimensions && <span>{formatDimensions(artwork.dimensions)}</span>}
@@ -295,8 +293,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* Enhanced Tags */}
                       <div className="space-y-3 mt-8">
-                        <h3 className="artwork-section-title">Style & Subject</h3>
-                        <div className="flex flex-wrap gap-2 mt-4">
+                        <h3 className="artwork-section-title mb-3">Style & Subject</h3>
+                        <div className="flex flex-wrap gap-2">
                           {[artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
                             .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
                             .length > 0 ? (
@@ -318,7 +316,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* View on Artist Website Button - Always show if link exists */}
                       {artwork.link && artwork.link.trim() !== '' && (
-                        <div className="mt-8">
+                        <div className="mt-6">
                           <button
                             className="artwork-cta-btn"
                             onClick={() => {
@@ -340,7 +338,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                       )}
 
                     {/* Social Media Share Buttons */}
-                    <div className="mt-5 py-4 px-5 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
+                    <div className="mt-4 py-3 px-4 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
                       <p className="artwork-meta text-center mb-3">Share this artwork</p>
                       <div className="flex justify-center gap-2">
                           <button 

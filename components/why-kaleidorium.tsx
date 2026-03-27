@@ -389,11 +389,11 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
     <div className="flex-1 overflow-y-auto bg-[#FAFAF8]">
 
       {/* ── 1. Hero ──────────────────────────────────────────────── */}
-      <div className="bg-[#FAFAF8] pt-16 pb-10 md:pt-16 md:pb-10" style={{ paddingTop: 'clamp(40px, 5vw, 64px)', paddingBottom: 'clamp(24px, 4vw, 48px)' }}>
-        <div className="container mx-auto px-4 max-w-4xl">
+      <div className="bg-[#FAFAF8]" style={{ paddingTop: 'clamp(40px, 5vw, 56px)', paddingBottom: 'clamp(20px, 3vw, 32px)' }}>
+        <div className="container mx-auto px-4 max-w-3xl">
           {/* Intro text — full width above the grid */}
-          <div className="text-center mb-8">
-            <h1 className="hero-page-title mb-4">
+          <div className="text-center mb-6">
+            <h1 className="hero-page-title mb-3">
               Join Kaleidorium
             </h1>
             <p className="hero-page-intro">
@@ -406,12 +406,12 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       </div>
 
       {/* ── 2. Role selector ─────────────────────────────────────── */}
-      <div className="py-12 bg-white border-b border-[#E6E4DF]">
+      <div className="py-10 bg-white border-b border-[#E6E4DF]">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title mb-8">
+          <h2 className="role-section-title mb-6">
             How would you like to join?
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {ROLE_CARDS.map(({ role, label, tagline, colors }) => {
               const active = selectedRole === role
               return (
@@ -421,12 +421,12 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   style={{
                     backgroundColor: active ? colors.activeBg : "#FFFFFF",
                     borderColor: active ? colors.activeBorder : "#E6E4DF",
-                    boxShadow: active ? "0 1px 6px rgba(0,0,0,0.08)" : "none",
+                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.07)" : "none",
                   }}
-                  className="rounded-2xl px-6 py-6 text-left transition-all duration-200 border"
+                  className="rounded-2xl px-5 py-5 text-left transition-all duration-200 border"
                 >
                   <p
-                    className="role-card-title mb-2"
+                    className="role-card-title mb-1.5"
                     style={{ color: active ? colors.activeText : colors.text }}
                   >
                     <strong style={{ fontWeight: 700 }}>{label}</strong>
@@ -443,14 +443,14 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
       {selectedRole && (
-        <div ref={howItWorksRef} className="py-12 bg-[#FAFAF8]">
+        <div ref={howItWorksRef} className="py-10 bg-[#FAFAF8]">
           <div className="container mx-auto px-4 max-w-5xl">
-            <h2 className="role-section-title mb-8">
+            <h2 className="role-section-title mb-6">
               How It Works
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {HOW_IT_WORKS[selectedRole].map((step, i) => (
-                <div key={i} className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+                <div key={i} className="bg-white rounded-xl border border-[#E6E4DF] p-4" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <div className="w-7 h-7 rounded-full bg-[#1E1E1C] text-white text-xs font-bold flex items-center justify-center mb-3">
                     {i + 1}
                   </div>
@@ -469,44 +469,44 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 4. Role-specific form area ───────────────────────────── */}
       {selectedRole && (
-        <div ref={formRef} className="py-12 bg-white">
-          <div className="container mx-auto px-4 max-w-2xl">
+        <div ref={formRef} className="py-10 bg-white">
+          <div className="container mx-auto px-4 max-w-xl">
             {selectedRole === "collector" && (
               <>
-                <div className="text-center mb-8">
-                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
+                <div className="text-center mb-6">
+                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
                     Join as a Collector
                   </h2>
-                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
+                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
                     Start discovering art through a more personal, taste-led experience.
                   </p>
                 </div>
-                <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-8 text-center">
-                  <p className="body-muted mb-6">
+                <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 text-center">
+                  <p className="body-muted mb-5" style={{ fontSize: '15px' }}>
                     Collectors register directly. Create your free account to start discovering artworks matched to your taste.
                   </p>
                   <Button
-                    className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-3 text-sm font-medium"
+                    variant="outline"
                     onClick={() => router.push("/register")}
                   >
                     Create your free account
                   </Button>
-                  <p className="text-sm mt-4" style={{ color: '#8A8A84' }}>Free to join. No credit card required.</p>
+                  <p style={{ fontSize: '13px', color: '#8A8A84', marginTop: '12px' }}>Free to join. No credit card required.</p>
                 </div>
               </>
             )}
 
             {selectedRole === "artist" && (
               <>
-                <div className="text-center mb-8">
-                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
+                <div className="text-center mb-6">
+                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
                     Submit Your Portfolio
                   </h2>
-                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
+                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
                     Share your work for review. If selected, we'll invite you to join Kaleidorium as an artist.
                   </p>
                 </div>
-                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-6" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <ForArtistsForm />
                 </div>
               </>
@@ -514,15 +514,15 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
             {selectedRole === "gallery" && (
               <>
-                <div className="text-center mb-8">
-                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
+                <div className="text-center mb-6">
+                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
                     Submit Your Gallery for Review
                   </h2>
-                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
+                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
                     Share your gallery website or portfolio for review. If selected, we'll invite you to join Kaleidorium as a gallery.
                   </p>
                 </div>
-                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-6" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <ForGalleriesForm />
                 </div>
               </>
@@ -532,9 +532,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       )}
 
       {/* ── 5. Unified FAQ ───────────────────────────────────────── */}
-      <div className="py-12 bg-[#FAFAF8] border-t border-[#E6E4DF]">
+      <div className="py-10 bg-[#FAFAF8] border-t border-[#E6E4DF]">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title mb-8">
+          <h2 className="role-section-title mb-6">
             Frequently Asked Questions
           </h2>
           <UnifiedFAQ />
