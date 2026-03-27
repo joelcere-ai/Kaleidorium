@@ -1386,6 +1386,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
             )}
 
             <Button 
+              variant="outline"
               onClick={() => {
                 if (selectedRegistrationType === "collector") {
                   router.push('/register')
@@ -1396,16 +1397,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                 }
               }}
               disabled={!selectedRegistrationType}
-              className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                color: 'white !important', 
-                backgroundColor: selectedRegistrationType ? 'black !important' : 'gray !important',
-                borderColor: selectedRegistrationType ? 'black !important' : 'gray !important'
-              }}
+              className="w-full disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <span style={{color: 'white !important', fontWeight: 'normal'}}>
-                {selectedRegistrationType ? `Register as a ${selectedRegistrationType === "collector" ? "Collector" : selectedRegistrationType === "artist" ? "Artist" : "Gallery"}` : "Select account type to continue"}
-              </span>
+              {selectedRegistrationType ? "Register" : "Select account type to continue"}
             </Button>
           </CardContent>
         </Card>
