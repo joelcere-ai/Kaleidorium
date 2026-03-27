@@ -118,13 +118,13 @@ function ArtworkGrid() {
     { src: "/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif", alt: "Last Selfie" },
   ]
   return (
-    <div className="bg-gray-100 rounded-xl p-4">
-      <p className="text-sm text-gray-500 text-center mb-3" style={{ fontFamily: "Arial, sans-serif" }}>
+    <div className="flex flex-col items-center">
+      <p className="text-xs text-gray-400 text-center mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
         Art, matched to taste
       </p>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-6 gap-1.5 max-w-lg mx-auto">
         {images.map((img) => (
-          <div key={img.src} className="aspect-square bg-white rounded overflow-hidden shadow-sm">
+          <div key={img.src} className="w-16 h-16 bg-white rounded-md overflow-hidden shadow-sm border border-gray-100">
             <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
           </div>
         ))}
