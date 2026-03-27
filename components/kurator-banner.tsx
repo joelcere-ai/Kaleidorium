@@ -141,11 +141,9 @@ export function KuratorBanner({ localPreferences, isRegistered, newArtworkCount 
         border: "1px solid rgba(139,92,246,0.10)",
       }}
     >
-      <div className="flex items-start gap-2.5">
-        <div className="mt-0.5">
-          <KuratorOrb size={18} />
-        </div>
-        <div className="min-w-0">
+      <div className="flex items-center gap-2.5 md:justify-center">
+        <KuratorOrb size={18} />
+        <div className="min-w-0 md:text-center">
           <p className="text-sm font-semibold text-gray-800 leading-snug">
             {headline}
           </p>
