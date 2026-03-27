@@ -73,7 +73,7 @@ export function UniversalAppHeader({
             <img 
               src="/logos/kaleidorium-wordmark-desktop.png" 
               alt="Kaleidorium Logo" 
-            className="h-5 md:h-6 w-auto flex-shrink-0"
+            className="h-8 md:h-10 w-auto flex-shrink-0"
             />
           </Button>
         </div>
