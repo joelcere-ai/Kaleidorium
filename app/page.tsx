@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 import { ProfilePage } from '@/components/profile-page';
@@ -340,68 +340,72 @@ function HomeContent() {
     loadCollection();
   }, []);
 
-  // Reload collection when collectionCount changes (from ArtDiscovery component)
-  useEffect(() => {
-    const loadCollection = () => {
-      try {
-        const savedCollection = localStorage.getItem('kaleidorium_temp_collection');
-        if (savedCollection) {
-          const parsedCollection = JSON.parse(savedCollection);
-          setCollection(parsedCollection);
-        }
-      } catch (error) {
-        console.error('Error reloading collection:', error);
+  // ── Fetch registered user's DB collection ────────────────────────────────
+  const fetchUserCollection = useCallback(async () => {
+    if (!user) return;
+    try {
+      const { data: collectionRows, error: collectionError } = await supabase
+        .from('Collection')
+        .select('artwork_id')
+        .eq('user_id', user.id);
+
+      if (collectionError) {
+        console.error('Error fetching user collection:', collectionError);
+        return;
       }
-    };
-    
-    loadCollection();
+
+      const artworkIds = collectionRows?.map((row: { artwork_id: number }) => row.artwork_id) || [];
+      if (artworkIds.length === 0) {
+        setDbCollection([]);
+        setCollectionCount(0);
+        return;
+      }
+
+      const { data: artworks, error: artworkError } = await supabase
+        .from('Artwork')
+        .select('*')
+        .in('id', artworkIds);
+
+      if (!artworkError && artworks) {
+        setDbCollection(artworks);
+        setCollectionCount(artworks.length);
+      }
+    } catch (error) {
+      console.error('Error in fetchUserCollection:', error);
+    }
+  }, [user]);
+
+  // Fetch on login / user change
+  useEffect(() => {
+    fetchUserCollection();
+  }, [fetchUserCollection]);
+
+  // When ArtDiscovery signals a count change (collectionCount prop callback),
+  // re-sync page-level state:
+  // • Registered users  → re-fetch DB so the collection view stays current
+  // • Anonymous users   → reload from localStorage
+  useEffect(() => {
+    if (user) {
+      fetchUserCollection();
+    } else {
+      try {
+        const saved = localStorage.getItem('kaleidorium_temp_collection');
+        if (saved) setCollection(JSON.parse(saved));
+      } catch { /* ignore */ }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collectionCount]);
 
-  // Update collectionCount when actual collections change
+  // Keep collectionCount in sync for anonymous users only.
+  // For registered users the count is authoritative from fetchUserCollection above.
   useEffect(() => {
-    const actualCount = user ? dbCollection.length : collection.length;
-    if (actualCount !== collectionCount) {
-      setCollectionCount(actualCount);
-    }
-  }, [collection.length, dbCollection.length, user, collectionCount]);
-
-  // Fetch user's collection from database (for registered users)
-  useEffect(() => {
-    const fetchUserCollection = async () => {
-      if (!user) return;
-      
-      try {
-        const { data: collectionRows, error: collectionError } = await supabase
-          .from('Collection')
-          .select('artwork_id')
-          .eq('user_id', user.id);
-          
-        if (collectionError) {
-          console.error('Error fetching user collection:', collectionError);
-          return;
-        }
-        
-        const artworkIds = collectionRows?.map(row => row.artwork_id) || [];
-        if (artworkIds.length === 0) {
-          setDbCollection([]);
-          return;
-        }
-        
-        const { data: artworks, error: artworkError } = await supabase
-          .from('Artwork')
-          .select('*')
-          .in('id', artworkIds);
-          
-        if (!artworkError && artworks) {
-          setDbCollection(artworks);
-        }
-      } catch (error) {
-        console.error('Error in fetchUserCollection:', error);
+    if (!user) {
+      const actualCount = collection.length;
+      if (actualCount !== collectionCount) {
+        setCollectionCount(actualCount);
       }
-    };
-    
-    fetchUserCollection();
-  }, [user]);
+    }
+  }, [collection.length, user, collectionCount]);
 
   // Initialize user authentication
   useEffect(() => {
