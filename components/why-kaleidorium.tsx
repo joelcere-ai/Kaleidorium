@@ -392,12 +392,12 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       {/* top: 48px desktop / 32px mobile — hero→next: 48px */}
       <div className="bg-[#FAFAF8]" style={{ paddingTop: 'clamp(32px, 5vw, 48px)', paddingBottom: '48px' }}>
         <div className="container mx-auto px-4 max-w-2xl text-center">
-          {/* Title — 36px/28px */}
-          <h1 className="hero-page-title" style={{ marginBottom: '16px' }}>
+          {/* Title — inline style guarantees 26px regardless of cascade */}
+          <p style={{ fontSize: '26px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.02em', color: '#1E1E1C', textAlign: 'center', marginBottom: '16px' }}>
             Join Kaleidorium
-          </h1>
-          {/* Intro — 17px/15px */}
-          <p className="hero-page-intro" style={{ marginBottom: '24px' }}>
+          </p>
+          {/* Intro — 16px */}
+          <p style={{ fontSize: '16px', fontWeight: 400, lineHeight: 1.6, color: '#5F5F5A', maxWidth: '520px', margin: '0 auto 24px', textAlign: 'center' }}>
             Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
           </p>
           {/* Artwork grid */}
@@ -408,9 +408,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       {/* ── 2. Role selector ─────────────────────────────────────── */}
       <div className="bg-white border-b border-[#E6E4DF]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
+          <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
             How would you like to join?
-          </h2>
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {ROLE_CARDS.map(({ role, label, tagline, colors }) => {
               const active = selectedRole === role
@@ -428,6 +428,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                     boxShadow: active ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+                    /* top-align content within equal-height grid cells */
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                    width: '100%',
+                    height: '100%',
                   }}
                 >
                   <p
@@ -455,9 +462,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       {selectedRole && (
         <div ref={howItWorksRef} className="bg-[#FAFAF8]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
           <div className="container mx-auto px-4 max-w-5xl">
-            <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
+            <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
               How It Works
-            </h2>
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {HOW_IT_WORKS[selectedRole].map((step, i) => (
                 <div key={i} style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E6E4DF', padding: '20px', boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
@@ -544,9 +551,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       {/* ── 5. Unified FAQ ───────────────────────────────────────── */}
       <div className="bg-[#FAFAF8] border-t border-[#E6E4DF]" style={{ paddingTop: '48px', paddingBottom: '64px' }}>
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
+          <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
             Frequently Asked Questions
-          </h2>
+          </p>
           <UnifiedFAQ />
         </div>
       </div>

@@ -24,19 +24,23 @@ export function PricingContent() {
       <div style={{ paddingTop: 'clamp(32px, 5vw, 48px)', paddingBottom: '48px' }}>
         <div className="container mx-auto px-4 max-w-2xl text-center">
 
-          {/* Eyebrow — 13px, uppercase, muted */}
-          <p className="eyebrow-label" style={{ marginBottom: '12px' }}>Right now, in 2026</p>
+          {/* Eyebrow */}
+          <p style={{ fontSize: '13px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A8A84', marginBottom: '12px' }}>
+            Right now, in 2026
+          </p>
 
-          {/* Hero title — 36px / 28px */}
-          <h1 className="hero-page-title" style={{ marginBottom: '16px' }}>Everything is Free</h1>
+          {/* Hero title — inline style guarantees size regardless of cascade */}
+          <p style={{ fontSize: '26px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.02em', color: '#1E1E1C', marginBottom: '16px', textAlign: 'center' }}>
+            Everything is Free
+          </p>
 
-          {/* Hero intro — 17px / 15px */}
-          <p className="hero-page-intro" style={{ marginBottom: '12px' }}>
+          {/* Hero intro */}
+          <p style={{ fontSize: '16px', fontWeight: 400, lineHeight: 1.6, color: '#5F5F5A', maxWidth: '560px', margin: '0 auto 12px' }}>
             All features — for collectors, artists, and galleries — are completely free throughout 2026.
           </p>
 
-          {/* Support line — 15px, #8A8A84 */}
-          <p className="hero-support-line">
+          {/* Support line */}
+          <p style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.55, color: '#8A8A84', maxWidth: '480px', margin: '0 auto', textAlign: 'center' }}>
             Plans below take effect from{' '}
             <strong style={{ color: '#5F5F5A', fontWeight: 600 }}>Jan 1, 2027</strong>.
             {' '}You will receive ample notice before then, and can cancel or remove your work with one click at any time.
@@ -46,7 +50,9 @@ export function PricingContent() {
 
       {/* ── Plans heading ── */}
       <div className="container mx-auto px-4 max-w-5xl" style={{ marginBottom: '24px' }}>
-        <h2 className="role-section-title">Plans (Starting 2027)</h2>
+        <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center' }}>
+          Plans (Starting 2027)
+        </p>
       </div>
 
       {/* ── Pricing Cards ── */}
@@ -152,7 +158,7 @@ export function PricingContent() {
         {/* ── Why Free Until 2027 ── */}
         <div style={{ marginTop: '64px' }}>
           <div className="max-w-xl mx-auto text-center">
-            <h2 className="role-section-title" style={{ marginBottom: '16px' }}>Why Free Until 2027?</h2>
+            <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '16px' }}>Why Free Until 2027?</p>
             <p className="hero-page-intro" style={{ marginBottom: '16px', fontSize: '15px' }}>
               Because we want to:
             </p>
@@ -175,7 +181,7 @@ export function PricingContent() {
         {/* ── Questions ── */}
         <div style={{ marginTop: '48px' }}>
           <div className="max-w-md mx-auto text-center">
-            <h2 className="role-section-title" style={{ marginBottom: '12px' }}>Questions About Pricing?</h2>
+            <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '12px' }}>Questions About Pricing?</p>
             <p className="hero-support-line" style={{ marginBottom: '24px' }}>
               We're fully transparent and happy to help.
             </p>
