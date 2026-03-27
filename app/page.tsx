@@ -1011,7 +1011,7 @@ function HomeContent() {
                     <CardContent className="p-6 space-y-6">
                       {userArchetype ? (
                         <>
-                          {/* Hero: archetype image + name + description */}
+                          {/* Hero: archetype image + name + AI summary */}
                           <div className="flex gap-6">
                             <div className="w-40 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
                               <img
@@ -1030,33 +1030,25 @@ function HomeContent() {
                                 {userArchetype.category.charAt(0).toUpperCase() + userArchetype.category.slice(1)}
                               </span>
                               <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{userArchetype.name}</h3>
-                              <p className="text-sm text-gray-600 leading-relaxed">{userArchetype.description}</p>
+                              {insights.summary && insights.summary !== "Click 'Refresh Insights' to analyze your collection." ? (
+                                <p className="text-sm text-gray-600 leading-relaxed">{insights.summary}</p>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">Click "Refresh Insights" to generate your personal collection story.</p>
+                              )}
                             </div>
                           </div>
-
-                          <Separator />
-
-                          {/* What your collection says about you */}
-                          {insights.summary && insights.summary !== "Click 'Refresh Insights' to analyze your collection." && (
-                            <div>
-                              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
-                                What your collection says about you
-                              </h4>
-                              <p className="text-sm text-gray-700 leading-relaxed">{insights.summary}</p>
-                            </div>
-                          )}
 
                           {/* Your Kurator suggests exploring — chips */}
                           {insights.explorationSuggestions.length > 0 && (
                             <div>
-                              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                              <p className="text-sm font-semibold text-gray-700 mb-2">
                                 Your Kurator suggests exploring
-                              </h4>
+                              </p>
                               <div className="flex flex-wrap gap-2">
                                 {insights.explorationSuggestions.map((chip) => (
                                   <span
                                     key={chip}
-                                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-purple-50 text-purple-700 border border-purple-100"
+                                    className="px-3 py-1.5 rounded-full text-sm text-gray-600 bg-gray-100 border border-gray-200"
                                   >
                                     {chip}
                                   </span>
@@ -1064,11 +1056,6 @@ function HomeContent() {
                               </div>
                             </div>
                           )}
-
-                          {/* Share row */}
-                          <div className="pt-2 border-t border-gray-100">
-                            <CollectorArchetypeCard archetype={userArchetype} />
-                          </div>
                         </>
                       ) : (
                         <div className="text-center py-10 bg-gray-50 rounded-xl border border-gray-200">
