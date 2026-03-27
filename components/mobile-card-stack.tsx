@@ -1273,7 +1273,8 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-medium border border-black bg-black text-white hover:bg-gray-800 transition-all duration-200"
+                      className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
+                      style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B' }}
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
                         // Validate and fix URL before opening
@@ -2050,7 +2051,8 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-medium border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
+                      className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
+                      style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B' }}
                       onClick={() => {
                         // Validate and fix URL before opening
                         try {

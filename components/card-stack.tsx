@@ -340,8 +340,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                                   // Could show a toast message here if needed
                                 }
                               }}
-                              className="min-w-[120px] border border-black bg-white text-black hover:bg-black hover:text-white transition-all duration-200"
-                              style={{height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                              className="min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
+                              style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B', height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif' }}
                             >
                               View on artist's website
                             </Button>
