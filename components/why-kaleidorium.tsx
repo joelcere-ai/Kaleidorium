@@ -71,10 +71,39 @@ const HOW_IT_WORKS: Record<Role, { title: string; body: string }[]> = {
 
 // ─── Role selector cards ───────────────────────────────────────────────────────
 
-const ROLE_CARDS: { role: Role; label: string; tagline: string }[] = [
-  { role: "collector", label: "Collector", tagline: "Discover art tailored to your taste" },
-  { role: "artist",    label: "Artist",    tagline: "Get your art in front of collectors who will appreciate it" },
-  { role: "gallery",   label: "Gallery",   tagline: "Grow your collector base" },
+const ROLE_CARDS: {
+  role: Role
+  label: string
+  tagline: string
+  colors: { bg: string; border: string; text: string; activeBg: string; activeBorder: string; activeText: string }
+}[] = [
+  {
+    role: "collector",
+    label: "Collector",
+    tagline: "Discover art tailored to your taste",
+    colors: {
+      bg: "#F6FBF8", border: "#CFE5D8", text: "#2F6B4F",
+      activeBg: "#EDF7F2", activeBorder: "#2F6B4F", activeText: "#1D4D38",
+    },
+  },
+  {
+    role: "artist",
+    label: "Artist",
+    tagline: "Get your art in front of collectors who will appreciate it",
+    colors: {
+      bg: "#FAFAFA", border: "#D8D8D8", text: "#222222",
+      activeBg: "#FFFFFF", activeBorder: "#222222", activeText: "#000000",
+    },
+  },
+  {
+    role: "gallery",
+    label: "Gallery",
+    tagline: "Grow your collector base",
+    colors: {
+      bg: "#FDF4F4", border: "#E6CACA", text: "#9B4B4B",
+      activeBg: "#F8ECEC", activeBorder: "#9B4B4B", activeText: "#7A2E2E",
+    },
+  },
 ]
 
 // ─── Artwork grid (reused hero visual) ────────────────────────────────────────
@@ -91,7 +120,7 @@ function ArtworkGrid() {
   return (
     <div className="bg-gray-100 rounded-xl p-4">
       <p className="text-sm text-gray-500 text-center mb-3" style={{ fontFamily: "Arial, sans-serif" }}>
-        Art finds its perfect audience
+        Art, matched to taste
       </p>
       <div className="grid grid-cols-3 gap-2">
         {images.map((img) => (
@@ -360,23 +389,21 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 1. Hero ──────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-gray-50 to-white py-12">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            {/* Left — intro */}
-            <div className="lg:pr-8">
-              <h1
-                className="text-3xl lg:text-4xl font-serif font-bold text-black mb-4 leading-tight"
-                style={{ fontFamily: "Times New Roman, serif" }}
-              >
-                Join Kaleidorium
-              </h1>
-              <p className="text-base text-gray-700 leading-relaxed" style={{ fontFamily: "Arial, sans-serif" }}>
-                Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
-              </p>
-            </div>
-            {/* Right — artwork grid */}
-            <ArtworkGrid />
+        <div className="container mx-auto px-4 max-w-4xl">
+          {/* Intro text — full width above the grid */}
+          <div className="text-center mb-8">
+            <h1
+              className="text-3xl lg:text-4xl font-serif font-bold text-black mb-3 leading-tight"
+              style={{ fontFamily: "Times New Roman, serif" }}
+            >
+              Join Kaleidorium
+            </h1>
+            <p className="text-base text-gray-600 leading-relaxed max-w-xl mx-auto" style={{ fontFamily: "Arial, sans-serif" }}>
+              Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
+            </p>
           </div>
+          {/* Artwork grid — full width below */}
+          <ArtworkGrid />
         </div>
       </div>
 
@@ -390,22 +417,28 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             How would you like to join?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {ROLE_CARDS.map(({ role, label, tagline }) => {
+            {ROLE_CARDS.map(({ role, label, tagline, colors }) => {
               const active = selectedRole === role
               return (
                 <button
                   key={role}
                   onClick={() => handleRoleSelect(role)}
-                  className={`rounded-xl px-5 py-5 text-left transition-all duration-200 border ${
-                    active
-                      ? "bg-[#F5F1FF] border-[#C3B0F0] shadow-sm"
-                      : "bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                  }`}
+                  style={{
+                    backgroundColor: active ? colors.activeBg : colors.bg,
+                    borderColor: active ? colors.activeBorder : colors.border,
+                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.10)" : "none",
+                  }}
+                  className="rounded-xl px-5 py-5 text-left transition-all duration-200 border"
                 >
-                  <p className={`text-base font-semibold mb-1 ${active ? "text-[#4B2EA2]" : "text-gray-900"}`}>
+                  <p
+                    className="text-base font-bold mb-1"
+                    style={{ color: active ? colors.activeText : colors.text }}
+                  >
                     {label}
                   </p>
-                  <p className="text-sm text-gray-500 leading-snug">{tagline}</p>
+                  <p className="text-sm leading-snug" style={{ color: active ? colors.text : "#6B7280" }}>
+                    {tagline}
+                  </p>
                 </button>
               )
             })}
