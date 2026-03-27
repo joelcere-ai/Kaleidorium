@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ArtDiscovery from "@/components/art-discovery";
 import { ProfilePage } from '@/components/profile-page';
@@ -294,6 +294,9 @@ function HomeContent() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
   const [userArchetype, setUserArchetype] = useState<CollectorArchetype | null>(null);
+  // Track the collection length for which insights were last generated,
+  // so we only re-run when the collection actually changes.
+  const lastGeneratedForRef = useRef<number>(-1);
 
   // Update view when pathname changes
   useEffect(() => {
@@ -491,47 +494,42 @@ function HomeContent() {
   };
 
   // Art Preferences functions (copied from ProfilePage)
-  const generateInsights = async () => {
+  const generateInsights = useCallback(async () => {
+    if (isGenerating) return
+    // Use the correct collection source for registered vs anonymous users
+    const activeCollection = user ? dbCollection : collection
+    lastGeneratedForRef.current = activeCollection.length
     setIsGenerating(true)
     try {
-      // First get basic analysis for stats
-      const basicAnalysis = analyzeCollection()
-      
-      // Then get AI-powered insights if collection has artworks
-      if (collection.length > 0) {
-        const response = await fetch('/api/profile-insights', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            collection: collection
-          })
+      // Always calculate archetype (works even with 0 items)
+      const archetype = analyzeCollectionForArchetype(activeCollection)
+      setUserArchetype(archetype)
+
+      if (activeCollection.length === 0) {
+        setIsGenerating(false)
+        return
+      }
+
+      // AI-powered summary & suggestions
+      const response = await fetch('/api/profile-insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection: activeCollection }),
+      })
+
+      if (response.ok) {
+        const aiInsights = await response.json()
+        const basicAnalysis = analyzeCollection()
+        setInsights({
+          ...basicAnalysis,
+          summary: aiInsights.summary,
+          aesthetic_profile: aiInsights.aesthetic_profile,
+          collecting_pattern: aiInsights.collecting_pattern,
+          recommendations: aiInsights.recommendations,
+          explorationSuggestions: aiInsights.explorationSuggestions || [],
         })
-        
-        if (response.ok) {
-          const aiInsights = await response.json()
-          setInsights({
-            ...basicAnalysis,
-            summary: aiInsights.summary,
-            aesthetic_profile: aiInsights.aesthetic_profile,
-            collecting_pattern: aiInsights.collecting_pattern,
-            recommendations: aiInsights.recommendations,
-            explorationSuggestions: aiInsights.explorationSuggestions || [],
-          })
-        } else {
-          // Fallback to basic analysis if AI fails
-          setInsights(basicAnalysis)
-        }
-        
-        // Analyze collector archetype
-        const archetype = analyzeCollectionForArchetype(collection)
-        setUserArchetype(archetype)
       } else {
-        setInsights(basicAnalysis)
-        // Analyze collector archetype even with empty collection
-        const archetype = analyzeCollectionForArchetype(collection)
-        setUserArchetype(archetype)
+        setInsights(analyzeCollection())
       }
     } catch (error) {
       console.error('Error generating insights:', error)
@@ -539,7 +537,19 @@ function HomeContent() {
     } finally {
       setIsGenerating(false)
     }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGenerating, user, dbCollection, collection])
+
+  // Auto-generate insights whenever the user opens the collection view,
+  // but only when the collection has actually changed since last run.
+  useEffect(() => {
+    if (view !== "collection") return
+    const activeCollection = user ? dbCollection : collection
+    if (activeCollection.length === 0) return
+    if (activeCollection.length === lastGeneratedForRef.current) return
+    generateInsights()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, dbCollection.length, collection.length, user])
 
   const analyzeCollection = (): any => {
     if (collection.length === 0) {
@@ -999,13 +1009,12 @@ function HomeContent() {
                   <Card className="overflow-hidden border border-gray-200 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-gray-100">
                       <h2 className="text-xl font-bold text-gray-900">Your Collector Profile</h2>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400 border border-gray-200 rounded px-2 py-0.5 font-mono tracking-wide">V2</span>
-                        <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
-                          <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-                          Refresh Insights
-                        </Button>
-                      </div>
+                      {isGenerating && (
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          <span>Analysing your collection…</span>
+                        </div>
+                      )}
                     </CardHeader>
 
                     <CardContent className="p-6 space-y-6">
@@ -1058,9 +1067,19 @@ function HomeContent() {
                           )}
                         </>
                       ) : (
-                        <div className="text-center py-10 bg-gray-50 rounded-xl border border-gray-200">
-                          <p className="text-gray-600 font-medium mb-1">Discover your collector archetype!</p>
-                          <p className="text-sm text-gray-400">Click "Refresh Insights" to analyse your collection and find out what type of collector you are.</p>
+                        <div className="text-center py-10">
+                          {isGenerating ? (
+                            <p className="text-sm text-gray-400">Building your collector profile…</p>
+                          ) : (
+                            <>
+                              <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
+                              <p className="text-gray-600 font-medium mb-1">Your collector profile will appear here</p>
+                              <p className="text-sm text-gray-400">Like artworks in the Discover feed to build your collection and unlock your profile.</p>
+                              <Button onClick={() => setView("discover")} className="mt-4 bg-black text-white hover:bg-gray-800" size="sm">
+                                Discover Artwork
+                              </Button>
+                            </>
+                          )}
                         </div>
                       )}
                     </CardContent>
@@ -1075,21 +1094,7 @@ function HomeContent() {
                   <p className="text-sm text-gray-400 mt-0.5">The works shaping your collector profile</p>
                 </div>
 
-                {(user ? dbCollection : collection).length === 0 ? (
-                  <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                      <Heart className="h-16 w-16 text-gray-300 mb-4" />
-                      <h3 className="text-xl font-medium mb-2 text-black">Your collection is empty</h3>
-                      <p className="text-gray-500 mb-6 text-sm">Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.</p>
-                      <Button
-                        onClick={() => setView("discover")}
-                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-                      >
-                        Discover Artwork
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
+                {(user ? dbCollection : collection).length === 0 ? null : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {(user ? dbCollection : collection).map((artwork) => (
                       <Card key={artwork.id} className="overflow-hidden group hover:shadow-md transition-shadow">
