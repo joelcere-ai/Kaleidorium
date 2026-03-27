@@ -335,7 +335,7 @@ function UnifiedFAQ() {
             {open === item.id ? <ChevronUp className="h-4 w-4 flex-shrink-0 text-gray-400" /> : <ChevronDown className="h-4 w-4 flex-shrink-0 text-gray-400" />}
           </button>
           {open === item.id && (
-            <div className="px-5 pb-4 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+            <div className="px-5 pb-4 text-xs text-gray-500 leading-relaxed border-t border-gray-100 pt-3" style={{ fontFamily: "Arial, sans-serif" }}>
               {item.a}
             </div>
           )}
