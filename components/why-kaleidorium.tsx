@@ -431,8 +431,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   className="rounded-xl px-5 py-5 text-left transition-all duration-200 border"
                 >
                   <p
-                    className="text-base font-bold mb-1"
-                    style={{ color: active ? colors.activeText : colors.text }}
+                    className="text-base mb-1"
+                    style={{ color: active ? colors.activeText : colors.text, fontWeight: 700 }}
                   >
                     {label}
                   </p>
