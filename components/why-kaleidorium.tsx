@@ -326,6 +326,7 @@ interface WhyKaleidoriumProps {
 export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidoriumProps) {
   const router = useRouter()
   const formRef = useRef<HTMLDivElement>(null)
+  const howItWorksRef = useRef<HTMLDivElement>(null)
   const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? null)
 
   // Sync role from URL query param on mount
@@ -334,6 +335,10 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
     const roleParam = searchParams.get("role") as Role | null
     if (roleParam && ["collector", "artist", "gallery"].includes(roleParam)) {
       setSelectedRole(roleParam)
+      // Scroll to How It Works when arriving via a direct role URL
+      setTimeout(() => {
+        howItWorksRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 150)
     }
   }, [searchParams])
 
@@ -344,9 +349,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
     const url = new URL(window.location.href)
     url.searchParams.set("role", role)
     window.history.replaceState(null, "", url.toString())
-    // Scroll to form after a tick
+    // Scroll to How It Works so users see the value prop before the form
     setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      howItWorksRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     }, 80)
   }
 
@@ -410,7 +415,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
       {selectedRole && (
-        <div className="py-12 bg-gray-50">
+        <div ref={howItWorksRef} className="py-12 bg-gray-50">
           <div className="container mx-auto px-4 max-w-5xl">
             <h2
               className="text-xl font-semibold text-gray-900 text-center mb-8"
