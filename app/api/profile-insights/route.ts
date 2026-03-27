@@ -62,6 +62,7 @@ Please provide a response as a JSON object with these keys:
 - "aesthetic_profile": A 2-3 sentence description of their aesthetic sensibilities and what draws them to art. Use "You" to make it personal
 - "collecting_pattern": 1-2 sentences about patterns in their collecting behavior. Address them directly as "You"
 - "recommendations": An array of 3-4 specific, personalized recommendations for exploring new artists, styles, or themes based on their current collection
+- "explorationSuggestions": An array of 4-5 SHORT thematic phrases (2-4 words each, like "Minimalist cityscapes", "Quiet surrealism", "Dreamlike architecture", "Soft pastel palettes") representing adjacent territories the collector should explore. These appear as visual chip/tags in the UI, so keep them concise and evocative.
 
 IMPORTANT: Always address the collector directly using "You", "Your", and "You're" rather than "The collector", "This collection", or "They". Make it personal and conversational while maintaining sophistication.
 
@@ -77,6 +78,12 @@ Example format:
     "Consider works by Memo Akten that blend AI and environmental themes",
     "Investigate the intersection of data visualization and fine art",
     "Look into bio-art and digital ecology movements"
+  ],
+  "explorationSuggestions": [
+    "Generative abstraction",
+    "Digital landscapes",
+    "Monochrome minimalism",
+    "Data-driven art"
   ]
 }`;
 
@@ -192,7 +199,8 @@ Example format:
         summary: parsed.summary || "Your collection shows a developing artistic sensibility.",
         aesthetic_profile: parsed.aesthetic_profile || "You appreciate quality and craftsmanship in art.",
         collecting_pattern: parsed.collecting_pattern || "Your collecting journey is just beginning.",
-        recommendations: parsed.recommendations || ["Explore more artworks in the Discover section"]
+        recommendations: parsed.recommendations || ["Explore more artworks in the Discover section"],
+        explorationSuggestions: Array.isArray(parsed.explorationSuggestions) ? parsed.explorationSuggestions : []
       };
       
       console.log("[PROFILE INSIGHTS] Final response:", response);
@@ -211,7 +219,8 @@ Example format:
           "Explore works by artists working in similar themes to your current collection",
           "Consider pieces that complement your existing aesthetic sensibilities",
           "Look for emerging artists whose work resonates with your established preferences"
-        ]
+        ],
+        explorationSuggestions: []
       });
     }
 
