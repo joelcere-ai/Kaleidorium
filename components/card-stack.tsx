@@ -243,9 +243,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
             <Button
               size="lg"
               onClick={() => handleAction('dislike', artwork)}
-              className="flex-1 sm:flex-none min-w-[120px] border border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
+              className="flex-1 sm:flex-none min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
+              style={{ backgroundColor: '#F8ECEC', borderColor: '#E6CACA', borderWidth: '1px', borderStyle: 'solid', color: '#9B4B4B' }}
             >
-              <ThumbsDown className="w-5 h-5 mr-2" />
+              <ThumbsDown className="w-5 h-5 mr-2" style={{ color: '#9B4B4B' }} />
               <span className="sm:hidden">👎</span>
               <span className="hidden sm:inline">Dislike</span>
             </Button>
@@ -253,11 +254,12 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
             <Button
               size="lg"
               onClick={() => handleAction('like', artwork)}
-              className="flex-1 sm:flex-none min-w-[120px] border border-black bg-white text-black hover:bg-black hover:text-white hover:scale-105 transition-all duration-200"
+              className="flex-1 sm:flex-none min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
+              style={{ backgroundColor: '#EDF7F2', borderColor: '#CFE5D8', borderWidth: '1px', borderStyle: 'solid', color: '#2F6B4F' }}
             >
-              <ThumbsUp className="w-5 h-5 mr-2" />
-            <span className="sm:hidden">👍</span>
-            <span className="hidden sm:inline">Like</span>
+              <ThumbsUp className="w-5 h-5 mr-2" style={{ color: '#2F6B4F' }} />
+              <span className="sm:hidden">👍</span>
+              <span className="hidden sm:inline">Like</span>
             </Button>
                       </div>
                     </div>

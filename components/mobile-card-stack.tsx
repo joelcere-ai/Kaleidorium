@@ -1506,64 +1506,58 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-center gap-6 relative mt-5">
+            {/* Dislike */}
             <Button
               size="icon"
               id="dislike-button"
-              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
+              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.dislike ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
                 ${currentOnboardingStep === 'dislike' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#F8ECEC', borderColor: '#E6CACA', borderWidth: '1px', borderStyle: 'solid' }}
               onClick={() => {
                 handleButtonAction('dislike', artwork)
-                if (currentOnboardingStep === 'dislike') {
-                  nextOnboardingStep()
-                }
+                if (currentOnboardingStep === 'dislike') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <ThumbsDown className={`w-12 h-12 transition-colors duration-200 ${
-                buttonStates.dislike ? 'text-white' : 'text-black group-hover:text-white'
-              }`} />
+              <ThumbsDown className="w-7 h-7" style={{ color: '#9B4B4B' }} />
             </Button>
-            
+
+            {/* Info */}
             <Button
               size="icon"
               id="info-button"
-              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
+              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.info ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${buttonStates.info ? 'scale-95 brightness-90' : ''}
                 ${currentOnboardingStep === 'info' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#FFFFFF', borderColor: '#D8D8D8', borderWidth: '1px', borderStyle: 'solid' }}
               onClick={() => {
                 handleButtonAction('info', artwork)
-                if (currentOnboardingStep === 'info') {
-                  nextOnboardingStep()
-                }
+                if (currentOnboardingStep === 'info') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <Info className={`w-12 h-12 transition-colors duration-200 ${
-                buttonStates.info ? 'text-white' : 'text-black group-hover:text-white'
-              }`} />
+              <Info className="w-7 h-7" style={{ color: '#222222' }} />
             </Button>
-            
+
+            {/* Like */}
             <Button
               size="icon"
               id="like-button"
-              className={`group w-16 h-16 min-w-16 min-h-16 rounded-full border border-black p-0 aspect-square flex items-center justify-center
+              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
                 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
-                ${buttonStates.like ? 'bg-black scale-95' : 'bg-white hover:bg-black'}
+                ${buttonStates.like ? 'scale-95 brightness-90' : ''}
                 ${currentOnboardingStep === 'like' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#EDF7F2', borderColor: '#CFE5D8', borderWidth: '1px', borderStyle: 'solid' }}
               onClick={() => {
                 handleButtonAction('like', artwork)
-                if (currentOnboardingStep === 'like') {
-                  nextOnboardingStep()
-                }
+                if (currentOnboardingStep === 'like') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <ThumbsUp className={`w-12 h-12 transition-colors duration-200 ${
-                buttonStates.like ? 'text-white' : 'text-black group-hover:text-white'
-              }`} />
+              <ThumbsUp className="w-7 h-7" style={{ color: '#2F6B4F' }} />
             </Button>
                 </div>
               </div>
