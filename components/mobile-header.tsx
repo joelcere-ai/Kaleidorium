@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, User, Search, Heart, Palette, Info, Mail, LogIn, DollarSign } from "lucide-react";
+import { Menu, User, Search, Heart, Info, Mail, DollarSign } from "lucide-react";
 
 interface MobileHeaderProps {
   currentPage?: "discover" | "collection" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "profile" | "register";
@@ -93,34 +93,12 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  router.push("/for-artists");
-                  setShowMenuModal(false);
-                }}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Artists
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  router.push("/for-galleries");
-                  setShowMenuModal(false);
-                }}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Galleries
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  router.push("/about");
+                  router.push("/?view=why-kaleidorium");
                   setShowMenuModal(false);
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
-                For Collectors
+                Why Kaleidorium?
               </Button>
               <Button
                 variant="ghost"

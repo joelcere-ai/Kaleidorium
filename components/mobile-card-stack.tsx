@@ -1098,34 +1098,12 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
-                    setView("for-artists")
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <Palette className="mr-3 h-5 w-5" />
-                  For Artists
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
-                    setView("for-galleries")
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <Palette className="mr-3 h-5 w-5" />
-                  For Galleries
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
-                    router.push("/about", { scroll: false })
+                    setView("why-kaleidorium")
                     setShowMenuModal(false)
                   }}
                 >
                   <Info className="mr-3 h-5 w-5" />
-                  For Collectors
+                  Why Kaleidorium?
                 </Button>
                 <Button
                   variant="ghost"
@@ -1841,20 +1819,6 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 Discover
               </Button>
               
-              {/* Mobile Filter Button - Only show on discover page */}
-              {(view === "discover" || (!view)) && (
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
-                    setShowFilters(!showFilters)
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <Search className="mr-3 h-5 w-5" />
-                  Filters
-                </Button>
-              )}
               <Button
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
@@ -1870,34 +1834,12 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  setView("for-artists")
-                  setShowMenuModal(false)
-                }}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Artists
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  setView("for-galleries")
-                  setShowMenuModal(false)
-                }}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Galleries
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  router.push("/about", { scroll: false })
+                  setView("why-kaleidorium")
                   setShowMenuModal(false)
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
-                For Collectors
+                Why Kaleidorium?
               </Button>
               <Button
                 variant="ghost"
