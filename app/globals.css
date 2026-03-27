@@ -2,31 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   ─────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* shadcn/ui required tokens */
+    --background: 0 0% 98%;            /* #FAFAF8 – warm off-white */
+    --foreground: 0 0% 12%;            /* #1E1E1C – near-black */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 0 0% 0%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 0 0% 12%;               /* #1E1E1C */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 270 100% 97%;         /* #F3EDFF – soft lilac */
+    --secondary-foreground: 254 33% 30%; /* #3F3566 */
+    --muted: 40 10% 96%;
+    --muted-foreground: 40 3% 37%;     /* #5F5F5A */
+    --accent: 270 100% 97%;
+    --accent-foreground: 254 33% 30%;
+    --destructive: 354 70% 54%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
+    --border: 40 10% 90%;              /* #E6E4DF */
+    --input: 40 10% 90%;
+    --ring: 254 33% 30%;
+    --radius: 0.75rem;                 /* 12px – standard button radius */
 
-    /* Single unified font — system sans-serif */
-    --font-sans: Arial, Helvetica, sans-serif;
+    /* ── Brand colour tokens ── */
+    /* Neutrals */
+    --k-bg:              #FAFAF8;
+    --k-white:           #FFFFFF;
+    --k-text:            #1E1E1C;
+    --k-text-secondary:  #5F5F5A;
+    --k-text-muted:      #8A8A84;
+    --k-border:          #E6E4DF;
+
+    /* Lilac – secondary / elegant action */
+    --k-lilac-bg:        #F3EDFF;
+    --k-lilac-border:    #D9CFF7;
+    --k-lilac-text:      #3F3566;
+    --k-lilac-strong:    #7C63C9;
+
+    /* Sage – positive / like / collector */
+    --k-sage-bg:         #EDF6F0;
+    --k-sage-border:     #B8D8C1;
+    --k-sage-text:       #3E7C59;
+
+    /* Rose – negative / dislike / gallery */
+    --k-rose-bg:         #FBEFF0;
+    --k-rose-border:     #E7C4C7;
+    --k-rose-text:       #A35D66;
+
+    /* Info / neutral accent */
+    --k-info-bg:         #F6F4FB;
+    --k-info-border:     #DDD6F2;
+    --k-info-text:       #6E62A6;
+
+    /* Font */
+    --font-inter: "Inter", Arial, Helvetica, sans-serif;
   }
 
   .dark {
@@ -36,8 +70,8 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -53,38 +87,235 @@
 
   /* ─── Universal font reset ─── */
   *, *::before, *::after {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    box-sizing: border-box;
   }
 
-  html {
-    font-size: 16px;
-  }
+  html { font-size: 16px; }
 
   body {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply bg-background text-foreground text-base leading-relaxed;
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    background-color: var(--k-bg);
+    @apply text-base leading-relaxed bg-background text-foreground;
   }
 
-  h1 { @apply text-3xl font-bold leading-tight; }
-  h2 { @apply text-2xl font-semibold leading-tight; }
-  h3 { @apply text-xl font-semibold leading-snug; }
-  h4 { @apply text-lg font-medium leading-snug; }
-
-  ul, ol, li { @apply text-base font-normal; }
-  p { @apply text-base font-normal; }
-  a { @apply text-base font-normal; }
-  input, textarea, select, button { font-family: Arial, Helvetica, sans-serif; }
-
-  /* Tags */
-  .artwork-tag, .tag, .chip, .artwork-tags span {
-    @apply text-xs lowercase rounded-full bg-gray-200 text-gray-700 px-3 py-1 mr-1 mb-1 inline-block;
-    letter-spacing: 0.02em;
+  /* ── Typography scale ── */
+  h1 {
+    font-size: clamp(34px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: clamp(26px, 4vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  h3 {
+    font-size: clamp(22px, 3vw, 24px);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  h4 {
+    font-size: clamp(18px, 2.5vw, 20px);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  p, li, ul, ol, a, input, textarea, select, button, label {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
   }
 
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   SHARED UTILITY CLASSES
+   ─────────────────────────────────────────────────────────── */
+@layer components {
+
+  /* ── BUTTONS ── */
+
+  /* Primary CTA – dark background, white text */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 20px;
+    background-color: var(--k-text);   /* #1E1E1C */
+    color: var(--k-white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary:hover  { background-color: #2d2d2b; }
+  .btn-primary:active { transform: scale(0.97); }
+
+  /* Secondary soft – signature Kaleidorium lilac */
+  .btn-secondary-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 20px;
+    background-color: var(--k-lilac-bg);
+    color: var(--k-lilac-text);
+    border: 1px solid var(--k-lilac-border);
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  .btn-secondary-soft:hover  { filter: brightness(0.95); }
+  .btn-secondary-soft:active { transform: scale(0.97); }
+
+  /* Ghost / outline utility button */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 16px;
+    background-color: var(--k-white);
+    color: var(--k-text);
+    border: 1px solid var(--k-border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn-ghost:hover  { background-color: var(--k-bg); }
+  .btn-ghost:active { transform: scale(0.97); }
+
+  /* ── CARDS ── */
+
+  /* Standard soft card */
+  .card-soft {
+    background-color: var(--k-white);
+    border: 1px solid var(--k-border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(20, 20, 20, 0.03);
+  }
+  @media (max-width: 768px) {
+    .card-soft { padding: 18px; }
+  }
+
+  /* Role selector card */
+  .card-selector {
+    background-color: var(--k-white);
+    border: 1px solid var(--k-border);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .card-selector:hover {
+    border-color: var(--k-lilac-border);
+    background-color: var(--k-lilac-bg);
+  }
+  .card-selector.selected-collector {
+    background-color: var(--k-sage-bg);
+    border-color: var(--k-sage-border);
+  }
+  .card-selector.selected-artist {
+    background-color: var(--k-info-bg);
+    border-color: var(--k-info-border);
+  }
+  .card-selector.selected-gallery {
+    background-color: var(--k-rose-bg);
+    border-color: var(--k-rose-border);
+  }
+
+  /* ── CHIPS / TAGS ── */
+
+  .chip-soft {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 12px;
+    background-color: var(--k-bg);
+    color: #3F3F3A;
+    border: 1px solid var(--k-border);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ── TYPOGRAPHY HELPERS ── */
+
+  .section-title {
+    font-size: clamp(26px, 4vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--k-text);
+    letter-spacing: -0.015em;
+  }
+
+  .body-muted {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--k-text-secondary);
+  }
+
+  /* ── REACTION BUTTONS (Like / Dislike / Info) ── */
+
+  .reaction-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    min-width: 80px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  .reaction-btn:active { transform: scale(0.95); }
+
+  .reaction-like {
+    background-color: var(--k-sage-bg);
+    border-color: var(--k-sage-border);
+    color: var(--k-sage-text);
+  }
+  .reaction-dislike {
+    background-color: var(--k-rose-bg);
+    border-color: var(--k-rose-border);
+    color: var(--k-rose-text);
+  }
+  .reaction-info {
+    background-color: var(--k-info-bg);
+    border-color: var(--k-info-border);
+    color: var(--k-info-text);
+  }
+  .reaction-btn:hover { filter: brightness(0.95); }
+
+  /* ── LAYOUT HELPERS ── */
+
+  .content-max  { max-width: 1200px; margin-left: auto; margin-right: auto; }
+  .text-max     { max-width: 800px;  margin-left: auto; margin-right: auto; }
+  .form-max     { max-width: 680px;  margin-left: auto; margin-right: auto; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FUNCTIONAL / ANIMATION STYLES (unchanged)
+   ─────────────────────────────────────────────────────────── */
 
 /* Force onboarding tooltip visibility */
 .onboarding-tooltip,
@@ -106,7 +337,6 @@
   .mobile-buttons-landscape  { padding: 0.75rem 1rem !important; gap: 2rem !important; }
   .mobile-modal-landscape    { max-width: 80vw !important; max-height: 85vh !important; }
 }
-
 @media screen and (orientation: landscape) { .artwork-container { transition: all 0.3s ease-in-out; } }
 @media screen and (orientation: portrait)  { .artwork-container { transition: all 0.3s ease-in-out; } }
 
@@ -134,12 +364,10 @@
 .artwork-card:hover { transform: translateY(-4px) scale(1.02); }
 
 /* Button micro-interactions */
-.button-bounce { transition: transform 0.15s ease-in-out; }
-.button-bounce:active { transform: scale(0.95); }
-
-/* Shadows */
-.shadow-elegant       { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); }
-.shadow-elegant-hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04); }
+.button-bounce            { transition: transform 0.15s ease-in-out; }
+.button-bounce:active     { transform: scale(0.95); }
+.shadow-elegant           { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); }
+.shadow-elegant-hover     { box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04); }
 
 /* Animated loading */
 @keyframes letterAppear {
@@ -168,5 +396,16 @@
   -moz-user-select: auto;
   -ms-user-select: none;
 }
-.swipe-container { will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.swipe-container {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
