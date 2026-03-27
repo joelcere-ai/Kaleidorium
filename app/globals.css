@@ -311,6 +311,241 @@
   .content-max  { max-width: 1200px; margin-left: auto; margin-right: auto; }
   .text-max     { max-width: 800px;  margin-left: auto; margin-right: auto; }
   .form-max     { max-width: 680px;  margin-left: auto; margin-right: auto; }
+
+  /* ─────────────────────────────────────────────────────────────
+     ARTWORK DETAIL PANEL
+     ─────────────────────────────────────────────────────────── */
+
+  /* Panel section titles — "About this artwork", "Style & Subject", etc. */
+  .artwork-section-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1E1E1C;
+    letter-spacing: 0;
+  }
+
+  /* Body description copy inside panel */
+  .artwork-description {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #5F5F5A;
+  }
+
+  /* Metadata row — year, medium, dimensions, sale status */
+  .artwork-meta {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #5F5F5A;
+  }
+
+  /* Main artwork title below image */
+  .artwork-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1E1E1C;
+  }
+  @media (max-width: 768px) {
+    .artwork-title { font-size: 26px; }
+  }
+
+  /* Artist name below title */
+  .artwork-artist {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #6A6A65;
+  }
+  @media (max-width: 768px) {
+    .artwork-artist { font-size: 18px; }
+  }
+
+  /* Artwork chip / tag */
+  .artwork-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    background-color: #FAFAF8;
+    color: #3F3F3A;
+    border: 1px solid #E6E4DF;
+    border-radius: 999px;
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+  .artwork-chip:hover { background-color: #F0EEE9; }
+
+  /* "View on artist's website" CTA button */
+  .artwork-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    background-color: #F3EDFF;
+    color: #3F3566;
+    border: 1px solid #D9CFF7;
+    border-radius: 12px;
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+    text-decoration: none;
+  }
+  .artwork-cta-btn:hover  { filter: brightness(0.95); }
+  .artwork-cta-btn:active { transform: scale(0.97); }
+
+  /* Share icon buttons — neutral, no platform colours */
+  .share-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #E6E4DF;
+    background-color: #FFFFFF;
+    color: #5F5F5A;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .share-icon-btn:hover {
+    background-color: #F0EEE9;
+    color: #1E1E1C;
+  }
+  .share-icon-btn svg { width: 16px; height: 16px; }
+
+  /* Artwork panel card container */
+  .artwork-panel {
+    background-color: #FFFFFF;
+    border: 1px solid #E6E4DF;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(20, 20, 20, 0.03);
+  }
+  @media (max-width: 768px) {
+    .artwork-panel { padding: 18px; border-radius: 16px; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     HERO / LANDING PAGE (Join Kaleidorium, Why Kaleidorium, etc.)
+     ─────────────────────────────────────────────────────────── */
+
+  /* Main hero title */
+  .hero-page-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #1E1E1C;
+    max-width: 760px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (max-width: 768px) {
+    .hero-page-title { font-size: 30px; }
+  }
+
+  /* Hero intro paragraph */
+  .hero-page-intro {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #5F5F5A;
+    max-width: 760px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (max-width: 768px) {
+    .hero-page-intro { font-size: 16px; }
+  }
+
+  /* Small strapline / sub-label ("Art, matched to taste") */
+  .hero-strapline {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: #8A8A84;
+    text-align: center;
+  }
+
+  /* Role selector section title */
+  .role-section-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1E1E1C;
+    text-align: center;
+  }
+  @media (max-width: 768px) {
+    .role-section-title { font-size: 24px; }
+  }
+
+  /* Role card title ("Collector", "Artist", "Gallery") */
+  .role-card-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1E1E1C;
+  }
+  @media (max-width: 768px) {
+    .role-card-title { font-size: 20px; }
+  }
+
+  /* Role card description */
+  .role-card-desc {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #5F5F5A;
+  }
+
+  /* How It Works step card title */
+  .how-it-works-title {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1E1E1C;
+  }
+
+  /* How It Works step body */
+  .how-it-works-body {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #5F5F5A;
+  }
+
+  /* FAQ answer text */
+  .faq-answer {
+    font-family: var(--font-inter, Arial, Helvetica, sans-serif);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #5F5F5A;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────

@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { useState } from "react"
 import { Facebook, Twitter, Instagram, Link as LinkIcon, Share2, X as XIcon, MessageCircle, Copy, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -34,7 +32,6 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
   const getShareUrl = () => {
     if (typeof window === 'undefined') return 'https://kaleidorium.com'
     const baseUrl = window.location.origin
-    // Try to get artwork ID from URL params or artwork object
     const urlParams = new URLSearchParams(window.location.search)
     const artworkId = urlParams.get('artworkId') || artwork.id
     return artworkId ? `${baseUrl}/?artworkId=${artworkId}` : baseUrl
@@ -59,13 +56,13 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
   );
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Enhanced Description */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-serif font-semibold text-foreground">About this artwork</h3>
-        <p className="text-base leading-relaxed text-muted-foreground font-normal">{artwork.description}</p>
-        {/* Artwork Information: Year, Medium, Dimensions, Price */}
-        <div className="flex flex-wrap items-center gap-4 text-base text-muted-foreground font-normal">
+    <div className="p-6 space-y-8">
+      {/* About this artwork */}
+      <div className="space-y-4">
+        <h3 className="artwork-section-title">About this artwork</h3>
+        <p className="artwork-description">{artwork.description}</p>
+        {/* Metadata row */}
+        <div className="flex flex-wrap items-center gap-4 artwork-meta mt-6">
           {artwork.year && <span>{artwork.year}</span>}
           {artwork.medium && <span>{artwork.medium}</span>}
           {artwork.dimensions && <span>{artwork.dimensions}</span>}
@@ -82,19 +79,13 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
         </div>
       </div>
 
-      {/* Enhanced Tags */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-serif font-semibold text-foreground">Style & Subject</h3>
-        <div className="flex flex-wrap gap-3">
+      {/* Style & Subject */}
+      <div className="space-y-3">
+        <h3 className="artwork-section-title">Style & Subject</h3>
+        <div className="flex flex-wrap gap-2 mt-4">
           {allTags.length > 0 ? (
             allTags.map((tag) => (
-              <Badge 
-                key={tag} 
-                variant="outline" 
-                className="px-3 py-1 text-sm font-normal border-gray-300 hover:bg-gray-50 transition-colors duration-200"
-              >
-                {tag}
-              </Badge>
+              <span key={tag} className="artwork-chip">{tag}</span>
             ))
           ) : (
             <span className="text-muted-foreground text-sm italic">No tags available</span>
@@ -102,12 +93,11 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
         </div>
       </div>
 
-      {/* View on Artist Website Button - Always show if link exists */}
+      {/* View on Artist Website Button */}
       {artwork.link && artwork.link.trim() !== '' && (
-        <div className="mt-6">
-          <Button
-            variant="default"
-            className="w-full"
+        <div>
+          <button
+            className="artwork-cta-btn"
             onClick={() => {
               try {
                 let url = artwork.link!.trim();
@@ -121,51 +111,42 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
             }}
           >
             View on artist's website
-          </Button>
+          </button>
         </div>
       )}
 
       {showShareButton && (
         <>
-          <div className="mt-6 flex flex-col gap-2">
-            <Button variant="outline" className="w-full flex items-center gap-2" onClick={() => setShowShare(true)}>
-              <Share2 className="h-5 w-5" /> Share
-            </Button>
-          </div>
-          <AlertDialog open={showShare} onOpenChange={setShowShare}>
-            <AlertDialogContent className="max-w-xs w-full rounded-lg p-6 flex flex-col gap-4 sm:max-w-md">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-semibold text-lg">Share Artwork</span>
-                <Button variant="ghost" size="icon" onClick={() => setShowShare(false)}><XIcon className="h-5 w-5" /></Button>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')}>
-                  <Facebook className="h-5 w-5 text-blue-600" /> Facebook
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer')}>
-                  <Twitter className="h-5 w-5 text-sky-500" /> X (Twitter)
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+          {/* Share section — lower visual priority */}
+          <div className="py-4 px-5 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
+            <p className="artwork-meta text-center mb-3">Share this artwork</p>
+            <div className="flex justify-center gap-2">
+              <button className="share-icon-btn" title="Share on X"
+                onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer')}>
+                <XIcon />
+              </button>
+              <button className="share-icon-btn" title="Share on Facebook"
+                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')}>
+                <Facebook />
+              </button>
+              <button className="share-icon-btn" title="Share on WhatsApp"
+                onClick={() => {
                   const whatsappText = `${shareText}\n\n${shareUrl}`
                   window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, '_blank', 'noopener,noreferrer')
                 }}>
-                  <Smartphone className="h-5 w-5 text-green-500" /> WhatsApp
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={() => window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')}>
-                  <MessageCircle className="h-5 w-5 text-green-600" /> Line
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={handleCopy}>
-                  <Instagram className="h-5 w-5 text-pink-500" /> Instagram (Copy Link)
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2" onClick={handleCopy}>
-                  <Copy className="h-5 w-5" /> Copy Link
-                </Button>
-              </div>
-            </AlertDialogContent>
-          </AlertDialog>
+                <Smartphone />
+              </button>
+              <button className="share-icon-btn" title="Share on Line"
+                onClick={() => window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener,noreferrer')}>
+                <MessageCircle />
+              </button>
+              <button className="share-icon-btn" title="Copy Link" onClick={handleCopy}>
+                <Copy />
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>
   )
 }
-

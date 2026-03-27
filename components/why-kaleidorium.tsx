@@ -119,7 +119,7 @@ function ArtworkGrid() {
   ]
   return (
     <div className="flex flex-col items-center">
-      <p className="text-xs text-gray-400 text-center mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
+      <p className="hero-strapline mb-2">
         Art, matched to taste
       </p>
       <div className="grid grid-cols-6 gap-1.5 max-w-lg mx-auto">
@@ -326,16 +326,17 @@ function UnifiedFAQ() {
   return (
     <div className="space-y-2">
       {FAQ_ITEMS.map((item) => (
-        <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden">
+        <div key={item.id} className="bg-white border border-[#E6E4DF] rounded-xl overflow-hidden">
           <button
-            className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-colors"
+            className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-[#FAFAF8] transition-colors"
+            style={{ fontSize: '16px', fontWeight: 600, color: '#1E1E1C' }}
             onClick={() => setOpen(open === item.id ? null : item.id)}
           >
             <span>{item.q}</span>
-            {open === item.id ? <ChevronUp className="h-4 w-4 flex-shrink-0 text-gray-400" /> : <ChevronDown className="h-4 w-4 flex-shrink-0 text-gray-400" />}
+            {open === item.id ? <ChevronUp className="h-4 w-4 flex-shrink-0 text-[#8A8A84]" /> : <ChevronDown className="h-4 w-4 flex-shrink-0 text-[#8A8A84]" />}
           </button>
           {open === item.id && (
-            <div className="px-5 pb-4 text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-3" style={{ fontFamily: "Arial, sans-serif" }}>
+            <div className="faq-answer px-5 pb-4 pt-3 border-t border-[#E6E4DF]">
               {item.a}
             </div>
           )}
@@ -385,20 +386,17 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-white">
+    <div className="flex-1 overflow-y-auto bg-[#FAFAF8]">
 
       {/* ── 1. Hero ──────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-br from-gray-50 to-white py-12">
+      <div className="bg-[#FAFAF8] pt-16 pb-10 md:pt-16 md:pb-10" style={{ paddingTop: 'clamp(40px, 5vw, 64px)', paddingBottom: 'clamp(24px, 4vw, 48px)' }}>
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Intro text — full width above the grid */}
           <div className="text-center mb-8">
-            <h1
-              className="text-3xl lg:text-4xl font-serif font-bold text-black mb-3 leading-tight"
-              style={{ fontFamily: "Times New Roman, serif" }}
-            >
+            <h1 className="hero-page-title mb-4">
               Join Kaleidorium
             </h1>
-            <p className="text-base text-gray-600 leading-relaxed max-w-xl mx-auto" style={{ fontFamily: "Arial, sans-serif" }}>
+            <p className="hero-page-intro">
               Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
             </p>
           </div>
@@ -408,12 +406,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       </div>
 
       {/* ── 2. Role selector ─────────────────────────────────────── */}
-      <div className="py-12 bg-white border-b border-gray-100">
+      <div className="py-12 bg-white border-b border-[#E6E4DF]">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2
-            className="text-xl font-semibold text-gray-900 text-center mb-8"
-            style={{ fontFamily: "Arial, sans-serif" }}
-          >
+          <h2 className="role-section-title mb-8">
             How would you like to join?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -424,19 +419,19 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   key={role}
                   onClick={() => handleRoleSelect(role)}
                   style={{
-                    backgroundColor: active ? colors.activeBg : colors.bg,
-                    borderColor: active ? colors.activeBorder : colors.border,
-                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.10)" : "none",
+                    backgroundColor: active ? colors.activeBg : "#FFFFFF",
+                    borderColor: active ? colors.activeBorder : "#E6E4DF",
+                    boxShadow: active ? "0 1px 6px rgba(0,0,0,0.08)" : "none",
                   }}
-                  className="rounded-xl px-5 py-5 text-left transition-all duration-200 border"
+                  className="rounded-2xl px-6 py-6 text-left transition-all duration-200 border"
                 >
                   <p
-                    className="text-base mb-1"
+                    className="role-card-title mb-2"
                     style={{ color: active ? colors.activeText : colors.text }}
                   >
-                    <strong style={{ fontWeight: 800 }}>{label}</strong>
+                    <strong style={{ fontWeight: 700 }}>{label}</strong>
                   </p>
-                  <p className="text-sm leading-snug" style={{ color: active ? colors.text : "#6B7280" }}>
+                  <p className="role-card-desc">
                     {tagline}
                   </p>
                 </button>
@@ -448,24 +443,21 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
       {selectedRole && (
-        <div ref={howItWorksRef} className="py-12 bg-gray-50">
+        <div ref={howItWorksRef} className="py-12 bg-[#FAFAF8]">
           <div className="container mx-auto px-4 max-w-5xl">
-            <h2
-              className="text-xl font-semibold text-gray-900 text-center mb-8"
-              style={{ fontFamily: "Arial, sans-serif" }}
-            >
+            <h2 className="role-section-title mb-8">
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {HOW_IT_WORKS[selectedRole].map((step, i) => (
-                <div key={i} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                  <div className="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center mb-3">
+                <div key={i} className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+                  <div className="w-7 h-7 rounded-full bg-[#1E1E1C] text-white text-xs font-bold flex items-center justify-center mb-3">
                     {i + 1}
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
+                  <h3 className="how-it-works-title mb-2">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-gray-500 leading-relaxed" style={{ fontFamily: "Arial, sans-serif" }}>
+                  <p className="how-it-works-body">
                     {step.body}
                   </p>
                 </div>
@@ -482,15 +474,15 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             {selectedRole === "collector" && (
               <>
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-serif font-bold text-black mb-2" style={{ fontFamily: "Times New Roman, serif" }}>
+                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
                     Join as a Collector
                   </h2>
-                  <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
+                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
                     Start discovering art through a more personal, taste-led experience.
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-xl border border-gray-200 p-8 text-center">
-                  <p className="text-sm text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: "Arial, sans-serif" }}>
+                <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-8 text-center">
+                  <p className="body-muted mb-6">
                     Collectors register directly. Create your free account to start discovering artworks matched to your taste.
                   </p>
                   <Button
@@ -499,7 +491,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   >
                     Create your free account
                   </Button>
-                  <p className="text-xs text-gray-400 mt-4">Free to join. No credit card required.</p>
+                  <p className="text-sm mt-4" style={{ color: '#8A8A84' }}>Free to join. No credit card required.</p>
                 </div>
               </>
             )}
@@ -507,14 +499,14 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             {selectedRole === "artist" && (
               <>
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-serif font-bold text-black mb-2" style={{ fontFamily: "Times New Roman, serif" }}>
+                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
                     Submit Your Portfolio
                   </h2>
-                  <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
+                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
                     Share your work for review. If selected, we'll invite you to join Kaleidorium as an artist.
                   </p>
                 </div>
-                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-6" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
                   <ForArtistsForm />
                 </div>
               </>
@@ -523,14 +515,14 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             {selectedRole === "gallery" && (
               <>
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-serif font-bold text-black mb-2" style={{ fontFamily: "Times New Roman, serif" }}>
+                  <h2 className="hero-page-title" style={{ fontSize: 'clamp(24px,3vw,32px)' }}>
                     Submit Your Gallery for Review
                   </h2>
-                  <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
+                  <p className="hero-page-intro mt-3" style={{ fontSize: 'clamp(15px,2vw,18px)' }}>
                     Share your gallery website or portfolio for review. If selected, we'll invite you to join Kaleidorium as a gallery.
                   </p>
                 </div>
-                <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-6" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
                   <ForGalleriesForm />
                 </div>
               </>
@@ -540,12 +532,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       )}
 
       {/* ── 5. Unified FAQ ───────────────────────────────────────── */}
-      <div className="py-12 bg-gray-50 border-t border-gray-100">
+      <div className="py-12 bg-[#FAFAF8] border-t border-[#E6E4DF]">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2
-            className="text-xl font-semibold text-gray-900 text-center mb-8"
-            style={{ fontFamily: "Arial, sans-serif" }}
-          >
+          <h2 className="role-section-title mb-8">
             Frequently Asked Questions
           </h2>
           <UnifiedFAQ />

@@ -220,10 +220,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                     <div className="p-6 border-t border-gray-100">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                         <div className="mb-4 sm:mb-0">
-                          <h3 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
+                          <h3 className="artwork-title mb-2">
                             {artwork.title}
                           </h3>
-                          <div className="text-base font-serif text-gray-600 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>
+                          <div className="artwork-artist mb-2">
                             by <ArtistNameWithBadge 
                               artistName={artwork.artist}
                               artistId={(artwork as any).artist_id}
@@ -269,14 +269,14 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                   <div className="w-full lg:w-[30%] border-t lg:border-t-0 lg:border-l bg-background">
                     <div className="p-6 space-y-6">
                       {/* Enhanced Description */}
-                      <div className="space-y-3">
-                        <h3 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About this artwork</h3>
-                        <p className="text-sm font-sans text-gray-600 leading-relaxed" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>{artwork.description}</p>
+                      <div className="space-y-4">
+                        <h3 className="artwork-section-title">About this artwork</h3>
+                        <p className="artwork-description">{artwork.description}</p>
                       </div>
 
                       {/* Artwork Information */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-4 text-sm font-sans text-gray-600" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                      <div className="mt-6">
+                        <div className="flex flex-wrap items-center gap-4 artwork-meta">
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
                           {artwork.dimensions && <span>{formatDimensions(artwork.dimensions)}</span>}
@@ -294,23 +294,21 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                       </div>
 
                       {/* Enhanced Tags */}
-                      <div className="space-y-4">
-                        <h3 className="text-base font-serif font-bold text-black" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Style & Subject</h3>
-                        <div className="flex flex-wrap gap-3">
+                      <div className="space-y-3 mt-8">
+                        <h3 className="artwork-section-title">Style & Subject</h3>
+                        <div className="flex flex-wrap gap-2 mt-4">
                           {[artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
                             .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
                             .length > 0 ? (
                             [artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
                               .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
                               .map((tag) => (
-                                <Badge 
+                                <span 
                                   key={tag} 
-                                  variant="outline" 
-                                  className="px-3 py-1 text-sm font-sans text-black border-gray-300 hover:bg-gray-50 transition-colors duration-200"
-                                  style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
+                                  className="artwork-chip"
                                 >
                                   {tag}
-                                </Badge>
+                                </span>
                               ))
                           ) : (
                             <span className="text-muted-foreground text-sm italic">No tags available</span>
@@ -320,42 +318,33 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* View on Artist Website Button - Always show if link exists */}
                       {artwork.link && artwork.link.trim() !== '' && (
-                        <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-                          <div className="text-center">
-                            <Button
-                              size="lg"
-                              onClick={() => {
-                                // Validate and fix URL before opening
-                                try {
-                                  let url = artwork.link!.trim()
-                                  // Add https:// if no protocol is specified
-                                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                                    url = 'https://' + url
-                                  }
-                                  // Validate the URL
-                                  new URL(url)
-                                  window.open(url, '_blank', 'noopener,noreferrer');
-                                } catch (error) {
-                                  console.error('Invalid artist URL:', artwork.link)
-                                  // Could show a toast message here if needed
+                        <div className="mt-8">
+                          <button
+                            className="artwork-cta-btn"
+                            onClick={() => {
+                              try {
+                                let url = artwork.link!.trim()
+                                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                                  url = 'https://' + url
                                 }
-                              }}
-                              className="min-w-[120px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
-                              style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B', height: '40px', fontSize: '14px', fontFamily: 'Arial, sans-serif' }}
-                            >
-                              View on artist's website
-                            </Button>
-                          </div>
+                                new URL(url)
+                                window.open(url, '_blank', 'noopener,noreferrer');
+                              } catch (error) {
+                                console.error('Invalid artist URL:', artwork.link)
+                              }
+                            }}
+                          >
+                            View on artist's website
+                          </button>
                         </div>
                       )}
 
                     {/* Social Media Share Buttons */}
-                    <div className="py-4 px-6 bg-gray-50 rounded-xl border">
-                      <div className="text-center">
-                        <p className="text-sm font-sans text-gray-600 mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Share this artwork</p>
-                        <div className="flex justify-center gap-2">
+                    <div className="mt-5 py-4 px-5 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
+                      <p className="artwork-meta text-center mb-3">Share this artwork</p>
+                      <div className="flex justify-center gap-2">
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            className="share-icon-btn"
                             onClick={() => {
                               const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                               const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
@@ -364,10 +353,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                             }}
                             title="Share on X"
                           >
-                            <XIcon className="w-5 h-5" />
+                            <XIcon />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            className="share-icon-btn"
                             onClick={() => {
                               const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                               const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
@@ -376,10 +365,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                             }}
                             title="Share on Facebook"
                           >
-                            <Facebook className="w-5 h-5" />
+                            <Facebook />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            className="share-icon-btn"
                             onClick={async () => {
                               const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                               const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
@@ -393,10 +382,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                             }}
                             title="Share on Instagram (Copy Link)"
                           >
-                            <Instagram className="w-5 h-5" />
+                            <Instagram />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            className="share-icon-btn"
                             onClick={() => {
                               const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                               const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
@@ -406,10 +395,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                             }}
                             title="Share on WhatsApp"
                           >
-                            <MessageCircle className="w-5 h-5" />
+                            <MessageCircle />
                           </button>
                           <button 
-                            className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                            className="share-icon-btn"
                             onClick={async () => {
                               const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                               const shareUrl = `${baseUrl}/?artworkId=${artwork.id}`
@@ -418,7 +407,6 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                                 alert('Link copied to clipboard!')
                               } catch (err) {
                                 console.error('Failed to copy:', err)
-                                // Fallback for older browsers
                                 const textArea = document.createElement('textarea')
                                 textArea.value = shareUrl
                                 document.body.appendChild(textArea)
@@ -430,10 +418,9 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                             }}
                             title="Copy Link"
                           >
-                            <Copy className="w-5 h-5" />
+                            <Copy />
                           </button>
                         </div>
-                      </div>
                     </div>
                     </div>
                   </div>
