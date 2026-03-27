@@ -937,7 +937,7 @@ function HomeContent() {
         </div>
         <button
           type="submit"
-          className="font-sans bg-black text-white px-4 py-2 rounded text-sm"
+          className="font-sans bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] px-4 py-2 rounded text-sm hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
           disabled={loading}
           style={{fontFamily: 'Arial, sans-serif'}}
         >
@@ -1197,7 +1197,7 @@ function HomeContent() {
                       <Button 
                         variant="outline"
                         onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="border-black text-black hover:bg-black hover:text-white px-6 py-2 text-sm font-medium"
+                        className="px-6 py-2 text-sm font-medium"
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         How it Works
