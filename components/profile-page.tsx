@@ -1373,6 +1373,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
               <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
                 <p className="text-blue-700 font-sans text-sm">
                   <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
+                  {" "}Don't have a token yet?{" "}
+                  <a
+                    href={`/?view=why-kaleidorium&role=${selectedRegistrationType}`}
+                    className="underline font-semibold hover:text-blue-900"
+                  >
+                    Submit your {selectedRegistrationType === "artist" ? "portfolio" : "gallery"} for review
+                  </a>
+                  {" "}to apply.
                 </p>
               </div>
             )}
