@@ -24,6 +24,9 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    /* Single unified font — system sans-serif */
+    --font-sans: Arial, Helvetica, sans-serif;
   }
 
   .dark {
@@ -48,567 +51,42 @@
     --ring: 240 4.9% 83.9%;
   }
 
+  /* ─── Universal font reset ─── */
+  *, *::before, *::after {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
   html {
     font-size: 16px;
   }
+
   body {
     font-family: Arial, Helvetica, sans-serif;
-    @apply text-base leading-relaxed;
+    @apply bg-background text-foreground text-base leading-relaxed;
   }
-  button, .btn, .Button, .shadcn-button, .ui-button {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
 
-  /* Logo and main headings */
-  .logo, h1.artwork-title {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-4xl font-bold;
-  }
-  /* Navigation */
-  nav, .nav, .main-nav, .navbar {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-lg font-bold;
-  }
-  /* Artwork title (if not using .logo) */
-  h1, .artwork-title {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-3xl font-bold;
-  }
-  /* Artist name */
-  .artist-name {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-lg font-normal;
-  }
-  /* Price */
-  .artwork-price {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-4xl font-bold;
-  }
-  /* Labels (Medium, Dimensions, etc.) */
-  .artwork-label, .artwork-section-label, label, .field-label, .form-label {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-sm font-semibold tracking-wide;
-  }
-  /* Description & body */
-  .artwork-description, .artwork-body, p, textarea, input, select {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-base font-normal;
-  }
+  h1 { @apply text-3xl font-bold leading-tight; }
+  h2 { @apply text-2xl font-semibold leading-tight; }
+  h3 { @apply text-xl font-semibold leading-snug; }
+  h4 { @apply text-lg font-medium leading-snug; }
+
+  ul, ol, li { @apply text-base font-normal; }
+  p { @apply text-base font-normal; }
+  a { @apply text-base font-normal; }
+  input, textarea, select, button { font-family: Arial, Helvetica, sans-serif; }
+
   /* Tags */
   .artwork-tag, .tag, .chip, .artwork-tags span {
-    font-family: Arial, Helvetica, sans-serif;
     @apply text-xs lowercase rounded-full bg-gray-200 text-gray-700 px-3 py-1 mr-1 mb-1 inline-block;
     letter-spacing: 0.02em;
   }
-  h2 {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-2xl font-semibold leading-tight;
-  }
-  h3 {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-xl font-semibold leading-snug;
-  }
-  h4 {
-    font-family: 'Times New Roman', Times, serif;
-    @apply text-lg font-medium leading-snug;
-  }
-  ul, ol, li {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-base font-normal;
-  }
-  
-  /* Override for For Artists page */
-  [data-view="for-artists"] ul, 
-  [data-view="for-artists"] ol, 
-  [data-view="for-artists"] li {
-    font-family: Arial, sans-serif !important;
-    font-size: 14px !important;
-    line-height: 1.4 !important;
-    font-weight: normal !important;
-  }
-  a {
-    font-family: Arial, Helvetica, sans-serif;
-    @apply text-base font-normal;
-  }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
 
-/* Landscape orientation optimizations for mobile devices */
-@media screen and (orientation: landscape) and (max-height: 600px) {
-  /* Optimize mobile artwork display in landscape */
-  .mobile-artwork-landscape {
-    height: 100vh !important;
-    width: 100vw !important;
-  }
-  
-  /* Reduce header padding in landscape for more image space */
-  .mobile-header-landscape {
-    padding: 0.5rem 1rem !important;
-  }
-  
-  /* Optimize button spacing in landscape */
-  .mobile-buttons-landscape {
-    padding: 0.75rem 1rem !important;
-    gap: 2rem !important;
-  }
-  
-  /* Optimize modal sizing in landscape */
-  .mobile-modal-landscape {
-    max-width: 80vw !important;
-    max-height: 85vh !important;
-  }
-}
-
-/* Smooth transitions for orientation changes */
-@media screen and (orientation: landscape) {
-  .artwork-container {
-    transition: all 0.3s ease-in-out;
-  }
-}
-
-@media screen and (orientation: portrait) {
-  .artwork-container {
-    transition: all 0.3s ease-in-out;
-  }
-}
-
-@layer components {
-  /* Action buttons with colored borders - restore original red/green colors */
-  button[class*="border-red-200"] {
-    background-color: transparent !important;
-    color: rgb(220 38 38) !important; /* red-600 */
-    border-color: rgb(254 202 202) !important; /* red-200 */
-  }
-  
-  button[class*="border-red-200"]:hover {
-    background-color: rgb(254 242 242) !important; /* red-50 */
-    color: rgb(220 38 38) !important; /* red-600 */
-    border-color: rgb(254 202 202) !important; /* red-200 */
-  }
-  
-  button[class*="border-green-200"] {
-    background-color: transparent !important;
-    color: rgb(22 163 74) !important; /* green-600 */
-    border-color: rgb(187 247 208) !important; /* green-200 */
-  }
-  
-  button[class*="border-green-200"]:hover {
-    background-color: rgb(240 253 244) !important; /* green-50 */
-    color: rgb(22 163 74) !important; /* green-600 */
-    border-color: rgb(187 247 208) !important; /* green-200 */
-  }
-  
-  /* Form and upload buttons - keep black */
-  form button[type="submit"],
-  .registration-form button[type="submit"],
-  .upload-container button:not([class*="variant-outline"]),
-  button[class*="upload"]:not([class*="variant-outline"]) {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border-color: #000000 !important;
-  }
-  
-  /* Primary action buttons - keep black for specific buttons only */
-  .primary-action-button,
-  button[type="submit"]:not([class*="variant-outline"]):not([class*="border-red"]):not([class*="border-green"]),
-  .add-to-collection-button {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border-color: #000000 !important;
-  }
-  
-  /* Reset any forced card styling to use theme defaults */
-  .bg-card {
-    background-color: hsl(var(--card)) !important;
-  }
-  
-  .text-card-foreground {
-    color: hsl(var(--card-foreground)) !important;
-  }
-
-}
-
-.force-sans, .force-sans * {
-  font-family: Arial, Helvetica, sans-serif !important;
-}
-
-/* Collection modal swipe optimizations */
-.collection-modal-swipe {
-  touch-action: pan-x;
-  /* Allow text selection for screenshots - only disable during active swipe */
-  user-select: auto;
-  -webkit-user-select: auto;
-  -moz-user-select: auto;
-  -ms-user-select: none;
-}
-
-/* Smooth transitions for swipe animations */
-.swipe-container {
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Prevent text selection during swipe */
-.no-select {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* For Artists Page Font Overrides - High Specificity */
-.for-artists-page h1.main-title {
-  font-size: 16px !important;
-  font-family: 'Times New Roman', Times, serif !important;
-  font-weight: bold !important;
-  color: black !important;
-}
-
-.for-artists-page .card-title {
-  font-size: 16px !important;
-  font-family: 'Times New Roman', Times, serif !important;
-  font-weight: bold !important;
-  color: black !important;
-}
-
-.for-artists-page .card-description {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  color: black !important;
-}
-
-.for-artists-page p {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  color: black !important;
-}
-
-.for-artists-page .faq-question {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  font-weight: bold !important;
-  color: black !important;
-}
-
-.for-artists-page .faq-answer {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  color: black !important;
-}
-
-/* Mobile Header Protection - Ensure header styling is preserved */
-.for-artists-page .mobile-header h1,
-.for-artists-page h1.font-serif {
-  font-family: serif !important;
-  font-weight: 600 !important;
-  font-size: 1.25rem !important;
-}
-
-/* Ensure mobile header buttons display correctly */
-.for-artists-page .mobile-header button svg {
-  display: block !important;
-  width: 1.5rem !important;
-  height: 1.5rem !important;
-}
-
-/* Enhanced UX Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-}
-
-/* Progressive image loading */
-.image-loading {
-  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
-  background-size: 200px 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.image-loaded {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Skeleton screen animations */
-.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
-  background-size: 200px 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* Masonry layout improvements */
-.masonry-item {
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-/* Hover effects for artwork cards */
-.artwork-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, box-shadow;
-}
-
-.artwork-card:hover {
-  transform: translateY(-4px) scale(1.02);
-}
-
-/* Button micro-interactions */
-.button-bounce {
-  transition: transform 0.15s ease-in-out;
-}
-
-.button-bounce:active {
-  transform: scale(0.95);
-}
-
-/* Enhanced shadows */
-.shadow-elegant {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.shadow-elegant-hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Animated Loading Screen */
-@keyframes letterAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.8);
-  }
-  50% {
-    transform: translateY(-5px) scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes letterGlow {
-  0%, 100% {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
-  }
-}
-
-.letter-animate {
-  animation: letterAppear 0.6s ease-out forwards;
-}
-
-.letter-glow {
-  animation: letterGlow 2s ease-in-out infinite;
-}
-
-/* Loading dots animation */
-@keyframes loadingDot {
-  0%, 80%, 100% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  40% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-.loading-dot {
-  animation: loadingDot 1.4s infinite ease-in-out;
-}
-
-/* 🔥 ULTRA HIGH SPECIFICITY FONT FIXES FOR FOR-ARTISTS PAGE */
-/* These rules have maximum specificity to override any conflicting styles */
-
-/* Main titles - should be 16px Times New Roman Bold */
-div div div div div div h1,
-.for-artists-main-title,
-h1[style*="Times New Roman"] {
-  font-size: 16px !important;
-  font-family: "Times New Roman", Times, serif !important;
-  font-weight: bold !important;
-  color: black !important;
-  line-height: 1.2 !important;
-}
-
-/* Body paragraphs - should be 14px Arial */
-div div div div div div p,
-.for-artists-body-text,
-p[style*="Arial"] {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  color: black !important;
-  line-height: 1.4 !important;
-  font-weight: normal !important;
-}
-
-/* FAQ section titles - should be 16px Times New Roman Bold */
-div div div div div div h2,
-div div div div div div h3,
-.for-artists-faq-title,
-h2[style*="Times New Roman"],
-h3[style*="Times New Roman"] {
-  font-size: 16px !important;
-  font-family: "Times New Roman", Times, serif !important;
-  font-weight: bold !important;
-  color: black !important;
-  line-height: 1.2 !important;
-}
-
-/* FAQ questions - should be 14px Arial Bold */
-.for-artists-faq-question {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  font-weight: bold !important;
-  color: black !important;
-  line-height: 1.4 !important;
-}
-
-/* FAQ answers - should be 14px Arial Normal */
-.for-artists-faq-answer {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  font-weight: normal !important;
-  color: black !important;
-  line-height: 1.5 !important;
-}
-
-/* Section headers like "How it works" - should be 14px Arial Bold */
-.for-artists-section-header {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  font-weight: bold !important;
-  color: black !important;
-  line-height: 1.4 !important;
-}
-
-/* Nuclear option - target any text in the for-artists view */
-[data-view="for-artists"] * {
-  font-family: Arial, sans-serif !important;
-  color: black !important;
-}
-
-[data-view="for-artists"] h1,
-[data-view="for-artists"] h2,
-[data-view="for-artists"] h3 {
-  font-family: "Times New Roman", Times, serif !important;
-  font-size: 16px !important;
-  font-weight: bold !important;
-  color: black !important;
-}
-
-/* 🔥 OVERRIDE GLOBAL STYLES FOR FOR-ARTISTS PAGE */
-[data-view="for-artists"] ul,
-[data-view="for-artists"] ol,
-[data-view="for-artists"] li,
-[data-view="for-artists"] p {
-  font-family: Arial, sans-serif !important;
-  font-size: 14px !important;
-  color: black !important;
-  line-height: 1.4 !important;
-  font-weight: normal !important;
-}
-
-[data-view="for-artists"] h1,
-[data-view="for-artists"] h2,
-[data-view="for-artists"] h3 {
-  font-family: "Times New Roman", Times, serif !important;
-  font-size: 16px !important;
-  font-weight: bold !important;
-  color: black !important;
-  line-height: 1.2 !important;
-}
-
-/* Force override of Tailwind @apply directives */
-[data-view="for-artists"] ul[style*="font-size"],
-[data-view="for-artists"] li[style*="font-size"],
-[data-view="for-artists"] p[style*="font-size"] {
-  font-size: 14px !important;
-}
-
-[data-view="for-artists"] h1[style*="font-size"],
-[data-view="for-artists"] h2[style*="font-size"], 
-[data-view="for-artists"] h3[style*="font-size"] {
-  font-size: 16px !important;
-}
-
-/* 🚨 NUCLEAR BULLET POINT FIX */
-[data-view="for-artists"] ul li {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  line-height: 1.4 !important;
-  font-weight: normal !important;
-  color: black !important;
-}
-
-/* Override any remaining global styles */
-[data-view="for-artists"] * {
-  box-sizing: border-box;
-}
-
-[data-view="for-artists"] ul {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-}
-
-/* Target the specific bullet point content */
-[data-view="for-artists"] ul > li {
-  font-size: 14px !important;
-  font-family: Arial, sans-serif !important;
-  line-height: 1.4 !important;
-  font-weight: normal !important;
-  color: black !important;
-  display: list-item !important;
-}
-
-/* 🚨 FORCE REGISTER BUTTON TEXT TO WHITE */
-[data-view="for-artists"] button,
-[data-view="for-artists"] .w-full button,
-[data-view="for-artists"] button span {
-  color: white !important;
-  background-color: black !important;
-}
-
-/* Target Register as Artist button specifically */
-button:contains("Register as an Artist"),
-button[class*="w-full"] {
-  color: white !important;
-  background-color: black !important;
-}
-
-/* Force onboarding tooltip visibility - override any conflicting styles */
+/* Force onboarding tooltip visibility */
 .onboarding-tooltip,
 .onboarding-tooltip *,
 .onboarding-tooltip p,
@@ -618,13 +96,77 @@ button[class*="w-full"] {
   visibility: visible !important;
   opacity: 1 !important;
 }
+.onboarding-tooltip p.text-gray-300 { color: #d1d5db !important; }
+.onboarding-tooltip svg { stroke: #ffffff !important; fill: none !important; }
 
-.onboarding-tooltip p.text-gray-300 {
-  color: #d1d5db !important;
+/* Landscape orientation optimizations */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  .mobile-artwork-landscape  { height: 100vh !important; width: 100vw !important; }
+  .mobile-header-landscape   { padding: 0.5rem 1rem !important; }
+  .mobile-buttons-landscape  { padding: 0.75rem 1rem !important; gap: 2rem !important; }
+  .mobile-modal-landscape    { max-width: 80vw !important; max-height: 85vh !important; }
 }
 
-.onboarding-tooltip svg {
-  stroke: #ffffff !important;
-  fill: none !important;
-}
+@media screen and (orientation: landscape) { .artwork-container { transition: all 0.3s ease-in-out; } }
+@media screen and (orientation: portrait)  { .artwork-container { transition: all 0.3s ease-in-out; } }
 
+/* Progressive image loading */
+@keyframes shimmer {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.image-loading, .skeleton {
+  background: linear-gradient(90deg, #f0f0f0 0%, #e0e0e0 50%, #f0f0f0 100%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.image-loaded { animation: fadeIn 0.5s ease-out; }
+
+/* Masonry */
+.masonry-item { break-inside: avoid; page-break-inside: avoid; }
+
+/* Artwork card hover */
+.artwork-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+.artwork-card:hover { transform: translateY(-4px) scale(1.02); }
+
+/* Button micro-interactions */
+.button-bounce { transition: transform 0.15s ease-in-out; }
+.button-bounce:active { transform: scale(0.95); }
+
+/* Shadows */
+.shadow-elegant       { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); }
+.shadow-elegant-hover { box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04); }
+
+/* Animated loading */
+@keyframes letterAppear {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.8); }
+  50%  { transform: translateY(-5px) scale(1.1); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes letterGlow {
+  0%, 100% { text-shadow: 0 0 5px rgba(255,255,255,.3); }
+  50%       { text-shadow: 0 0 20px rgba(255,255,255,.6), 0 0 30px rgba(255,255,255,.4); }
+}
+.letter-animate { animation: letterAppear 0.6s ease-out forwards; }
+.letter-glow    { animation: letterGlow 2s ease-in-out infinite; }
+
+@keyframes loadingDot {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+  40%           { transform: scale(1.2); opacity: 1; }
+}
+.loading-dot { animation: loadingDot 1.4s infinite ease-in-out; }
+
+/* Collection modal swipe */
+.collection-modal-swipe {
+  touch-action: pan-x;
+  user-select: auto;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: none;
+}
+.swipe-container { will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.no-select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }

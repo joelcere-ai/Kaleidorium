@@ -1,6 +1,5 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
@@ -9,10 +8,6 @@ import { Footer } from "@/components/footer"
 import { MobileInstallPrompt } from "@/components/mobile-install-prompt"
 import { NavigationProvider } from "@/components/navigation-context"
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-serif",
-})
 
 export const metadata: Metadata = {
   title: "Kaleidorium – Your Personal Art Curator",
@@ -181,7 +176,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${playfair.variable} font-sans antialiased`}>
+      <body className="antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
