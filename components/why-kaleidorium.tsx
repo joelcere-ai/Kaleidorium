@@ -432,9 +432,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 >
                   <p
                     className="text-base mb-1"
-                    style={{ color: active ? colors.activeText : colors.text, fontWeight: 700 }}
+                    style={{ color: active ? colors.activeText : colors.text }}
                   >
-                    {label}
+                    <strong style={{ fontWeight: 800 }}>{label}</strong>
                   </p>
                   <p className="text-sm leading-snug" style={{ color: active ? colors.text : "#6B7280" }}>
                     {tagline}
