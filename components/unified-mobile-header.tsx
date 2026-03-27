@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, Search, Heart, Info, Mail, DollarSign } from "lucide-react";
 
 interface UnifiedMobileHeaderProps {
-  currentPage?: "discover" | "collection" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "profile";
+  currentPage?: "discover" | "collection" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "profile";
 }
 
 export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {

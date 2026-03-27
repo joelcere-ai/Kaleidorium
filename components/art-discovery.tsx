@@ -40,13 +40,13 @@ import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 
 interface AppHeaderProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
+  view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
   setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   collectionCount: number
 }
 
 interface ArtDiscoveryProps {
-  view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy";
+  view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy";
   setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
