@@ -42,6 +42,7 @@ interface MobileArtDiscoveryProps {
   screenHeight?: number
   localPreferences?: LocalPreferences
   isRegistered?: boolean
+  newArtworkCount?: number
 }
 
 export default function MobileArtDiscovery({
@@ -65,6 +66,7 @@ export default function MobileArtDiscovery({
   screenHeight = 0,
   localPreferences,
   isRegistered = false,
+  newArtworkCount = 0,
 }: MobileArtDiscoveryProps) {
   const defaultPreferences: LocalPreferences = {
     artists: {}, genres: {}, styles: {}, subjects: {}, colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -91,6 +93,7 @@ export default function MobileArtDiscovery({
       screenHeight={screenHeight}
       localPreferences={prefs}
       isRegistered={isRegistered}
+      newArtworkCount={newArtworkCount}
     />
   )
 } 

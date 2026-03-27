@@ -76,6 +76,7 @@ interface MobileCardStackProps {
   screenHeight?: number
   localPreferences?: LocalPreferences
   isRegistered?: boolean
+  newArtworkCount?: number
 }
 
 export default function MobileCardStack({
@@ -97,6 +98,7 @@ export default function MobileCardStack({
   screenHeight = 0,
   localPreferences,
   isRegistered = false,
+  newArtworkCount = 0,
 }: MobileCardStackProps) {
   const router = useRouter();
   const { toast } = useToast()
@@ -1513,7 +1515,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         >
           {/* Kurator Banner — above the feed */}
           {view === "discover" && localPreferences && (
-            <KuratorBanner localPreferences={localPreferences} isRegistered={isRegistered} />
+            <KuratorBanner localPreferences={localPreferences} isRegistered={isRegistered} newArtworkCount={newArtworkCount} />
           )}
 
           {visibleArtworks.map((artwork, index) => (

@@ -18,6 +18,7 @@ interface LocalPreferences {
 interface KuratorBannerProps {
   localPreferences: LocalPreferences
   isRegistered: boolean
+  newArtworkCount?: number
 }
 
 // ─── Message logic ─────────────────────────────────────────────────────────────
@@ -115,13 +116,21 @@ function KuratorOrb({ size = 20 }: { size?: number }) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function KuratorBanner({ localPreferences, isRegistered }: KuratorBannerProps) {
+export function KuratorBanner({ localPreferences, isRegistered, newArtworkCount = 0 }: KuratorBannerProps) {
   const { interactionCount } = localPreferences
 
   const message = useMemo(
     () => pickMessage(interactionCount, isRegistered),
     [interactionCount, isRegistered]
   )
+
+  // When there are new artworks since last visit, show that as the headline
+  // and keep the learning message as the sub-line
+  const headline = newArtworkCount > 0
+    ? `We added ${newArtworkCount} artwork${newArtworkCount !== 1 ? "s" : ""} since your last visit`
+    : message.headline
+
+  const sub = newArtworkCount > 0 ? message.headline : message.sub
 
   return (
     <div
@@ -138,10 +147,10 @@ export function KuratorBanner({ localPreferences, isRegistered }: KuratorBannerP
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-gray-800 leading-snug">
-            {message.headline}
+            {headline}
           </p>
           <p className="text-xs text-gray-500 mt-0.5 leading-snug">
-            {message.sub}
+            {sub}
           </p>
         </div>
       </div>

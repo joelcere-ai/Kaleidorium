@@ -2537,10 +2537,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             screenHeight={screenHeight}
             localPreferences={localPreferences}
             isRegistered={!!user}
+            newArtworkCount={newArtworkCount}
           />
         ) : (currentArtwork || (isFiltering && currentArtworkList.length === 0)) ? (
           <>
-            <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} />
+            <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} newArtworkCount={newArtworkCount} />
             <CardStack
               artworks={currentArtworkList}
               currentIndex={currentIndex}
@@ -3870,12 +3871,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       )}
 
 
-      {/* User Engagement Overlays */}
-      <WelcomeBackOverlay
-        show={showWelcomeBack}
-        newArtworkCount={newArtworkCount}
-        onDismiss={dismissWelcomeBack}
-      />
+      {/* WelcomeBackOverlay removed — new artwork count is now shown in the KuratorBanner */}
       
     </div>
   )
