@@ -864,7 +864,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <img 
               src="/logos/kaleidorium-wordmark-mobile.png" 
               alt="Kaleidorium Logo" 
-              className="h-5 w-auto flex-shrink-0"
+              className="h-6 w-auto flex-shrink-0"
             />
           </Button>
           <Button
@@ -1475,7 +1475,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           <img 
             src="/logos/kaleidorium-wordmark-mobile.png" 
             alt="Kaleidorium Logo" 
-            className="h-5 md:h-6 w-auto"
+            className="h-6 w-auto"
           />
         </h1>
         <Button
