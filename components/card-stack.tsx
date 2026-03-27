@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
+import { KuratorInsight } from "@/components/kurator-insight"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -39,6 +40,17 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+interface LocalPreferences {
+  artists: Record<string, number>
+  genres: Record<string, number>
+  styles: Record<string, number>
+  subjects: Record<string, number>
+  colors: Record<string, number>
+  priceRanges: Record<string, number>
+  interactionCount: number
+  viewed_artworks: string[]
+}
+
 interface CardStackProps {
   artworks: Artwork[]
   currentIndex: number
@@ -50,6 +62,7 @@ interface CardStackProps {
   onImageClick: (url: string, alt: string) => void
   loading: boolean
   showFallbackMessage?: boolean
+  localPreferences?: LocalPreferences
 }
 
 
@@ -63,7 +76,8 @@ export default function CardStack({
   onLoadMore,
   onImageClick,
   loading,
-  showFallbackMessage = false
+  showFallbackMessage = false,
+  localPreferences,
 }: CardStackProps) {
   const { toast } = useToast()
   const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
@@ -217,8 +231,13 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                         </div>
                       </div>
 
+                      {/* Kurator Insight */}
+                      {localPreferences && (
+                        <KuratorInsight artwork={artwork} localPreferences={localPreferences} />
+                      )}
+
                       {/* Action Buttons */}
-                      <div className="flex items-center justify-center gap-4 sm:gap-8">
+                      <div className="flex items-center justify-center gap-4 sm:gap-8 mt-4">
             <Button
               size="lg"
               onClick={() => handleAction('dislike', artwork)}

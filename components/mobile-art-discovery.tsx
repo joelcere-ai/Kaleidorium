@@ -8,6 +8,18 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import MobileCardStack from "./mobile-card-stack"
+import { KuratorBanner } from "./kurator-banner"
+
+interface LocalPreferences {
+  artists: Record<string, number>
+  genres: Record<string, number>
+  styles: Record<string, number>
+  subjects: Record<string, number>
+  colors: Record<string, number>
+  priceRanges: Record<string, number>
+  interactionCount: number
+  viewed_artworks: string[]
+}
 
 interface MobileArtDiscoveryProps {
   artworks: Artwork[]
@@ -28,6 +40,8 @@ interface MobileArtDiscoveryProps {
   isPortrait?: boolean
   screenWidth?: number
   screenHeight?: number
+  localPreferences?: LocalPreferences
+  isRegistered?: boolean
 }
 
 export default function MobileArtDiscovery({
@@ -49,7 +63,14 @@ export default function MobileArtDiscovery({
   isPortrait = true,
   screenWidth = 0,
   screenHeight = 0,
+  localPreferences,
+  isRegistered = false,
 }: MobileArtDiscoveryProps) {
+  const defaultPreferences: LocalPreferences = {
+    artists: {}, genres: {}, styles: {}, subjects: {}, colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
+  }
+  const prefs = localPreferences ?? defaultPreferences
+
   return (
     <MobileCardStack
       artworks={artworks}
@@ -68,6 +89,8 @@ export default function MobileArtDiscovery({
       isPortrait={isPortrait}
       screenWidth={screenWidth}
       screenHeight={screenHeight}
+      localPreferences={prefs}
+      isRegistered={isRegistered}
     />
   )
 } 

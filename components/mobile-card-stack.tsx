@@ -13,6 +13,8 @@ import type { Artwork } from "@/types/artwork"
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes"
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
+import { KuratorBanner } from "@/components/kurator-banner"
+import { KuratorInsight } from "@/components/kurator-insight"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -44,6 +46,17 @@ const XIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+interface LocalPreferences {
+  artists: Record<string, number>
+  genres: Record<string, number>
+  styles: Record<string, number>
+  subjects: Record<string, number>
+  colors: Record<string, number>
+  priceRanges: Record<string, number>
+  interactionCount: number
+  viewed_artworks: string[]
+}
+
 interface MobileCardStackProps {
   artworks: Artwork[]
   onLike: (artwork: Artwork) => void
@@ -61,6 +74,8 @@ interface MobileCardStackProps {
   isPortrait?: boolean
   screenWidth?: number
   screenHeight?: number
+  localPreferences?: LocalPreferences
+  isRegistered?: boolean
 }
 
 export default function MobileCardStack({
@@ -80,6 +95,8 @@ export default function MobileCardStack({
   isPortrait = true,
   screenWidth = 0,
   screenHeight = 0,
+  localPreferences,
+  isRegistered = false,
 }: MobileCardStackProps) {
   const router = useRouter();
   const { toast } = useToast()
@@ -1494,6 +1511,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           ref={containerRef}
           className="h-full overflow-y-auto p-4 space-y-4"
         >
+          {/* Kurator Banner — above the feed */}
+          {view === "discover" && localPreferences && (
+            <KuratorBanner localPreferences={localPreferences} isRegistered={isRegistered} />
+          )}
+
           {visibleArtworks.map((artwork, index) => (
             <div
               key={artwork.id}
@@ -1533,7 +1555,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
               {/* Simplified Artwork Information */}
               <div className="p-4">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
                     <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
                     <ArtistNameWithBadge 
@@ -1543,6 +1565,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                     />
                   </div>
                 </div>
+
+                {/* Kurator Insight */}
+                {localPreferences && (
+                  <KuratorInsight artwork={artwork} localPreferences={localPreferences} />
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-center gap-6 relative">

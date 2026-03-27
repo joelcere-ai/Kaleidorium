@@ -36,6 +36,7 @@ import { useMobileDetection } from "@/hooks/use-mobile-detection"
 import MobileArtDiscovery from "./mobile-art-discovery"
 import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
+import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 
 interface AppHeaderProps {
@@ -2534,9 +2535,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             isPortrait={isPortrait}
             screenWidth={screenWidth}
             screenHeight={screenHeight}
+            localPreferences={localPreferences}
+            isRegistered={!!user}
           />
         ) : (currentArtwork || (isFiltering && currentArtworkList.length === 0)) ? (
           <>
+            <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} />
             <CardStack
               artworks={currentArtworkList}
               currentIndex={currentIndex}
@@ -2548,6 +2552,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               onImageClick={openImageOverlay}
               loading={loading || isSearching}
               showFallbackMessage={showFallbackMessage}
+              localPreferences={localPreferences}
             />
 
             {/* Desktop Filter Panel */}
