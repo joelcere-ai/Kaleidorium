@@ -1315,7 +1315,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                   />
                 </div>
                 {signInError && <p className="text-sm text-red-500">{signInError}</p>}
-                <Button type="submit" className="w-full font-sans text-sm" disabled={signingIn}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
+                <Button type="submit" variant="outline" className="w-full font-sans text-sm" disabled={signingIn}>{signingIn ? 'Signing In...' : 'Sign In'}</Button>
                 <Button type="button" variant="link" className="p-0 h-auto w-full font-sans text-sm" onClick={() => setShowReset(true)}>
                   Forgot your password?
                 </Button>
@@ -1336,7 +1336,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                     className="font-sans text-sm"
                   />
                 </div>
-                <Button type="submit" className="w-full font-sans text-sm" disabled={resetting}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
+                <Button type="submit" variant="outline" className="w-full font-sans text-sm" disabled={resetting}>{resetting ? 'Sending...' : 'Send Reset Link'}</Button>
                 {resetMessage && <p className="text-sm text-muted-foreground font-sans">{resetMessage}</p>}
                 <Button type="button" variant="link" className="p-0 h-auto w-full font-sans text-sm" onClick={() => setShowReset(false)}>
                   Back to Sign In
@@ -1736,7 +1736,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                                     Reset
                                   </Button>
                                 )}
-                                <Button type="submit" disabled={emailChangeLoading}>{emailChangeLoading ? "Submitting..." : "Submit"}</Button>
+                                <Button type="submit" variant="outline" disabled={emailChangeLoading}>{emailChangeLoading ? "Submitting..." : "Submit"}</Button>
                               </AlertDialogFooter>
                             </form>
                           </AlertDialogContent>
@@ -1775,7 +1775,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       )}
                     </div>
                     
-                    <Button type="submit" disabled>Save Changes</Button>
+                    <Button type="submit" variant="outline" disabled>Save Changes</Button>
                   </form>
                 </CardContent>
               </Card>
@@ -1819,7 +1819,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                           />
                         </div>
                         <div className="flex gap-2">
-                          <Button type="submit">Save Changes</Button>
+                          <Button type="submit" variant="outline">Save Changes</Button>
                           <Button 
                             type="button" 
                             variant="outline" 
