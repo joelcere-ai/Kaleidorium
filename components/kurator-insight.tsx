@@ -24,111 +24,165 @@ interface KuratorInsightProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Return the top N keys from a score map, sorted by score descending. */
-function topKeys(map: Record<string, number>, n = 3): string[] {
-  return Object.entries(map)
-    .filter(([, score]) => score > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, n)
-    .map(([key]) => key.toLowerCase())
+type MatchType = "style" | "genre" | "subject" | "color" | "artist"
+
+interface MatchedAttribute {
+  type: MatchType
+  value: string
+  score: number
 }
 
-/** Capitalise first letter of every word. */
-function titleCase(s: string) {
-  return s.replace(/\b\w/g, (c) => c.toUpperCase())
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-// ─── Message logic ─────────────────────────────────────────────────────────────
-
-interface InsightMessage {
-  headline: string
-  reason: string
+/** Look up a value (and its lowercase form) in a score map, return score. */
+function scoreOf(map: Record<string, number>, value: string | undefined): number {
+  if (!value) return 0
+  return (map[value] ?? map[value.toLowerCase()] ?? map[value.toUpperCase()] ?? 0)
 }
 
-const GENERIC_MESSAGES: InsightMessage[] = [
-  {
-    headline: "Your Kurator picked this",
-    reason: "A strong match for your recent interest in abstract works",
-  },
-  {
-    headline: "Tailored to your eye",
-    reason: "A likely match based on your recent swipes",
-  },
-  {
-    headline: "A strong match for your profile",
-    reason: "Similar to artworks you've liked recently",
-  },
-  {
-    headline: "This fits your current taste profile",
-    reason: "Similar energy, palette and composition to works you liked",
-  },
-  {
-    headline: "Curated for you",
-    reason: "Based on the patterns in your recent swipes",
-  },
+/** Find the best-matching colour from a comma-separated colour string. */
+function bestColour(
+  colourField: string | undefined,
+  colorMap: Record<string, number>
+): { value: string; score: number } | null {
+  if (!colourField) return null
+  const parts = colourField.split(",").map((c) => c.trim()).filter(Boolean)
+  let best: { value: string; score: number } | null = null
+  for (const part of parts) {
+    const s = scoreOf(colorMap, part)
+    if (s > 0 && (!best || s > best.score)) best = { value: part, score: s }
+  }
+  return best
+}
+
+/** Format a matched attribute into natural-sounding text. */
+function formatAttr(attr: MatchedAttribute): string {
+  const v = attr.value.toLowerCase()
+  switch (attr.type) {
+    case "color":   return `${v} tones`
+    case "subject": return v
+    case "artist":  return attr.value   // keep original casing for names
+    default:        return v            // style / genre
+  }
+}
+
+/** Join an array of strings with commas and "and" before the last item. */
+function joinParts(parts: string[]): string {
+  if (parts.length === 0) return ""
+  if (parts.length === 1) return parts[0]
+  if (parts.length === 2) return `${parts[0]} and ${parts[1]}`
+  return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`
+}
+
+// ─── Generic fallbacks (seeded by artwork id so they never flicker) ───────────
+
+interface InsightMessage { headline: string; reason: string }
+
+const GENERIC: InsightMessage[] = [
+  { headline: "Your Kurator picked this",    reason: "A strong match for your recent taste profile" },
+  { headline: "Tailored to your eye",        reason: "A likely match based on your recent swipes" },
+  { headline: "A strong match for you",      reason: "Similar to artworks you've liked recently" },
+  { headline: "Curated for you",             reason: "Based on the patterns in your recent swipes" },
+  { headline: "Picked with care",            reason: "Close to the style and mood of work you've enjoyed" },
 ]
+
+// ─── Core logic ───────────────────────────────────────────────────────────────
 
 function buildInsightMessage(
   artwork: Artwork,
   preferences: LocalPreferences
 ): InsightMessage | null {
-  const { interactionCount } = preferences
+  if (preferences.interactionCount < 3) return null
 
-  // Need at least 3 interactions to show a meaningful message
-  if (interactionCount < 3) return null
+  const matches: MatchedAttribute[] = []
 
-  const topStyles = topKeys(preferences.styles, 3)
-  const topGenres = topKeys(preferences.genres, 3)
-  const topSubjects = topKeys(preferences.subjects, 3)
-  const topColors = topKeys(preferences.colors, 3)
+  // ── Style ──────────────────────────────────────────────────────────────────
+  const styleScore = scoreOf(preferences.styles, artwork.style)
+  if (styleScore > 0 && artwork.style)
+    matches.push({ type: "style", value: artwork.style, score: styleScore })
 
-  const matches: string[] = []
+  // ── Genre (only if different from style) ───────────────────────────────────
+  const genreScore = scoreOf(preferences.genres, artwork.genre)
+  if (genreScore > 0 && artwork.genre && artwork.genre.toLowerCase() !== artwork.style?.toLowerCase())
+    matches.push({ type: "genre", value: artwork.genre, score: genreScore })
 
-  // Check artwork attributes against top user preferences
-  const artStyle = artwork.style?.toLowerCase()
-  const artGenre = artwork.genre?.toLowerCase()
-  const artSubject = artwork.subject?.toLowerCase()
-  const artColour = artwork.colour?.toLowerCase()
+  // ── Subject ────────────────────────────────────────────────────────────────
+  const subjectScore = scoreOf(preferences.subjects, artwork.subject)
+  if (subjectScore > 0 && artwork.subject)
+    matches.push({ type: "subject", value: artwork.subject, score: subjectScore })
 
-  if (artStyle && topStyles.includes(artStyle)) matches.push(artStyle)
-  if (artGenre && topGenres.includes(artGenre) && artGenre !== artStyle) matches.push(artGenre)
-  if (artSubject && topSubjects.includes(artSubject)) matches.push(artSubject)
-  if (artColour) {
-    const colours = artColour.split(",").map((c) => c.trim())
-    const matchedColour = colours.find((c) => topColors.includes(c))
-    if (matchedColour) matches.push(matchedColour + " palette")
-  }
+  // ── Colour ─────────────────────────────────────────────────────────────────
+  const colourMatch = bestColour(artwork.colour, preferences.colors)
+  if (colourMatch)
+    matches.push({ type: "color", value: colourMatch.value, score: colourMatch.score })
 
-  // Also check tags array as fallback
-  if (matches.length === 0 && artwork.tags) {
-    const artTags = artwork.tags.map((t) => t.toLowerCase())
-    const allTopPrefs = [...topStyles, ...topGenres, ...topSubjects]
-    const tagMatch = artTags.find((t) => allTopPrefs.includes(t))
-    if (tagMatch) matches.push(tagMatch)
-  }
+  // ── Tags fallback (when structured fields are missing) ─────────────────────
+  if (matches.length === 0 && artwork.tags?.length) {
+    const allPrefKeys = [
+      ...Object.keys(preferences.styles),
+      ...Object.keys(preferences.genres),
+      ...Object.keys(preferences.subjects),
+    ].map((k) => k.toLowerCase())
 
-  if (matches.length > 0) {
-    const formatted = matches.slice(0, 3).map(titleCase).join(", ")
-    // Pick headline based on how many swipes the user has done
-    const headline =
-      interactionCount >= 20
-        ? "Chosen for your taste"
-        : interactionCount >= 10
-        ? "Picked with your taste in mind"
-        : "Your Kurator picked this"
-
-    return {
-      headline,
-      reason: `Because you liked ${formatted.toLowerCase()}`,
+    for (const tag of artwork.tags) {
+      if (allPrefKeys.includes(tag.toLowerCase())) {
+        const s =
+          scoreOf(preferences.styles, tag) ||
+          scoreOf(preferences.genres, tag) ||
+          scoreOf(preferences.subjects, tag)
+        if (s > 0) matches.push({ type: "style", value: tag, score: s })
+        if (matches.length >= 2) break
+      }
     }
   }
 
-  // No specific match — use a deterministic generic message so it doesn't
-  // flicker between renders (use artwork id as seed)
-  const seed = artwork.id
-    ? parseInt(artwork.id.toString().replace(/\D/g, "").slice(-3) || "0", 10)
-    : 0
-  return GENERIC_MESSAGES[seed % GENERIC_MESSAGES.length]
+  // ── Artist match (adds to message if they've interacted with this artist) ──
+  const artistScore = scoreOf(preferences.artists, artwork.artist)
+  const artistLiked = artistScore >= 2  // at least 2 positive interactions
+
+  // ── No match at all → generic ──────────────────────────────────────────────
+  if (matches.length === 0 && !artistLiked) {
+    const seed = parseInt(
+      (artwork.id ?? "0").toString().replace(/\D/g, "").slice(-3) || "0", 10
+    )
+    return GENERIC[seed % GENERIC.length]
+  }
+
+  // ── Sort by score, take top 3 attributes ───────────────────────────────────
+  matches.sort((a, b) => b.score - a.score)
+  const top = matches.slice(0, 3)
+
+  // ── Build the "reason" sentence ────────────────────────────────────────────
+  let reason: string
+
+  if (top.length === 0 && artistLiked) {
+    // Artist match only
+    reason = `You've engaged with ${artwork.artist}'s work before`
+  } else {
+    const parts = top.map(formatAttr)
+    // Append artist if liked AND not already using all 3 slots
+    if (artistLiked && top.length < 3) parts.push(artwork.artist)
+    reason = `Because you liked ${joinParts(parts)}`
+  }
+
+  // ── Pick headline based on match quality ───────────────────────────────────
+  const totalScore = matches.reduce((s, m) => s + m.score, 0)
+  const interactionCount = preferences.interactionCount
+  let headline: string
+
+  if (artistLiked && top.length === 0) {
+    headline = "Your Kurator picked this"
+  } else if (totalScore >= 6 || interactionCount >= 20) {
+    headline = "Chosen for your taste"
+  } else if (totalScore >= 3 || interactionCount >= 10) {
+    headline = "Picked with your taste in mind"
+  } else {
+    headline = "Your Kurator picked this"
+  }
+
+  return { headline, reason }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -146,8 +200,7 @@ export function KuratorInsight({ artwork, localPreferences }: KuratorInsightProp
     <div
       className="w-full rounded-xl px-3 py-2.5 mt-2"
       style={{
-        background:
-          "linear-gradient(135deg, #f5f0ff 0%, #fdf2fb 40%, #fff7f0 100%)",
+        background: "linear-gradient(135deg, #f5f0ff 0%, #fdf2fb 40%, #fff7f0 100%)",
         border: "1px solid rgba(139,92,246,0.10)",
       }}
     >
