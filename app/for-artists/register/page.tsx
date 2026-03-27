@@ -584,19 +584,18 @@ function ArtistRegisterPage() {
                   Verify Invitation
                 </Button>
               </form>
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-                <h3 className="text-base font-serif font-bold text-blue-800 mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Need Help?</h3>
-                <div className="font-sans text-blue-700 space-y-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    <span className="font-bold">Don't have a token?</span> Artist registration requires an invitation from our team.{" "}
-                    <a href="/?view=why-kaleidorium&role=artist" className="underline font-semibold hover:text-blue-900">
-                      Submit your portfolio on the Why Kaleidorium? page
+              <div className="mt-6 p-5 bg-blue-50 border border-blue-100 rounded-lg" style={{fontFamily: 'Arial, sans-serif'}}>
+                <p className="text-sm font-semibold text-blue-800 mb-3">Need Help?</p>
+                <div className="space-y-3 text-sm text-blue-700 leading-relaxed">
+                  <p>
+                    <span className="font-medium">Don't have a token?</span> Artist registration requires an invitation from our team.{" "}
+                    <a href="/?view=why-kaleidorium&role=artist" className="underline hover:text-blue-900">
+                      Submit your portfolio for review
                     </a>{" "}
                     to be considered.
                   </p>
-                  <p style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    <span className="font-bold">Lost your token?</span> Check your email (including spam folder) for the invitation message,
-                    or contact us for assistance.
+                  <p>
+                    <span className="font-medium">Lost your token?</span> Check your email (including spam folder) for the invitation message, or contact us for assistance.
                   </p>
                 </div>
               </div>
