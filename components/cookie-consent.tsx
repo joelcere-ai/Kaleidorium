@@ -65,9 +65,9 @@ export function CookieConsent() {
           </p>
         </div>
         <div className="flex gap-2 justify-end">
-          <button className="px-3 py-2 rounded bg-gray-200" onClick={() => { savePrefs({ analytics: false, functionality: false, targeting: false }); }}>Reject All</button>
-          <button className="px-3 py-2 rounded bg-primary text-white" onClick={() => { savePrefs({ analytics: true, functionality: true, targeting: true }); }}>Accept All</button>
-          <button className="px-3 py-2 rounded bg-black text-white" onClick={() => savePrefs(prefs)}>Save Preferences</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: false, functionality: false, targeting: false }); }}>Reject All</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: true, functionality: true, targeting: true }); }}>Accept All</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => savePrefs(prefs)}>Save Preferences</button>
         </div>
       </div>
     </div>
