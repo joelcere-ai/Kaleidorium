@@ -8,7 +8,7 @@ import { Menu, X, User, Search, Heart, Palette, Info, Mail, DollarSign } from "l
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
 }
 
 export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
@@ -16,7 +16,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+  const handleNavigation = (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     setView(view);
     setIsMenuOpen(false);
   };
@@ -126,34 +126,12 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  isCurrentPage("for-artists") ? "bg-gray-100" : ""
+                  isCurrentPage("why-kaleidorium") || isCurrentPage("for-artists") || isCurrentPage("for-galleries") || isCurrentPage("about") ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleNavigation("for-artists")}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Artists
-              </Button>
-
-              <Button
-                variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  isCurrentPage("for-galleries") ? "bg-gray-100" : ""
-                }`}
-                onClick={() => handleNavigation("for-galleries")}
-              >
-                <Palette className="mr-3 h-5 w-5" />
-                For Galleries
-              </Button>
-
-              <Button
-                variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  isCurrentPage("about") ? "bg-gray-100" : ""
-                }`}
-                onClick={() => handleNavigation("about")}
+                onClick={() => handleNavigation("why-kaleidorium")}
               >
                 <Info className="mr-3 h-5 w-5" />
-                For Collectors
+                Why Kaleidorium?
               </Button>
 
               <Button

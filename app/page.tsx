@@ -19,6 +19,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
+import { WhyKaleidoriumPage } from "@/components/why-kaleidorium";
 
 // Defined outside HomeContent to avoid remounting on every parent re-render
 // (keyboard appearing on mobile caused window.resize → HomeContent re-render → form unmount)
@@ -259,9 +260,9 @@ function HomeContent() {
   const { toast } = useToast();
   
   // Determine current view from search params
-  const getCurrentView = (): "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy" => {
+  const getCurrentView = (): "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy" => {
     const viewParam = searchParams.get("view");
-    if (viewParam && ["collection", "profile", "for-artists", "for-galleries", "about", "contact", "pricing", "terms", "privacy"].includes(viewParam)) {
+    if (viewParam && ["collection", "profile", "why-kaleidorium", "for-artists", "for-galleries", "about", "contact", "pricing", "terms", "privacy"].includes(viewParam)) {
       return viewParam as any;
     }
     return "discover";
@@ -273,7 +274,7 @@ function HomeContent() {
   };
 
   
-  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy">(getCurrentView());
+  const [view, setViewState] = useState<"discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy">(getCurrentView());
   const [collectionCount, setCollectionCount] = useState(0);
   const [collection, setCollection] = useState<any[]>([]);
   const [dbCollection, setDbCollection] = useState<any[]>([]);
@@ -312,7 +313,7 @@ function HomeContent() {
 
 
   // Create a setView function that updates both state and URL
-  const setView = (newView: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+  const setView = (newView: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     setViewState(newView);
     // Use shallow routing to avoid page reloads
     if (newView === "discover") {
@@ -1147,6 +1148,16 @@ function HomeContent() {
           </div>
         );
       
+      case "why-kaleidorium": {
+        const roleParam = searchParams.get("role") as "collector" | "artist" | "gallery" | null;
+        const validRole = roleParam && ["collector", "artist", "gallery"].includes(roleParam) ? roleParam : null;
+        return (
+          <div className="flex-1 overflow-hidden">
+            <WhyKaleidoriumPage initialRole={validRole} />
+          </div>
+        );
+      }
+
       case "for-artists":
         return (
           <div className="flex-1 overflow-y-auto" data-view="for-artists">

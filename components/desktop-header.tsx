@@ -7,9 +7,9 @@ import { Search, Heart, User, Palette, Info, Mail, DollarSign } from "lucide-rea
 
 // Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
-  currentPage?: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "register" | "terms" | "privacy";
+  currentPage?: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   onFilterChange?: (filters: any) => void;
   onClearFilters?: () => void;
   isFiltering?: boolean;
@@ -32,12 +32,17 @@ export function DesktopHeader({
 
   const isSelected = (view: string) => currentPage === view;
 
-  const handleNavigation = (view: "discover" | "collection" | "profile" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing") => {
-    // Clear filters when navigating to Discover
+  // "Why Kaleidorium?" is active when on the unified page OR any of the legacy sub-pages
+  const isWhySelected = () =>
+    currentPage === "why-kaleidorium" ||
+    currentPage === "for-artists" ||
+    currentPage === "for-galleries" ||
+    currentPage === "about";
+
+  const handleNavigation = (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing") => {
     if (view === "discover" && (window as any).clearArtDiscoveryFilters) {
       (window as any).clearArtDiscoveryFilters();
     }
-    // Also clear via callback if provided
     if (view === "discover" && onClearFilters) {
       onClearFilters();
     }
@@ -53,7 +58,7 @@ export function DesktopHeader({
   return (
     <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
-        {/* Logo with improved mobile spacing */}
+        {/* Logo */}
         <Button 
           variant="ghost" 
           className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0"
@@ -77,7 +82,7 @@ export function DesktopHeader({
             Discover
           </Button>
           
-          {/* Filter Button - Only show on discover page */}
+          {/* Filter Button — only on discover page */}
           {(isSelected("discover") || currentPage === "discover") && onToggleFilters && (
             <Button 
               variant="ghost" 
@@ -98,32 +103,15 @@ export function DesktopHeader({
             <Heart className="w-4 h-4 mr-1" />
             Collection ({collectionCount})
           </Button>
-          
+
+          {/* Unified "Why Kaleidorium?" — replaces For Artists / For Galleries / For Collectors */}
           <Button 
             variant="ghost" 
-            className={`text-sm ${isSelected("for-artists") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("for-artists")}
-          >
-            <Palette className="w-4 h-4 mr-1" />
-            For Artists
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("for-galleries") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("for-galleries")}
-          >
-            <Palette className="w-4 h-4 mr-1" />
-            For Galleries
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("about") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("about")}
+            className={`text-sm ${isWhySelected() ? "bg-gray-100" : ""}`}
+            onClick={() => handleNavigation("why-kaleidorium")}
           >
             <Info className="w-4 h-4 mr-1" />
-            For Collectors
+            Why Kaleidorium?
           </Button>
           
           <Button 
@@ -155,73 +143,33 @@ export function DesktopHeader({
         </nav>
       </div>
 
-      {/* Mobile Menu - Hidden on desktop but kept for responsive design */}
+      {/* Mobile Menu (fallback — primary mobile nav is new-mobile-header) */}
       {showMenu && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("discover")}
-            >
-              <Palette className="mr-3 h-5 w-5" />
-              Discover
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("discover")}>
+              <Palette className="mr-3 h-5 w-5" />Discover
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("collection")}
-            >
-              <Heart className="mr-3 h-5 w-5" />
-              Collection ({collectionCount})
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("collection")}>
+              <Heart className="mr-3 h-5 w-5" />Collection ({collectionCount})
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("for-artists")}
-            >
-              <Palette className="mr-3 h-5 w-5" />
-              For Artists
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("why-kaleidorium")}>
+              <Info className="mr-3 h-5 w-5" />Why Kaleidorium?
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("for-galleries")}
-            >
-              <Palette className="mr-3 h-5 w-5" />
-              For Galleries
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("pricing")}>
+              <DollarSign className="mr-3 h-5 w-5" />Pricing
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("about")}
-            >
-              <Info className="mr-3 h-5 w-5" />
-              For Collectors
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("contact")}>
+              <Mail className="mr-3 h-5 w-5" />Contact
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("pricing")}
-            >
-              <DollarSign className="mr-3 h-5 w-5" />
-              Pricing
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("contact")}
-            >
-              <Mail className="mr-3 h-5 w-5" />
-              Contact
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => handleNavigation("profile")}
-            >
-              <User className="mr-3 h-5 w-5" />
-              Profile
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => handleNavigation("profile")}>
+              <User className="mr-3 h-5 w-5" />Account
             </Button>
           </div>
         </div>
