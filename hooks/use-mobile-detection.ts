@@ -12,67 +12,40 @@ interface MobileDetection {
   screenHeight: number;
 }
 
+function computeDetection(): MobileDetection {
+  if (typeof window === 'undefined') {
+    return { isMobile: false, isTablet: false, isDesktop: true, isLandscape: false, isPortrait: true, screenWidth: 0, screenHeight: 0 };
+  }
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const isMobileWidth = width < 768;
+  const isTabletWidth = width >= 768 && width < 1024;
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isMobileUserAgent = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+  const hasTouchCapability = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isLandscape = width > height;
+  const isPortrait = height >= width;
+  const isMobile = isMobileWidth && (isMobileUserAgent || hasTouchCapability);
+  const isTablet = (isTabletWidth && (isMobileUserAgent || hasTouchCapability)) ||
+                   (userAgent.includes('ipad') || (userAgent.includes('macintosh') && hasTouchCapability));
+  const isDesktop = !isMobile && !isTablet;
+  return { isMobile, isTablet, isDesktop, isLandscape, isPortrait, screenWidth: width, screenHeight: height };
+}
+
 export function useMobileDetection(): MobileDetection {
-  const [detection, setDetection] = useState<MobileDetection>({
-    isMobile: false,
-    isTablet: false,
-    isDesktop: true,
-    isLandscape: false,
-    isPortrait: true,
-    screenWidth: 0,
-    screenHeight: 0,
-  });
+  // Initialise immediately from window so the correct header renders on the very first paint —
+  // no useEffect delay means no flash of the wrong (desktop) header on mobile.
+  const [detection, setDetection] = useState<MobileDetection>(() => computeDetection());
 
   useEffect(() => {
-    const checkDevice = () => {
-      // Screen dimensions
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      
-      // Device type detection
-      const isMobileWidth = width < 768;
-      const isTabletWidth = width >= 768 && width < 1024;
-      
-      // User agent detection
-      const userAgent = navigator.userAgent.toLowerCase();
-      const isMobileUserAgent = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-      
-      // Touch capability detection
-      const hasTouchCapability = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      
-      // Orientation detection
-      const isLandscape = width > height;
-      const isPortrait = height >= width;
-      
-      // Combine detections
-      const isMobile = isMobileWidth && (isMobileUserAgent || hasTouchCapability);
-      const isTablet = (isTabletWidth && (isMobileUserAgent || hasTouchCapability)) || 
-                      (userAgent.includes('ipad') || (userAgent.includes('macintosh') && hasTouchCapability));
-      const isDesktop = !isMobile && !isTablet;
+    const checkDevice = () => setDetection(computeDetection());
 
-      setDetection({
-        isMobile,
-        isTablet,
-        isDesktop,
-        isLandscape,
-        isPortrait,
-        screenWidth: width,
-        screenHeight: height,
-      });
-    };
-
-    // Initial check
+    // Initial check (catches any mismatch from SSR)
     checkDevice();
 
     // Listen for resize and orientation change events
-    const handleResize = () => {
-      checkDevice();
-    };
-
-    const handleOrientationChange = () => {
-      // Small delay to ensure dimensions are updated after orientation change
-      setTimeout(checkDevice, 100);
-    };
+    const handleResize = () => checkDevice();
+    const handleOrientationChange = () => setTimeout(checkDevice, 100);
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleOrientationChange);
