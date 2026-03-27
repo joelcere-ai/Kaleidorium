@@ -131,12 +131,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Favicon - Load FIRST to prevent flash of old favicon */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=8" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=8" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=8" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=8" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=8" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=8" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=9" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=9" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=9" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=9" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=9" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=9" />
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NYJYN06VB"></script>
         <script
@@ -153,7 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="build-version" content="v10-new-logo-2026-03-12" />
+        <meta name="build-version" content="v11-colorful-logo-2026-03-27" />
         {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
         {/* Service Worker Registration */}

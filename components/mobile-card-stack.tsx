@@ -862,7 +862,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             className="flex items-center text-black hover:bg-gray-100 px-2"
           >
             <img 
-              src="/logos/kaleidorium-wordmark.png" 
+              src="/logos/kaleidorium-wordmark-mobile.png" 
               alt="Kaleidorium Logo" 
               className="h-5 w-auto flex-shrink-0"
             />
@@ -1473,7 +1473,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         </Button>
         <h1 className="font-serif text-xl font-semibold text-black flex items-center">
           <img 
-            src="/logos/kaleidorium-wordmark.png" 
+            src="/logos/kaleidorium-wordmark-mobile.png" 
             alt="Kaleidorium Logo" 
             className="h-5 md:h-6 w-auto"
           />

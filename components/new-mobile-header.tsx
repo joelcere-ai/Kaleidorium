@@ -59,7 +59,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
             className="flex items-center space-x-1 text-black hover:bg-gray-100 px-2 flex-shrink-0"
           >
             <img 
-              src="/logos/kaleidorium-wordmark.png" 
+              src="/logos/kaleidorium-wordmark-mobile.png" 
               alt="Kaleidorium Logo" 
               className="h-5 w-auto flex-shrink-0"
             />
