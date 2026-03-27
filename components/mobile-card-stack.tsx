@@ -1574,7 +1574,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex items-center justify-center gap-6 relative">
+                <div className="flex items-center justify-center gap-6 relative mt-5">
             <Button
               size="icon"
               id="dislike-button"
