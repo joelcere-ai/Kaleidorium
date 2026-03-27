@@ -389,26 +389,26 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
     <div className="flex-1 overflow-y-auto bg-[#FAFAF8]">
 
       {/* ── 1. Hero ──────────────────────────────────────────────── */}
-      <div className="bg-[#FAFAF8]" style={{ paddingTop: 'clamp(40px, 5vw, 56px)', paddingBottom: 'clamp(20px, 3vw, 32px)' }}>
-        <div className="container mx-auto px-4 max-w-3xl">
-          {/* Intro text — full width above the grid */}
-          <div className="text-center mb-6">
-            <h1 className="hero-page-title mb-3">
-              Join Kaleidorium
-            </h1>
-            <p className="hero-page-intro">
-              Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
-            </p>
-          </div>
-          {/* Artwork grid — full width below */}
+      {/* top: 48px desktop / 32px mobile — hero→next: 48px */}
+      <div className="bg-[#FAFAF8]" style={{ paddingTop: 'clamp(32px, 5vw, 48px)', paddingBottom: '48px' }}>
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+          {/* Title — 36px/28px */}
+          <h1 className="hero-page-title" style={{ marginBottom: '16px' }}>
+            Join Kaleidorium
+          </h1>
+          {/* Intro — 17px/15px */}
+          <p className="hero-page-intro" style={{ marginBottom: '24px' }}>
+            Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
+          </p>
+          {/* Artwork grid */}
           <ArtworkGrid />
         </div>
       </div>
 
       {/* ── 2. Role selector ─────────────────────────────────────── */}
-      <div className="py-10 bg-white border-b border-[#E6E4DF]">
+      <div className="bg-white border-b border-[#E6E4DF]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title mb-6">
+          <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
             How would you like to join?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -421,17 +421,27 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   style={{
                     backgroundColor: active ? colors.activeBg : "#FFFFFF",
                     borderColor: active ? colors.activeBorder : "#E6E4DF",
-                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.07)" : "none",
+                    border: '1px solid',
+                    borderRadius: '16px',
+                    padding: '18px 20px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
                   }}
-                  className="rounded-2xl px-5 py-5 text-left transition-all duration-200 border"
                 >
                   <p
-                    className="role-card-title mb-1.5"
-                    style={{ color: active ? colors.activeText : colors.text }}
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: 600,
+                      lineHeight: '1.3',
+                      color: active ? colors.activeText : '#1E1E1C',
+                      marginBottom: '6px',
+                    }}
                   >
                     <strong style={{ fontWeight: 700 }}>{label}</strong>
                   </p>
-                  <p className="role-card-desc">
+                  <p style={{ fontSize: '14px', fontWeight: 400, lineHeight: '1.55', color: '#5F5F5A' }}>
                     {tagline}
                   </p>
                 </button>
@@ -443,14 +453,14 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
       {selectedRole && (
-        <div ref={howItWorksRef} className="py-10 bg-[#FAFAF8]">
+        <div ref={howItWorksRef} className="bg-[#FAFAF8]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
           <div className="container mx-auto px-4 max-w-5xl">
-            <h2 className="role-section-title mb-6">
+            <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {HOW_IT_WORKS[selectedRole].map((step, i) => (
-                <div key={i} className="bg-white rounded-xl border border-[#E6E4DF] p-4" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
+                <div key={i} style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E6E4DF', padding: '20px', boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <div className="w-7 h-7 rounded-full bg-[#1E1E1C] text-white text-xs font-bold flex items-center justify-center mb-3">
                     {i + 1}
                   </div>
@@ -469,7 +479,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 4. Role-specific form area ───────────────────────────── */}
       {selectedRole && (
-        <div ref={formRef} className="py-10 bg-white">
+        <div ref={formRef} className="bg-white" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
           <div className="container mx-auto px-4 max-w-xl">
             {selectedRole === "collector" && (
               <>
@@ -532,9 +542,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       )}
 
       {/* ── 5. Unified FAQ ───────────────────────────────────────── */}
-      <div className="py-10 bg-[#FAFAF8] border-t border-[#E6E4DF]">
+      <div className="bg-[#FAFAF8] border-t border-[#E6E4DF]" style={{ paddingTop: '48px', paddingBottom: '64px' }}>
         <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="role-section-title mb-6">
+          <h2 className="role-section-title" style={{ marginBottom: '24px' }}>
             Frequently Asked Questions
           </h2>
           <UnifiedFAQ />

@@ -6,18 +6,13 @@ import { useRouter } from "next/navigation";
 export function PricingContent() {
   const router = useRouter();
 
-  const handleContactClick = () => {
-    router.push("/?view=contact");
-  };
-
-  const handleGetStartedClick = () => {
-    router.push("/?view=profile");
-  };
+  const handleContactClick    = () => router.push("/?view=contact");
+  const handleGetStartedClick = () => router.push("/?view=profile");
 
   const featureItem = (text: string) => (
     <li className="flex items-start gap-2">
-      <span className="mt-[3px] flex-shrink-0 text-[#8A8A84]">·</span>
-      <span style={{ fontSize: '15px', color: '#5F5F5A', lineHeight: '1.55' }}>{text}</span>
+      <span style={{ color: '#8A8A84', flexShrink: 0, marginTop: '3px', fontSize: '14px' }}>·</span>
+      <span style={{ fontSize: '14px', color: '#5F5F5A', lineHeight: '1.55' }}>{text}</span>
     </li>
   );
 
@@ -25,44 +20,55 @@ export function PricingContent() {
     <div className="min-h-screen bg-[#FAFAF8]">
 
       {/* ── Hero ── */}
-      <div className="bg-[#FAFAF8] pt-12 pb-10 md:pt-16 md:pb-12">
-        <div className="container mx-auto px-4 max-w-4xl text-center">
-          <p className="eyebrow-label mb-4">Right now, in 2026</p>
-          <h1 className="hero-page-title mb-4">Everything is Free</h1>
-          <p className="hero-page-intro mb-3">
+      {/* top: 48px desktop / 32px mobile — per spec */}
+      <div style={{ paddingTop: 'clamp(32px, 5vw, 48px)', paddingBottom: '48px' }}>
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+
+          {/* Eyebrow — 13px, uppercase, muted */}
+          <p className="eyebrow-label" style={{ marginBottom: '12px' }}>Right now, in 2026</p>
+
+          {/* Hero title — 36px / 28px */}
+          <h1 className="hero-page-title" style={{ marginBottom: '16px' }}>Everything is Free</h1>
+
+          {/* Hero intro — 17px / 15px */}
+          <p className="hero-page-intro" style={{ marginBottom: '12px' }}>
             All features — for collectors, artists, and galleries — are completely free throughout 2026.
           </p>
-          <p style={{ fontSize: '14px', color: '#8A8A84', lineHeight: '1.6', maxWidth: '560px', margin: '0 auto' }}>
-            Plans below take effect from <strong style={{ color: '#5F5F5A', fontWeight: 600 }}>Jan 1, 2027</strong>. You will receive ample notice before then, and can cancel or remove your work with one click at any time.
+
+          {/* Support line — 15px, #8A8A84 */}
+          <p className="hero-support-line">
+            Plans below take effect from{' '}
+            <strong style={{ color: '#5F5F5A', fontWeight: 600 }}>Jan 1, 2027</strong>.
+            {' '}You will receive ample notice before then, and can cancel or remove your work with one click at any time.
           </p>
         </div>
       </div>
 
       {/* ── Plans heading ── */}
-      <div className="container mx-auto px-4 max-w-5xl">
-        <h2 className="role-section-title mb-8">Plans (Starting 2027)</h2>
+      <div className="container mx-auto px-4 max-w-5xl" style={{ marginBottom: '24px' }}>
+        <h2 className="role-section-title">Plans (Starting 2027)</h2>
       </div>
 
       {/* ── Pricing Cards ── */}
-      <div className="container mx-auto px-4 max-w-5xl pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+      <div className="container mx-auto px-4 max-w-5xl" style={{ paddingBottom: '64px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {/* ── Collectors ── */}
           <div className="pricing-card flex flex-col">
-            <div className="flex justify-center mb-5">
+            <div className="flex justify-center" style={{ marginBottom: '20px' }}>
               <span className="pricing-badge-free">FREE IN 2026</span>
             </div>
-            <div className="text-center mb-6">
-              <p className="pricing-plan-name mb-3">Collectors</p>
-              <p className="pricing-value mb-3">Free Forever</p>
+            <div className="text-center" style={{ marginBottom: '20px' }}>
+              <p className="pricing-plan-name" style={{ marginBottom: '8px' }}>Collectors</p>
+              <p className="pricing-value" style={{ marginBottom: '8px' }}>Free Forever</p>
               <p className="pricing-body">
                 Perfect for art lovers who want to discover new works and explore artists worldwide.
               </p>
             </div>
 
-            <div className="mb-6 flex-1">
-              <p style={{ fontSize: '13px', fontWeight: 600, color: '#1E1E1C', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Includes</p>
-              <ul className="space-y-2">
+            <div className="flex-1" style={{ marginBottom: '20px' }}>
+              <p style={{ fontSize: '12px', fontWeight: 600, color: '#8A8A84', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Includes</p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {featureItem("Unlimited art discovery")}
                 {featureItem("Personalized AI recommendations")}
                 {featureItem("Save and build your collections")}
@@ -71,29 +77,29 @@ export function PricingContent() {
               </ul>
             </div>
 
-            <Button variant="outline" className="w-full" onClick={handleGetStartedClick}>
+            <Button variant="outline" size="sm" className="w-full" onClick={handleGetStartedClick}>
               Get Started
             </Button>
           </div>
 
           {/* ── Artists (featured) ── */}
-          <div className="pricing-card-featured flex flex-col relative">
-            <div className="flex justify-between items-center mb-5">
+          <div className="pricing-card-featured flex flex-col">
+            <div className="flex items-center justify-between" style={{ marginBottom: '20px' }}>
               <span className="pricing-badge-free">FREE IN 2026</span>
               <span className="pricing-badge-popular">Most Popular</span>
             </div>
-            <div className="text-center mb-6">
-              <p className="pricing-plan-name mb-3">Artists</p>
-              <p style={{ fontSize: '16px', color: '#B8B8B4', textDecoration: 'line-through', marginBottom: '4px' }}>$9/month</p>
-              <p className="pricing-value mb-3">Free in 2026</p>
+            <div className="text-center" style={{ marginBottom: '20px' }}>
+              <p className="pricing-plan-name" style={{ marginBottom: '8px' }}>Artists</p>
+              <p style={{ fontSize: '14px', fontWeight: 500, color: '#8A8A84', textDecoration: 'line-through', marginBottom: '4px' }}>$9/month</p>
+              <p className="pricing-value" style={{ marginBottom: '8px' }}>Free in 2026</p>
               <p className="pricing-body">
                 Show your work to collectors who already love your style.
               </p>
             </div>
 
-            <div className="mb-6 flex-1">
-              <p style={{ fontSize: '13px', fontWeight: 600, color: '#1E1E1C', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Includes</p>
-              <ul className="space-y-2">
+            <div className="flex-1" style={{ marginBottom: '20px' }}>
+              <p style={{ fontSize: '12px', fontWeight: 600, color: '#8A8A84', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Includes</p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {featureItem("Upload up to 10 artworks per month")}
                 {featureItem("Curatorial reviews automatically generated for each artwork")}
                 {featureItem("AI-powered matching to collectors")}
@@ -104,28 +110,28 @@ export function PricingContent() {
               </ul>
             </div>
 
-            <Button variant="outline" className="w-full" onClick={handleGetStartedClick}>
+            <Button variant="outline" size="sm" className="w-full" onClick={handleGetStartedClick}>
               Get Started
             </Button>
           </div>
 
           {/* ── Galleries ── */}
           <div className="pricing-card flex flex-col">
-            <div className="flex justify-center mb-5">
+            <div className="flex justify-center" style={{ marginBottom: '20px' }}>
               <span className="pricing-badge-free">FREE IN 2026</span>
             </div>
-            <div className="text-center mb-6">
-              <p className="pricing-plan-name mb-3">Galleries</p>
-              <p style={{ fontSize: '16px', color: '#B8B8B4', textDecoration: 'line-through', marginBottom: '4px' }}>$49/month</p>
-              <p className="pricing-value mb-3">Free in 2026</p>
+            <div className="text-center" style={{ marginBottom: '20px' }}>
+              <p className="pricing-plan-name" style={{ marginBottom: '8px' }}>Galleries</p>
+              <p style={{ fontSize: '14px', fontWeight: 500, color: '#8A8A84', textDecoration: 'line-through', marginBottom: '4px' }}>$49/month</p>
+              <p className="pricing-value" style={{ marginBottom: '8px' }}>Free in 2026</p>
               <p className="pricing-body">
                 Grow your collector base without paying hundreds to crowded listing platforms.
               </p>
             </div>
 
-            <div className="mb-6 flex-1">
-              <p style={{ fontSize: '13px', fontWeight: 600, color: '#1E1E1C', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Includes</p>
-              <ul className="space-y-2">
+            <div className="flex-1" style={{ marginBottom: '20px' }}>
+              <p style={{ fontSize: '12px', fontWeight: 600, color: '#8A8A84', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Includes</p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {featureItem("Upload up to 50 artworks")}
                 {featureItem("Create profiles for all your represented artists")}
                 {featureItem("Direct link-outs to your gallery's site or sales pages")}
@@ -137,42 +143,46 @@ export function PricingContent() {
               </ul>
             </div>
 
-            <Button variant="outline" className="w-full" onClick={handleGetStartedClick}>
+            <Button variant="outline" size="sm" className="w-full" onClick={handleGetStartedClick}>
               Get Started
             </Button>
           </div>
         </div>
 
         {/* ── Why Free Until 2027 ── */}
-        <div className="mt-16 max-w-2xl mx-auto">
-          <h2 className="role-section-title mb-6">Why Free Until 2027?</h2>
-          <p className="hero-page-intro mb-6" style={{ fontSize: '16px' }}>
-            Because we want to:
-          </p>
-          <ul className="space-y-3 max-w-xl mx-auto">
-            {[
-              "Build the right collector base",
-              "Grow carefully curated artist portfolios",
-              "Improve the recommendation engine",
-              "Avoid introducing payments before the ecosystem is healthy",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span style={{ color: '#8A8A84', flexShrink: 0, marginTop: '2px' }}>·</span>
-                <span style={{ fontSize: '15px', color: '#5F5F5A', lineHeight: '1.6' }}>{item}</span>
-              </li>
-            ))}
-          </ul>
+        <div style={{ marginTop: '64px' }}>
+          <div className="max-w-xl mx-auto text-center">
+            <h2 className="role-section-title" style={{ marginBottom: '16px' }}>Why Free Until 2027?</h2>
+            <p className="hero-page-intro" style={{ marginBottom: '16px', fontSize: '15px' }}>
+              Because we want to:
+            </p>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '480px', margin: '0 auto' }}>
+              {[
+                "Build the right collector base",
+                "Grow carefully curated artist portfolios",
+                "Improve the recommendation engine",
+                "Avoid introducing payments before the ecosystem is healthy",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span style={{ color: '#8A8A84', flexShrink: 0, marginTop: '3px' }}>·</span>
+                  <span style={{ fontSize: '14px', color: '#5F5F5A', lineHeight: '1.55' }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* ── Questions ── */}
-        <div className="mt-12 max-w-xl mx-auto text-center">
-          <h2 className="role-section-title mb-4">Questions About Pricing?</h2>
-          <p className="hero-page-intro mb-6" style={{ fontSize: '16px' }}>
-            We're fully transparent and happy to help.
-          </p>
-          <Button variant="outline" onClick={handleContactClick}>
-            Contact Us
-          </Button>
+        <div style={{ marginTop: '48px' }}>
+          <div className="max-w-md mx-auto text-center">
+            <h2 className="role-section-title" style={{ marginBottom: '12px' }}>Questions About Pricing?</h2>
+            <p className="hero-support-line" style={{ marginBottom: '24px' }}>
+              We're fully transparent and happy to help.
+            </p>
+            <Button variant="outline" size="sm" onClick={handleContactClick}>
+              Contact Us
+            </Button>
+          </div>
         </div>
       </div>
     </div>
