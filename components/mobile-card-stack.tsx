@@ -116,20 +116,22 @@ export default function MobileCardStack({
   const [showButtonOnboarding, setShowButtonOnboarding] = useState(false)
   const [currentOnboardingStep, setCurrentOnboardingStep] = useState<'dislike' | 'info' | 'like' | null>(null)
   
-  // Art Preferences state (copied from desktop)
+  // Art Preferences state
   const [insights, setInsights] = useState({
-    summary: "Click 'Refresh Insights' to analyze your collection.",
+    summary: "",
     aesthetic_profile: "",
     collecting_pattern: "",
-    topArtists: [],
-    topTags: [],
+    topArtists: [] as string[],
+    topTags: [] as string[],
     priceRange: "N/A",
-    recommendations: [],
-    preferredMediums: []
+    recommendations: [] as string[],
+    preferredMediums: [] as string[],
+    explorationSuggestions: [] as string[],
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
   const [userArchetype, setUserArchetype] = useState<CollectorArchetype | null>(null);
+  const lastGeneratedForRef = useRef<number>(-1);
   
   // Filter states - now arrays for multiple tags
   const [filters, setFilters] = useState({
@@ -448,46 +450,38 @@ const [buttonStates, setButtonStates] = useState<{
   }
 
   // Art Preferences functions (copied from desktop)
-  const generateInsights = async () => {
+  const generateInsights = useCallback(async () => {
+    if (isGenerating) return
+    lastGeneratedForRef.current = collection.length
     setIsGenerating(true)
     try {
-      // First get basic analysis for stats
-      const basicAnalysis = analyzeCollection()
-      
-      // Then get AI-powered insights if collection has artworks
-      if (collection.length > 0) {
-        const response = await fetch('/api/profile-insights', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            collection: collection
-          })
+      const archetype = analyzeCollectionForArchetype(collection)
+      setUserArchetype(archetype)
+
+      if (collection.length === 0) {
+        setIsGenerating(false)
+        return
+      }
+
+      const response = await fetch('/api/profile-insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection }),
+      })
+
+      if (response.ok) {
+        const aiInsights = await response.json()
+        const basicAnalysis = analyzeCollection()
+        setInsights({
+          ...basicAnalysis,
+          summary: aiInsights.summary,
+          aesthetic_profile: aiInsights.aesthetic_profile,
+          collecting_pattern: aiInsights.collecting_pattern,
+          recommendations: aiInsights.recommendations,
+          explorationSuggestions: aiInsights.explorationSuggestions || [],
         })
-        
-        if (response.ok) {
-          const aiInsights = await response.json()
-          setInsights({
-            ...basicAnalysis,
-            summary: aiInsights.summary,
-            aesthetic_profile: aiInsights.aesthetic_profile,
-            collecting_pattern: aiInsights.collecting_pattern,
-            recommendations: aiInsights.recommendations
-          })
-        } else {
-          // Fallback to basic analysis if AI fails
-          setInsights(basicAnalysis)
-        }
-        
-        // Analyze collector archetype
-        const archetype = analyzeCollectionForArchetype(collection)
-        setUserArchetype(archetype)
       } else {
-        setInsights(basicAnalysis)
-        // Analyze collector archetype even with empty collection
-        const archetype = analyzeCollectionForArchetype(collection)
-        setUserArchetype(archetype)
+        setInsights(analyzeCollection())
       }
     } catch (error) {
       console.error('Error generating insights:', error)
@@ -495,7 +489,17 @@ const [buttonStates, setButtonStates] = useState<{
     } finally {
       setIsGenerating(false)
     }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGenerating, collection])
+
+  // Auto-trigger when user opens the collection view and collection has changed
+  useEffect(() => {
+    if (view !== "collection") return
+    if (collection.length === 0) return
+    if (collection.length === lastGeneratedForRef.current) return
+    generateInsights()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, collection.length])
 
   const analyzeCollection = (): any => {
     if (collection.length === 0) {
@@ -900,160 +904,85 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
         {/* Collection Content */}
         <div className="flex-1 overflow-y-auto p-4" ref={containerRef}>
-          {/* Two-Tier Artistic Profile Section */}
+          {/* ── Collector Profile Hero Card ─────────────────────────── */}
           <div className="mb-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg">Your Collector Profile</CardTitle>
-                </div>
-                <Button className="bg-black text-white hover:bg-gray-800" size="sm" onClick={generateInsights} disabled={isGenerating}>
-                  <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-                  Refresh Insights
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Collector Archetype Card */}
-                {userArchetype ? (
-                  <div className="flex justify-center">
-                    <CollectorArchetypeCard archetype={userArchetype} />
-                  </div>
-                ) : (
-                  <div className="text-center p-6 bg-gray-50 border border-gray-200 rounded-lg mx-4">
-                    <p className="text-sm text-gray-600 mb-2">Discover your collector archetype!</p>
-                    <p className="text-xs text-gray-500">Click "Refresh Insights" to analyze your collection and find out what type of collector you are.</p>
+            <Card className="overflow-hidden border border-gray-200 shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-gray-100">
+                <h2 className="text-base font-bold text-gray-900">Your Collector Profile</h2>
+                {isGenerating && (
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    <span>Analysing…</span>
                   </div>
                 )}
-
-                {/* Collapsible Toggle Button */}
-                <div className="flex justify-center">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setIsCollectionDetailsExpanded(!isCollectionDetailsExpanded)}
-                    className="flex items-center gap-2"
-                  >
-                    {isCollectionDetailsExpanded ? (
-                      <>
-                        Hide Collection Insights
-                        <ChevronUp className="h-4 w-4" />
-                      </>
-                    ) : (
-                      <>
-                        Show Collection Insights and Personalized Recommendations
-                        <ChevronDown className="h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-
-                {/* Expandable Content */}
-                {isCollectionDetailsExpanded && (
-                  <div className="space-y-6 animate-in slide-in-from-top-2 duration-300">
-                    <Separator />
-
-                    {/* AI-Generated Collection Summary */}
-                    <div>
-                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Overview</h3>
-                      <p className="text-muted-foreground leading-relaxed">{insights.summary}</p>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
+                {userArchetype ? (
+                  <>
+                    <div className="flex gap-4">
+                      <div className="w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                        <img
+                          src={userArchetype.imagePath}
+                          alt={userArchetype.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 pt-1">
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-2 ${
+                          userArchetype.category === 'intellectual' ? 'bg-blue-100 text-blue-700' :
+                          userArchetype.category === 'financial'    ? 'bg-green-100 text-green-700' :
+                          'bg-purple-100 text-purple-700'
+                        }`}>
+                          {userArchetype.category.charAt(0).toUpperCase() + userArchetype.category.slice(1)}
+                        </span>
+                        <h3 className="text-lg font-bold text-gray-900 leading-tight">{userArchetype.name}</h3>
+                      </div>
                     </div>
-
-                    {/* AI-Generated Collecting Pattern */}
-                    {insights.collecting_pattern && (
+                    {insights.summary ? (
+                      <p className="text-sm text-gray-600 leading-relaxed">{insights.summary}</p>
+                    ) : !isGenerating ? (
+                      <p className="text-sm text-gray-400 italic">Like artworks to generate your personal collection story.</p>
+                    ) : null}
+                    {insights.explorationSuggestions.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collecting Pattern</h3>
-                        <p className="text-muted-foreground leading-relaxed">{insights.collecting_pattern}</p>
-                      </div>
-                    )}
-
-                    <Separator />
-
-                    {/* Collection Statistics */}
-                    <div>
-                      <h3 className="text-sm font-medium mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Collection Statistics</h3>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                          <h4 className="text-sm font-medium mb-2">Top Artists</h4>
-                        {insights.topArtists.length > 0 ? (
-                          <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                            {insights.topArtists.map((artist: string) => (
-                              <li key={artist}>{artist}</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">No artists in collection yet</p>
-                        )}
-                      </div>
-
-                      <div>
-                          <h4 className="text-sm font-medium mb-2">Preferred Styles</h4>
+                        <p className="text-sm font-semibold text-gray-700 mb-2">Your Kurator suggests exploring</p>
                         <div className="flex flex-wrap gap-2">
-                          {insights.topTags.length > 0 ? (
-                            insights.topTags.map((tag) => (
-                              <Badge key={tag} variant="secondary">
-                                {tag}
-                              </Badge>
-                            ))
-                          ) : (
-                            <p className="text-sm text-muted-foreground">No styles in collection yet</p>
-                          )}
-                      </div>
-                    </div>
-
-                      <div>
-                          <h4 className="text-sm font-medium mb-2">Preferred Mediums</h4>
-                        {insights.preferredMediums.length > 0 ? (
-                          <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                            {insights.preferredMediums.map((medium) => (
-                              <li key={medium}>{medium}</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">No mediums in collection yet</p>
-                        )}
-                      </div>
-
-                      <div>
-                          <h4 className="text-sm font-medium mb-2">Price Range</h4>
-                        <p className="text-sm text-muted-foreground">{insights.priceRange}</p>
+                          {insights.explorationSuggestions.map((chip) => (
+                            <span key={chip} className="px-3 py-1.5 rounded-full text-xs text-gray-600 bg-gray-100 border border-gray-200">{chip}</span>
+                          ))}
                         </div>
                       </div>
-                    </div>
-
-                    <Separator />
-
-                    {/* AI-Generated Recommendations */}
-                    <div>
-                      <h3 className="text-sm font-medium mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Personalized Recommendations</h3>
-                      {insights.recommendations.length > 0 ? (
-                        <ul className="space-y-2">
-                          {insights.recommendations.map((recommendation, index) => (
-                          <li key={index} className="flex items-start space-x-2">
-                            <span className="text-primary mt-1">•</span>
-                            <span className="text-black leading-relaxed">{recommendation}</span>
-                          </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-muted-foreground">
-                          Add artworks to your collection to get personalized recommendations
-                        </p>
-                      )}
-                    </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    {isGenerating ? (
+                      <p className="text-sm text-gray-400">Building your collector profile…</p>
+                    ) : (
+                      <>
+                        <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
+                        <p className="text-gray-600 font-medium mb-1">Your collector profile will appear here</p>
+                        <p className="text-sm text-gray-400 mb-4">Like artworks in the Discover feed to build your collection and unlock your profile.</p>
+                        <Button onClick={() => setView("discover")} className="bg-black text-white hover:bg-gray-800" size="sm">Discover Artwork</Button>
+                      </>
+                    )}
                   </div>
                 )}
+
               </CardContent>
             </Card>
           </div>
 
-          {collection.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <Heart className="h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-xl font-medium mb-2 text-black">Your collection is empty</h3>
-              <p className="text-gray-600 mb-6">Start discovering art and add pieces you love!</p>
-              <Button onClick={() => setView("discover")}>Start Discovering</Button>
+          {/* ── Your Collection section header ──────────────────────── */}
+          {collection.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-base font-bold text-gray-900">Your Collection ({collection.length})</h2>
+              <p className="text-xs text-gray-400 mt-0.5">The works shaping your collector profile</p>
             </div>
-          ) : (
+          )}
+
+          {collection.length === 0 ? null : (
             <div className="space-y-6">
               {collection.map((artwork) => (
                 <div key={artwork.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300">
