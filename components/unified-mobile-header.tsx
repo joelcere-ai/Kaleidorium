@@ -42,7 +42,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
           <img 
             src="/logos/kaleidorium-wordmark-mobile.png" 
             alt="Kaleidorium Logo" 
-            className="h-6 w-auto flex-shrink-0"
+            className="h-8 w-auto flex-shrink-0"
           />
         </Button>
         <Button
