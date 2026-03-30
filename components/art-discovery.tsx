@@ -2380,11 +2380,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             ) : (
               <div>
                 <div className="flex items-center justify-center mb-4">
-                  <img 
-                    src="/logos/kaleidorium-wordmark-desktop.png" 
-                    alt="Kaleidorium Logo" 
-                    className="h-6 md:h-7 w-auto mr-3"
-                  />
                   <div className="text-black text-xl">Loading Artwork...</div>
                 </div>
                 {loadingError && (
