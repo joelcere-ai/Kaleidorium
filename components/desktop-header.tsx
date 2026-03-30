@@ -55,83 +55,113 @@ export function DesktopHeader({
     router.push("/", { scroll: false });
   };
 
-  return (
-    <header className="border-b bg-background relative app-header z-[110]">
-      <div className="flex items-center justify-between p-4 md:p-6">
-        {/* Logo */}
-        <Button 
-          variant="ghost" 
-          className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0"
-          onClick={handleLogoClick}
-        >
-          <img 
-            src="/logos/kaleidorium-wordmark-desktop.png" 
-            alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto flex-shrink-0"
-          />
-        </Button>
+  // ── shared class helpers ───────────────────────────────────────────────────
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("discover") ? "bg-gray-100" : ""}`}
+  /** Plain text nav item — no border, transparent bg, refined hover */
+  const plainNavItem = (active: boolean) =>
+    `inline-flex items-center gap-1.5 h-9 px-3 text-[13.5px] font-medium rounded-[8px]
+     transition-colors duration-150 cursor-pointer select-none
+     ${active
+       ? "text-[#1E1E1C] bg-[#F5F4F1]"
+       : "text-[#5F5F5A] hover:text-[#1E1E1C] hover:bg-[#FAFAF8]"
+     }`;
+
+  /** Soft pill nav item — used only for Collection (count-based / stateful) */
+  const pillNavItem = (active: boolean) =>
+    `inline-flex items-center gap-1.5 h-9 px-4 text-[13.5px] rounded-[14px] border
+     transition-colors duration-150 cursor-pointer select-none ml-1
+     ${active
+       ? "bg-[#F5F4F1] border-[#E6E4DF] text-[#1E1E1C] font-semibold"
+       : "bg-white border-[#EAE7E1] text-[#4A4A45] font-medium hover:bg-[#FAFAF8] hover:border-[#E6E4DF] hover:text-[#1E1E1C]"
+     }`;
+
+  return (
+    /*
+     * Desktop header only — rendered exclusively on md+ breakpoints via page.tsx.
+     * bg-white + hairline border replaces the old grey bg-background band.
+     */
+    <header className="bg-white border-b border-[#F0EEE9] relative app-header z-[110]">
+      <div className="flex items-center justify-between px-6 h-[64px]">
+
+        {/* ── Logo — bare brand signature ─────────────────────────────────── */}
+        {/*
+         * The logo sits directly on the white header as a masthead / wordmark.
+         * No ghost button container, no border, no pill.
+         * A plain <button> preserves click behaviour and keyboard accessibility
+         * without any visual chrome.
+         */}
+        <button
+          onClick={handleLogoClick}
+          className="flex items-center flex-shrink-0 cursor-pointer
+                     focus-visible:outline-none focus-visible:ring-2
+                     focus-visible:ring-[#D9CFF7] rounded-[6px]"
+          aria-label="Kaleidorium — go to Discover"
+        >
+          <img
+            src="/logos/kaleidorium-wordmark-desktop.png"
+            alt="Kaleidorium"
+            className="h-8 md:h-9 w-auto flex-shrink-0"
+          />
+        </button>
+
+        {/* ── Desktop Navigation ───────────────────────────────────────────── */}
+        <nav className="hidden md:flex items-center gap-0.5">
+
+          {/* Plain items: Discover, Why Kaleidorium?, Pricing, Contact */}
+          <button
+            className={plainNavItem(isSelected("discover"))}
             onClick={() => handleNavigation("discover")}
           >
-            <Palette className="w-4 h-4 mr-1" />
+            <Palette className="w-3.5 h-3.5 flex-shrink-0" />
             Discover
-          </Button>
-          
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm relative ${isSelected("collection") ? "bg-gray-100" : ""}`}
-            onClick={() => handleNavigation("collection")}
-          >
-            <Heart className="w-4 h-4 mr-1" />
-            Collection ({collectionCount})
-          </Button>
+          </button>
 
-          {/* Unified "Why Kaleidorium?" — replaces For Artists / For Galleries / For Collectors */}
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isWhySelected() ? "bg-gray-100" : ""}`}
+          <button
+            className={plainNavItem(isWhySelected())}
             onClick={() => handleNavigation("why-kaleidorium")}
           >
-            <Info className="w-4 h-4 mr-1" />
+            <Info className="w-3.5 h-3.5 flex-shrink-0" />
             Why Kaleidorium?
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("pricing") ? "bg-gray-100" : ""}`}
+          </button>
+
+          <button
+            className={plainNavItem(isSelected("pricing"))}
             onClick={() => handleNavigation("pricing")}
           >
-            <DollarSign className="w-4 h-4 mr-1" />
+            <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
             Pricing
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("contact") ? "bg-gray-100" : ""}`}
+          </button>
+
+          <button
+            className={plainNavItem(isSelected("contact"))}
             onClick={() => handleNavigation("contact")}
           >
-            <Mail className="w-4 h-4 mr-1" />
+            <Mail className="w-3.5 h-3.5 flex-shrink-0" />
             Contact
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className={`text-sm ${isSelected("profile") ? "bg-gray-100" : ""}`}
+          </button>
+
+          {/* Soft pill — Collection (dynamic count, stateful) */}
+          <button
+            className={pillNavItem(isSelected("collection"))}
+            onClick={() => handleNavigation("collection")}
+          >
+            <Heart className="w-3.5 h-3.5 flex-shrink-0" />
+            Collection ({collectionCount})
+          </button>
+
+          {/* Account — plain item, right edge anchor */}
+          <button
+            className={`${plainNavItem(isSelected("profile"))} ml-1`}
             onClick={() => handleNavigation("profile")}
           >
-            <User className="w-4 h-4 mr-1" />
+            <User className="w-3.5 h-3.5 flex-shrink-0" />
             Account
-          </Button>
+          </button>
+
         </nav>
       </div>
 
-      {/* Mobile Menu (fallback — primary mobile nav is new-mobile-header) */}
+      {/* ── Mobile fallback menu (unchanged — primary mobile nav is new-mobile-header) */}
       {showMenu && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50">
