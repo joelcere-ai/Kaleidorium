@@ -881,17 +881,18 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           >
             <Menu className="w-6 h-6" />
           </Button>
-          <Button
-            variant="ghost"
+          {/* Logo — bare brand signature, no button chrome */}
+          <button
             onClick={handleLogoClick}
-            className="flex items-center text-[#1E1E1C] hover:bg-[#FAFAF8] px-2"
+            className="flex items-center flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9CFF7] rounded-[6px]"
+            aria-label="Kaleidorium — go to Discover"
           >
             <img 
               src="/logos/kaleidorium-wordmark-mobile.png" 
               alt="Kaleidorium Logo" 
               className="h-8 w-auto flex-shrink-0"
             />
-          </Button>
+          </button>
           <Button
             variant="ghost"
             size="icon"
