@@ -122,7 +122,7 @@ export const metadata: Metadata = {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'theme-color': '#000000',
+    'theme-color': '#FFFFFF',
     'msapplication-TileColor': '#000000',
     'application-name': 'Kaleidorium',
   }
