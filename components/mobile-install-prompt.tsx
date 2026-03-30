@@ -196,16 +196,26 @@ export function MobileInstallPrompt() {
     setBrowserInfo(info)
     const { isIOS, isAndroid } = info
 
+    // Already running as an installed PWA — never prompt
     const standalone =
       (window.navigator as any).standalone === true ||
       window.matchMedia("(display-mode: standalone)").matches
     if (standalone) return
 
-    const interacted = localStorage.getItem("pwa-prompt-interacted")
+    // Clear the old permanent-suppress key so users who were previously
+    // stuck (pwa-prompt-interacted=true but app not actually installed)
+    // get prompted again correctly.
+    localStorage.removeItem("pwa-prompt-interacted")
+
+    // Only respect an explicit "Maybe later" dismissal (time-based cooldown).
+    // - "Maybe later"  → 7 days
+    // - "Got it" after post-install guidance → 14 days (set separately below)
     const dismissed = localStorage.getItem("pwa-prompt-dismissed")
     const dismissedTime = dismissed ? parseInt(dismissed) : 0
-    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
-    if (interacted || (dismissed && dismissedTime > oneWeekAgo)) return
+    const cooldownMs = localStorage.getItem("pwa-prompt-dismissed-long")
+      ? 14 * 24 * 60 * 60 * 1000
+      : 7 * 24 * 60 * 60 * 1000
+    if (dismissed && Date.now() - dismissedTime < cooldownMs) return
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
@@ -219,8 +229,7 @@ export function MobileInstallPrompt() {
     const handleAppInstalled = () => {
       setView("post-install")
       setShowPrompt(true)
-      localStorage.setItem("pwa-prompt-interacted", "true")
-      window.dispatchEvent(new CustomEvent("pwa-prompt-dismissed"))
+      // Don't suppress here — let handlePostInstallDone set the 14-day cooldown
     }
     window.addEventListener("appinstalled", handleAppInstalled)
 
@@ -237,10 +246,19 @@ export function MobileInstallPrompt() {
     }
   }, [])
 
+  // "Maybe later" — 7-day cooldown
   const handleDismiss = () => {
     setShowPrompt(false)
     localStorage.setItem("pwa-prompt-dismissed", Date.now().toString())
-    localStorage.setItem("pwa-prompt-interacted", "true")
+    localStorage.removeItem("pwa-prompt-dismissed-long")
+    window.dispatchEvent(new CustomEvent("pwa-prompt-dismissed"))
+  }
+
+  // "Got it" after post-install guidance — 14-day cooldown
+  const handlePostInstallDone = () => {
+    setShowPrompt(false)
+    localStorage.setItem("pwa-prompt-dismissed", Date.now().toString())
+    localStorage.setItem("pwa-prompt-dismissed-long", "1")
     window.dispatchEvent(new CustomEvent("pwa-prompt-dismissed"))
   }
 
@@ -263,8 +281,7 @@ export function MobileInstallPrompt() {
         if (outcome === "accepted") {
           // Show "where is it?" guidance immediately — don't wait for appinstalled
           setView("post-install")
-          localStorage.setItem("pwa-prompt-interacted", "true")
-          window.dispatchEvent(new CustomEvent("pwa-prompt-dismissed"))
+          // Cooldown is set when the user taps "Got it" in handlePostInstallDone
         } else {
           // User dismissed Chrome's dialog — show manual route
           setView("manual")
@@ -286,7 +303,7 @@ export function MobileInstallPrompt() {
   // ── Post-install: where to find the app ──
   if (view === "post-install") {
     return (
-      <ModalShell onClose={handleDismiss} title="Installation started!">
+      <ModalShell onClose={handlePostInstallDone} title="Installation started!">
         <div className="flex items-center gap-2 mb-3">
           <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
           <p className="text-sm text-gray-600">
@@ -295,7 +312,7 @@ export function MobileInstallPrompt() {
         </div>
         <PostInstallGuidance browser={browserInfo?.browser ?? "chrome"} />
         <Button
-          onClick={handleDismiss}
+          onClick={handlePostInstallDone}
           variant="outline"
           className="w-full"
         >
