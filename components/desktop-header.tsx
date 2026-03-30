@@ -107,7 +107,7 @@ export function DesktopHeader({
         {/* ── Desktop Navigation ───────────────────────────────────────────── */}
         <nav className="hidden md:flex items-center gap-0.5">
 
-          {/* Plain items: Discover, Why Kaleidorium?, Pricing, Contact */}
+          {/* 1. Discover */}
           <button
             className={plainNavItem(isSelected("discover"))}
             onClick={() => handleNavigation("discover")}
@@ -116,31 +116,7 @@ export function DesktopHeader({
             Discover
           </button>
 
-          <button
-            className={plainNavItem(isWhySelected())}
-            onClick={() => handleNavigation("why-kaleidorium")}
-          >
-            <Info className="w-3.5 h-3.5 flex-shrink-0" />
-            Why Kaleidorium?
-          </button>
-
-          <button
-            className={plainNavItem(isSelected("pricing"))}
-            onClick={() => handleNavigation("pricing")}
-          >
-            <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
-            Pricing
-          </button>
-
-          <button
-            className={plainNavItem(isSelected("contact"))}
-            onClick={() => handleNavigation("contact")}
-          >
-            <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-            Contact
-          </button>
-
-          {/* Soft pill — Collection (dynamic count, stateful) */}
+          {/* 2. Collection — soft pill (dynamic count, stateful) */}
           <button
             className={pillNavItem(isSelected("collection"))}
             onClick={() => handleNavigation("collection")}
@@ -149,7 +125,34 @@ export function DesktopHeader({
             Collection ({collectionCount})
           </button>
 
-          {/* Account — plain item, right edge anchor */}
+          {/* 3. Why Kaleidorium? */}
+          <button
+            className={`${plainNavItem(isWhySelected())} ml-1`}
+            onClick={() => handleNavigation("why-kaleidorium")}
+          >
+            <Info className="w-3.5 h-3.5 flex-shrink-0" />
+            Why Kaleidorium?
+          </button>
+
+          {/* 4. Pricing */}
+          <button
+            className={plainNavItem(isSelected("pricing"))}
+            onClick={() => handleNavigation("pricing")}
+          >
+            <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
+            Pricing
+          </button>
+
+          {/* 5. Contact */}
+          <button
+            className={plainNavItem(isSelected("contact"))}
+            onClick={() => handleNavigation("contact")}
+          >
+            <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+            Contact
+          </button>
+
+          {/* 6. Account — plain item, right edge anchor */}
           <button
             className={`${plainNavItem(isSelected("profile"))} ml-1`}
             onClick={() => handleNavigation("profile")}
