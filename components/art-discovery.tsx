@@ -2347,15 +2347,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           <div className="text-center max-w-md">
             {isMobile ? (
               <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="flex items-center justify-center">
-                  <img 
-                    src="/logos/kaleidorium-wordmark-desktop.png" 
-                    alt="Kaleidorium Logo" 
-                    className="h-6 md:h-7 w-auto"
-                  />
-                </div>
-                <p className="text-lg text-black text-center">Your Personal Art Curator</p>
-                <p className="text-lg text-black text-center">Loading Artwork...</p>
+                <p className="text-lg text-black text-center">Loading artwork...</p>
                 {loadingError && (
                   <div className="mt-4">
                     <p className="text-red-600 mb-2">{loadingError}</p>
