@@ -333,9 +333,9 @@ const [buttonStates, setButtonStates] = useState<{
 
   const getMainAreaClasses = () => {
     if (isLandscape) {
-      return "flex-1 relative overflow-hidden bg-gray-50"
+      return "flex-1 relative overflow-hidden bg-[#FAFAF8]"
     }
-    return "flex-1 relative overflow-hidden bg-gray-50"
+    return "flex-1 relative overflow-hidden bg-[#FAFAF8]"
   }
 
   // Swipe handlers
@@ -857,7 +857,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       {/* Dismiss button - centered at bottom */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <button
-          className="pointer-events-auto bg-white/95 text-gray-800 text-xs font-semibold px-6 py-2.5 rounded-full shadow-lg hover:bg-white transition-colors"
+          className="pointer-events-auto bg-white text-[#1E1E1C] text-xs font-semibold px-6 py-2.5 rounded-[12px] border border-[#E6E4DF] hover:bg-[#FAFAF8] transition-colors"
           onClick={dismissGestureIntro}
         >
           Got it
@@ -872,19 +872,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         {buttonOnboardingOverlay}
         {gestureIntroOverlay}
         {/* Header */}
-        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
+        <div className="flex justify-between items-center p-4 bg-white border-b border-[#E6E4DF]">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setShowMenuModal(true)}
-            className="text-black hover:bg-gray-100"
+            className="text-[#1E1E1C] hover:bg-[#FAFAF8]"
           >
             <Menu className="w-6 h-6" />
           </Button>
           <Button
             variant="ghost"
             onClick={handleLogoClick}
-            className="flex items-center text-black hover:bg-gray-100 px-2"
+            className="flex items-center text-[#1E1E1C] hover:bg-[#FAFAF8] px-2"
           >
             <img 
               src="/logos/kaleidorium-wordmark-mobile.png" 
@@ -896,7 +896,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             variant="ghost"
             size="icon"
             onClick={() => setView("profile")}
-            className="text-black hover:bg-gray-100"
+            className="text-[#1E1E1C] hover:bg-[#FAFAF8]"
           >
             <User className="w-6 h-6" />
           </Button>
@@ -906,11 +906,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         <div className="flex-1 overflow-y-auto p-4" ref={containerRef}>
           {/* ── Collector Profile Hero Card ─────────────────────────── */}
           <div className="mb-6">
-            <Card className="overflow-hidden border border-gray-200 shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-gray-100">
-                <h2 className="text-base font-bold text-gray-900">Your Collector Profile</h2>
+            <Card className="overflow-hidden border border-[#E6E4DF]" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+              <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-[#E6E4DF]">
+                <h2 className="text-base font-bold text-[#1E1E1C]">Your Collector Profile</h2>
                 {isGenerating && (
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <div className="flex items-center gap-1.5 text-xs text-[#8A8A84]">
                     <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                     <span>Analysing…</span>
                   </div>
@@ -920,7 +920,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {userArchetype ? (
                   <>
                     <div className="flex gap-4">
-                      <div className="w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+                      <div className="w-28 h-28 flex-shrink-0 rounded-[12px] overflow-hidden bg-[#FAFAF8] border border-[#E6E4DF]">
                         <img
                           src={userArchetype.imagePath}
                           alt={userArchetype.name}
@@ -930,26 +930,26 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                       </div>
                       <div className="flex-1 min-w-0 pt-1">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-2 ${
-                          userArchetype.category === 'intellectual' ? 'bg-blue-100 text-blue-700' :
-                          userArchetype.category === 'financial'    ? 'bg-green-100 text-green-700' :
-                          'bg-purple-100 text-purple-700'
+                          userArchetype.category === 'intellectual' ? 'bg-[#F6F4FB] text-[#6E62A6] border border-[#DDD6F2]' :
+                          userArchetype.category === 'financial'    ? 'bg-[#EDF6F0] text-[#3E7C59] border border-[#B8D8C1]' :
+                          'bg-[#F5F0FF] text-[#4F4564] border border-[#D9CFF7]'
                         }`}>
                           {userArchetype.category.charAt(0).toUpperCase() + userArchetype.category.slice(1)}
                         </span>
-                        <h3 className="text-lg font-bold text-gray-900 leading-tight">{userArchetype.name}</h3>
+                        <h3 className="text-lg font-bold text-[#1E1E1C] leading-tight">{userArchetype.name}</h3>
                       </div>
                     </div>
                     {insights.summary ? (
-                      <p className="text-sm text-gray-600 leading-relaxed">{insights.summary}</p>
+                      <p className="text-sm text-[#5F5F5A] leading-relaxed">{insights.summary}</p>
                     ) : !isGenerating ? (
-                      <p className="text-sm text-gray-400 italic">Like artworks to generate your personal collection story.</p>
+                      <p className="text-sm text-[#8A8A84] italic">Like artworks to generate your personal collection story.</p>
                     ) : null}
                     {insights.explorationSuggestions.length > 0 && (
                       <div>
-                        <p className="text-sm font-semibold text-gray-700 mb-2">Your Kurator suggests exploring</p>
+                        <p className="text-sm font-semibold text-[#1E1E1C] mb-2">Your Kurator suggests exploring</p>
                         <div className="flex flex-wrap gap-2">
                           {insights.explorationSuggestions.map((chip) => (
-                            <span key={chip} className="px-3 py-1.5 rounded-full text-xs text-gray-600 bg-gray-100 border border-gray-200">{chip}</span>
+                            <span key={chip} className="artwork-chip">{chip}</span>
                           ))}
                         </div>
                       </div>
@@ -958,7 +958,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 ) : (
                   <div className="text-center py-8">
                     {isGenerating ? (
-                      <p className="text-sm text-gray-400">Building your collector profile…</p>
+                      <p className="text-sm text-[#8A8A84]">Building your collector profile…</p>
                     ) : (
                       <>
                         <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
@@ -1489,54 +1489,54 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <Button
               size="icon"
               id="dislike-button"
-              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
-                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 active:scale-95
                 ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'dislike' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#F8ECEC', borderColor: '#E6CACA', borderWidth: '1px', borderStyle: 'solid' }}
+                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#A35D66] ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
               onClick={() => {
                 handleButtonAction('dislike', artwork)
                 if (currentOnboardingStep === 'dislike') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <ThumbsDown className="w-7 h-7" style={{ color: '#9B4B4B' }} />
+              <ThumbsDown className="w-5 h-5" style={{ color: '#A35D66' }} />
             </Button>
 
             {/* Info */}
             <Button
               size="icon"
               id="info-button"
-              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
-                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 active:scale-95
                 ${buttonStates.info ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'info' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#FFFFFF', borderColor: '#D8D8D8', borderWidth: '1px', borderStyle: 'solid' }}
+                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#8A8A84] ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#FFFFFF', borderColor: '#E6E4DF', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
               onClick={() => {
                 handleButtonAction('info', artwork)
                 if (currentOnboardingStep === 'info') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <Info className="w-7 h-7" style={{ color: '#222222' }} />
+              <Info className="w-5 h-5" style={{ color: '#5F5F5A' }} />
             </Button>
 
             {/* Like */}
             <Button
               size="icon"
               id="like-button"
-              className={`w-16 h-16 min-w-16 min-h-16 rounded-full p-0 aspect-square flex items-center justify-center
-                transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg
+              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+                transition-all duration-200 active:scale-95
                 ${buttonStates.like ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'like' ? 'ring-4 ring-blue-500 ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#EDF7F2', borderColor: '#CFE5D8', borderWidth: '1px', borderStyle: 'solid' }}
+                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#3E7C59] ring-offset-2 z-10' : ''}`}
+              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
               onClick={() => {
                 handleButtonAction('like', artwork)
                 if (currentOnboardingStep === 'like') nextOnboardingStep()
               }}
               disabled={isAnimating}
             >
-              <ThumbsUp className="w-7 h-7" style={{ color: '#2F6B4F' }} />
+              <ThumbsUp className="w-5 h-5" style={{ color: '#3E7C59' }} />
             </Button>
                 </div>
               </div>
@@ -1546,7 +1546,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           {/* Loading indicator */}
           {visibleCardCount < artworks.length && (
             <div className="flex justify-center py-8">
-              <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-2 border-[#E6E4DF] border-t-[#1E1E1C] rounded-full animate-spin"></div>
             </div>
           )}
           

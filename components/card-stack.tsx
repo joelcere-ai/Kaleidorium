@@ -165,12 +165,12 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
   if (!visibleCards.length) {
     return (
       <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-white relative">
+        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-[#FAFAF8] relative">
           <div className="flex items-center justify-center p-8">
             {showFallbackMessage ? (
-              <div className="text-center p-6 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-800 mb-2">No more artwork matching your criteria</h3>
-                <p className="text-sm text-blue-600">
+              <div className="text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-[16px]">
+                <h3 className="text-lg font-semibold text-[#1E1E1C] mb-2">No more artwork matching your criteria</h3>
+                <p className="text-sm text-[#5F5F5A]">
                   Remove some of the filters you selected or come back soon as we are always adding new artwork.
                 </p>
               </div>
@@ -189,7 +189,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       {/* Main CardStack Area */}
-      <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-white relative">
+        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-[#FAFAF8] relative">
         
 
         {/* Cards Stack - Vertical Layout */}
@@ -199,7 +199,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
               key={artwork.id}
               className="transition-all duration-300 ease-out"
             >
-              <div className="bg-white rounded-2xl border border-[#E6E4DF] overflow-hidden" style={{ boxShadow: '0 1px 6px rgba(20,20,20,0.04)' }}>
+              <div className="bg-white rounded-[20px] border border-[#E6E4DF] overflow-hidden" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
                 <div className="flex flex-col lg:flex-row">
                   {/* Artwork Image Section */}
                   <div className="w-full lg:w-[65%] flex-shrink-0">
@@ -241,22 +241,20 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
             <Button
               size="default"
               onClick={() => handleAction('dislike', artwork)}
-              className="flex-1 sm:flex-none min-w-[100px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
-              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', color: '#A35D66', height: '42px' }}
+              className="flex-1 sm:flex-none min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all duration-150"
+              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', color: '#A35D66', height: '42px', borderRadius: '12px', boxShadow: 'none' }}
             >
               <ThumbsDown className="w-4 h-4 mr-1.5" style={{ color: '#A35D66' }} />
-              <span className="sm:hidden">👎</span>
               <span className="hidden sm:inline">Dislike</span>
             </Button>
             
             <Button
               size="default"
               onClick={() => handleAction('like', artwork)}
-              className="flex-1 sm:flex-none min-w-[100px] hover:scale-105 active:scale-95 hover:brightness-90 transition-all duration-200"
-              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', color: '#3E7C59', height: '42px' }}
+              className="flex-1 sm:flex-none min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all duration-150"
+              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', color: '#3E7C59', height: '42px', borderRadius: '12px', boxShadow: 'none' }}
             >
               <ThumbsUp className="w-4 h-4 mr-1.5" style={{ color: '#3E7C59' }} />
-              <span className="sm:hidden">👍</span>
               <span className="hidden sm:inline">Like</span>
             </Button>
                       </div>
@@ -433,25 +431,25 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
         {/* Also hide when there's only one artwork (likely a specific artwork loaded via URL) */}
         {loading && !showFallbackMessage && artworks.length > 1 && (
           <div className="mt-8 text-center">
-            <div className="inline-flex items-center gap-2 text-sm text-gray-500">
-              <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+            <div className="inline-flex items-center gap-2 text-sm text-[#8A8A84]">
+              <div className="w-4 h-4 border-2 border-[#E6E4DF] border-t-[#1E1E1C] rounded-full animate-spin"></div>
               Loading more artworks...
             </div>
           </div>
         )}
         
         {!loading && visibleCardCount >= artworks.length - currentIndex && artworks.length > 0 && (
-          <div className="mt-8 text-center p-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">You've seen all the artworks!</h3>
-            <p className="text-sm text-gray-500">Check back later for new additions to our collection</p>
+          <div className="mt-8 text-center p-6 border-t border-[#E6E4DF]">
+            <h3 className="text-lg font-semibold text-[#5F5F5A] mb-2">You've seen all the artworks!</h3>
+            <p className="text-sm text-[#8A8A84]">Check back later for new additions to our collection</p>
           </div>
         )}
         
         {/* Fallback message when no filters match */}
-        {showFallbackMessage && (
-          <div className="mt-8 text-center p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-800 mb-2">No more artwork matching your criteria</h3>
-            <p className="text-sm text-blue-600">
+          {showFallbackMessage && (
+          <div className="mt-8 text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-[16px]">
+            <h3 className="text-lg font-semibold text-[#1E1E1C] mb-2">No more artwork matching your criteria</h3>
+            <p className="text-sm text-[#5F5F5A]">
               Remove some of the filters you selected or come back soon as we are always adding new artwork.
             </p>
           </div>
