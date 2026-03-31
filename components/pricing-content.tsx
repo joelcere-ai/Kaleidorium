@@ -113,6 +113,7 @@ export function PricingContent() {
                 {featureItem("One-click link-out to your site, shop, or Instagram")}
                 {featureItem("Remove works or deactivate your profile easily")}
                 {featureItem("Priority visibility for long-term artists")}
+                {featureItem("No communication handled by Kaleidorium, you stay in control")}
               </ul>
             </div>
 
@@ -138,7 +139,7 @@ export function PricingContent() {
             <div className="flex-1" style={{ marginBottom: '20px' }}>
               <p style={{ fontSize: '12px', fontWeight: 600, color: '#8A8A84', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Includes</p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {featureItem("Upload up to 50 artworks")}
+                {featureItem("Upload up to 50 artwork per month.")}
                 {featureItem("Create profiles for all your represented artists")}
                 {featureItem("Direct link-outs to your gallery's site or sales pages")}
                 {featureItem("AI collector matching for each artist")}
