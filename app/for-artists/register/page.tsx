@@ -525,7 +525,7 @@ function ArtistRegisterPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-background">
+      <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-[#FAFAF8]">
         {/* Back Navigation */}
         <div className="w-full max-w-md mb-6">
           <Button 
@@ -541,7 +541,7 @@ function ArtistRegisterPage() {
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
             <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
-            <div className="bg-white p-8 rounded-lg shadow-md">
+            <div className="bg-white p-8 rounded-2xl border border-[#E6E4DF]" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
               <div className="text-center mb-6">
                 <h2 className="text-sm font-sans font-bold text-black mb-3" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Verify Your Invitation</h2>
                 <p className="text-sm font-sans text-black mb-4" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
@@ -580,16 +580,16 @@ function ArtistRegisterPage() {
                     {inviteError}
                   </div>
                 )}
-                <Button type="submit" className="w-full">
+                <Button type="submit" variant="outline" className="w-full">
                   Verify Invitation
                 </Button>
               </form>
-              <div className="mt-6 p-5 bg-blue-50 border border-blue-100 rounded-lg" style={{fontFamily: 'Arial, sans-serif'}}>
-                <p className="text-sm font-semibold text-blue-800 mb-3">Need Help?</p>
-                <div className="space-y-3 text-sm text-blue-700 leading-relaxed">
+              <div className="mt-6 p-5 bg-[#F6F4FB] border border-[#DDD6F2] rounded-2xl" style={{fontFamily: 'Arial, sans-serif'}}>
+                <p className="text-sm font-semibold text-[#4F4564] mb-3">Need Help?</p>
+                <div className="space-y-3 text-sm text-[#6E62A6] leading-relaxed">
                   <p>
                     <span className="font-medium">Don't have a token?</span> Artist registration requires an invitation from our team.{" "}
-                    <a href="/?view=why-kaleidorium&role=artist" className="underline hover:text-blue-900">
+                    <a href="/?view=why-kaleidorium&role=artist" className="underline hover:text-[#4F4564]">
                       Submit your portfolio for review
                     </a>{" "}
                     to be considered.
@@ -602,12 +602,12 @@ function ArtistRegisterPage() {
             </div>
           </div>
         ) : submissionSuccess ? (
-          <div className="bg-white p-8 rounded shadow text-center">
+          <div className="bg-white p-8 rounded-2xl border border-[#E6E4DF] text-center" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
             <h2 className="text-2xl font-bold mb-4">Submission Received!</h2>
             <p className="mb-6">Would you like to submit another artwork?</p>
             <div className="flex justify-center gap-6">
-              <Button onClick={handleSubmitAnother}>Yes</Button>
-              <Button onClick={handleFinish}>No</Button>
+              <Button variant="outline" onClick={handleSubmitAnother}>Yes</Button>
+              <Button variant="ghost" onClick={handleFinish}>No</Button>
             </div>
           </div>
         ) : (
@@ -662,7 +662,7 @@ function ArtistRegisterPage() {
                 
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Email Address</label>
-                  <Input name="email" type="email" placeholder="Email" value={inviteEmail} readOnly className="bg-gray-50" />
+                  <Input name="email" type="email" placeholder="Email" value={inviteEmail} readOnly className="bg-[#FAFAF8] border-[#E6E4DF]" />
                   {errors.email && <div className="text-red-600 text-xs mt-1">{errors.email}</div>}
                 </div>
                 
@@ -673,7 +673,7 @@ function ArtistRegisterPage() {
                     id="artistNotificationConsent"
                     checked={artist.notificationConsent}
                     onChange={(e) => setArtist({ ...artist, notificationConsent: e.target.checked })}
-                    className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="mt-1 h-4 w-4 text-[#4F4564] focus:ring-[#D9CFF7] border-[#E6E4DF] rounded"
                   />
                   <label htmlFor="artistNotificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
                     Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
@@ -682,7 +682,7 @@ function ArtistRegisterPage() {
                 
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Country of Residence</label>
-                  <select name="country" value={artist.country} onChange={handleCountryChange} className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                  <select name="country" value={artist.country} onChange={handleCountryChange} className="w-full border border-[#E6E4DF] rounded-[12px] px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent" required>
                     <option value="">Select your country</option>
                     {countries.map((c: { value: string; label: string }) => <option key={c.value} value={c.label}>{c.label}</option>)}
                   </select>
@@ -724,7 +724,7 @@ function ArtistRegisterPage() {
                     name="medium"
                     value={artwork.medium}
                     onChange={handleArtworkChange}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-[#E6E4DF] rounded-[12px] px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
                     required
                   >
                     <option value="">Select Artwork Type</option>
@@ -748,7 +748,7 @@ function ArtistRegisterPage() {
                   <label className="block text-sm font-medium text-gray-700">Price</label>
                   <div className="flex gap-2">
                     <Input name="price" placeholder="Enter price" value={artwork.price} onChange={handleArtworkChange} required className="flex-1" />
-                    <select name="currency" value={artwork.currency} onChange={handleCurrencyChange} className="border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[100px]" required>
+                    <select name="currency" value={artwork.currency} onChange={handleCurrencyChange} className="border border-[#E6E4DF] rounded-[12px] px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent min-w-[100px]" required>
                       {currencyOptions.map((c) => (
                         <option key={c.value} value={c.value}>{c.label}</option>
                       ))}
@@ -798,6 +798,7 @@ function ArtistRegisterPage() {
                   <Button 
                     type="button" 
                     onClick={handleAIDescription} 
+                    variant="outline"
                     className="mt-2 px-4 py-2 text-sm" 
                     disabled={aiLoading || !imageUrl}
                   >
@@ -807,7 +808,7 @@ function ArtistRegisterPage() {
                 {artwork.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {artwork.tags.map((tag) => (
-                      <span key={tag} className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs">{tag}</span>
+                      <span key={tag} className="chip-soft">{tag}</span>
                     ))}
                   </div>
                 )}
@@ -823,9 +824,10 @@ function ArtistRegisterPage() {
                 )}
               </div>
             </div>
-              <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="mt-8 pt-6 border-t border-[#E6E4DF]">
                 <Button 
                   type="submit" 
+                  variant="outline"
                   className="w-full py-3 font-medium" 
                   style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
                   disabled={isSubmitting || !imageUrl || !(artwork.description || aiDescription)}

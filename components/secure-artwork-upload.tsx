@@ -441,6 +441,7 @@ export function SecureArtworkUpload({
         <Button
           type="button"
           size="sm"
+          variant="outline"
           onClick={handleClick}
           disabled={disabled || isUploading || isScanning || !artworkTitle.trim()}
           className="text-sm px-3 py-2"

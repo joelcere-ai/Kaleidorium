@@ -160,13 +160,14 @@ export function ProfilePictureUpload({
           <Button
             type="button"
             size="sm"
+            variant="outline"
             onClick={handleClick}
             disabled={disabled || isOptimizing || isScanning}
           >
             {isScanning ? (
               <>
                 <Shield className="w-4 h-4 mr-2 animate-spin" />
-                "Scanning for threats..."
+                Scanning for threats...
               </>
             ) : isOptimizing ? (
               "Optimizing..."

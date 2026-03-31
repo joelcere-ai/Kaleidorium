@@ -325,7 +325,7 @@ function GalleryRegisterContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FAFAF8]">
       {/* Header */}
       {isMobile ? (
         <NewMobileHeader currentPage="for-galleries" setView={(view) => {
@@ -367,7 +367,7 @@ function GalleryRegisterContent() {
 
         {!isInviteVerified ? (
           <div className="space-y-6">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+            <div className="bg-white border border-[#E6E4DF] rounded-2xl p-6" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
               <h2 className="text-lg font-sans font-bold text-black mb-4" style={{fontFamily: 'Arial, sans-serif'}}>
                 Verify Your Invitation
               </h2>
@@ -410,18 +410,19 @@ function GalleryRegisterContent() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans"
+                  variant="outline"
+                  className="w-full font-sans"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Verify Invitation
                 </Button>
               </form>
-              <div className="mt-6 p-5 bg-blue-50 border border-blue-100 rounded-lg" style={{fontFamily: 'Arial, sans-serif'}}>
-                <p className="text-sm font-semibold text-blue-800 mb-3">Need Help?</p>
-                <div className="space-y-3 text-sm text-blue-700 leading-relaxed">
+              <div className="mt-6 p-5 bg-[#F6F4FB] border border-[#DDD6F2] rounded-2xl" style={{fontFamily: 'Arial, sans-serif'}}>
+                <p className="text-sm font-semibold text-[#4F4564] mb-3">Need Help?</p>
+                <div className="space-y-3 text-sm text-[#6E62A6] leading-relaxed">
                   <p>
                     <span className="font-medium">Don't have a token?</span> Gallery registration requires an invitation from our team.{" "}
-                    <a href="/?view=why-kaleidorium&role=gallery" className="underline hover:text-blue-900">
+                    <a href="/?view=why-kaleidorium&role=gallery" className="underline hover:text-[#4F4564]">
                       Submit your gallery for review
                     </a>{" "}
                     to be considered.
@@ -548,7 +549,7 @@ function GalleryRegisterContent() {
               id="country"
               value={gallery.country}
               onChange={(e) => setGallery({ ...gallery, country: e.target.value })}
-              className="w-full px-3 py-2 border rounded-md font-sans"
+              className="w-full px-3 py-2 border border-[#E6E4DF] rounded-[12px] bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent font-sans"
             >
               <option value="">Select a country</option>
               {countries.map((country) => (
@@ -609,7 +610,7 @@ function GalleryRegisterContent() {
                 id="notificationConsent"
                 checked={gallery.notificationConsent}
                 onChange={(e) => setGallery({ ...gallery, notificationConsent: e.target.checked })}
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mt-1 h-4 w-4 text-[#4F4564] focus:ring-[#D9CFF7] border-[#E6E4DF] rounded"
               />
               <label htmlFor="notificationConsent" className="text-sm font-sans text-black leading-relaxed font-normal" style={{fontFamily: 'Arial, sans-serif'}}>
                 Tick this box to receive the odd communication from Kaleidorium.
@@ -621,7 +622,8 @@ function GalleryRegisterContent() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all font-sans"
+            variant="outline"
+            className="w-full font-sans"
             style={{fontFamily: 'Arial, sans-serif'}}
           >
             {isSubmitting ? "Creating Account..." : "Register as Gallery"}
