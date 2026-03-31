@@ -1370,13 +1370,13 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
             </div>
 
             {(selectedRegistrationType === "artist" || selectedRegistrationType === "gallery") && (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                <p className="text-blue-700 font-sans text-sm">
+              <div className="p-4 bg-[#F6F4FB] border border-[#DDD6F2] rounded-[16px] text-sm">
+                <p className="text-[#6E62A6] font-sans text-sm">
                   <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
                   {" "}Don't have a token yet?{" "}
                   <a
                     href={`/?view=why-kaleidorium&role=${selectedRegistrationType}`}
-                    className="underline font-semibold hover:text-blue-900"
+                    className="underline font-semibold hover:text-[#4F4564]"
                   >
                     Submit your {selectedRegistrationType === "artist" ? "portfolio" : "gallery"} for review
                   </a>
@@ -1471,7 +1471,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                   <div>
                     <CardTitle className="text-lg">Your Art Preferences</CardTitle>
                   </div>
-                  <Button className="bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" size="sm" onClick={generateInsights} disabled={isGenerating}>
+                  <Button variant="outline" size="sm" onClick={generateInsights} disabled={isGenerating}>
                     <RefreshCw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
                     Refresh Insights
                   </Button>
@@ -1764,14 +1764,14 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                           checked={notificationConsent}
                           onChange={(e) => handleNotificationConsentChange(e.target.checked)}
                           disabled={updatingConsent}
-                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="mt-1 h-4 w-4 text-[#4F4564] focus:ring-[#D9CFF7] border-[#E6E4DF] rounded"
                         />
                         <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
                           Be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
                         </label>
                       </div>
                       {updatingConsent && (
-                        <p className="text-sm text-blue-600">Updating preferences...</p>
+                        <p className="text-sm text-[#6E62A6]">Updating preferences...</p>
                       )}
                     </div>
                     
@@ -1849,7 +1849,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                                 href={artistData.website} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline"
+                                className="text-[#6E62A6] hover:underline"
                               >
                                 {artistData.website}
                               </a>

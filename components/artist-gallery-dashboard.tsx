@@ -834,7 +834,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-white border border-[#E6E4DF] rounded-[20px]" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Loading...</p>
         </CardContent>
@@ -846,14 +846,14 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
     <div className="space-y-6">
       {/* Gallery: Manage Artists Section */}
       {isGallery && (
-        <Card>
+        <Card className="bg-white border border-[#E6E4DF] rounded-[20px]" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>My Artists</CardTitle>
                 <CardDescription>Manage artists in your gallery</CardDescription>
               </div>
-              <Button onClick={() => setShowAddArtist(true)}>
+              <Button variant="outline" onClick={() => setShowAddArtist(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Artist
               </Button>
@@ -893,12 +893,12 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" disabled={creatingArtist}>
+                  <Button type="submit" variant="outline" disabled={creatingArtist}>
                     {creatingArtist ? (editingArtist ? "Updating..." : "Creating...") : (editingArtist ? "Update Artist" : "Create Artist")}
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => {
                       setShowAddArtist(false);
                       setNewArtistName("");
@@ -919,7 +919,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                   managedArtists.map((artist) => (
                     <div
                       key={artist.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className="flex items-center justify-between p-4 border border-[#E6E4DF] rounded-[16px] bg-white"
                     >
                       <div>
                         <p className="font-medium">{artist.username}</p>
@@ -952,7 +952,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => handleDeleteArtist(artist.id, artist.username)}
-                                className="bg-red-600 hover:bg-red-700"
+                                className="bg-[#FBEFF0] border border-[#E7C4C7] text-[#A35D66] hover:brightness-[0.97]"
                               >
                                 Delete
                               </AlertDialogAction>
@@ -970,7 +970,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
       )}
 
       {/* Upload Artwork Section */}
-      <Card>
+      <Card className="bg-white border border-[#E6E4DF] rounded-[20px]" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -979,7 +979,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 {isGallery ? "Upload and manage artworks for your artists" : "Upload and manage your artworks"}
               </CardDescription>
             </div>
-            <Button onClick={() => setShowUploadArtwork(true)}>
+            <Button variant="outline" onClick={() => setShowUploadArtwork(true)}>
               <Upload className="mr-2 h-4 w-4" />
               Upload Artwork
             </Button>
@@ -995,7 +995,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                     id="selectArtist"
                     value={selectedArtistId || ""}
                     onChange={(e) => setSelectedArtistId(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-[#E6E4DF] rounded-[12px] bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
                     required
                   >
                     <option value="">Choose an artist...</option>
@@ -1053,7 +1053,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                     id="artworkMedium"
                     value={artworkMedium}
                     onChange={(e) => setArtworkMedium(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-[#E6E4DF] rounded-[12px] bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
                     required
                   >
                     <option value="">Select Artwork Type</option>
@@ -1094,6 +1094,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                   <Button 
                     type="button" 
                     onClick={handleAIDescription} 
+                    variant="outline"
                     className="mt-2 px-4 py-2 text-sm" 
                     disabled={aiLoading || !artworkImageUrl}
                   >
@@ -1106,7 +1107,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 {artworkTags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {artworkTags.map((tag) => (
-                      <span key={tag} className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs">{tag}</span>
+                      <span key={tag} className="chip-soft">{tag}</span>
                     ))}
                   </div>
                 )}
@@ -1134,7 +1135,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                     id="artworkCurrency"
                     value={artworkCurrency}
                     onChange={(e) => setArtworkCurrency(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-[#E6E4DF] rounded-[12px] bg-white focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
                     required
                   >
                     {currencyOptions.map((c) => (
@@ -1159,13 +1160,13 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
 
               {/* Note: Style, Genre, Subject, and Colour are automatically populated by the Kurator AI when you click "Generate AI Description" */}
 
-                <div className="flex gap-2">
-                <Button type="submit" disabled={uploadingArtwork || (isGallery && !selectedArtistId)}>
+              <div className="flex gap-2">
+                <Button type="submit" variant="outline" disabled={uploadingArtwork || (isGallery && !selectedArtistId)}>
                   {uploadingArtwork ? (editingArtwork ? "Updating..." : "Uploading...") : (editingArtwork ? "Update Artwork" : "Upload Artwork")}
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => {
                     setShowUploadArtwork(false);
                     setArtworkTitle("");
@@ -1200,18 +1201,18 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {artworks.map((artwork) => (
-                    <div key={artwork.id} className="border rounded-lg p-4 space-y-2">
+                    <div key={artwork.id} className="border border-[#E6E4DF] rounded-[20px] p-4 space-y-3 bg-white" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
                       <img
                         src={artwork.artwork_image}
                         alt={artwork.artwork_title}
-                        className="w-full h-48 object-cover rounded"
+                        className="w-full h-48 object-cover rounded-[16px]"
                       />
                       <div>
                         <p className="font-medium">{artwork.artwork_title}</p>
                         <p className="text-sm text-muted-foreground">by {artwork.artist}</p>
                       </div>
                       {/* Performance Metrics */}
-                      <div className="flex gap-4 text-sm text-muted-foreground pt-2 border-t">
+                      <div className="flex gap-4 text-sm text-muted-foreground pt-2 border-t border-[#E6E4DF]">
                         <div>
                           <span className="font-medium">Views:</span> {artwork.views || 0}
                         </div>
@@ -1247,7 +1248,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => handleDeleteArtwork(artwork.id, artwork.artwork_title)}
-                                className="bg-red-600 hover:bg-red-700"
+                                className="bg-[#FBEFF0] border border-[#E7C4C7] text-[#A35D66] hover:brightness-[0.97]"
                               >
                                 Delete
                               </AlertDialogAction>
