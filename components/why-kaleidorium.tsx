@@ -89,7 +89,7 @@ const ROLE_CARDS: {
   {
     role: "artist",
     label: "Artist",
-    tagline: "Get your work in front of collectors who will truely appreciate it",
+    tagline: "Get your work in front of collectors who will truely appreciate it.",
     colors: {
       bg: "#FAFAFA", border: "#D8D8D8", text: "#222222",
       activeBg: "#FFFFFF", activeBorder: "#222222", activeText: "#000000",
@@ -98,7 +98,7 @@ const ROLE_CARDS: {
   {
     role: "gallery",
     label: "Gallery",
-    tagline: "Grow your collector base effortlessly",
+    tagline: "Grow your collector base effortlessly.",
     colors: {
       bg: "#FDF4F4", border: "#E6CACA", text: "#9B4B4B",
       activeBg: "#F8ECEC", activeBorder: "#9B4B4B", activeText: "#7A2E2E",
