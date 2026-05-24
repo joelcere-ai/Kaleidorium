@@ -263,3 +263,4 @@ export function KuratorInsight({
     </div>
   )
 }
+

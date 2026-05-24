@@ -41,8 +41,8 @@ function pickMessage(count: number, isRegistered: boolean): BannerMessage {
 
   if (count === 0) {
     return {
-      headline: "Your Kurator is ready",
-      sub: "Start swiping to discover art matched to your taste",
+      headline: "Kaleidorium — your personal art curator",
+      sub: "Swipe to discover art matched to your taste",
     }
   }
 
@@ -158,3 +158,4 @@ export function KuratorBanner({ localPreferences, isRegistered, newArtworkCount 
 
 // Export the orb so both banner and insight can share the same style
 export { KuratorOrb }
+

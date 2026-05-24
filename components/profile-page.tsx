@@ -35,6 +35,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+const profileTabTriggerClass =
+  "rounded-md px-3 py-2 text-sm font-medium text-[#6B6578] transition-colors hover:text-[#4F4564] data-[state=active]:bg-[#F5F0FF] data-[state=active]:text-[#4F4564] data-[state=active]:border data-[state=active]:border-[#D9CFF7] data-[state=active]:shadow-none"
+
 interface ProfilePageProps {
   collection: Artwork[]
   onReturnToDiscover: () => void
@@ -1457,12 +1460,26 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
 
         <div className="lg:w-3/4">
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className={`grid w-full ${isArtist || isGallery ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            <TabsList
+              className={`grid w-full h-auto gap-1 p-1 bg-[#FAFAF8] border border-[#E6E4DF] rounded-lg ${
+                isArtist ? "grid-cols-3" : isGallery ? "grid-cols-2" : "grid-cols-1"
+              }`}
+            >
               {/* Art Preferences tab hidden - functionality moved to Collection page */}
               {/* <TabsTrigger value="preferences">Art Preferences</TabsTrigger> */}
-              {(isArtist || isGallery) && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
-              {isArtist && <TabsTrigger value="portfolio">Portfolio</TabsTrigger>}
-              <TabsTrigger value="account">Account Information</TabsTrigger>
+              {(isArtist || isGallery) && (
+                <TabsTrigger value="dashboard" className={profileTabTriggerClass}>
+                  Dashboard
+                </TabsTrigger>
+              )}
+              {isArtist && (
+                <TabsTrigger value="portfolio" className={profileTabTriggerClass}>
+                  Portfolio
+                </TabsTrigger>
+              )}
+              <TabsTrigger value="account" className={profileTabTriggerClass}>
+                Account Information
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="preferences" className="mt-6">

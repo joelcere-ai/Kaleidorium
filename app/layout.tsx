@@ -18,7 +18,7 @@ import { NavigationProvider } from "@/components/navigation-context"
 
 export const metadata: Metadata = {
   title: "Kaleidorium – Your Personal Art Curator",
-  description: "Your personal art curator. Swipe. Discover. Fall in Love (with Art).",
+  description: "Kaleidorium is your personal art curator. Swipe to discover art matched to your taste and collect what you love.",
   keywords: [
     "digital art finder",
     "contemporary art online", 
@@ -52,11 +52,11 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.kaleidorium.com',
     title: 'Kaleidorium – Your Personal Art Curator',
-    description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
+    description: 'Kaleidorium is your personal art curator. Swipe to discover art matched to your taste and collect what you love.',
     siteName: 'Kaleidorium',
     images: [
       {
-        url: '/logos/kaleidorium-icon-512.png',
+        url: 'https://www.kaleidorium.com/logos/kaleidorium-icon-512.png',
         width: 512,
         height: 512,
         alt: 'Kaleidorium - Art Discovery Platform',
@@ -66,8 +66,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Kaleidorium – Your Personal Art Curator',
-    description: 'Your personal art curator. Swipe. Discover. Fall in Love (with Art).',
-    images: ['/logos/kaleidorium-icon-512.png'],
+    description: 'Kaleidorium is your personal art curator. Swipe to discover art matched to your taste and collect what you love.',
+    images: ['https://www.kaleidorium.com/logos/kaleidorium-icon-512.png'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
   },
@@ -133,12 +133,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Favicon - Load FIRST to prevent flash of old favicon */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=9" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=9" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=9" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=9" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=9" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=9" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=10" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=10" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=10" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=10" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=10" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=10" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Kaleidorium",
+              url: "https://www.kaleidorium.com/",
+              logo: "https://www.kaleidorium.com/logos/kaleidorium-icon-512.png",
+              sameAs: ["https://www.instagram.com/kaleidorium/"],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Kaleidorium",
+              url: "https://www.kaleidorium.com/",
+            }),
+          }}
+        />
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NYJYN06VB"></script>
         <script
