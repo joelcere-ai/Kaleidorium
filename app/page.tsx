@@ -394,6 +394,12 @@ function HomeContent() {
       }
 
       if (artworkIds.length === 0) {
+        const tempFallback = loadTempCollection();
+        if (tempFallback.length > 0) {
+          setCollection(tempFallback);
+          setCollectionCount(tempFallback.length);
+          return;
+        }
         setDbCollection([]);
         setCollectionCount(0);
         return;
@@ -432,22 +438,12 @@ function HomeContent() {
     fetchUserCollection();
   }, [fetchUserCollection]);
 
-  // When ArtDiscovery signals a count change, re-sync page-level state
-  useEffect(() => {
-    syncCollection();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collectionCount]);
+  const resolveActiveCollection = useCallback((): Artwork[] => {
+    if (!user) return collection;
+    return dbCollection.length > 0 ? dbCollection : collection;
+  }, [user, dbCollection, collection]);
 
-  // Keep collectionCount in sync for anonymous users only.
-  // For registered users the count is authoritative from fetchUserCollection above.
-  useEffect(() => {
-    if (!user) {
-      const actualCount = collection.length;
-      if (actualCount !== collectionCount) {
-        setCollectionCount(actualCount);
-      }
-    }
-  }, [collection.length, user, collectionCount]);
+  const displayCollectionCount = resolveActiveCollection().length;
 
   // Initialize user authentication
   useEffect(() => {
@@ -536,7 +532,7 @@ function HomeContent() {
   const generateInsights = useCallback(async () => {
     if (isGenerating) return
     // Use the correct collection source for registered vs anonymous users
-    const activeCollection = user ? dbCollection : collection
+    const activeCollection = resolveActiveCollection()
     lastGeneratedForRef.current = activeCollection.length
     setIsGenerating(true)
     try {
@@ -577,13 +573,13 @@ function HomeContent() {
       setIsGenerating(false)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGenerating, user, dbCollection, collection])
+  }, [isGenerating, user, dbCollection, collection, resolveActiveCollection])
 
   // Auto-generate insights whenever the user opens the collection view,
   // but only when the collection has actually changed since last run.
   useEffect(() => {
     if (view !== "collection") return
-    const activeCollection = user ? dbCollection : collection
+    const activeCollection = resolveActiveCollection()
     if (activeCollection.length === 0) return
     if (activeCollection.length === lastGeneratedForRef.current) return
     generateInsights()
@@ -991,12 +987,12 @@ function HomeContent() {
   // Render appropriate header based on view
   const renderHeader = () => {
     if (isMobile) {
-      return <NewMobileHeader currentPage={view} collectionCount={collectionCount} setView={setView} />;
+      return <NewMobileHeader currentPage={view} collectionCount={displayCollectionCount} setView={setView} />;
     } else {
       return (
         <DesktopHeader 
           currentPage={view} 
-          collectionCount={collectionCount} 
+          collectionCount={displayCollectionCount} 
           setView={setView}
           onToggleFilters={() => {
             // Call the global toggle function from ArtDiscovery component
@@ -1030,7 +1026,7 @@ function HomeContent() {
         );
       
       case "collection": {
-        const activeCollection = user ? dbCollection : collection;
+        const activeCollection = resolveActiveCollection();
         return (
           <div className="flex-1 overflow-y-auto">
             {isMobile ? (

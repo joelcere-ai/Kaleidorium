@@ -250,7 +250,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   const loadTemporaryCollection = (): Artwork[] => loadTempCollection();
 
-  // Load temporary collection on mount for anonymous users
+  // Auth — must match page.tsx so likes save to DB when logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ? { id: session.user.id } : null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? { id: session.user.id } : null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Load temporary collection on mount for anonymous users only
   useEffect(() => {
     if (mounted && !user) {
       const savedCollection = loadTemporaryCollection();
@@ -259,11 +270,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [mounted, user, setCollectionCount]);
 
-  // Update collection count when collection changes
+  // Keep header count in sync (anonymous → local collection, logged-in → DB)
   useEffect(() => {
     if (!user) {
       setCollectionCount(collection.length);
-    } else {
+    } else if (dbCollection.length > 0) {
       setCollectionCount(dbCollection.length);
     }
   }, [collection.length, dbCollection.length, user, setCollectionCount]);
@@ -1001,9 +1012,18 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             variant: "destructive",
           });
           return;
-        } else {
-          fetchUserCollection();
         }
+        setDbCollection((prev) =>
+          prev.some((item) => item.id === artwork.id) ? prev : [...prev, artwork]
+        );
+        await fetchUserCollection();
+        onCollectionSync?.();
+      } else {
+        setDbCollection((prev) =>
+          prev.some((item) => item.id === artwork.id) ? prev : [...prev, artwork]
+        );
+        await fetchUserCollection();
+        onCollectionSync?.();
       }
     }
 
@@ -1027,6 +1047,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     toast,
     user,
     artworks,
+    onCollectionSync,
     localPreferences,
     trackInteraction,
     collection,
@@ -1109,6 +1130,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
         if (insertError) {
           console.error('Insert error:', insertError);
+          // Fall back to local storage so the collection isn't lost
+          if (!collection.some((item) => item.id === artwork.id)) {
+            const fallback = [...collection, artwork];
+            setCollection(fallback);
+            saveTemporaryCollection(fallback);
+          }
           toast({
             title: "Error saving to collection",
             description: insertError.message,
@@ -1116,9 +1143,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           });
           return false;
         }
+        setDbCollection((prev) =>
+          prev.some((item) => item.id === artwork.id) ? prev : [...prev, artwork]
+        );
         await fetchUserCollection();
         onCollectionSync?.();
       } else {
+        setDbCollection((prev) =>
+          prev.some((item) => item.id === artwork.id) ? prev : [...prev, artwork]
+        );
         await fetchUserCollection();
         onCollectionSync?.();
       }
