@@ -20,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 import { WhyKaleidoriumPage } from "@/components/why-kaleidorium";
+import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection";
+import type { Artwork } from "@/types/artwork";
 
 // Defined outside HomeContent to avoid remounting on every parent re-render
 // (keyboard appearing on mobile caused window.resize → HomeContent re-render → form unmount)
@@ -323,26 +325,45 @@ function HomeContent() {
     }
   };
 
-  // Load collection from localStorage
+  const loadCollectionFromStorage = useCallback(() => {
+    const parsed = loadTempCollection();
+    setCollection(parsed);
+    if (!user) {
+      setCollectionCount(parsed.length);
+    }
+    return parsed;
+  }, [user]);
+
+  // Load anonymous collection from localStorage on mount
   useEffect(() => {
-    const loadCollection = () => {
-      try {
-        const savedCollection = localStorage.getItem('kaleidorium_temp_collection');
-        console.log('Loading collection from localStorage:', savedCollection);
-        if (savedCollection) {
-          const parsedCollection = JSON.parse(savedCollection);
-          console.log('Parsed collection:', parsedCollection);
-          setCollection(parsedCollection);
-          setCollectionCount(parsedCollection.length);
-        } else {
-          console.log('No collection found in localStorage');
+    loadCollectionFromStorage();
+  }, [loadCollectionFromStorage]);
+
+  const migrateTempCollectionToDb = useCallback(async (userId: string) => {
+    const tempItems = loadTempCollection();
+    if (tempItems.length === 0) return false;
+
+    for (const artwork of tempItems) {
+      if (!artwork?.id) continue;
+      const { data: existing } = await supabase
+        .from('Collection')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('artwork_id', Number(artwork.id))
+        .maybeSingle();
+
+      if (!existing) {
+        const { error: insertError } = await supabase
+          .from('Collection')
+          .insert({ user_id: userId, artwork_id: Number(artwork.id) });
+        if (insertError) {
+          console.error('Error migrating artwork to collection:', insertError);
         }
-      } catch (error) {
-        console.error('Error loading collection:', error);
       }
-    };
-    
-    loadCollection();
+    }
+
+    localStorage.removeItem('kaleidorium_temp_collection');
+    return true;
   }, []);
 
   // ── Fetch registered user's DB collection ────────────────────────────────
@@ -359,7 +380,19 @@ function HomeContent() {
         return;
       }
 
-      const artworkIds = collectionRows?.map((row: { artwork_id: number }) => row.artwork_id) || [];
+      let artworkIds = collectionRows?.map((row: { artwork_id: number }) => row.artwork_id) || [];
+
+      if (artworkIds.length === 0) {
+        const migrated = await migrateTempCollectionToDb(user.id);
+        if (migrated) {
+          const { data: rowsAfterMigration } = await supabase
+            .from('Collection')
+            .select('artwork_id')
+            .eq('user_id', user.id);
+          artworkIds = rowsAfterMigration?.map((row: { artwork_id: number }) => row.artwork_id) || [];
+        }
+      }
+
       if (artworkIds.length === 0) {
         setDbCollection([]);
         setCollectionCount(0);
@@ -378,26 +411,30 @@ function HomeContent() {
     } catch (error) {
       console.error('Error in fetchUserCollection:', error);
     }
-  }, [user]);
+  }, [user, migrateTempCollectionToDb]);
+
+  const syncCollection = useCallback(() => {
+    if (user) {
+      fetchUserCollection();
+    } else {
+      loadCollectionFromStorage();
+    }
+  }, [user, fetchUserCollection, loadCollectionFromStorage]);
+
+  // Refresh collection whenever the user opens the Collection view
+  useEffect(() => {
+    if (view !== 'collection') return;
+    syncCollection();
+  }, [view, syncCollection]);
 
   // Fetch on login / user change
   useEffect(() => {
     fetchUserCollection();
   }, [fetchUserCollection]);
 
-  // When ArtDiscovery signals a count change (collectionCount prop callback),
-  // re-sync page-level state:
-  // • Registered users  → re-fetch DB so the collection view stays current
-  // • Anonymous users   → reload from localStorage
+  // When ArtDiscovery signals a count change, re-sync page-level state
   useEffect(() => {
-    if (user) {
-      fetchUserCollection();
-    } else {
-      try {
-        const saved = localStorage.getItem('kaleidorium_temp_collection');
-        if (saved) setCollection(JSON.parse(saved));
-      } catch { /* ignore */ }
-    }
+    syncCollection();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collectionCount]);
 
@@ -425,9 +462,10 @@ function HomeContent() {
 
 
   // Enhanced localStorage helpers for temporary collection
-  const saveTemporaryCollection = (newCollection: any[]) => {
+  const saveTemporaryCollection = (newCollection: Artwork[]) => {
     try {
-      localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(newCollection));
+      saveTempCollection(newCollection);
+      setCollection(newCollection);
       setCollectionCount(newCollection.length);
     } catch (error) {
       console.error('Failed to save temporary collection:', error);
@@ -979,17 +1017,28 @@ function HomeContent() {
   const renderContent = () => {
     switch (view) {
       case "discover":
-        return <ArtDiscovery view="discover" setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} selectedArtworkId={getArtworkId()} onToggleDesktopFilters={() => {}} />;
+        return (
+          <ArtDiscovery
+            view="discover"
+            setView={setView}
+            collectionCount={collectionCount}
+            setCollectionCount={setCollectionCount}
+            onCollectionSync={syncCollection}
+            selectedArtworkId={getArtworkId()}
+            onToggleDesktopFilters={() => {}}
+          />
+        );
       
-      case "collection":
+      case "collection": {
+        const activeCollection = user ? dbCollection : collection;
         return (
           <div className="flex-1 overflow-y-auto">
             {isMobile ? (
               <MobileCardStack
-                artworks={user ? dbCollection : collection}
+                artworks={activeCollection}
                 view="collection"
                 setView={setView}
-                collection={user ? dbCollection : collection}
+                collection={activeCollection}
                 onRemoveFromCollection={handleRemoveFromCollection}
                 onLike={() => {}}
                 onDislike={() => {}}
@@ -1090,14 +1139,14 @@ function HomeContent() {
                 {/* ── Your Collection section ──────────────────────────────── */}
                 <div className="mb-5">
                   <h2 className="text-xl font-bold text-gray-900">
-                    Your Collection ({(user ? dbCollection : collection).length})
+                    Your Collection ({activeCollection.length})
                   </h2>
                   <p className="text-sm text-gray-400 mt-0.5">The works shaping your collector profile</p>
                 </div>
 
-                {(user ? dbCollection : collection).length === 0 ? null : (
+                {activeCollection.length === 0 ? null : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(user ? dbCollection : collection).map((artwork) => (
+                    {activeCollection.map((artwork) => (
                       <Card key={artwork.id} className="overflow-hidden group hover:shadow-md transition-shadow">
                         <div
                           className="aspect-square overflow-hidden bg-gray-100 cursor-pointer"
@@ -1140,11 +1189,12 @@ function HomeContent() {
             )}
           </div>
         );
+      }
       
       case "profile":
         return (
           <div className="flex-1 overflow-y-auto">
-            <ProfilePage collection={collection} onReturnToDiscover={() => setView("discover")} />
+            <ProfilePage collection={user ? dbCollection : collection} onReturnToDiscover={() => setView("discover")} />
           </div>
         );
       
@@ -2445,7 +2495,16 @@ function HomeContent() {
         );
       
       default:
-        return <ArtDiscovery view="discover" setView={setView} collectionCount={collectionCount} setCollectionCount={setCollectionCount} selectedArtworkId={getArtworkId()} />;
+        return (
+          <ArtDiscovery
+            view="discover"
+            setView={setView}
+            collectionCount={collectionCount}
+            setCollectionCount={setCollectionCount}
+            onCollectionSync={syncCollection}
+            selectedArtworkId={getArtworkId()}
+          />
+        );
     }
   };
 

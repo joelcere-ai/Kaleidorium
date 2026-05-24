@@ -56,7 +56,7 @@ interface CardStackProps {
   currentIndex: number
   onLike: (artwork: Artwork) => void
   onDislike: (artwork: Artwork) => void
-  onAddToCollection: (artwork: Artwork) => void
+  onAddToCollection: (artwork: Artwork) => void | Promise<void | boolean>
   onNext: () => void
   onLoadMore: () => void
   onImageClick: (url: string, alt: string) => void
@@ -142,14 +142,17 @@ export default function CardStack({
 
 const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
     switch (action) {
-      case 'like':
+      case 'like': {
       await onLike(artwork)
-      await onAddToCollection(artwork)
-      toast({
-        title: "Added to your collection",
-        description: `"${artwork.title}" by ${artwork.artist}`,
-      })
+      const added = await onAddToCollection(artwork)
+      if (added !== false) {
+        toast({
+          title: "Added to your collection",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
+      }
         break
+      }
       case 'dislike':
       await onDislike(artwork)
         toast({

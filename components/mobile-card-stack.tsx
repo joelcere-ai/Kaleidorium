@@ -61,7 +61,7 @@ interface MobileCardStackProps {
   artworks: Artwork[]
   onLike: (artwork: Artwork) => void
   onDislike: (artwork: Artwork) => void
-  onAddToCollection: (artwork: Artwork) => void
+  onAddToCollection: (artwork: Artwork) => void | Promise<void | boolean>
   onLoadMore: () => void
   setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   view: "discover" | "collection"
@@ -392,13 +392,15 @@ const [buttonStates, setButtonStates] = useState<{
       
       // Execute action immediately without waiting for animation
       if (currentX.current > 0) {
-        // Swipe right - Like (capture & save)
+        // Swipe right - add to collection (also records like via handler)
         await onLike(artwork)
-        await onAddToCollection(artwork)
-        toast({
-          title: "Added to your collection",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
+        const added = await onAddToCollection(artwork)
+        if (added !== false) {
+          toast({
+            title: "Added to your collection",
+            description: `"${artwork.title}" by ${artwork.artist}`,
+          })
+        }
       } else {
         // Swipe left - Dislike
         onDislike(artwork)
@@ -589,11 +591,13 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     switch (action) {
       case 'like': {
         await onLike(artwork)
-        await onAddToCollection(artwork)
-        toast({
-          title: "Added to your collection",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
+        const added = await onAddToCollection(artwork)
+        if (added !== false) {
+          toast({
+            title: "Added to your collection",
+            description: `"${artwork.title}" by ${artwork.artist}`,
+          })
+        }
         break
       }
       case 'dislike':

@@ -38,6 +38,7 @@ import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
 import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
+import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
@@ -50,11 +51,12 @@ interface ArtDiscoveryProps {
   setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
+  onCollectionSync?: () => void;
   selectedArtworkId?: string | null;
   onToggleDesktopFilters?: () => void;
 }
 
-export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, selectedArtworkId, onToggleDesktopFilters }: ArtDiscoveryProps) {
+export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, onCollectionSync, selectedArtworkId, onToggleDesktopFilters }: ArtDiscoveryProps) {
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -238,22 +240,15 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   // Enhanced localStorage helpers for temporary collection
   const saveTemporaryCollection = (newCollection: Artwork[]) => {
     try {
-      localStorage.setItem('kaleidorium_temp_collection', JSON.stringify(newCollection));
+      saveTempCollection(newCollection);
       setCollectionCount(newCollection.length);
+      onCollectionSync?.();
     } catch (error) {
       console.error('Failed to save temporary collection:', error);
     }
   };
 
-  const loadTemporaryCollection = (): Artwork[] => {
-    try {
-      const saved = localStorage.getItem('kaleidorium_temp_collection');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Failed to load temporary collection:', error);
-      return [];
-    }
-  };
+  const loadTemporaryCollection = (): Artwork[] => loadTempCollection();
 
   // Load temporary collection on mount for anonymous users
   useEffect(() => {
@@ -1047,9 +1042,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   ]);
 
   // Enhanced handleAddToCollection with localStorage persistence
-  const handleAddToCollection = useCallback(async (artworkParam?: Artwork) => {
+  const handleAddToCollection = useCallback(async (artworkParam?: Artwork): Promise<boolean> => {
     const artwork = artworkParam || currentArtwork;
-    if (!mounted || !artwork) return;
+    if (!mounted || !artwork?.id) return false;
     
     // Track interaction for registration prompt
     trackInteraction();
@@ -1059,26 +1054,23 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     if (!user) {
       const updatedPreferences = updateLocalPreferences(artwork, 'add');
-      if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
+      if (!collection.some((item) => item.id === artwork.id)) {
         const newCollection = [...collection, artwork];
         setCollection(newCollection);
         saveTemporaryCollection(newCollection); // Persist to localStorage
-        // Note: Toast message is handled by the calling component (CardStack/MobileCardStack)
+        const recommendedArtworks = getLocalRecommendations(artworks, updatedPreferences);
+        setArtworks(recommendedArtworks);
+        const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
+        setCurrentIndex(newIndex);
+        saveDiscoverSession();
+        if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
+          setShowEndOfMatchesOverlay(true);
+        }
+        return true;
       }
-      // Pass updatedPreferences directly to use fresh add weights (fixes stale state issue)
-      const recommendedArtworks = getLocalRecommendations(artworks, updatedPreferences);
-      setArtworks(recommendedArtworks);
-      const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
-      setCurrentIndex(newIndex);
-      // Save session after updating artworks
-      saveDiscoverSession();
-      // Check for end of matches
-      if (checkEndOfMatches(recommendedArtworks, [...localPreferences.viewed_artworks, artwork.id])) {
-        setShowEndOfMatchesOverlay(true);
-      }
-      return;
+      return false;
     }
-    if (!await handleAuthAction('add', artwork)) return;
+    if (!await handleAuthAction('add', artwork)) return false;
     const newPreferences = await updatePreferences(user.id, artwork, 'add');
     if (newPreferences) {
       const recommendedArtworks = await getRecommendations(user.id, artworks);
@@ -1106,8 +1098,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           description: "Could not check your collection. Please try again.",
           variant: "destructive",
         });
-        // Return to prevent advancing to the next artwork if the check fails.
-        return;
+        return false;
       }
 
       if (!existing) {
@@ -1123,17 +1114,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             description: insertError.message,
             variant: "destructive",
           });
-        } else {
-          // Note: Success toast message is handled by the calling component (CardStack/MobileCardStack)
-          fetchUserCollection(); // Refetch the collection.
+          return false;
         }
+        await fetchUserCollection();
+        onCollectionSync?.();
       } else {
-        // Note: "Already in collection" toast message is handled by the calling component
+        await fetchUserCollection();
+        onCollectionSync?.();
       }
     }
     const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession]);
+    return true;
+  }, [mounted, currentArtwork, currentIndex, artworks.length, collection, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession, onCollectionSync]);
 
   // Load recommendations in background without blocking the main loading
   const loadRecommendationsInBackground = useCallback(async (userId: string, defaultArtworks: Artwork[]) => {
@@ -1990,9 +1983,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await handleDislike(artwork);
   };
 
-  const handleMobileAddToCollection = async (artwork: Artwork) => {
-    // Use the same logic as desktop handleAddToCollection, passing the artwork parameter
-    await handleAddToCollection(artwork);
+  const handleMobileAddToCollection = async (artwork: Artwork): Promise<boolean> => {
+    return handleAddToCollection(artwork);
   };
 
   // Desktop CardStack wrapper functions to match the expected interface
@@ -2004,8 +1996,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     await handleDislike(artwork);
   };
 
-  const handleDesktopAddToCollection = async (artwork: Artwork) => {
-    await handleAddToCollection(artwork);
+  const handleDesktopAddToCollection = async (artwork: Artwork): Promise<boolean> => {
+    return handleAddToCollection(artwork);
   };
 
   // Add an effect to update currentArtwork when index changes
@@ -2292,7 +2284,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       .from('Artwork')
       .select('*')
       .in('id', artworkIds);
-    if (!artworkError && artworks) setDbCollection(artworks);
+    if (!artworkError && artworks) {
+      setDbCollection(artworks);
+      onCollectionSync?.();
+    }
   }
 
   // Call fetchUserCollection on mount and after add/remove
@@ -2514,7 +2509,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             onLoadMore={loadMoreArtworks}
             setView={setView}
             view={view}
-            collection={dbCollection}
+            collection={user ? dbCollection : collection}
             onRemoveFromCollection={handleRemoveFromCollection}
             onFilterChange={handleMobileFilterChange}
             onClearFilters={clearFilters}
