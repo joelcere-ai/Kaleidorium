@@ -131,7 +131,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
                 onClick={() => handleNavigation("why-kaleidorium")}
               >
                 <Info className="mr-3 h-5 w-5" />
-                Why Kaleidorium?
+                How it works?
               </Button>
 
               <Button

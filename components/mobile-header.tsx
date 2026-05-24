@@ -99,7 +99,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
-                Why Kaleidorium?
+                How it works?
               </Button>
               <Button
                 variant="ghost"

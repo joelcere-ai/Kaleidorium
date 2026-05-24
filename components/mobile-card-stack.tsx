@@ -1104,7 +1104,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   }}
                 >
                   <Info className="mr-3 h-5 w-5" />
-                  Why Kaleidorium?
+                  How it works?
                 </Button>
                 <Button
                   variant="ghost"
@@ -1840,7 +1840,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 }}
               >
                 <Info className="mr-3 h-5 w-5" />
-                Why Kaleidorium?
+                How it works?
               </Button>
               <Button
                 variant="ghost"

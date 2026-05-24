@@ -102,7 +102,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
                 onClick={() => handleNavigation("/?view=why-kaleidorium")}
               >
                 <Info className="mr-3 h-5 w-5" />
-                Why Kaleidorium?
+                How it works?
               </Button>
 
               <Button

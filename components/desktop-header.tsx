@@ -125,13 +125,13 @@ export function DesktopHeader({
             Collection ({collectionCount})
           </button>
 
-          {/* 3. Why Kaleidorium? */}
+          {/* 3. How it works? */}
           <button
             className={`${plainNavItem(isWhySelected())} ml-1`}
             onClick={() => handleNavigation("why-kaleidorium")}
           >
             <Info className="w-3.5 h-3.5 flex-shrink-0" />
-            Why Kaleidorium?
+            How it works?
           </button>
 
           {/* 4. Pricing */}
@@ -178,7 +178,7 @@ export function DesktopHeader({
             </Button>
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("why-kaleidorium")}>
-              <Info className="mr-3 h-5 w-5" />Why Kaleidorium?
+              <Info className="mr-3 h-5 w-5" />How it works?
             </Button>
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("pricing")}>
