@@ -77,7 +77,9 @@ export async function runKuratorAssistant(
     runStatus = statusData.status
     attempts++
     if (runStatus === "failed" || runStatus === "cancelled" || runStatus === "expired") {
-      throw new Error(`Kurator run ${runStatus}`)
+      const err = statusData.last_error as { message?: string; code?: string } | undefined
+      const detail = err?.message ? `: ${err.message}` : ""
+      throw new Error(`Kurator run ${runStatus}${detail}`)
     }
   }
   if (runStatus !== "completed") {

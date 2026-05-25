@@ -54,16 +54,12 @@ async function callKuratorForCollection(
   catalogue: CatalogueRow[],
   lastTheme: string | null
 ): Promise<KuratorResult> {
-  const sample = catalogue.slice(0, 400).map((a) => ({
-    id: a.id,
-    title: a.artwork_title,
-    artist: a.artist,
-    style: a.style,
-    subject: a.subject,
-    colour: a.colour,
-    tags: (a.tags || []).slice(0, 8),
-    description: (a.description || "").slice(0, 200),
-  }))
+  // Compact one-line-per-work format to stay under OpenAI TPM limits
+  const compactLines = catalogue.map((a) => {
+    const title = (a.artwork_title || "").slice(0, 40).replace(/\|/g, " ")
+    const artist = (a.artist || "").slice(0, 30).replace(/\|/g, " ")
+    return `${a.id}|${title}|${artist}|${a.style || ""}|${a.subject || ""}|${a.colour || ""}`
+  })
 
   const avoidLine = lastTheme
     ? `Do NOT repeat or closely echo last month's theme: "${lastTheme}". Choose a fresh, distinct direction.`
@@ -85,8 +81,10 @@ Respond with ONLY valid JSON:
   "artwork_ids": [1, 2, 3]
 }
 
-Catalogue (${catalogue.length} works, sample of ${sample.length}):
-${JSON.stringify(sample)}`
+Catalogue format per line: id|title|artist|style|subject|colour
+Total works: ${catalogue.length}
+
+${compactLines.join("\n")}`
 
   const raw = await runKuratorAssistant(prompt, { maxPollAttempts: 40 })
   return parseKuratorJson(raw)

@@ -1,5 +1,5 @@
--- New table only — does not modify existing tables.
--- Run in Supabase SQL Editor.
+-- Additive migration only: creates ONE new table. Does not alter any existing tables.
+-- Safe to run in Supabase SQL Editor (no DROP statements).
 
 CREATE TABLE IF NOT EXISTS curated_collections (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -15,21 +15,35 @@ CREATE INDEX IF NOT EXISTS curated_collections_month_idx ON curated_collections 
 
 ALTER TABLE curated_collections ENABLE ROW LEVEL SECURITY;
 
--- Public read for the Featured page
-DROP POLICY IF EXISTS "curated_collections_public_read" ON curated_collections;
-CREATE POLICY "curated_collections_public_read"
-  ON curated_collections
-  FOR SELECT
-  TO anon, authenticated
-  USING (true);
+-- Policies (created only if missing — no DROP)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'curated_collections'
+      AND policyname = 'curated_collections_public_read'
+  ) THEN
+    CREATE POLICY "curated_collections_public_read"
+      ON curated_collections
+      FOR SELECT
+      TO anon, authenticated
+      USING (true);
+  END IF;
 
--- Service role / edge function writes (no insert policy for anon)
-DROP POLICY IF EXISTS "curated_collections_service_write" ON curated_collections;
-CREATE POLICY "curated_collections_service_write"
-  ON curated_collections
-  FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'curated_collections'
+      AND policyname = 'curated_collections_service_write'
+  ) THEN
+    CREATE POLICY "curated_collections_service_write"
+      ON curated_collections
+      FOR ALL
+      TO service_role
+      USING (true)
+      WITH CHECK (true);
+  END IF;
+END $$;
 
 COMMENT ON TABLE curated_collections IS 'Monthly Kurator curated collections for /featured';
