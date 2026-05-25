@@ -4,7 +4,18 @@ import { useState, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp, Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+
+const KaleidoriumXIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+)
+
+const KALEIDORIUM_SITE_URL = "https://www.kaleidorium.com"
+const KALEIDORIUM_SHARE_TEXT =
+  "Discover Kaleidorium — a new art discovery engine that connects collectors and artists based on taste."
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -119,15 +130,134 @@ function ArtworkGrid() {
   ]
   return (
     <div className="flex flex-col items-center">
-      <p className="hero-strapline mb-2">
-        Art, matched to taste
-      </p>
       <div className="grid grid-cols-6 gap-1.5 max-w-lg mx-auto">
         {images.map((img) => (
           <div key={img.src} className="w-16 h-16 bg-white rounded-md overflow-hidden shadow-sm border border-gray-100">
             <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Invite an artist (site share) ───────────────────────────────────────────
+
+function InviteArtistShare() {
+  const { toast } = useToast()
+  const shareUrl = KALEIDORIUM_SITE_URL
+
+  const handleCopy = async () => {
+    const text = `${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`
+    try {
+      await navigator.clipboard.writeText(text)
+      toast({
+        title: "Link copied!",
+        description: "Paste it in a message to an artist you admire.",
+      })
+    } catch {
+      toast({
+        title: "Could not copy",
+        description: "Please copy the link manually.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  return (
+    <div
+      className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6"
+      style={{ boxShadow: "0 1px 4px rgba(20,20,20,0.04)" }}
+    >
+      <h3
+        style={{
+          fontSize: "18px",
+          fontWeight: 700,
+          color: "#1E1E1C",
+          textAlign: "center",
+          marginBottom: "8px",
+        }}
+      >
+        Invite an artist you admire
+      </h3>
+      <p
+        style={{
+          fontSize: "14px",
+          lineHeight: 1.55,
+          color: "#5F5F5A",
+          textAlign: "center",
+          maxWidth: "420px",
+          margin: "0 auto 20px",
+        }}
+      >
+        {KALEIDORIUM_SHARE_TEXT}
+      </p>
+      <p className="artwork-meta text-center mb-3">Share Kaleidorium</p>
+      <div className="flex justify-center gap-2 flex-wrap">
+        <button
+          className="share-icon-btn"
+          title="Share on X"
+          type="button"
+          onClick={() =>
+            window.open(
+              `https://twitter.com/intent/tweet?text=${encodeURIComponent(KALEIDORIUM_SHARE_TEXT)}&url=${encodeURIComponent(shareUrl)}`,
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+        >
+          <KaleidoriumXIcon className="w-[13px] h-[13px]" />
+        </button>
+        <button
+          className="share-icon-btn"
+          title="Share on Facebook"
+          type="button"
+          onClick={() =>
+            window.open(
+              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(KALEIDORIUM_SHARE_TEXT)}`,
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+        >
+          <Facebook />
+        </button>
+        <button
+          className="share-icon-btn"
+          title="Share on Instagram (copy link)"
+          type="button"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(`${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`)
+              toast({
+                title: "Link copied!",
+                description: "Paste it in your Instagram story or post.",
+              })
+            } catch {
+              handleCopy()
+            }
+          }}
+        >
+          <Instagram />
+        </button>
+        <button
+          className="share-icon-btn"
+          title="Share on WhatsApp"
+          type="button"
+          onClick={() => {
+            const whatsappText = `${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`
+            window.open(
+              `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }}
+        >
+          <MessageCircle />
+        </button>
+        <button className="share-icon-btn" title="Copy link" type="button" onClick={handleCopy}>
+          <Copy />
+        </button>
       </div>
     </div>
   )
@@ -358,6 +488,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const formRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
   const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? null)
+  const [showInvitePanel, setShowInvitePanel] = useState(false)
+  const inviteRef = useRef<HTMLDivElement>(null)
 
   // Sync role from URL query param on mount
   const searchParams = useSearchParams()
@@ -373,15 +505,25 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   }, [searchParams])
 
   const handleRoleSelect = (role: Role) => {
+    setShowInvitePanel(false)
     setSelectedRole(role)
     onRoleChange?.(role)
-    // Update URL query param without full navigation
     const url = new URL(window.location.href)
     url.searchParams.set("role", role)
     window.history.replaceState(null, "", url.toString())
-    // Scroll to How It Works so users see the value prop before the form
     setTimeout(() => {
       howItWorksRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 80)
+  }
+
+  const handleInviteSelect = () => {
+    setSelectedRole(null)
+    setShowInvitePanel(true)
+    const url = new URL(window.location.href)
+    url.searchParams.delete("role")
+    window.history.replaceState(null, "", url.toString())
+    setTimeout(() => {
+      inviteRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     }, 80)
   }
 
@@ -394,11 +536,11 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
         <div className="container mx-auto px-4 max-w-2xl text-center">
           {/* Title — inline style guarantees 26px regardless of cascade */}
           <p style={{ fontSize: '26px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.02em', color: '#1E1E1C', textAlign: 'center', marginBottom: '16px' }}>
-            Join Kaleidorium
+            Art, Matched to Taste
           </p>
           {/* Intro — 16px */}
           <p style={{ fontSize: '16px', fontWeight: 400, lineHeight: 1.6, color: '#5F5F5A', maxWidth: '520px', margin: '0 auto 24px', textAlign: 'center' }}>
-            Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience. Choose how you'd like to join below.
+            Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience.
           </p>
           {/* Artwork grid */}
           <ArtworkGrid />
@@ -407,13 +549,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
       {/* ── 2. Role selector ─────────────────────────────────────── */}
       <div className="bg-white border-b border-[#E6E4DF]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-        <div className="container mx-auto px-4 max-w-3xl">
+        <div className="container mx-auto px-4 max-w-4xl">
           <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
-            How would you like to join?
+            Explore how it works
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {ROLE_CARDS.map(({ role, label, tagline, colors }) => {
-              const active = selectedRole === role
+              const active = selectedRole === role && !showInvitePanel
               return (
                 <button
                   key={role}
@@ -454,12 +596,48 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 </button>
               )
             })}
+            <button
+              type="button"
+              onClick={handleInviteSelect}
+              style={{
+                backgroundColor: showInvitePanel ? "#F5F0FF" : "#FFFFFF",
+                borderColor: showInvitePanel ? "#9B8BB8" : "#E6E4DF",
+                border: "1px solid",
+                borderRadius: "16px",
+                padding: "18px 20px",
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                boxShadow: showInvitePanel ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  lineHeight: "1.3",
+                  color: showInvitePanel ? "#4F4564" : "#1E1E1C",
+                  marginBottom: "6px",
+                }}
+              >
+                <strong style={{ fontWeight: 700 }}>Invite an artist you admire</strong>
+              </p>
+              <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "1.55", color: "#5F5F5A" }}>
+                Share Kaleidorium with a creator you think should be discovered here.
+              </p>
+            </button>
           </div>
         </div>
       </div>
 
       {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
-      {selectedRole && (
+      {selectedRole && !showInvitePanel && (
         <div ref={howItWorksRef} className="bg-[#FAFAF8]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
           <div className="container mx-auto px-4 max-w-5xl">
             <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
@@ -484,11 +662,17 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
         </div>
       )}
 
-      {/* ── 4. Role-specific form area ───────────────────────────── */}
-      {selectedRole && (
+      {/* ── 4. Role-specific form area + invite ──────────────────── */}
+      {(selectedRole || showInvitePanel) && (
         <div ref={formRef} className="bg-white" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
           <div className="container mx-auto px-4 max-w-xl">
-            {selectedRole === "collector" && (
+            {showInvitePanel && (
+              <div ref={inviteRef}>
+                <InviteArtistShare />
+              </div>
+            )}
+
+            {selectedRole === "collector" && !showInvitePanel && (
               <>
                 <div className="text-center mb-6">
                   <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
@@ -510,10 +694,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   </Button>
                   <p style={{ fontSize: '13px', color: '#8A8A84', marginTop: '12px' }}>Free to join. No credit card required.</p>
                 </div>
+                <div className="mt-10">
+                  <InviteArtistShare />
+                </div>
               </>
             )}
 
-            {selectedRole === "artist" && (
+            {selectedRole === "artist" && !showInvitePanel && (
               <>
                 <div className="text-center mb-6">
                   <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
@@ -526,10 +713,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <ForArtistsForm />
                 </div>
+                <div className="mt-10">
+                  <InviteArtistShare />
+                </div>
               </>
             )}
 
-            {selectedRole === "gallery" && (
+            {selectedRole === "gallery" && !showInvitePanel && (
               <>
                 <div className="text-center mb-6">
                   <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
@@ -541,6 +731,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 </div>
                 <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
                   <ForGalleriesForm />
+                </div>
+                <div className="mt-10">
+                  <InviteArtistShare />
                 </div>
               </>
             )}
