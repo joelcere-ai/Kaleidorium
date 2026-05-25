@@ -36,6 +36,7 @@ interface MobileArtDiscoveryProps {
   onFilterChange?: (filters: { style: string[], subject: string[], colors: string[] }) => void
   onClearFilters?: () => void
   showFallbackMessage?: boolean
+  fallbackMessage?: string
   isLandscape?: boolean
   isPortrait?: boolean
   screenWidth?: number
@@ -61,6 +62,7 @@ export default function MobileArtDiscovery({
   onFilterChange,
   onClearFilters,
   showFallbackMessage = false,
+  fallbackMessage,
   isLandscape = false,
   isPortrait = true,
   screenWidth = 0,
@@ -89,6 +91,7 @@ export default function MobileArtDiscovery({
       onFilterChange={onFilterChange}
       onClearFilters={onClearFilters}
       showFallbackMessage={showFallbackMessage}
+      fallbackMessage={fallbackMessage}
       isLandscape={isLandscape}
       isPortrait={isPortrait}
       screenWidth={screenWidth}

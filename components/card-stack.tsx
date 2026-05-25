@@ -62,6 +62,7 @@ interface CardStackProps {
   onImageClick: (url: string, alt: string) => void
   loading: boolean
   showFallbackMessage?: boolean
+  fallbackMessage?: string
   localPreferences?: LocalPreferences
   lastVisitDate?: string | null
 }
@@ -78,6 +79,7 @@ export default function CardStack({
   onImageClick,
   loading,
   showFallbackMessage = false,
+  fallbackMessage,
   localPreferences,
   lastVisitDate,
 }: CardStackProps) {
@@ -172,9 +174,9 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
           <div className="flex items-center justify-center p-8">
             {showFallbackMessage ? (
               <div className="text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-[16px]">
-                <h3 className="text-lg font-semibold text-[#1E1E1C] mb-2">No more artwork matching your criteria</h3>
                 <p className="text-sm text-[#5F5F5A]">
-                  Remove some of the filters you selected or come back soon as we are always adding new artwork.
+                  {fallbackMessage ||
+                    "No artwork found. Try a different search or remove some filters."}
                 </p>
               </div>
             ) : (
@@ -451,9 +453,9 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
         {/* Fallback message when no filters match */}
           {showFallbackMessage && (
           <div className="mt-8 text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-[16px]">
-            <h3 className="text-lg font-semibold text-[#1E1E1C] mb-2">No more artwork matching your criteria</h3>
             <p className="text-sm text-[#5F5F5A]">
-              Remove some of the filters you selected or come back soon as we are always adding new artwork.
+              {fallbackMessage ||
+                "No artwork found. Try a different search or remove some filters."}
             </p>
           </div>
         )}

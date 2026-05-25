@@ -1,106 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from "next/server"
+import { searchArtworks } from "@/lib/search-artworks"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
-
-// Force dynamic rendering for this route
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic"
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const searchTerm = searchParams.get('q')
+    const searchTerm = request.nextUrl.searchParams.get("q")
 
     if (!searchTerm || !searchTerm.trim()) {
-      return NextResponse.json(
-        { error: 'Search term is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Search term is required" }, { status: 400 })
     }
 
-    const term = searchTerm.trim()
+    const { results, error } = await searchArtworks(searchTerm)
 
-    // Search by title
-    const { data: byTitle, error: titleError } = await supabase
-      .from('Artwork')
-      .select('*')
-      .ilike('artwork_title', `%${term}%`)
-      .limit(50)
-
-    if (titleError) {
-      console.error('Error searching by title:', titleError)
+    if (error) {
+      return NextResponse.json({ error }, { status: 500 })
     }
-
-    // Search by artist
-    const { data: byArtist, error: artistError } = await supabase
-      .from('Artwork')
-      .select('*')
-      .ilike('artist', `%${term}%`)
-      .limit(50)
-
-    if (artistError) {
-      console.error('Error searching by artist:', artistError)
-    }
-
-    // Combine and deduplicate
-    const allResults: any[] = []
-    const seenIds = new Set<number>()
-
-    if (byTitle) {
-      byTitle.forEach((art: any) => {
-        if (!seenIds.has(art.id)) {
-          seenIds.add(art.id)
-          allResults.push(art)
-        }
-      })
-    }
-
-    if (byArtist) {
-      byArtist.forEach((art: any) => {
-        if (!seenIds.has(art.id)) {
-          seenIds.add(art.id)
-          allResults.push(art)
-        }
-      })
-    }
-
-    // Transform to match Artwork interface
-    const transformedResults = allResults.map((artwork: any) => ({
-      id: artwork.id.toString(),
-      title: artwork.artwork_title || '',
-      artist: artwork.artist || '',
-      medium: artwork.medium || '',
-      dimensions: artwork.dimensions || '',
-      year: artwork.year || '',
-      price: artwork.price || '',
-      currency: artwork.currency || undefined,
-      description: artwork.description || '',
-      tags: artwork.tags || [],
-      artwork_image: artwork.artwork_image || '',
-      created_at: artwork.created_at || '',
-      updated_at: artwork.updated_at || '',
-      link: artwork.link || undefined,
-      style: artwork.style || undefined,
-      genre: artwork.genre || undefined,
-      subject: artwork.subject || undefined,
-      colour: artwork.colour || undefined,
-    }))
 
     return NextResponse.json({
-      results: transformedResults,
-      count: transformedResults.length,
-      searchTerm: term
+      results,
+      count: results.length,
+      searchTerm: searchTerm.trim(),
     })
-
-  } catch (error: any) {
-    console.error('Search API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
-      { status: 500 }
-    )
+  } catch (err: unknown) {
+    console.error("Search API error:", err)
+    const message = err instanceof Error ? err.message : "Internal server error"
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
-

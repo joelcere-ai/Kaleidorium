@@ -38,7 +38,9 @@ import ProgressiveImage from "./progressive-image"
 import CardStack from "./card-stack"
 import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
+import { DiscoverSearchBar } from "@/components/discover-search-bar"
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
+import { searchArtworks } from "@/lib/search-artworks"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
@@ -198,13 +200,32 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   })
   const [isFiltering, setIsFiltering] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
+  const [discoverSearchInput, setDiscoverSearchInput] = useState("")
+  const [discoverSearchQuery, setDiscoverSearchQuery] = useState("")
+  const [discoverSearchResults, setDiscoverSearchResults] = useState<Artwork[]>([])
+  const [discoverSearchLoading, setDiscoverSearchLoading] = useState(false)
+  const [discoverSearchError, setDiscoverSearchError] = useState<string | null>(null)
+  const preSearchIndexRef = useRef(0)
   const [hasSearched, setHasSearched] = useState(false) // Track if search has completed
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
   const [showFallbackMessage, setShowFallbackMessage] = useState(false)
 
   // Use filtered artworks if filtering is active
-  const currentArtworkList = isFiltering ? filteredArtworks : artworks
+  const isDiscoverSearchMode = discoverSearchQuery.length > 0
+  const currentArtworkList = isDiscoverSearchMode
+    ? discoverSearchResults
+    : isFiltering
+      ? filteredArtworks
+      : artworks
   const currentArtwork = currentArtworkList[currentIndex]
+  const showDiscoverSearchEmpty =
+    isDiscoverSearchMode &&
+    !discoverSearchLoading &&
+    !discoverSearchError &&
+    discoverSearchResults.length === 0
+  const discoverSearchFallbackMessage = discoverSearchQuery
+    ? `No artwork found for '${discoverSearchQuery}'. Try a different search.`
+    : undefined
 
   // Extract available tags from artworks for predictive text
   const availableTags = useMemo(() => {
@@ -1502,8 +1523,47 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Load more artworks for infinite scroll/prefetching
   // Only load more when NOT filtering/searching and NOT loading a specific artwork
+  const handleDiscoverSearchSubmit = useCallback(async () => {
+    const term = discoverSearchInput.trim()
+    if (!term) return
+
+    preSearchIndexRef.current = currentIndex
+    setDiscoverSearchQuery(term)
+    setDiscoverSearchLoading(true)
+    setDiscoverSearchError(null)
+    setShowFallbackMessage(false)
+
+    const { results, error } = await searchArtworks(term)
+
+    setDiscoverSearchLoading(false)
+    if (error) {
+      setDiscoverSearchError(error)
+      setDiscoverSearchResults([])
+    } else {
+      setDiscoverSearchResults(results)
+      setDiscoverSearchError(null)
+    }
+    setCurrentIndex(0)
+  }, [discoverSearchInput, currentIndex])
+
+  const handleDiscoverSearchClear = useCallback(() => {
+    setDiscoverSearchInput("")
+    setDiscoverSearchQuery("")
+    setDiscoverSearchResults([])
+    setDiscoverSearchError(null)
+    setShowFallbackMessage(false)
+    setCurrentIndex(preSearchIndexRef.current)
+  }, [])
+
   const loadMoreArtworks = useCallback(async () => {
-    if (loading || isFiltering || isSearching || isLoadingSpecificArtwork || selectedArtworkId) {
+    if (
+      loading ||
+      isFiltering ||
+      isSearching ||
+      isDiscoverSearchMode ||
+      isLoadingSpecificArtwork ||
+      selectedArtworkId
+    ) {
       console.log('⏸️ Skipping loadMoreArtworks: loading=', loading, 'isFiltering=', isFiltering, 'isSearching=', isSearching, 'isLoadingSpecificArtwork=', isLoadingSpecificArtwork, 'selectedArtworkId=', selectedArtworkId)
       return
     }
@@ -1527,11 +1587,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     } finally {
       setLoading(false)
     }
-  }, [loading, artworks, isFiltering, isSearching])
+  }, [loading, artworks, isFiltering, isSearching, isDiscoverSearchMode])
 
   // Handle moving to the next artwork
   const handleNext = () => {
-    const currentArtworkList = isFiltering ? filteredArtworks : artworks
     if (currentIndex < currentArtworkList.length - 1) {
       setCurrentIndex(currentIndex + 1)
     }
@@ -2530,49 +2589,70 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       {overlayImage && <ImageOverlay artwork_image={overlayImage.url} alt={overlayImage.alt} onClose={closeImageOverlay} />}
 
       {view === "discover" ? (
-        // Mobile vs Desktop conditional rendering
-        isMobile || isTablet ? (
-          <MobileArtDiscovery
-            artworks={artworks}
-            currentIndex={currentIndex}
-            onNext={handleMobileNext}
-            onLike={handleMobileLike}
-            onDislike={handleMobileDislike}
-            onAddToCollection={handleMobileAddToCollection}
-            onLoadMore={loadMoreArtworks}
-            setView={setView}
-            view={view}
-            collection={user ? dbCollection : collection}
-            onRemoveFromCollection={handleRemoveFromCollection}
-            onFilterChange={handleMobileFilterChange}
-            onClearFilters={clearFilters}
-            showFallbackMessage={showFallbackMessage}
-            isLandscape={isLandscape}
-            isPortrait={isPortrait}
-            screenWidth={screenWidth}
-            screenHeight={screenHeight}
-            localPreferences={localPreferences}
-            isRegistered={!!user}
-            newArtworkCount={newArtworkCount}
-            lastVisitDate={lastVisit}
+        <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          <DiscoverSearchBar
+            value={discoverSearchInput}
+            onChange={setDiscoverSearchInput}
+            onSubmit={handleDiscoverSearchSubmit}
+            onClear={handleDiscoverSearchClear}
+            activeQuery={discoverSearchQuery || null}
+            isLoading={discoverSearchLoading}
+            error={discoverSearchError}
           />
-        ) : (currentArtwork || (isFiltering && currentArtworkList.length === 0)) ? (
-          <>
-            <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} newArtworkCount={newArtworkCount} />
-            <CardStack
+          {isMobile || isTablet ? (
+            <div className="flex-1 min-h-0 flex flex-col">
+            <MobileArtDiscovery
               artworks={currentArtworkList}
               currentIndex={currentIndex}
-              onLike={handleDesktopLike}
-              onDislike={handleDesktopDislike}
-              onAddToCollection={handleDesktopAddToCollection}
-              onNext={handleNext}
+              onNext={handleMobileNext}
+              onLike={handleMobileLike}
+              onDislike={handleMobileDislike}
+              onAddToCollection={handleMobileAddToCollection}
               onLoadMore={loadMoreArtworks}
-              onImageClick={openImageOverlay}
-              loading={loading || isSearching}
-              showFallbackMessage={showFallbackMessage}
+              setView={setView}
+              view={view}
+              collection={user ? dbCollection : collection}
+              onRemoveFromCollection={handleRemoveFromCollection}
+              onFilterChange={handleMobileFilterChange}
+              onClearFilters={clearFilters}
+              showFallbackMessage={showDiscoverSearchEmpty || showFallbackMessage}
+              fallbackMessage={
+                showDiscoverSearchEmpty
+                  ? discoverSearchFallbackMessage
+                  : undefined
+              }
+              isLandscape={isLandscape}
+              isPortrait={isPortrait}
+              screenWidth={screenWidth}
+              screenHeight={screenHeight}
               localPreferences={localPreferences}
+              isRegistered={!!user}
+              newArtworkCount={newArtworkCount}
               lastVisitDate={lastVisit}
             />
+            </div>
+          ) : (currentArtwork || currentArtworkList.length === 0 || isFiltering || isDiscoverSearchMode) ? (
+            <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+              <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} newArtworkCount={newArtworkCount} />
+              <CardStack
+                artworks={currentArtworkList}
+                currentIndex={currentIndex}
+                onLike={handleDesktopLike}
+                onDislike={handleDesktopDislike}
+                onAddToCollection={handleDesktopAddToCollection}
+                onNext={handleNext}
+                onLoadMore={loadMoreArtworks}
+                onImageClick={openImageOverlay}
+                loading={loading || isSearching || discoverSearchLoading}
+                showFallbackMessage={showDiscoverSearchEmpty || showFallbackMessage}
+                fallbackMessage={
+                  showDiscoverSearchEmpty
+                    ? discoverSearchFallbackMessage
+                    : undefined
+                }
+                localPreferences={localPreferences}
+                lastVisitDate={lastVisit}
+              />
 
             {/* Desktop Filter Panel */}
             {showDesktopFilters && (
@@ -2829,8 +2909,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             </div>
           </div>
             )}
-          </>
-        ) : null
+            </div>
+        ) : null}
+        </div>
       ) : view === "collection" ? (
         isMobile || isTablet ? (
           // Mobile Collection Page with Header

@@ -70,6 +70,7 @@ interface MobileCardStackProps {
   onFilterChange?: (filters: { style: string[], subject: string[], colors: string[] }) => void
   onClearFilters?: () => void
   showFallbackMessage?: boolean
+  fallbackMessage?: string
   isLandscape?: boolean
   isPortrait?: boolean
   screenWidth?: number
@@ -93,6 +94,7 @@ export default function MobileCardStack({
   onFilterChange,
   onClearFilters,
   showFallbackMessage = false,
+  fallbackMessage,
   isLandscape = false,
   isPortrait = true,
   screenWidth = 0,
@@ -1385,8 +1387,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   if (visibleArtworks.length === 0) {
     return (
       <div className={getContainerClasses()}>
-        <div className="flex items-center justify-center h-full">
-          <p className="text-black text-xl">No more artworks to discover!</p>
+        <div className="flex items-center justify-center h-full p-6 text-center">
+          <p className="text-[#5F5F5A] text-base">
+            {fallbackMessage || "No more artworks to discover!"}
+          </p>
         </div>
       </div>
     )
@@ -1557,10 +1561,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           
           {/* Fallback message when no filters match */}
           {showFallbackMessage && (
-            <div className="mt-8 text-center p-6 bg-blue-50 border border-blue-200 rounded-lg mx-4">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">No more artwork matching your criteria</h3>
-              <p className="text-sm text-blue-600">
-                Remove some of the filters you selected or come back soon as we are always adding new artwork.
+            <div className="mt-8 text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-lg mx-4">
+              <p className="text-sm text-[#5F5F5A]">
+                {fallbackMessage ||
+                  "No artwork found. Try a different search or remove some filters."}
               </p>
             </div>
           )}
