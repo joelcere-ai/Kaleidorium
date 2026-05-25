@@ -237,6 +237,9 @@ export function FeaturedPageContent() {
         artwork={detailArtwork}
         open={detailArtwork !== null}
         onClose={closeArtworkDetail}
+        onLike={handleLike}
+        onDislike={handleDislike}
+        inCollection={detailArtwork ? inCollection(detailArtwork.id) : false}
       />
     </div>
   )

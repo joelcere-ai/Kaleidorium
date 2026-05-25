@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { X } from "lucide-react"
+import { ThumbsDown, ThumbsUp, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ArtworkDetails } from "@/components/artwork-details"
 import type { Artwork } from "@/types/artwork"
@@ -10,9 +10,19 @@ interface ArtworkDetailOverlayProps {
   artwork: Artwork | null
   open: boolean
   onClose: () => void
+  onLike: (artwork: Artwork) => void
+  onDislike: (artwork: Artwork) => void
+  inCollection?: boolean
 }
 
-export function ArtworkDetailOverlay({ artwork, open, onClose }: ArtworkDetailOverlayProps) {
+export function ArtworkDetailOverlay({
+  artwork,
+  open,
+  onClose,
+  onLike,
+  onDislike,
+  inCollection = false,
+}: ArtworkDetailOverlayProps) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -76,6 +86,52 @@ export function ArtworkDetailOverlay({ artwork, open, onClose }: ArtworkDetailOv
                 alt={artwork.title}
                 className="w-full h-full object-contain p-4"
               />
+            </div>
+            <div className="flex items-center justify-center gap-3 px-4 py-4 border-t border-[#E6E4DF]">
+              <Button
+                variant="outline"
+                size="default"
+                className="min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
+                style={{
+                  backgroundColor: "#FBEFF0",
+                  borderColor: "#E7C4C7",
+                  borderWidth: "1px",
+                  boxShadow: "none",
+                  color: "#A35D66",
+                  height: "42px",
+                  borderRadius: "12px",
+                }}
+                onClick={() => onDislike(artwork)}
+                aria-label="Dislike"
+              >
+                <ThumbsDown className="h-4 w-4 mr-1.5" style={{ color: "#A35D66" }} />
+                <span>Dislike</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="default"
+                className="min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
+                style={{
+                  backgroundColor: "#EDF6F0",
+                  borderColor: "#B8D8C1",
+                  borderWidth: "1px",
+                  boxShadow: "none",
+                  color: "#3E7C59",
+                  height: "42px",
+                  borderRadius: "12px",
+                }}
+                onClick={() => onLike(artwork)}
+                aria-label="Like and add to collection"
+              >
+                <ThumbsUp
+                  className="h-4 w-4 mr-1.5"
+                  style={{
+                    color: "#3E7C59",
+                    fill: inCollection ? "#3E7C59" : "none",
+                  }}
+                />
+                <span>Like</span>
+              </Button>
             </div>
           </div>
           <div className="w-full lg:w-[45%] flex-1 min-w-0">
