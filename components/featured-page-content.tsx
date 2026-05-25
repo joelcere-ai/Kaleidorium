@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Heart, ThumbsDown } from "lucide-react"
+import { ThumbsDown, ThumbsUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
@@ -187,24 +187,38 @@ export function FeaturedPageContent() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="px-3"
-                        onClick={() => handleLike(artwork)}
-                        aria-label="Like and add to collection"
+                        className="px-3 active:scale-95 hover:brightness-[0.97] transition-all"
+                        style={{
+                          backgroundColor: "#FBEFF0",
+                          borderColor: "#E7C4C7",
+                          borderWidth: "1px",
+                          boxShadow: "none",
+                        }}
+                        onClick={() => handleDislike(artwork)}
+                        aria-label="Dislike"
                       >
-                        <Heart
-                          className={`h-4 w-4 ${
-                            inCollection(artwork.id) ? "fill-red-500 text-red-500" : ""
-                          }`}
-                        />
+                        <ThumbsDown className="h-4 w-4" style={{ color: "#A35D66" }} />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="px-3"
-                        onClick={() => handleDislike(artwork)}
-                        aria-label="Dislike"
+                        className="px-3 active:scale-95 hover:brightness-[0.97] transition-all"
+                        style={{
+                          backgroundColor: "#EDF6F0",
+                          borderColor: "#B8D8C1",
+                          borderWidth: "1px",
+                          boxShadow: "none",
+                        }}
+                        onClick={() => handleLike(artwork)}
+                        aria-label="Like and add to collection"
                       >
-                        <ThumbsDown className="h-4 w-4" />
+                        <ThumbsUp
+                          className="h-4 w-4"
+                          style={{
+                            color: "#3E7C59",
+                            fill: inCollection(artwork.id) ? "#3E7C59" : "none",
+                          }}
+                        />
                       </Button>
                     </div>
                   </CardContent>
