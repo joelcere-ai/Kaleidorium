@@ -79,6 +79,7 @@ interface MobileCardStackProps {
   isRegistered?: boolean
   newArtworkCount?: number
   lastVisitDate?: string | null
+  discoverSearchBar?: React.ReactNode
 }
 
 export default function MobileCardStack({
@@ -103,6 +104,7 @@ export default function MobileCardStack({
   isRegistered = false,
   newArtworkCount = 0,
   lastVisitDate,
+  discoverSearchBar,
 }: MobileCardStackProps) {
   const router = useRouter();
   const { toast } = useToast()
@@ -1383,15 +1385,49 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     )
   }
 
+  const mobileDiscoverHeader = (
+    <div className="flex justify-between items-center p-4 bg-white border-b border-[#E6E4DF] z-10 shrink-0">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setShowMenuModal(true)}
+        className="text-black hover:bg-gray-100"
+      >
+        <Menu className="w-6 h-6" />
+      </Button>
+      <h1 className="font-serif text-xl font-semibold text-black flex items-center">
+        <img
+          src="/logos/kaleidorium-wordmark-mobile.png"
+          alt="Kaleidorium Logo"
+          className="h-8 w-auto"
+        />
+      </h1>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setView("profile")}
+        className="text-black hover:bg-gray-100"
+      >
+        <User className="w-6 h-6" />
+      </Button>
+    </div>
+  )
+
   // Discovery View - CardStack
   if (visibleArtworks.length === 0) {
     return (
       <div className={getContainerClasses()}>
-        <div className="flex items-center justify-center h-full p-6 text-center">
-          <p className="text-[#5F5F5A] text-base">
-            {fallbackMessage || "No more artworks to discover!"}
-          </p>
+        {gestureIntroOverlay}
+        {mobileDiscoverHeader}
+        {view === "discover" && discoverSearchBar}
+        <div className={getMainAreaClasses()}>
+          <div className="h-full overflow-y-auto p-4 flex items-center justify-center">
+            <p className="text-[#5F5F5A] text-base text-center">
+              {fallbackMessage || "No more artworks to discover!"}
+            </p>
+          </div>
         </div>
+        {buttonOnboardingOverlay}
       </div>
     )
   }
@@ -1399,36 +1435,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   return (
     <div className={getContainerClasses()}>
       {gestureIntroOverlay}
-      {/* Header */}
-      <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 z-10">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowMenuModal(true)}
-          className="text-black hover:bg-gray-100"
-        >
-          <Menu className="w-6 h-6" />
-        </Button>
-        <h1 className="font-serif text-xl font-semibold text-black flex items-center">
-          <img 
-            src="/logos/kaleidorium-wordmark-mobile.png" 
-            alt="Kaleidorium Logo" 
-            className="h-8 w-auto"
-          />
-        </h1>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setView("profile")}
-          className="text-black hover:bg-gray-100"
-        >
-          <User className="w-6 h-6" />
-        </Button>
-      </div>
-
-      {/* Main Artwork Area - Scrollable CardStack */}
+      {mobileDiscoverHeader}
+      {view === "discover" && discoverSearchBar}
       <div className={getMainAreaClasses()}>
-        <div 
+        <div
           ref={containerRef}
           className="h-full overflow-y-auto p-4 space-y-4"
         >

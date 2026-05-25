@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactNode } from "react"
 import { useState, useRef, useEffect } from "react"
 import { Heart, ThumbsUp, ThumbsDown, Plus, Menu, Info, Search, Palette, Mail, User, ArrowLeft, Trash, X } from "lucide-react"
 import Image from "next/image"
@@ -45,6 +46,7 @@ interface MobileArtDiscoveryProps {
   isRegistered?: boolean
   newArtworkCount?: number
   lastVisitDate?: string | null
+  discoverSearchBar?: ReactNode
 }
 
 export default function MobileArtDiscovery({
@@ -71,6 +73,7 @@ export default function MobileArtDiscovery({
   isRegistered = false,
   newArtworkCount = 0,
   lastVisitDate,
+  discoverSearchBar,
 }: MobileArtDiscoveryProps) {
   const defaultPreferences: LocalPreferences = {
     artists: {}, genres: {}, styles: {}, subjects: {}, colors: {}, priceRanges: {}, interactionCount: 0, viewed_artworks: [],
@@ -100,6 +103,7 @@ export default function MobileArtDiscovery({
       isRegistered={isRegistered}
       newArtworkCount={newArtworkCount}
       lastVisitDate={lastVisitDate}
+      discoverSearchBar={discoverSearchBar}
     />
   )
 } 

@@ -12,6 +12,8 @@ interface DiscoverSearchBarProps {
   activeQuery: string | null
   isLoading?: boolean
   error?: string | null
+  /** When true, sits in the mobile layout below the header (not sticky). */
+  embedded?: boolean
 }
 
 export function DiscoverSearchBar({
@@ -22,11 +24,18 @@ export function DiscoverSearchBar({
   activeQuery,
   isLoading = false,
   error = null,
+  embedded = false,
 }: DiscoverSearchBarProps) {
   const inSearchMode = Boolean(activeQuery)
 
   return (
-    <div className="sticky top-0 z-20 bg-white border-b border-[#E6E4DF] px-4 py-3 space-y-2 shadow-sm">
+    <div
+      className={
+        embedded
+          ? "shrink-0 bg-white border-b border-[#E6E4DF] px-4 py-3 space-y-2 z-10"
+          : "sticky top-0 z-20 bg-white border-b border-[#E6E4DF] px-4 py-3 space-y-2 shadow-sm"
+      }
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault()

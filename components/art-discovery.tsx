@@ -2590,18 +2590,32 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
       {view === "discover" ? (
         <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-          <DiscoverSearchBar
-            value={discoverSearchInput}
-            onChange={setDiscoverSearchInput}
-            onSubmit={handleDiscoverSearchSubmit}
-            onClear={handleDiscoverSearchClear}
-            activeQuery={discoverSearchQuery || null}
-            isLoading={discoverSearchLoading}
-            error={discoverSearchError}
-          />
+          {!(isMobile || isTablet) && (
+            <DiscoverSearchBar
+              value={discoverSearchInput}
+              onChange={setDiscoverSearchInput}
+              onSubmit={handleDiscoverSearchSubmit}
+              onClear={handleDiscoverSearchClear}
+              activeQuery={discoverSearchQuery || null}
+              isLoading={discoverSearchLoading}
+              error={discoverSearchError}
+            />
+          )}
           {isMobile || isTablet ? (
             <div className="flex-1 min-h-0 flex flex-col">
             <MobileArtDiscovery
+              discoverSearchBar={
+                <DiscoverSearchBar
+                  embedded
+                  value={discoverSearchInput}
+                  onChange={setDiscoverSearchInput}
+                  onSubmit={handleDiscoverSearchSubmit}
+                  onClear={handleDiscoverSearchClear}
+                  activeQuery={discoverSearchQuery || null}
+                  isLoading={discoverSearchLoading}
+                  error={discoverSearchError}
+                />
+              }
               artworks={currentArtworkList}
               currentIndex={currentIndex}
               onNext={handleMobileNext}
