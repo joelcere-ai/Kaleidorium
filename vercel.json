@@ -36,6 +36,15 @@
     },
     "app/api/kurator-tags/route.ts": {
       "maxDuration": 60
+    },
+    "app/api/cron/generate-curated-collection/route.ts": {
+      "maxDuration": 120
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/generate-curated-collection",
+      "schedule": "0 6 1 * *"
+    }
+  ]
 } 

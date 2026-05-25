@@ -10,15 +10,13 @@ import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, X, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
+import { Heart, ArrowLeft, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
 import { useState as useStateContact } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { CollectorArchetype, analyzeCollectionForArchetype } from "@/lib/collector-archetypes";
-import { CollectorArchetypeCard } from "@/components/collector-archetype-card";
 import { WhyKaleidoriumPage } from "@/components/why-kaleidorium";
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection";
 import type { Artwork } from "@/types/artwork";
@@ -282,25 +280,6 @@ function HomeContent() {
   const [dbCollection, setDbCollection] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   
-  // Art Preferences state (copied from ProfilePage)
-  const [insights, setInsights] = useState({
-    summary: "Click 'Refresh Insights' to analyze your collection.",
-    aesthetic_profile: "",
-    collecting_pattern: "",
-    topArtists: [] as string[],
-    topTags: [] as string[],
-    priceRange: "N/A",
-    recommendations: [] as string[],
-    preferredMediums: [] as string[],
-    explorationSuggestions: [] as string[],
-  });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isCollectionDetailsExpanded, setIsCollectionDetailsExpanded] = useState(false);
-  const [userArchetype, setUserArchetype] = useState<CollectorArchetype | null>(null);
-  // Track the collection length for which insights were last generated,
-  // so we only re-run when the collection actually changes.
-  const lastGeneratedForRef = useRef<number>(-1);
-
   // Update view when pathname changes
   useEffect(() => {
     const currentView = getCurrentView();
@@ -315,13 +294,16 @@ function HomeContent() {
 
 
   // Create a setView function that updates both state and URL
-  const setView = (newView: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+  const setView = (newView: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+    if (newView === "featured") {
+      router.push("/featured");
+      return;
+    }
     setViewState(newView);
-    // Use shallow routing to avoid page reloads
     if (newView === "discover") {
       router.push("/", { scroll: false });
     } else {
-    router.push(`/?view=${newView}`, { scroll: false });
+      router.push(`/?view=${newView}`, { scroll: false });
     }
   };
 
@@ -526,136 +508,6 @@ function HomeContent() {
   // Handle artwork selection for desktop collection - navigate to discover with artwork ID
   const handleArtworkClick = (artwork: any) => {
     router.push(`/?artworkId=${artwork.id}`, { scroll: false });
-  };
-
-  // Art Preferences functions (copied from ProfilePage)
-  const generateInsights = useCallback(async () => {
-    if (isGenerating) return
-    // Use the correct collection source for registered vs anonymous users
-    const activeCollection = resolveActiveCollection()
-    lastGeneratedForRef.current = activeCollection.length
-    setIsGenerating(true)
-    try {
-      // Always calculate archetype (works even with 0 items)
-      const archetype = analyzeCollectionForArchetype(activeCollection)
-      setUserArchetype(archetype)
-
-      if (activeCollection.length === 0) {
-        setIsGenerating(false)
-        return
-      }
-
-      // AI-powered summary & suggestions
-      const response = await fetch('/api/profile-insights', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ collection: activeCollection }),
-      })
-
-      if (response.ok) {
-        const aiInsights = await response.json()
-        const basicAnalysis = analyzeCollection()
-        setInsights({
-          ...basicAnalysis,
-          summary: aiInsights.summary,
-          aesthetic_profile: aiInsights.aesthetic_profile,
-          collecting_pattern: aiInsights.collecting_pattern,
-          recommendations: aiInsights.recommendations,
-          explorationSuggestions: aiInsights.explorationSuggestions || [],
-        })
-      } else {
-        setInsights(analyzeCollection())
-      }
-    } catch (error) {
-      console.error('Error generating insights:', error)
-      setInsights(analyzeCollection())
-    } finally {
-      setIsGenerating(false)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGenerating, user, dbCollection, collection, resolveActiveCollection])
-
-  // Auto-generate insights whenever the user opens the collection view,
-  // but only when the collection has actually changed since last run.
-  useEffect(() => {
-    if (view !== "collection") return
-    const activeCollection = resolveActiveCollection()
-    if (activeCollection.length === 0) return
-    if (activeCollection.length === lastGeneratedForRef.current) return
-    generateInsights()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, dbCollection.length, collection.length, user])
-
-  const analyzeCollection = (): any => {
-    if (collection.length === 0) {
-      return {
-        summary: "Your collection is empty. Add some artworks to get insights.",
-        topArtists: [],
-        topTags: [],
-        priceRange: "N/A",
-        recommendations: [],
-        preferredMediums: []
-      };
-    }
-
-    const artistCounts: Record<string, number> = {};
-    const tagCounts: Record<string, number> = {};
-    const mediumCounts: Record<string, number> = {};
-    const prices: number[] = [];
-
-    collection.forEach((artwork) => {
-      if (artwork.artist) {
-        artistCounts[artwork.artist] = (artistCounts[artwork.artist] || 0) + 1;
-      }
-      if (artwork.tags && Array.isArray(artwork.tags)) {
-        artwork.tags.forEach((tag: string) => {
-          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
-      }
-      if (artwork.medium) {
-        mediumCounts[artwork.medium] = (mediumCounts[artwork.medium] || 0) + 1;
-      }
-      if (artwork.price) {
-        const price = parseFloat(artwork.price.replace(/[^0-9.-]+/g, ""));
-        if(!isNaN(price)) prices.push(price);
-      }
-    });
-
-    const getTopItems = (counts: Record<string, number>, count: number) =>
-      Object.entries(counts)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, count)
-        .map(([name]) => name);
-
-    const topArtists = getTopItems(artistCounts, 3);
-    const topTags = getTopItems(tagCounts, 5);
-    const preferredMediums = getTopItems(mediumCounts, 3);
-    
-    const priceRange = prices.length > 0 
-      ? `$${Math.min(...prices).toLocaleString()} - $${Math.max(...prices).toLocaleString()}` 
-      : "N/A";
-
-    let summary = `Your diverse collection spans multiple styles including ${topTags.slice(0, 3).join(", ")}, showing an eclectic taste in digital art.`;
-    if (collection.length === 1) {
-      summary = `Your collection features a single piece by ${topArtists[0]}. This ${topTags[0] || 'abstract'} artwork suggests you're just beginning to explore the world of digital art.`;
-    }
-
-    const recommendations = [];
-    if (topTags.includes("Abstract")) {
-      recommendations.push("Explore more works in the generative and abstract genres.");
-    }
-    if (recommendations.length === 0) {
-      recommendations.push("Explore more works in the Discover section to refine your preferences");
-    }
-
-    return {
-      summary,
-      topArtists,
-      topTags,
-      priceRange,
-      preferredMediums,
-      recommendations,
-    };
   };
 
   // ForArtistsForm is defined as a top-level component above HomeContent (avoids remounting on parent re-render)
@@ -1050,94 +902,10 @@ function HomeContent() {
                   </Button>
                 </div>
 
-                {/* ── Collector Profile Hero Card ────────────────────────── */}
-                <div className="mb-8">
-                  <Card className="overflow-hidden border border-gray-200 shadow-sm">
-                    <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-gray-100">
-                      <h2 className="text-xl font-bold text-gray-900">Your Collector Profile</h2>
-                      {isGenerating && (
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          <span>Analysing your collection…</span>
-                        </div>
-                      )}
-                    </CardHeader>
-
-                    <CardContent className="p-6 space-y-6">
-                      {userArchetype ? (
-                        <>
-                          {/* Hero: archetype image + name + AI summary */}
-                          <div className="flex gap-6">
-                            <div className="w-40 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
-                              <img
-                                src={userArchetype.imagePath}
-                                alt={userArchetype.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                              />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3 ${
-                                userArchetype.category === 'intellectual' ? 'bg-blue-100 text-blue-700' :
-                                userArchetype.category === 'financial'    ? 'bg-green-100 text-green-700' :
-                                'bg-purple-100 text-purple-700'
-                              }`}>
-                                {userArchetype.category.charAt(0).toUpperCase() + userArchetype.category.slice(1)}
-                              </span>
-                              <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{userArchetype.name}</h3>
-                              {insights.summary && insights.summary !== "Click 'Refresh Insights' to analyze your collection." ? (
-                                <p className="text-sm text-gray-600 leading-relaxed">{insights.summary}</p>
-                              ) : (
-                                <p className="text-sm text-gray-400 italic">Click "Refresh Insights" to generate your personal collection story.</p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Your Kurator suggests exploring — chips */}
-                          {insights.explorationSuggestions.length > 0 && (
-                            <div>
-                              <p className="text-sm font-semibold text-gray-700 mb-2">
-                                Your Kurator suggests exploring
-                              </p>
-                              <div className="flex flex-wrap gap-2">
-                                {insights.explorationSuggestions.map((chip) => (
-                                  <span
-                                    key={chip}
-                                    className="px-3 py-1.5 rounded-full text-sm text-gray-600 bg-gray-100 border border-gray-200"
-                                  >
-                                    {chip}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="text-center py-10">
-                          {isGenerating ? (
-                            <p className="text-sm text-gray-400">Building your collector profile…</p>
-                          ) : (
-                            <>
-                              <Heart className="h-10 w-10 text-gray-200 mx-auto mb-3" />
-                              <p className="text-gray-600 font-medium mb-1">Your collector profile will appear here</p>
-                              <p className="text-sm text-gray-400">Like artworks in the Discover feed to build your collection and unlock your profile.</p>
-                              <Button onClick={() => setView("discover")} className="mt-4 bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" size="sm">
-                                Discover Artwork
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* ── Your Collection section ──────────────────────────────── */}
                 <div className="mb-5">
                   <h2 className="text-xl font-bold text-gray-900">
                     Your Collection ({activeCollection.length})
                   </h2>
-                  <p className="text-sm text-gray-400 mt-0.5">The works shaping your collector profile</p>
                 </div>
 
                 {activeCollection.length === 0 ? null : (
