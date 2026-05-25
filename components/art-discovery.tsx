@@ -44,13 +44,13 @@ import { searchArtworks } from "@/lib/search-artworks"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
-  setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
+  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   collectionCount: number
 }
 
 interface ArtDiscoveryProps {
   view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy";
-  setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   collectionCount: number;
   setCollectionCount: (count: number) => void;
   onCollectionSync?: () => void;
@@ -2930,11 +2930,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         isMobile || isTablet ? (
           // Mobile Collection Page with Header
           <div className="fixed inset-0 bg-white z-50 flex flex-col">
-            <NewMobileHeader currentPage="collection" collectionCount={collectionCount} setView={(view) => {
-              if (["discover", "collection", "profile", "for-artists"].includes(view)) {
-                setView(view as "discover" | "collection" | "profile" | "for-artists");
-              }
-            }} />
+            <NewMobileHeader currentPage="collection" collectionCount={collectionCount} setView={setView} />
             
             {/* Mobile Collection Content */}
             <div className="flex-1 overflow-y-auto p-4 pt-20">

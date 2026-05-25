@@ -24,15 +24,7 @@ type AppView =
 
 export default function FeaturedPage() {
   const router = useRouter()
-  const [isMobile, setIsMobile] = useState(false)
   const [collectionCount, setCollectionCount] = useState(0)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener("resize", check)
-    return () => window.removeEventListener("resize", check)
-  }, [])
 
   useEffect(() => {
     const loadCount = async () => {
@@ -54,6 +46,7 @@ export default function FeaturedPage() {
 
   const setView = useCallback(
     (view: AppView) => {
+      if (view === "featured") return
       if (view === "discover") {
         router.push("/")
         return
@@ -63,21 +56,17 @@ export default function FeaturedPage() {
     [router]
   )
 
-  const mobilePadding = isMobile
-    ? {
-        paddingTop: "calc(96px + env(safe-area-inset-top))",
-        paddingBottom: "calc(24px + env(safe-area-inset-bottom))",
-      }
-    : {}
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {isMobile ? (
+      <div className="md:hidden">
         <NewMobileHeader currentPage="featured" collectionCount={collectionCount} setView={setView} />
-      ) : (
+      </div>
+      <div className="hidden md:block">
         <DesktopHeader currentPage="featured" collectionCount={collectionCount} setView={setView} />
-      )}
-      <main className="flex-1 flex flex-col" style={mobilePadding}>
+      </div>
+      <main
+        className="flex-1 flex flex-col pt-[calc(96px+env(safe-area-inset-top))] md:pt-0 pb-[calc(24px+env(safe-area-inset-bottom))] md:pb-0"
+      >
         <FeaturedPageContent />
       </main>
     </div>

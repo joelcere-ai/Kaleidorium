@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, DollarSign } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, DollarSign, BadgeAlert } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -61,7 +61,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void | Promise<void | boolean>
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
+  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -892,6 +892,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
+                    setView("featured")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <BadgeAlert className="mr-3 h-5 w-5" />
+                  Featured
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
                     setView("why-kaleidorium")
                     setShowMenuModal(false)
                   }}
@@ -920,6 +931,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 >
                   <Mail className="mr-3 h-5 w-5" />
                   Contact
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("profile")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <User className="mr-3 h-5 w-5" />
+                  Account
                 </Button>
                 {/* Footer Links */}
                 <div className="border-t border-gray-200 mt-4 pt-4">
@@ -1638,6 +1660,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
+                  setView("featured")
+                  setShowMenuModal(false)
+                }}
+              >
+                <BadgeAlert className="mr-3 h-5 w-5" />
+                Featured
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
                   setView("why-kaleidorium")
                   setShowMenuModal(false)
                 }}
@@ -1666,6 +1699,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               >
                 <Mail className="mr-3 h-5 w-5" />
                 Contact
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("profile")
+                  setShowMenuModal(false)
+                }}
+              >
+                <User className="mr-3 h-5 w-5" />
+                Account
               </Button>
               {/* Footer Links */}
               <div className="border-t border-gray-200 mt-4 pt-4">

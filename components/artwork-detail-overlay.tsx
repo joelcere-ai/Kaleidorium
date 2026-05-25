@@ -41,7 +41,7 @@ export function ArtworkDetailOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-[130] flex items-end md:items-center justify-center bg-black/50 p-0 md:p-6"
+      className="fixed inset-0 z-[200] flex items-end md:items-center justify-center bg-black/50 p-0 md:p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="featured-artwork-detail-title"
@@ -91,7 +91,7 @@ export function ArtworkDetailOverlay({
               <Button
                 variant="outline"
                 size="default"
-                className="min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
+                className="flex-1 sm:flex-none min-w-0 sm:min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
                 style={{
                   backgroundColor: "#FBEFF0",
                   borderColor: "#E7C4C7",
@@ -110,7 +110,7 @@ export function ArtworkDetailOverlay({
               <Button
                 variant="outline"
                 size="default"
-                className="min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
+                className="flex-1 sm:flex-none min-w-0 sm:min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
                 style={{
                   backgroundColor: "#EDF6F0",
                   borderColor: "#B8D8C1",
