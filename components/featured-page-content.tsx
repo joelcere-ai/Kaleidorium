@@ -1,8 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { ThumbsDown, ThumbsUp } from "lucide-react"
+import { ArtworkDetailOverlay } from "@/components/artwork-detail-overlay"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
@@ -21,13 +21,13 @@ import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
 import type { Artwork } from "@/types/artwork"
 
 export function FeaturedPageContent() {
-  const router = useRouter()
   const { toast } = useToast()
   const [loading, setLoading] = useState(true)
   const [collection, setCollection] = useState<CuratedCollectionRow | null>(null)
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [user, setUser] = useState<{ id: string } | null>(null)
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
+  const [detailArtwork, setDetailArtwork] = useState<Artwork | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -67,8 +67,12 @@ export function FeaturedPageContent() {
     }
   }, [])
 
-  const handleArtworkClick = (artwork: Artwork) => {
-    router.push(`/?artworkId=${artwork.id}`, { scroll: false })
+  const openArtworkDetail = (artwork: Artwork) => {
+    setDetailArtwork(artwork)
+  }
+
+  const closeArtworkDetail = () => {
+    setDetailArtwork(null)
   }
 
   const handleLike = useCallback(
@@ -164,7 +168,7 @@ export function FeaturedPageContent() {
                 >
                   <div
                     className="aspect-square overflow-hidden bg-[#FAFAF8] cursor-pointer"
-                    onClick={() => handleArtworkClick(artwork)}
+                    onClick={() => openArtworkDetail(artwork)}
                   >
                     <img
                       src={artwork.artwork_image || "/placeholder.svg"}
@@ -180,7 +184,7 @@ export function FeaturedPageContent() {
                         variant="outline"
                         size="sm"
                         className="flex-1"
-                        onClick={() => handleArtworkClick(artwork)}
+                        onClick={() => openArtworkDetail(artwork)}
                       >
                         View artwork
                       </Button>
@@ -228,6 +232,12 @@ export function FeaturedPageContent() {
           </>
         )}
       </div>
+
+      <ArtworkDetailOverlay
+        artwork={detailArtwork}
+        open={detailArtwork !== null}
+        onClose={closeArtworkDetail}
+      />
     </div>
   )
 }
