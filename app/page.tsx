@@ -102,7 +102,7 @@ function ForArtistsForm() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="www.yourportfolio.com" required />
           </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all">
+          <Button type="submit" disabled={isSubmitting} variant="outline" className="w-full">
             {isSubmitting ? "Submitting..." : "Submit Portfolio"}
           </Button>
         </form>
@@ -230,7 +230,7 @@ function ForGalleriesForm() {
               placeholder="Tell us about your gallery and which artists you would like to list..."
               rows={4} required />
           </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all">
+          <Button type="submit" disabled={isSubmitting} variant="outline" className="w-full">
             {isSubmitting ? "Submitting..." : "Submit Gallery"}
           </Button>
         </form>
