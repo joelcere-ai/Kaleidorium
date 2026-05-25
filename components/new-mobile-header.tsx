@@ -17,6 +17,9 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
   const pathname = usePathname();
 
   const handleNavigation = (view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+    if (view === "discover" && (window as any).clearArtDiscoveryFilters) {
+      (window as any).clearArtDiscoveryFilters();
+    }
     setView(view);
     setIsMenuOpen(false);
   };

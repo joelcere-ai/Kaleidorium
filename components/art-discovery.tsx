@@ -1551,6 +1551,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setDiscoverSearchQuery("")
     setDiscoverSearchResults([])
     setDiscoverSearchError(null)
+    setDiscoverSearchLoading(false)
     setShowFallbackMessage(false)
     setCurrentIndex(preSearchIndexRef.current)
   }, [])
@@ -1833,20 +1834,40 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setFilteredArtworks(uniqueFiltered)
   }
 
-  // Clear filters function
-  const clearFilters = () => {
+  // Reset Discover to the normal feed (clears search, filters, and desktop filter panel)
+  const clearFilters = useCallback(() => {
+    const hadSearch = discoverSearchQuery.length > 0
+    const hadFilters = isFiltering
+
     setIsFiltering(false)
+    setIsSearching(false)
     setActiveFilters({ style: '', subject: '', colors: '', search: '' })
     setFilteredArtworks([])
-    setCurrentIndex(0)
+    setDiscoverSearchInput("")
+    setDiscoverSearchQuery("")
+    setDiscoverSearchResults([])
+    setDiscoverSearchError(null)
+    setDiscoverSearchLoading(false)
+    setShowDesktopFilters(false)
     setShowFallbackMessage(false)
-    setHasSearched(false) // Reset search state
-    
-    toast({
-      title: "Filters Cleared",
-      description: "Showing all artworks",
-    })
-  }
+    setHasSearched(false)
+    setCurrentIndex(0)
+
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has("artworkId")) {
+        url.searchParams.delete("artworkId")
+        window.history.replaceState(null, "", url.pathname + url.search)
+      }
+    }
+
+    if (hadSearch || hadFilters) {
+      toast({
+        title: "Back to Discover",
+        description: "Showing your usual discovery feed",
+      })
+    }
+  }, [discoverSearchQuery, isFiltering, toast])
 
   // Handle mobile filter changes (convert array format to string format)
   const handleMobileFilterChange = (filters: { style: string[], subject: string[], colors: string[] }) => {
