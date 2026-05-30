@@ -266,7 +266,12 @@ function InviteArtistShare() {
 // ─── Artist portfolio form (existing — unchanged) ──────────────────────────────
 
 function ForArtistsForm() {
-  const [formData, setFormData] = useState({ name: "", email: "", portfolioLink: "" })
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    portfolioLink: "",
+    artworkDetails: "",
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<string | null>(null)
 
@@ -282,7 +287,7 @@ function ForArtistsForm() {
       })
       if (response.ok) {
         setSubmitStatus("Thank you! Your portfolio has been submitted for review. We'll be in touch soon.")
-        setFormData({ name: "", email: "", portfolioLink: "" })
+        setFormData({ name: "", email: "", portfolioLink: "", artworkDetails: "" })
       } else {
         setSubmitStatus("There was an error submitting your portfolio. Please try again.")
       }
@@ -293,7 +298,7 @@ function ForArtistsForm() {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value })
 
   const handlePortfolioBlur = () => {
@@ -307,10 +312,10 @@ function ForArtistsForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-800 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-800 mb-1">Artist Name</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
-          placeholder="Your full name" required />
+          placeholder="Your artist name" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Email</label>
@@ -319,17 +324,24 @@ function ForArtistsForm() {
           placeholder="your@email.com" required />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-800 mb-1">Portfolio Link</label>
-        <input type="url" name="portfolioLink" value={formData.portfolioLink}
+        <label className="block text-sm font-medium text-gray-800 mb-1">Portfolio / Website / Instagram Link</label>
+        <input type="text" name="portfolioLink" value={formData.portfolioLink}
           onChange={handleChange} onBlur={handlePortfolioBlur}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
-          placeholder="www.yourportfolio.com" required />
+          placeholder="Link to your portfolio, website or Instagram" required />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-800 mb-1">Artwork Details</label>
+        <textarea name="artworkDetails" value={formData.artworkDetails} onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm resize-y min-h-[144px]"
+          placeholder={"Please list each artwork you'd like registered, with: title, dimensions, price, and year created. E.g. — 'Sunset Over Nairobi, 60×80cm, $1200, 2023'"}
+          rows={6} required />
       </div>
       <Button type="submit" disabled={isSubmitting} variant="outline" className="w-full">
         {isSubmitting ? "Submitting…" : "Submit Portfolio"}
       </Button>
       <p className="text-xs text-gray-500 leading-relaxed">
-        We will only use this information to review your portfolio and notify you. Unused submissions are deleted within one week.
+        We'll review your submission, create your account, upload your chosen artwork for you and reach out by email with your account details or any questions. You will be able to change all this information at your convenience once your account is created.
       </p>
       {submitStatus && (
         <div className={`p-3 rounded-md text-sm ${submitStatus.startsWith("Thank") ? "bg-green-50 text-green-800 border border-green-200" : "bg-red-50 text-red-800 border border-red-200"}`}>
@@ -707,7 +719,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     Submit Your Portfolio
                   </h2>
                   <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                    Share your work for review. If selected, we'll invite you to join Kaleidorium as an artist.
+                    Send us your details and artwork information. We'll create your artist account and email you your login details.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>

@@ -32,6 +32,7 @@ export async function POST(request: Request) {
 
     const contactName = sanitizeOptionalText(body.contactName, 100);
     const message = sanitizeOptionalText(body.message, 2000);
+    const artworkDetails = sanitizeOptionalText(body.artworkDetails ?? body.artwork_details, 5000);
 
     const validation = validatePortfolioSubmission({
       name: body.name,
@@ -42,6 +43,13 @@ export async function POST(request: Request) {
     if (!validation.valid) {
       return NextResponse.json(
         { error: 'Validation failed', details: validation.errors },
+        { status: 400 }
+      );
+    }
+
+    if (submissionType === 'artist' && artworkDetails && artworkDetails.length < 10) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: ['Please provide artwork details for each piece you would like registered'] },
         { status: 400 }
       );
     }
@@ -70,17 +78,32 @@ export async function POST(request: Request) {
     const { name, email, portfolioLink } = validation.sanitized!;
 
     // Prepare template parameters for EmailJS
-    const templateParams: Record<string, string> = {
-      to_email: EMAIL_RECIPIENT,
-      from_name: name,
-      from_email: email,
-      contact_name: contactName || name,
-      portfolio_link: portfolioLink,
-      website: portfolioLink,
-      gallery_message: message || '',
-      message: message || '',
-      submission_type: submissionType,
-    };
+    const templateParams: Record<string, string> = submissionType === 'gallery'
+      ? {
+          to_email: EMAIL_RECIPIENT,
+          from_name: name,
+          from_email: email,
+          contact_name: contactName || name,
+          portfolio_link: portfolioLink,
+          website: portfolioLink,
+          gallery_message: message || '',
+          message: message || '',
+          submission_type: submissionType,
+        }
+      : {
+          to_email: EMAIL_RECIPIENT,
+          artist_name: name,
+          artist_email: email,
+          portfolio_link: portfolioLink,
+          artwork_details: artworkDetails,
+          // Legacy keys kept for templates not yet updated
+          from_name: name,
+          from_email: email,
+          contact_name: contactName || name,
+          website: portfolioLink,
+          message: artworkDetails || message || '',
+          submission_type: submissionType,
+        };
 
     // Build the request payload
     // EmailJS requires the private key as 'accessToken' in the payload for strict mode
