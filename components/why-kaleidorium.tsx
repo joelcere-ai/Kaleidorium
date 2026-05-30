@@ -458,8 +458,10 @@ const FAQ_ITEMS = [
   { id: "gallery-join", q: "Do galleries join immediately?", a: "Galleries currently apply by submitting their website or portfolio for review. If selected, they will be invited to complete their gallery profile on Kaleidorium." },
   { id: "gallery-multi", q: "Can galleries showcase multiple artists?", a: "Yes. Galleries can present multiple artists and artworks through one profile." },
   { id: "why-gallery", q: "Why should I join as a gallery?", a: "Kaleidorium helps grow your collector base by putting the right works in front of the right audience." },
-  { id: "cost", q: "How much does it cost for artists and galleries?", a: "Free for all in 2026. In 2027, we will introduce a modest subscription fee. Check out our pricing page. No hidden surprises." },
-  { id: "commission", q: "Do you take commission during beta?", a: "No commission during beta. Kaleidorium is focused on discovery and qualified interest." },
+  { id: "free", q: "Is Kaleidorium free?", a: "Yes. Kaleidorium is completely free for artists and galleries." },
+  { id: "commissions", q: "Do you charge commissions?", a: "No. We do not take commissions on sales. Collectors are directed to your website or preferred contact method." },
+  { id: "future-charges", q: "Will there be charges in the future?", a: "Possibly. We expect to introduce optional subscription plans in the future as the platform grows. Existing members will be informed well in advance." },
+  { id: "auto-charge", q: "Will I be charged automatically?", a: "No. You will never be charged without your explicit agreement." },
   { id: "why-created", q: "Why did you create Kaleidorium?", a: "We've seen too many brilliant artists struggle to get noticed. In a world overflowing with content, being good is no longer enough — you also need to be found. Kaleidorium helps solve this by curating artwork to match each collector's taste, increasing the chance of discovery and appreciation." },
 ]
 
