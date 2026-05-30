@@ -44,8 +44,8 @@ const HOW_IT_WORKS: Record<Role, { title: string; body: string }[]> = {
   ],
   artist: [
     {
-      title: "Upload Your Artwork",
-      body: "Create your profile, upload your work and link collectors to your own website or portfolio.",
+      title: "Feature Your Artwork",
+      body: "We will create your profile, upload your work and automatically redirect collectors to your own website or portfolio.",
     },
     {
       title: "Get Matched to the Right Collectors",
