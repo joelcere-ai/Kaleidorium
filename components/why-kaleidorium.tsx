@@ -422,11 +422,11 @@ function ForGalleriesForm() {
           placeholder="your@email.com" required />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-800 mb-1">Tell us about your gallery</label>
+        <label className="block text-sm font-medium text-gray-800 mb-1">Tell us which artists and artwork you would like to list</label>
         <textarea name="message" value={formData.message} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
-          placeholder="Tell us about your gallery and which artists you would like to list…"
-          rows={4} required />
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm resize-y min-h-[144px]"
+          placeholder={"Please list each artist with corresponding artwork you'd like registered, with: title, dimensions, price, and year created. E.g. — 'John Corletto, Sunset Over Nairobi, 60×80cm, $1200, 2023'. Ensure that the artist's work is easily searchable on the link you have provided."}
+          rows={6} required />
       </div>
       <Button type="submit" disabled={isSubmitting} variant="outline" className="w-full">
         {isSubmitting ? "Submitting…" : "Submit for Review"}
@@ -738,7 +738,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     Submit Your Gallery for Review
                   </h2>
                   <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                    Share your gallery website or portfolio for review. If selected, we'll invite you to join Kaleidorium as a gallery.
+                    Share your gallery profile, which artists and artwork you would like to feature and we'll take care of the rest.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
