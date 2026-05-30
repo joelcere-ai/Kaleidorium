@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Search, Heart, Palette, Info, Mail, DollarSign, BadgeAlert } from "lucide-react";
+import { Menu, X, User, Search, Heart, Palette, Info, Mail, BadgeAlert } from "lucide-react";
 
 interface NewMobileHeaderProps {
   currentPage?: string;
@@ -150,17 +150,6 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               >
                 <Info className="mr-3 h-5 w-5" />
                 How it works?
-              </Button>
-
-              <Button
-                variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  isCurrentPage("pricing") ? "bg-gray-100" : ""
-                }`}
-                onClick={() => handleNavigation("pricing")}
-              >
-                <DollarSign className="mr-3 h-5 w-5" />
-                Pricing
               </Button>
 
               <Button

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, DollarSign, BadgeAlert } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, BadgeAlert } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -914,17 +914,6 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
-                    setView("pricing")
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <DollarSign className="mr-3 h-5 w-5" />
-                  Pricing
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
                     router.push("/contact");
                     setShowMenuModal(false);
                   }}
@@ -1677,17 +1666,6 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               >
                 <Info className="mr-3 h-5 w-5" />
                 How it works?
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
-                  setView("pricing")
-                  setShowMenuModal(false)
-                }}
-              >
-                <DollarSign className="mr-3 h-5 w-5" />
-                Pricing
               </Button>
               <Button
                 variant="ghost"
