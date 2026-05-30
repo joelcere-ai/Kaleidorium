@@ -63,7 +63,7 @@ const HOW_IT_WORKS: Record<Role, { title: string; body: string }[]> = {
   gallery: [
     {
       title: "Showcase Your Artists",
-      body: "We will create your gallery profile, create profile for your artists, upload artwork and automatically redirect collectors to your own website.",
+      body: "We will create your gallery profile, create profiles for your artists, upload artwork and automatically redirect collectors to your own website.",
     },
     {
       title: "Reach Better-Fit Collectors",
