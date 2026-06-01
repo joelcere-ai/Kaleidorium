@@ -716,7 +716,10 @@ function ArtistRegisterPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About Your Artwork</h2>
+              <h2 className="text-base font-serif font-bold text-black mb-2" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About Your Artwork</h2>
+              <p className="text-sm font-sans text-gray-700 mb-4" style={{ fontSize: '14px', fontFamily: 'Arial, sans-serif' }}>
+                You will be able to upload more than one artwork after you complete your registration.
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Title of Artwork</label>
