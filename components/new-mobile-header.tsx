@@ -34,7 +34,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
     if (page === "discover" && pathname === "/") return true;
     if (page === "collection" && pathname === "/collection") return true;
     if (page === "profile" && pathname === "/profile") return true;
-    if (page === "for-artists" && pathname === "/for-artists") return true;
+    if (page === "for-artists" && (pathname === "/for-artists" || pathname.startsWith("/for-artists/"))) return true;
     if (page === "about" && pathname === "/about") return true;
     if (page === "contact" && pathname === "/contact") return true;
     if (page === "featured" && pathname === "/featured") return true;

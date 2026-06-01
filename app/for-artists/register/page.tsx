@@ -18,6 +18,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { ProfilePictureUpload } from "@/components/profile-picture-upload";
 import { SecureArtworkUpload } from "@/components/secure-artwork-upload";
 import { uploadProfilePicture, type OptimizedImage } from "@/lib/image-utils";
+import { DesktopHeader } from "@/components/desktop-header";
+import { NewMobileHeader } from "@/components/new-mobile-header";
 
 const countries: { value: string; label: string }[] = countryList().getData();
 
@@ -84,6 +86,14 @@ function ArtistRegisterPage() {
   const [inviteToken, setInviteToken] = useState("");
   const [isInviteVerified, setIsInviteVerified] = useState(inviteBypass);
   const [inviteError, setInviteError] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Check for URL parameters on component mount
   useEffect(() => {
@@ -525,21 +535,36 @@ function ArtistRegisterPage() {
     }
   }, [imageUrl]);
 
+  const navigateFromHeader = (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+    if (view === "discover") {
+      router.push("/");
+    } else if (view === "featured") {
+      router.push("/featured");
+    } else {
+      router.push(`/?view=${view}`);
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 flex flex-col items-center py-10 px-4 md:px-10 bg-[#FAFAF8]">
-        {/* Back Navigation */}
-        <div className="w-full max-w-md mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 p-0 h-auto"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Back</span>
+    <div className="min-h-screen bg-[#FAFAF8]">
+      {isMobile ? (
+        <NewMobileHeader currentPage="for-artists" setView={navigateFromHeader} />
+      ) : (
+        <DesktopHeader currentPage="for-artists" setView={navigateFromHeader} />
+      )}
+
+      <div
+        className="container mx-auto px-4 py-8 max-w-2xl"
+        style={isMobile ? { paddingTop: "calc(96px + env(safe-area-inset-top))" } : undefined}
+      >
+        <div className="mb-6">
+          <Button variant="ghost" onClick={() => router.push("/?view=profile")} className="p-0 h-auto">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            <span style={{ fontSize: "14px", fontFamily: "Arial, sans-serif" }}>Back to Account</span>
           </Button>
         </div>
-        
+
+        <div className="max-w-2xl mx-auto">
         {!isInviteVerified ? (
           <div className="w-full max-w-md">
             <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Artist Registration</h1>
@@ -854,7 +879,8 @@ function ArtistRegisterPage() {
             </form>
           </div>
         )}
-      </main>
+        </div>
+      </div>
     </div>
   );
 } 
