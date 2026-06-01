@@ -8,7 +8,7 @@ export default function ForArtistsRedirect() {
 
   useEffect(() => {
     // Redirect to main app with for-artists view
-    router.replace('/?view=for-artists');
+    router.replace('/?view=why-kaleidorium&role=artist');
   }, [router]);
 
   return (

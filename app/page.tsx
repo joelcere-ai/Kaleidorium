@@ -966,7 +966,7 @@ function HomeContent() {
         const roleParam = searchParams.get("role") as "collector" | "artist" | "gallery" | null;
         const validRole = roleParam && ["collector", "artist", "gallery"].includes(roleParam) ? roleParam : null;
         return (
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-y-auto">
             <WhyKaleidoriumPage initialRole={validRole} />
           </div>
         );
