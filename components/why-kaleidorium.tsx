@@ -504,8 +504,10 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? null)
   const [showInvitePanel, setShowInvitePanel] = useState(false)
   const [artistSignupMode, setArtistSignupMode] = useState<"assisted" | null>(null)
+  const [gallerySignupMode, setGallerySignupMode] = useState<"assisted" | null>(null)
   const inviteRef = useRef<HTMLDivElement>(null)
   const artistFormRef = useRef<HTMLDivElement>(null)
+  const galleryFormRef = useRef<HTMLDivElement>(null)
 
   // Sync role from URL query param on mount
   const searchParams = useSearchParams()
@@ -523,6 +525,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const handleRoleSelect = (role: Role) => {
     setShowInvitePanel(false)
     setArtistSignupMode(null)
+    setGallerySignupMode(null)
     setSelectedRole(role)
     onRoleChange?.(role)
     const url = new URL(window.location.href)
@@ -536,6 +539,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const handleInviteSelect = () => {
     setSelectedRole(null)
     setArtistSignupMode(null)
+    setGallerySignupMode(null)
     setShowInvitePanel(true)
     const url = new URL(window.location.href)
     url.searchParams.delete("role")
@@ -798,17 +802,76 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
             {selectedRole === "gallery" && !showInvitePanel && (
               <>
-                <div className="text-center mb-6">
-                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                    Submit Your Gallery for Review
-                  </h2>
-                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                    Share your gallery profile, which artists and artwork you would like to feature and we'll take care of the rest.
-                  </p>
-                </div>
-                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
-                  <ForGalleriesForm />
-                </div>
+                {gallerySignupMode !== "assisted" ? (
+                  <>
+                    <div className="text-center mb-6">
+                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
+                        Get started as a gallery
+                      </h2>
+                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
+                        Choose how you would like to join Kaleidorium.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
+                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
+                          Create your account
+                        </h3>
+                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
+                          Register yourself and set up your gallery profile straight away.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => router.push("/for-galleries/register")}
+                        >
+                          Create your account
+                        </Button>
+                      </div>
+                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
+                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
+                          Let us do it for you
+                        </h3>
+                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
+                          Share your gallery details and we will create your account and upload artwork for you.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            setGallerySignupMode("assisted")
+                            setTimeout(() => {
+                              galleryFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                            }, 80)
+                          }}
+                        >
+                          Let us create your account
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div ref={galleryFormRef}>
+                    <div className="text-center mb-6">
+                      <Button
+                        variant="ghost"
+                        className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
+                        onClick={() => setGallerySignupMode(null)}
+                      >
+                        ← Back to options
+                      </Button>
+                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
+                        Let us create your account
+                      </h2>
+                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
+                        Share your gallery profile, which artists and artwork you would like to feature and we'll take care of the rest.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
+                      <ForGalleriesForm />
+                    </div>
+                  </div>
+                )}
                 <div className="mt-10">
                   <InviteArtistShare />
                 </div>
