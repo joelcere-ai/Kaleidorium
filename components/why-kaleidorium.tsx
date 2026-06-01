@@ -503,7 +503,9 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const howItWorksRef = useRef<HTMLDivElement>(null)
   const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? null)
   const [showInvitePanel, setShowInvitePanel] = useState(false)
+  const [artistSignupMode, setArtistSignupMode] = useState<"assisted" | null>(null)
   const inviteRef = useRef<HTMLDivElement>(null)
+  const artistFormRef = useRef<HTMLDivElement>(null)
 
   // Sync role from URL query param on mount
   const searchParams = useSearchParams()
@@ -520,6 +522,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
   const handleRoleSelect = (role: Role) => {
     setShowInvitePanel(false)
+    setArtistSignupMode(null)
     setSelectedRole(role)
     onRoleChange?.(role)
     const url = new URL(window.location.href)
@@ -532,6 +535,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
   const handleInviteSelect = () => {
     setSelectedRole(null)
+    setArtistSignupMode(null)
     setShowInvitePanel(true)
     const url = new URL(window.location.href)
     url.searchParams.delete("role")
@@ -716,17 +720,76 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
             {selectedRole === "artist" && !showInvitePanel && (
               <>
-                <div className="text-center mb-6">
-                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                    Submit Your Portfolio
-                  </h2>
-                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                    Send us your details and artwork information. We'll create your artist account and email you your login details.
-                  </p>
-                </div>
-                <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
-                  <ForArtistsForm />
-                </div>
+                {artistSignupMode !== "assisted" ? (
+                  <>
+                    <div className="text-center mb-6">
+                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
+                        Get started as an artist
+                      </h2>
+                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
+                        Choose how you would like to join Kaleidorium.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
+                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
+                          Create your account
+                        </h3>
+                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
+                          Register yourself and upload your first artwork straight away.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => router.push("/for-artists/register")}
+                        >
+                          Create your account
+                        </Button>
+                      </div>
+                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
+                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
+                          Let us do it for you
+                        </h3>
+                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
+                          Send us your details and artwork information and we will create your account for you.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            setArtistSignupMode("assisted")
+                            setTimeout(() => {
+                              artistFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+                            }, 80)
+                          }}
+                        >
+                          Let us create your account
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div ref={artistFormRef}>
+                    <div className="text-center mb-6">
+                      <Button
+                        variant="ghost"
+                        className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
+                        onClick={() => setArtistSignupMode(null)}
+                      >
+                        ← Back to options
+                      </Button>
+                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
+                        Let us create your account
+                      </h2>
+                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
+                        Send us your details and artwork information. We'll create your artist account and email you your login details.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
+                      <ForArtistsForm />
+                    </div>
+                  </div>
+                )}
                 <div className="mt-10">
                   <InviteArtistShare />
                 </div>
