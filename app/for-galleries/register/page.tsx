@@ -364,10 +364,10 @@ function GalleryRegisterContent() {
           </h1>
           <p className="text-sm font-sans text-gray-700" style={{fontFamily: 'Arial, sans-serif'}}>
             {inviteBypass
-              ? "Complete your gallery registration below."
+              ? "Complete your gallery registration below to create artist profiles and upload artwork."
               : !isInviteVerified
                 ? "Verify your invitation to begin registration."
-                : "Complete your gallery registration below."}
+                : "Complete your gallery registration below to create artist profiles and upload artwork."}
           </p>
         </div>
 
