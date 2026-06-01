@@ -35,11 +35,13 @@ function GalleryRegisterContent() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inviteTokenFromUrl = searchParams.get("token");
+  const inviteBypass = !inviteTokenFromUrl;
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [profileImage, setProfileImage] = useState<OptimizedImage | null>(null);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteToken, setInviteToken] = useState("");
-  const [isInviteVerified, setIsInviteVerified] = useState(false);
+  const [isInviteVerified, setIsInviteVerified] = useState(inviteBypass);
   const [inviteError, setInviteError] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
@@ -55,14 +57,15 @@ function GalleryRegisterContent() {
 
   // Check for URL parameters on component mount
   useEffect(() => {
-    const emailParam = searchParams.get('email');
-    const tokenParam = searchParams.get('token');
-    
+    const emailParam = searchParams.get("email");
+    const tokenParam = searchParams.get("token");
+
     if (emailParam) {
       setInviteEmail(emailParam);
     }
     if (tokenParam) {
       setInviteToken(tokenParam);
+      setIsInviteVerified(false);
     }
   }, [searchParams]);
 
@@ -123,28 +126,29 @@ function GalleryRegisterContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // SECURITY: Require invitation verification before registration
-    if (!isInviteVerified) {
-      toast({
-        title: "Invitation required",
-        description: "Please verify your invitation first.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // SECURITY: Require invitation verification when registering via invite link
+    if (!inviteBypass) {
+      if (!isInviteVerified) {
+        toast({
+          title: "Invitation required",
+          description: "Please verify your invitation first.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // SECURITY: Verify stored invitation data matches form data
-    const storedToken = sessionStorage.getItem('verified_invite_token');
-    const storedEmail = sessionStorage.getItem('verified_invite_email');
-    
-    if (!storedToken || !storedEmail || storedEmail !== gallery.email.trim().toLowerCase()) {
-      toast({
-        title: "Invitation verification required",
-        description: "Please verify your invitation again.",
-        variant: "destructive",
-      });
-      setIsInviteVerified(false);
-      return;
+      const storedToken = sessionStorage.getItem('verified_invite_token');
+      const storedEmail = sessionStorage.getItem('verified_invite_email');
+
+      if (!storedToken || !storedEmail || storedEmail !== gallery.email.trim().toLowerCase()) {
+        toast({
+          title: "Invitation verification required",
+          description: "Please verify your invitation again.",
+          variant: "destructive",
+        });
+        setIsInviteVerified(false);
+        return;
+      }
     }
 
     const newErrors: { [key: string]: string } = {};
@@ -359,9 +363,11 @@ function GalleryRegisterContent() {
             Register as a Gallery
           </h1>
           <p className="text-sm font-sans text-gray-700" style={{fontFamily: 'Arial, sans-serif'}}>
-            {!isInviteVerified 
-              ? "Verify your invitation to begin registration."
-              : "Complete your gallery registration below."}
+            {inviteBypass
+              ? "Complete your gallery registration below."
+              : !isInviteVerified
+                ? "Verify your invitation to begin registration."
+                : "Complete your gallery registration below."}
           </p>
         </div>
 

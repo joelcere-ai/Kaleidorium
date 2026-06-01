@@ -1372,22 +1372,6 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
               </Select>
             </div>
 
-            {(selectedRegistrationType === "artist" || selectedRegistrationType === "gallery") && (
-              <div className="p-4 bg-[#F6F4FB] border border-[#DDD6F2] rounded-[16px] text-sm">
-                <p className="text-[#6E62A6] font-sans text-sm">
-                  <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
-                  {" "}Don't have a token yet?{" "}
-                  <a
-                    href={`/?view=why-kaleidorium&role=${selectedRegistrationType}`}
-                    className="underline font-semibold hover:text-[#4F4564]"
-                  >
-                    Submit your {selectedRegistrationType === "artist" ? "portfolio" : "gallery"} for review
-                  </a>
-                  {" "}to apply.
-                </p>
-              </div>
-            )}
-
             <Button 
               variant="outline"
               onClick={() => {

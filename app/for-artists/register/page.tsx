@@ -71,6 +71,8 @@ function ArtistRegisterPage() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inviteTokenFromUrl = searchParams.get("token");
+  const inviteBypass = !inviteTokenFromUrl;
   const [aiLoading, setAiLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -80,22 +82,22 @@ function ArtistRegisterPage() {
   const [tagWarning, setTagWarning] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteToken, setInviteToken] = useState("");
-  const [isInviteVerified, setIsInviteVerified] = useState(false);
+  const [isInviteVerified, setIsInviteVerified] = useState(inviteBypass);
   const [inviteError, setInviteError] = useState("");
 
   // Check for URL parameters on component mount
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const emailParam = urlParams.get('email');
-    const tokenParam = urlParams.get('token');
-    
+    const emailParam = searchParams.get("email");
+    const tokenParam = searchParams.get("token");
+
     if (emailParam) {
       setInviteEmail(emailParam);
     }
     if (tokenParam) {
       setInviteToken(tokenParam);
+      setIsInviteVerified(false);
     }
-  }, []);
+  }, [searchParams]);
   const [profileImage, setProfileImage] = useState<OptimizedImage | null>(null);
 
   const currencyOptions = [
@@ -613,11 +615,13 @@ function ArtistRegisterPage() {
         ) : (
           <div className="w-full max-w-2xl">
             <h1 className="text-base font-serif font-bold text-black text-center mb-8" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>Register as an Artist</h1>
+            {!inviteBypass && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded">
               <p className="text-green-700 text-sm">
                 ✓ Invitation verified for: <strong>{inviteEmail}</strong>
               </p>
             </div>
+            )}
             <form className="space-y-8" onSubmit={handleSubmit}>
               <div>
                 <h2 className="text-base font-serif font-bold text-black mb-4" style={{fontSize: '16px', fontFamily: 'Times New Roman, serif'}}>About You</h2>
@@ -662,7 +666,16 @@ function ArtistRegisterPage() {
                 
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Email Address</label>
-                  <Input name="email" type="email" placeholder="Email" value={inviteEmail} readOnly className="bg-[#FAFAF8] border-[#E6E4DF]" />
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    readOnly={!inviteBypass}
+                    className={inviteBypass ? "" : "bg-[#FAFAF8] border-[#E6E4DF]"}
+                    required
+                  />
                   {errors.email && <div className="text-red-600 text-xs mt-1">{errors.email}</div>}
                 </div>
                 
