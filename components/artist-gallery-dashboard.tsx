@@ -756,18 +756,16 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
         title: "Secure artwork upload complete!", 
         description: "The Kurator is analyzing your artwork..." 
       });
-      // Automatically trigger AI description generation in the background
-      // This ensures style, genre, subject, and colour are populated automatically
-      setTimeout(() => {
-        handleAIDescription();
-      }, 500); // Small delay to ensure state is updated
+      // Pass image URL directly — state update is async and a timeout would read stale state
+      handleAIDescription(result.url);
     } else {
       setArtworkImageUrl(null);
     }
   };
 
-  const handleAIDescription = async () => {
-    if (!artworkImageUrl) {
+  const handleAIDescription = async (imageUrlOverride?: string) => {
+    const imageUrl = imageUrlOverride ?? artworkImageUrl;
+    if (!imageUrl) {
       toast({ title: "Please upload an image first.", variant: "destructive" });
       return;
     }
@@ -783,8 +781,8 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          description: "", // Empty description - let Kurator analyze the image
-          imageUrl: artworkImageUrl 
+          description: "",
+          imageUrl,
         }),
       });
       const kuratorResult = await kuratorRes.json();
@@ -806,8 +804,11 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
       const description = kuratorResult.description || 
         `A ${kuratorResult.style || 'contemporary'} ${kuratorResult.genre || 'artwork'} featuring ${kuratorResult.subject || 'abstract elements'}.`;
       
-      setAiDescription(description);
-      setArtworkDescription(description);
+      const hasExistingDescription = artworkDescription.trim().length > 0 || aiDescription.trim().length > 0;
+      if (!hasExistingDescription) {
+        setAiDescription(description);
+        setArtworkDescription(description);
+      }
       setArtworkTags(allTags);
       // Store individual tag categories for database
       setArtworkGenre(kuratorResult.genre || "");
@@ -1093,7 +1094,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                 <div className="flex justify-start">
                   <Button 
                     type="button" 
-                    onClick={handleAIDescription} 
+                    onClick={() => handleAIDescription()} 
                     variant="outline"
                     className="mt-2 px-4 py-2 text-sm" 
                     disabled={aiLoading || !artworkImageUrl}

@@ -26,6 +26,23 @@ import { useRegistrationPrompt } from "@/hooks/use-registration-prompt"
 import { supabase } from "@/lib/supabase"
 import type { Artwork } from "@/types/artwork"
 import { v4 as uuidv4 } from 'uuid'
+
+/** Normalize artwork id (handles legacy load-more clones like "362_1738..."). */
+function artworkIdKey(id: string | number | undefined): string {
+  if (id == null) return ""
+  return String(id).split("_")[0]
+}
+
+/** Keep first occurrence of each real artwork id. */
+function dedupeArtworks(list: Artwork[]): Artwork[] {
+  const seen = new Set<string>()
+  return list.filter((artwork) => {
+    const key = artworkIdKey(artwork.id)
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -345,7 +362,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (sessionAge < maxSessionAge && isSameUser && sessionData.artworks && sessionData.artworks.length > 0) {
         console.log('📂 Restored Discover session:', { artworksCount: sessionData.artworks.length, currentIndex: sessionData.currentIndex, userId: sessionData.userId });
         return {
-          artworks: sessionData.artworks,
+          artworks: dedupeArtworks(sessionData.artworks),
           currentIndex: sessionData.currentIndex || 0
         };
       } else {
@@ -588,7 +605,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           
           // Add artworks in the order recommended by OpenAI
           for (const id of recommendedIds) {
-            const artworkIndex = remainingArtworks.findIndex(artwork => artwork.id === id);
+            const idKey = artworkIdKey(id)
+            const artworkIndex = remainingArtworks.findIndex(
+              (artwork) => artworkIdKey(artwork.id) === idKey
+            );
             if (artworkIndex !== -1) {
               recommendedArtworks.push(remainingArtworks.splice(artworkIndex, 1)[0]);
             }
@@ -598,7 +618,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           recommendedArtworks.push(...remainingArtworks);
           
           console.log('getRecommendations: reordered by OpenAI', recommendedArtworks.length);
-          return recommendedArtworks;
+          return dedupeArtworks(recommendedArtworks);
         } else {
           console.warn('Invalid response from recommendations API, using fallback');
           return unviewedArtworks;
@@ -829,7 +849,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (!preferencesOverride) {
         setLocalPreferences(prefsToUpdate);
       }
-      return artworks;
+      return dedupeArtworks(artworks);
     }
     // Score logic (same as before)
     const scoredArtworks = unviewedArtworks.map(artwork => {
@@ -868,10 +888,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       }
       return { ...artwork, score };
     });
-    return scoredArtworks.sort((a, b) => {
+    return dedupeArtworks(scoredArtworks.sort((a, b) => {
       const scoreDiff = b.score - a.score;
       return Math.abs(scoreDiff) < 0.2 ? Math.random() - 0.5 : scoreDiff;
-    });
+    }));
   };
 
   // Helper to check if all artworks have been viewed
@@ -1368,7 +1388,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       console.log('Received artwork data:', artworksData.length, 'items');
       console.log('First artwork sample:', JSON.stringify(artworksData[0], null, 2));
 
-      const transformedArtworks = artworksData.map((artwork: any) => {
+      const transformedArtworks = dedupeArtworks(artworksData.map((artwork: any) => {
         return {
           id: artwork.id?.toString() || Math.random().toString(),
           title: artwork.artwork_title || 'Untitled',
@@ -1389,7 +1409,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           subject: artwork.subject || undefined,
           colour: artwork.colour || undefined
         };
-      });
+      }));
 
       
       // For registered users, check if they have preferences and get recommendations first
@@ -1557,38 +1577,10 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   }, [])
 
   const loadMoreArtworks = useCallback(async () => {
-    if (
-      loading ||
-      isFiltering ||
-      isSearching ||
-      isDiscoverSearchMode ||
-      isLoadingSpecificArtwork ||
-      selectedArtworkId
-    ) {
-      console.log('⏸️ Skipping loadMoreArtworks: loading=', loading, 'isFiltering=', isFiltering, 'isSearching=', isSearching, 'isLoadingSpecificArtwork=', isLoadingSpecificArtwork, 'selectedArtworkId=', selectedArtworkId)
-      return
-    }
-    
-    try {
-      setLoading(true)
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // For demo purposes, add shuffled versions of existing artworks
-      const shuffledArtworks = [...artworks].sort(() => Math.random() - 0.5)
-      const newArtworks = shuffledArtworks.slice(0, 6).map(artwork => ({
-        ...artwork,
-        id: `${artwork.id}_${Date.now()}_${Math.random()}` // Ensure unique IDs
-      }))
-      
-      setArtworks(prev => [...prev, ...newArtworks])
-    } catch (error) {
-      console.error('Error loading more artworks:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [loading, artworks, isFiltering, isSearching, isDiscoverSearchMode])
+    // All catalogue artworks are loaded on initial fetch (limit 500).
+    // Scroll "load more" only reveals more cards via visibleCardCount in CardStack —
+    // do not clone existing rows (that caused the same artwork to appear twice).
+  }, [])
 
   // Handle moving to the next artwork
   const handleNext = () => {
