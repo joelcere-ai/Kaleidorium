@@ -186,7 +186,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     message: ""
   })
 
-  // Add local preferences state for anonymous users
+  // Taste preferences — used by Kurator banner/insight on desktop and mobile
   const [localPreferences, setLocalPreferences] = useState<{
     artists: Record<string, number>;
     genres: Record<string, number>;
@@ -206,6 +206,39 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     interactionCount: 0,
     viewed_artworks: []
   });
+
+  const applyCollectorPreferences = useCallback((prefs: Partial<typeof localPreferences> | null | undefined) => {
+    if (!prefs) return
+    setLocalPreferences({
+      artists: prefs.artists ?? {},
+      genres: prefs.genres ?? {},
+      styles: prefs.styles ?? {},
+      subjects: prefs.subjects ?? {},
+      colors: prefs.colors ?? {},
+      priceRanges: prefs.priceRanges ?? {},
+      interactionCount: prefs.interactionCount ?? 0,
+      viewed_artworks: prefs.viewed_artworks ?? [],
+    })
+  }, [])
+
+  // Sync saved collector preferences for registered users (powers Kurator UI on mobile + desktop)
+  useEffect(() => {
+    if (!user?.id) return
+    let cancelled = false
+    ;(async () => {
+      const { data: collector } = await supabase
+        .from("Collectors")
+        .select("preferences")
+        .eq("user_id", user.id)
+        .maybeSingle()
+      if (!cancelled && collector?.preferences) {
+        applyCollectorPreferences(collector.preferences as Partial<typeof localPreferences>)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id, applyCollectorPreferences])
 
   // Add state for filtered artworks and active filters
   const [filteredArtworks, setFilteredArtworks] = useState<Artwork[]>([])
@@ -947,6 +980,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!await handleAuthAction('dislike', artwork)) return;
     const newPreferences = await updatePreferences(user.id, artwork, 'dislike');
     if (newPreferences) {
+      applyCollectorPreferences(newPreferences.preferences)
       // Move the disliked artwork to the END of the pool (don't remove it permanently).
       // This keeps pool diversity while ensuring it won't reappear until all others are seen.
       const otherArtworks = artworks.filter(a => a.id !== artwork.id);
@@ -1069,6 +1103,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
 
     if (addPreferences) {
+      applyCollectorPreferences(addPreferences.preferences)
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
       // Save session after updating artworks
@@ -1135,6 +1170,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!await handleAuthAction('add', artwork)) return false;
     const newPreferences = await updatePreferences(user.id, artwork, 'add');
     if (newPreferences) {
+      applyCollectorPreferences(newPreferences.preferences)
       const recommendedArtworks = await getRecommendations(user.id, artworks);
       setArtworks(recommendedArtworks);
       // Save session after updating artworks

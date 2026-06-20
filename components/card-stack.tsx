@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
-import { KuratorInsight } from "@/components/kurator-insight"
+import { KuratorInsight, KuratorEarlyEncouragement } from "@/components/kurator-insight"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -238,7 +238,10 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* Kurator Insight */}
                       {localPreferences && (
-                        <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
+                        <>
+                          <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
+                          <KuratorEarlyEncouragement interactionCount={localPreferences.interactionCount} />
+                        </>
                       )}
 
                       {/* Action Buttons */}

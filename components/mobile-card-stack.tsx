@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { KuratorBanner } from "@/components/kurator-banner"
-import { KuratorInsight } from "@/components/kurator-insight"
+import { KuratorInsight, KuratorEarlyEncouragement } from "@/components/kurator-insight"
 
 // Helper function to format dimensions with units
 const formatDimensions = (dimensions: string): string => {
@@ -1295,7 +1295,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
                 {/* Kurator Insight */}
                 {localPreferences && (
-                  <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
+                  <>
+                    <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
+                    <KuratorEarlyEncouragement interactionCount={localPreferences.interactionCount} />
+                  </>
                 )}
 
                 {/* Action Buttons */}

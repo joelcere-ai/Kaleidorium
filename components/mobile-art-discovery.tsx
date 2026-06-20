@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import MobileCardStack from "./mobile-card-stack"
-import { KuratorBanner } from "./kurator-banner"
 
 interface LocalPreferences {
   artists: Record<string, number>

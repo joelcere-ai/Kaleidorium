@@ -258,6 +258,45 @@ export function KuratorInsight({
           <p className="text-xs text-gray-500 mt-0.5 leading-snug">
             {message.reason}
           </p>
+          <KuratorEncouragement interactionCount={localPreferences.interactionCount} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** Secondary nudge shown under each artwork while the taste profile is still developing. */
+export function KuratorEncouragement({ interactionCount }: { interactionCount: number }) {
+  if (interactionCount >= 40) return null
+
+  return (
+    <p className="text-xs text-gray-500 mt-1.5 leading-snug">
+      Continue liking and swiping to get more personalised suggestions
+    </p>
+  )
+}
+
+/** Shown when personalised insight is not yet available (fewer than 3 interactions). */
+export function KuratorEarlyEncouragement({ interactionCount }: { interactionCount: number }) {
+  if (interactionCount >= 3 || interactionCount >= 40) return null
+
+  return (
+    <div
+      className="w-full rounded-xl px-3 py-2.5 mt-2"
+      style={{
+        background: "linear-gradient(135deg, #f5f0ff 0%, #fdf2fb 40%, #fff7f0 100%)",
+        border: "1px solid rgba(139,92,246,0.10)",
+      }}
+    >
+      <div className="flex items-start gap-2">
+        <div className="mt-0.5">
+          <KuratorOrb size={16} />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-gray-800 leading-snug">
+            Your Kurator is learning your taste
+          </p>
+          <KuratorEncouragement interactionCount={interactionCount} />
         </div>
       </div>
     </div>
