@@ -78,6 +78,10 @@ export default function LoginPage() {
         <NewMobileHeader currentPage="login" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }
@@ -86,6 +90,10 @@ export default function LoginPage() {
         <DesktopHeader currentPage="login" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }

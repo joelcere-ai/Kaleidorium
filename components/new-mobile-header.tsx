@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Search, Heart, Palette, Info, Mail, BadgeAlert } from "lucide-react";
+import { Menu, X, User, Search, Heart, Palette, Info, Mail, BadgeAlert, Sparkles } from "lucide-react";
 
 interface NewMobileHeaderProps {
   currentPage?: string;
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
 }
 
 export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: NewMobileHeaderProps) {
@@ -38,6 +38,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
     if (page === "about" && pathname === "/about") return true;
     if (page === "contact" && pathname === "/contact") return true;
     if (page === "featured" && pathname === "/featured") return true;
+    if (page === "taste-profile" && pathname === "/taste-profile") return true;
     return false;
   };
 
@@ -139,6 +140,20 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               >
                 <BadgeAlert className="mr-3 h-5 w-5" />
                 Featured
+              </Button>
+
+              <Button
+                variant="ghost"
+                className={`w-full justify-start text-black hover:bg-gray-100 ${
+                  isCurrentPage("taste-profile") ? "bg-gray-100" : ""
+                }`}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  router.push("/taste-profile");
+                }}
+              >
+                <Sparkles className="mr-3 h-5 w-5" />
+                Taste Profile
               </Button>
 
               <Button

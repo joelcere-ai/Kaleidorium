@@ -531,6 +531,10 @@ export default function RegisterPage() {
         <NewMobileHeader currentPage="register" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }
@@ -539,6 +543,10 @@ export default function RegisterPage() {
         <DesktopHeader currentPage="register" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }

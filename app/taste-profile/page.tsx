@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DesktopHeader } from "@/components/desktop-header"
 import { NewMobileHeader } from "@/components/new-mobile-header"
-import { FeaturedPageContent } from "@/components/featured-page-content"
+import { TasteProfilePageContent } from "@/components/taste-profile-page-content"
 import { supabase } from "@/lib/supabase"
 import { loadTempCollection } from "@/lib/temp-collection"
 
@@ -23,7 +23,7 @@ type AppView =
   | "terms"
   | "privacy"
 
-export default function FeaturedPage() {
+export default function TasteProfilePage() {
   const router = useRouter()
   const [collectionCount, setCollectionCount] = useState(0)
 
@@ -47,9 +47,9 @@ export default function FeaturedPage() {
 
   const setView = useCallback(
     (view: AppView) => {
-      if (view === "featured") return
-      if (view === "taste-profile") {
-        router.push("/taste-profile")
+      if (view === "taste-profile") return
+      if (view === "featured") {
+        router.push("/featured")
         return
       }
       if (view === "discover") {
@@ -64,15 +64,21 @@ export default function FeaturedPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <div className="md:hidden">
-        <NewMobileHeader currentPage="featured" collectionCount={collectionCount} setView={setView} />
+        <NewMobileHeader
+          currentPage="taste-profile"
+          collectionCount={collectionCount}
+          setView={setView}
+        />
       </div>
       <div className="hidden md:block">
-        <DesktopHeader currentPage="featured" collectionCount={collectionCount} setView={setView} />
+        <DesktopHeader
+          currentPage="taste-profile"
+          collectionCount={collectionCount}
+          setView={setView}
+        />
       </div>
-      <main
-        className="flex-1 flex flex-col pt-[calc(96px+env(safe-area-inset-top))] md:pt-0 pb-[calc(24px+env(safe-area-inset-bottom))] md:pb-0"
-      >
-        <FeaturedPageContent />
+      <main className="flex-1 flex flex-col pt-[calc(96px+env(safe-area-inset-top))] md:pt-0 pb-[calc(24px+env(safe-area-inset-bottom))] md:pb-0">
+        <TasteProfilePageContent />
       </main>
     </div>
   )

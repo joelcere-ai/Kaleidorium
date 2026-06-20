@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, BadgeAlert } from "lucide-react"
+import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, BadgeAlert, Sparkles } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -61,7 +61,7 @@ interface MobileCardStackProps {
   onDislike: (artwork: Artwork) => void
   onAddToCollection: (artwork: Artwork) => void | Promise<void | boolean>
   onLoadMore: () => void
-  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
+  setView: (view: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void
   view: "discover" | "collection"
   collection: Artwork[]
   onRemoveFromCollection: (id: string) => void
@@ -903,6 +903,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
+                    setView("taste-profile")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <Sparkles className="mr-3 h-5 w-5" />
+                  Taste Profile
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
                     setView("why-kaleidorium")
                     setShowMenuModal(false)
                   }}
@@ -1658,6 +1669,17 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               >
                 <BadgeAlert className="mr-3 h-5 w-5" />
                 Featured
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("taste-profile")
+                  setShowMenuModal(false)
+                }}
+              >
+                <Sparkles className="mr-3 h-5 w-5" />
+                Taste Profile
               </Button>
               <Button
                 variant="ghost"

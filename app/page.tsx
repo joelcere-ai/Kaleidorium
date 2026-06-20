@@ -294,9 +294,13 @@ function HomeContent() {
 
 
   // Create a setView function that updates both state and URL
-  const setView = (newView: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+  const setView = (newView: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     if (newView === "featured") {
       router.push("/featured");
+      return;
+    }
+    if (newView === "taste-profile") {
+      router.push("/taste-profile");
       return;
     }
     setViewState(newView);

@@ -335,6 +335,10 @@ function GalleryRegisterContent() {
         <NewMobileHeader currentPage="for-galleries" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }
@@ -343,6 +347,10 @@ function GalleryRegisterContent() {
         <DesktopHeader currentPage="for-galleries" setView={(view) => {
           if (view === "discover") {
             router.push("/");
+          } else if (view === "featured") {
+            router.push("/featured");
+          } else if (view === "taste-profile") {
+            router.push("/taste-profile");
           } else {
             router.push(`/?view=${view}`);
           }

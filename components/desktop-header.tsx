@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Heart, User, Palette, Info, Mail, BadgeAlert } from "lucide-react";
+import { Heart, User, Palette, Info, Mail, BadgeAlert, Sparkles } from "lucide-react";
 
 // Desktop header props interface - supports terms and privacy pages
 interface DesktopHeaderProps {
-  currentPage?: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "register" | "terms" | "privacy";
+  currentPage?: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "register" | "terms" | "privacy";
   collectionCount?: number;
-  setView: (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
+  setView: (view: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => void;
   onFilterChange?: (filters: any) => void;
   onClearFilters?: () => void;
   isFiltering?: boolean;
@@ -137,7 +137,19 @@ export function DesktopHeader({
             Featured
           </button>
 
-          {/* 4. How it works? */}
+          {/* 4. Taste Profile */}
+          <button
+            className={plainNavItem(isSelected("taste-profile"))}
+            onClick={() => {
+              setShowMenu(false);
+              router.push("/taste-profile");
+            }}
+          >
+            <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
+            Taste Profile
+          </button>
+
+          {/* 5. How it works? */}
           <button
             className={`${plainNavItem(isWhySelected())} ml-1`}
             onClick={() => handleNavigation("why-kaleidorium")}
@@ -146,7 +158,7 @@ export function DesktopHeader({
             How it works?
           </button>
 
-          {/* 5. Contact */}
+          {/* 6. Contact */}
           <button
             className={plainNavItem(isSelected("contact"))}
             onClick={() => handleNavigation("contact")}
@@ -155,7 +167,7 @@ export function DesktopHeader({
             Contact
           </button>
 
-          {/* 6. Account — plain item, right edge anchor */}
+          {/* 7. Account — plain item, right edge anchor */}
           <button
             className={`${plainNavItem(isSelected("profile"))} ml-1`}
             onClick={() => handleNavigation("profile")}
@@ -182,6 +194,10 @@ export function DesktopHeader({
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => { setShowMenu(false); router.push("/featured"); }}>
               <BadgeAlert className="mr-3 h-5 w-5" />Featured
+            </Button>
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => { setShowMenu(false); router.push("/taste-profile"); }}>
+              <Sparkles className="mr-3 h-5 w-5" />Taste Profile
             </Button>
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("why-kaleidorium")}>

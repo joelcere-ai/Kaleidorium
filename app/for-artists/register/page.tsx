@@ -535,11 +535,13 @@ function ArtistRegisterPage() {
     }
   }, [imageUrl]);
 
-  const navigateFromHeader = (view: "discover" | "collection" | "featured" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
+  const navigateFromHeader = (view: "discover" | "collection" | "featured" | "taste-profile" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy") => {
     if (view === "discover") {
       router.push("/");
     } else if (view === "featured") {
       router.push("/featured");
+    } else if (view === "taste-profile") {
+      router.push("/taste-profile");
     } else {
       router.push(`/?view=${view}`);
     }
