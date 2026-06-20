@@ -125,19 +125,7 @@ export function DesktopHeader({
             Collection ({collectionCount})
           </button>
 
-          {/* 3. Featured */}
-          <button
-            className={plainNavItem(isSelected("featured"))}
-            onClick={() => {
-              setShowMenu(false);
-              router.push("/featured");
-            }}
-          >
-            <BadgeAlert className="w-3.5 h-3.5 flex-shrink-0" />
-            Featured
-          </button>
-
-          {/* 4. Taste Profile */}
+          {/* 3. Taste Profile */}
           <button
             className={plainNavItem(isSelected("taste-profile"))}
             onClick={() => {
@@ -147,6 +135,18 @@ export function DesktopHeader({
           >
             <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
             Taste Profile
+          </button>
+
+          {/* 4. Featured */}
+          <button
+            className={plainNavItem(isSelected("featured"))}
+            onClick={() => {
+              setShowMenu(false);
+              router.push("/featured");
+            }}
+          >
+            <BadgeAlert className="w-3.5 h-3.5 flex-shrink-0" />
+            Featured
           </button>
 
           {/* 5. How it works? */}
@@ -192,12 +192,12 @@ export function DesktopHeader({
               <Heart className="mr-3 h-5 w-5" />Collection ({collectionCount})
             </Button>
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
-              onClick={() => { setShowMenu(false); router.push("/featured"); }}>
-              <BadgeAlert className="mr-3 h-5 w-5" />Featured
-            </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => { setShowMenu(false); router.push("/taste-profile"); }}>
               <Sparkles className="mr-3 h-5 w-5" />Taste Profile
+            </Button>
+            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+              onClick={() => { setShowMenu(false); router.push("/featured"); }}>
+              <BadgeAlert className="mr-3 h-5 w-5" />Featured
             </Button>
             <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
               onClick={() => handleNavigation("why-kaleidorium")}>

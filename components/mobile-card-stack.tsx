@@ -892,23 +892,23 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   className="w-full justify-start text-black hover:bg-gray-100"
                   onClick={() => {
-                    setView("featured")
-                    setShowMenuModal(false)
-                  }}
-                >
-                  <BadgeAlert className="mr-3 h-5 w-5" />
-                  Featured
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
-                  onClick={() => {
                     setView("taste-profile")
                     setShowMenuModal(false)
                   }}
                 >
                   <Sparkles className="mr-3 h-5 w-5" />
                   Taste Profile
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-black hover:bg-gray-100"
+                  onClick={() => {
+                    setView("featured")
+                    setShowMenuModal(false)
+                  }}
+                >
+                  <BadgeAlert className="mr-3 h-5 w-5" />
+                  Featured
                 </Button>
                 <Button
                   variant="ghost"
@@ -1663,23 +1663,23 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 variant="ghost"
                 className="w-full justify-start text-black hover:bg-gray-100"
                 onClick={() => {
-                  setView("featured")
-                  setShowMenuModal(false)
-                }}
-              >
-                <BadgeAlert className="mr-3 h-5 w-5" />
-                Featured
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
-                onClick={() => {
                   setView("taste-profile")
                   setShowMenuModal(false)
                 }}
               >
                 <Sparkles className="mr-3 h-5 w-5" />
                 Taste Profile
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-black hover:bg-gray-100"
+                onClick={() => {
+                  setView("featured")
+                  setShowMenuModal(false)
+                }}
+              >
+                <BadgeAlert className="mr-3 h-5 w-5" />
+                Featured
               </Button>
               <Button
                 variant="ghost"

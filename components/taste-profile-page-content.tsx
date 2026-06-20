@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card"
+import { InviteArtistShare } from "@/components/invite-artist-share"
 import { KuratorOrb } from "@/components/kurator-banner"
 import { supabase } from "@/lib/supabase"
 import { loadTempCollection } from "@/lib/temp-collection"
@@ -396,6 +397,8 @@ export function TasteProfilePageContent() {
           </Card>
         </>
       )}
+
+      <InviteArtistShare />
     </div>
   )
 }
