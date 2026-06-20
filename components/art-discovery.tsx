@@ -57,6 +57,14 @@ import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { DiscoverSearchBar } from "@/components/discover-search-bar"
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
+import {
+  emptyPreferences,
+  loadTempPreferences,
+  migrateTempPreferencesToDb,
+  normalizePreferences,
+  saveTempPreferences,
+  hasTasteSignals,
+} from "@/lib/temp-preferences"
 import { searchArtworks } from "@/lib/search-artworks"
 
 interface AppHeaderProps {
@@ -187,38 +195,13 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   })
 
   // Taste preferences — used by Kurator banner/insight on desktop and mobile
-  const [localPreferences, setLocalPreferences] = useState<{
-    artists: Record<string, number>;
-    genres: Record<string, number>;
-    styles: Record<string, number>;
-    subjects: Record<string, number>;
-    colors: Record<string, number>;
-    priceRanges: Record<string, number>;
-    interactionCount: number;
-    viewed_artworks: string[];
-  }>({
-    artists: {},
-    genres: {},
-    styles: {},
-    subjects: {},
-    colors: {},
-    priceRanges: {},
-    interactionCount: 0,
-    viewed_artworks: []
+  const [localPreferences, setLocalPreferences] = useState(() => {
+    return loadTempPreferences() ?? emptyPreferences()
   });
 
   const applyCollectorPreferences = useCallback((prefs: Partial<typeof localPreferences> | null | undefined) => {
     if (!prefs) return
-    setLocalPreferences({
-      artists: prefs.artists ?? {},
-      genres: prefs.genres ?? {},
-      styles: prefs.styles ?? {},
-      subjects: prefs.subjects ?? {},
-      colors: prefs.colors ?? {},
-      priceRanges: prefs.priceRanges ?? {},
-      interactionCount: prefs.interactionCount ?? 0,
-      viewed_artworks: prefs.viewed_artworks ?? [],
-    })
+    setLocalPreferences(normalizePreferences(prefs))
   }, [])
 
   // Sync saved collector preferences for registered users (powers Kurator UI on mobile + desktop)
@@ -226,6 +209,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!user?.id) return
     let cancelled = false
     ;(async () => {
+      await migrateTempPreferencesToDb(user.id)
       const { data: collector } = await supabase
         .from("Collectors")
         .select("preferences")
@@ -867,6 +851,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       updated.interactionCount = (updated.interactionCount || 0) + 1;
     }
     setLocalPreferences(updated);
+    if (!user) {
+      saveTempPreferences(updated);
+    }
     return updated;
   };
 
@@ -1453,6 +1440,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       if (user) {
         console.log('Registered user detected, checking for personalized recommendations...');
         try {
+          await migrateTempPreferencesToDb(user.id);
           const { data: collector } = await supabase
             .from('Collectors')
             .select('preferences')
@@ -1460,14 +1448,24 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             .maybeSingle();
 
           if (collector?.preferences) {
-            console.log('✅ Found user preferences, loading personalized recommendations...');
-            // User has preferences, get recommendations
-            const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
-            setArtworks(recommendedArtworks);
-            // Save session after recommendations are loaded
-            saveDiscoverSession();
+            const normalizedPrefs = normalizePreferences(
+              collector.preferences as Partial<typeof localPreferences>
+            )
+
+            if (hasTasteSignals(normalizedPrefs)) {
+              console.log('✅ Found user preferences, loading personalized recommendations...');
+              // User has preferences, get recommendations
+              const recommendedArtworks = await getRecommendations(user.id, transformedArtworks);
+              setArtworks(recommendedArtworks);
+              applyCollectorPreferences(normalizedPrefs);
+              // Save session after recommendations are loaded
+              saveDiscoverSession();
+            } else {
+              console.log('No taste signals found, using default artworks');
+              setArtworks(transformedArtworks);
+            }
           } else {
-            console.log('No preferences found, using default artworks');
+            console.log('No collector preferences found, using default artworks');
             setArtworks(transformedArtworks);
           }
         } catch (error) {
@@ -1476,8 +1474,12 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
           setArtworks(transformedArtworks);
         }
       } else {
-        // Anonymous user - use default artworks
-        setArtworks(transformedArtworks);
+        const tempPrefs = loadTempPreferences()
+        if (tempPrefs) {
+          setArtworks(getLocalRecommendations(transformedArtworks, tempPrefs))
+        } else {
+          setArtworks(transformedArtworks)
+        }
       }
     } catch (error) {
       console.error('🚨 EMERGENCY: Error in fetchArtworks:', error);

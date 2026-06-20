@@ -19,6 +19,7 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { WhyKaleidoriumPage } from "@/components/why-kaleidorium";
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection";
+import { migrateTempPreferencesToDb } from "@/lib/temp-preferences";
 import type { Artwork } from "@/types/artwork";
 
 // Defined outside HomeContent to avoid remounting on every parent re-render
@@ -421,8 +422,11 @@ function HomeContent() {
 
   // Fetch on login / user change
   useEffect(() => {
+    if (user?.id) {
+      migrateTempPreferencesToDb(user.id);
+    }
     fetchUserCollection();
-  }, [fetchUserCollection]);
+  }, [fetchUserCollection, user?.id]);
 
   const resolveActiveCollection = useCallback((): Artwork[] => {
     if (!user) return collection;

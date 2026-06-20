@@ -13,6 +13,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
+import {
+  clearTempPreferences,
+  emptyPreferences,
+  loadTempPreferences,
+  mergePreferences,
+  normalizePreferences,
+} from "@/lib/temp-preferences"
 import type { ArtSpendingRange } from "@/lib/supabase-types"
 import { ProfilePictureUpload } from "@/components/profile-picture-upload"
 import { uploadProfilePicture, type OptimizedImage } from "@/lib/image-utils"
@@ -413,6 +420,8 @@ export default function RegisterPage() {
           }
         }
 
+        const savedTasteProfile = loadTempPreferences()
+
         // Convert temporary collector profile to permanent if it exists
         const { data: tempCollector } = await supabase
           .from("Collectors")
@@ -422,12 +431,17 @@ export default function RegisterPage() {
           .single()
 
         if (tempCollector) {
+          const existingPrefs = normalizePreferences(tempCollector.preferences)
+          const mergedPrefs = savedTasteProfile
+            ? mergePreferences(existingPrefs, savedTasteProfile)
+            : existingPrefs
           await supabase
             .from("Collectors")
             .update({ 
               is_temporary: false,
               profilepix: profilePictureUrl,
-              notification_consent: notificationConsent
+              notification_consent: notificationConsent,
+              preferences: mergedPrefs,
             })
             .eq("id", tempCollector.id)
         } else {
@@ -446,16 +460,7 @@ export default function RegisterPage() {
             email,
             profilepix: profilePictureUrl,
             notification_consent: notificationConsent,
-            preferences: {
-              artists: {},
-              genres: {},
-              styles: {},
-              subjects: {},
-              colors: {},
-              priceRanges: {},
-              interactionCount: 0,
-              viewed_artworks: [],
-            },
+            preferences: loadTempPreferences() ?? emptyPreferences(),
             is_temporary: false,
           });
           if (insertError) {
@@ -490,6 +495,8 @@ export default function RegisterPage() {
           console.error('Failed to send welcome email:', emailError);
           // Don't block registration if email fails
         }
+
+        clearTempPreferences()
 
         toast({
           title: "Registration successful!",
