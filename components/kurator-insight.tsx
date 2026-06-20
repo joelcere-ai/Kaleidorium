@@ -25,7 +25,7 @@ interface KuratorInsightProps {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type MatchType = "style" | "genre" | "subject" | "color" | "artist"
+type MatchType = "style" | "genre" | "subject" | "color" | "artist" | "medium"
 
 interface MatchedAttribute {
   type: MatchType
@@ -36,6 +36,7 @@ interface MatchedAttribute {
 interface InsightMessage {
   headline: string
   reason: string
+  details?: string
 }
 
 // ─── Message banks ────────────────────────────────────────────────────────────
@@ -97,8 +98,62 @@ function formatAttr(attr: MatchedAttribute): string {
     case "color":   return `${v} tones`
     case "subject": return v
     case "artist":  return attr.value
+    case "medium":  return v
     default:        return v
   }
+}
+
+function extractFromTags(
+  tags: string[] | undefined,
+  field: "style" | "genre" | "subject" | "colour"
+): string | undefined {
+  if (!tags?.length) return undefined
+  const tagString = tags.join(" ").toLowerCase()
+  const keywords: Record<string, string[]> = {
+    style: ["abstract", "realism", "impressionism", "expressionism", "surrealism", "pop art", "minimalism", "conceptual", "street art", "cubism", "figurative"],
+    genre: ["digital", "painting", "photography", "sculpture", "print", "drawing", "mixed media", "nft"],
+    subject: ["portrait", "landscape", "nature", "urban", "abstract", "figure", "still life"],
+    colour: ["white", "black", "blue", "red", "green", "yellow", "orange", "purple", "pink", "grey", "brown", "gold", "ivory", "lime", "teal"],
+  }
+  for (const keyword of keywords[field]) {
+    if (tagString.includes(keyword)) return keyword
+  }
+  return undefined
+}
+
+function resolveArtworkFields(artwork: Artwork) {
+  return {
+    style: artwork.style || extractFromTags(artwork.tags, "style"),
+    genre: artwork.genre || extractFromTags(artwork.tags, "genre"),
+    subject: artwork.subject || extractFromTags(artwork.tags, "subject"),
+    colour: artwork.colour || extractFromTags(artwork.tags, "colour"),
+    medium: artwork.medium?.trim() || undefined,
+  }
+}
+
+/** Describe this artwork's metadata for a richer recommendation read-out. */
+function buildArtworkDetails(artwork: Artwork): string | null {
+  const { style, genre, subject, colour, medium } = resolveArtworkFields(artwork)
+  const segments: string[] = []
+
+  if (style) segments.push(`${capitalize(style)} style`)
+  if (genre && genre.toLowerCase() !== style?.toLowerCase()) segments.push(capitalize(genre))
+  if (subject) segments.push(`${subject} subject`)
+  if (colour) segments.push(`${colour.toLowerCase()} palette`)
+  if (medium) segments.push(medium)
+
+  if (segments.length === 0) return null
+  return `This work brings together ${joinParts(segments)}`
+}
+
+function dedupeMatchValues(matches: MatchedAttribute[]): MatchedAttribute[] {
+  const seen = new Set<string>()
+  return matches.filter((m) => {
+    const key = `${m.type}:${m.value.toLowerCase()}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 }
 
 function joinParts(parts: string[]): string {
@@ -132,81 +187,105 @@ function buildInsightMessage(
     new Date(artwork.created_at) > new Date(lastVisitDate)
 
   // ── Collect preference matches ─────────────────────────────────────────────
+  const fields = resolveArtworkFields(artwork)
   const matches: MatchedAttribute[] = []
 
-  const styleScore = scoreOf(preferences.styles, artwork.style)
-  if (styleScore > 0 && artwork.style)
-    matches.push({ type: "style", value: artwork.style, score: styleScore })
+  const styleScore = scoreOf(preferences.styles, fields.style)
+  if (styleScore > 0 && fields.style)
+    matches.push({ type: "style", value: fields.style, score: styleScore })
 
-  const genreScore = scoreOf(preferences.genres, artwork.genre)
+  const genreScore = scoreOf(preferences.genres, fields.genre)
   if (
     genreScore > 0 &&
-    artwork.genre &&
-    artwork.genre.toLowerCase() !== artwork.style?.toLowerCase()
+    fields.genre &&
+    fields.genre.toLowerCase() !== fields.style?.toLowerCase()
   )
-    matches.push({ type: "genre", value: artwork.genre, score: genreScore })
+    matches.push({ type: "genre", value: fields.genre, score: genreScore })
 
-  const subjectScore = scoreOf(preferences.subjects, artwork.subject)
-  if (subjectScore > 0 && artwork.subject)
-    matches.push({ type: "subject", value: artwork.subject, score: subjectScore })
+  const subjectScore = scoreOf(preferences.subjects, fields.subject)
+  if (subjectScore > 0 && fields.subject)
+    matches.push({ type: "subject", value: fields.subject, score: subjectScore })
 
-  const colourMatch = bestColour(artwork.colour, preferences.colors)
+  const colourMatch = bestColour(fields.colour, preferences.colors)
   if (colourMatch)
     matches.push({ type: "color", value: colourMatch.value, score: colourMatch.score })
 
+  // Match medium against genre preferences (e.g. "Painting", "Mixed Media")
+  if (fields.medium) {
+    const mediumLower = fields.medium.toLowerCase()
+    for (const [genreKey, score] of Object.entries(preferences.genres)) {
+      if (score > 0 && mediumLower.includes(genreKey.toLowerCase())) {
+        matches.push({ type: "medium", value: genreKey, score })
+        break
+      }
+    }
+  }
+
   // ── Tags fallback when structured fields are missing ───────────────────────
-  if (matches.length === 0 && artwork.tags?.length) {
+  if (matches.length < 3 && artwork.tags?.length) {
     const allPrefKeys = [
       ...Object.keys(preferences.styles),
       ...Object.keys(preferences.genres),
       ...Object.keys(preferences.subjects),
+      ...Object.keys(preferences.colors),
     ].map((k) => k.toLowerCase())
 
     for (const tag of artwork.tags) {
-      if (allPrefKeys.includes(tag.toLowerCase())) {
-        const s =
-          scoreOf(preferences.styles, tag) ||
-          scoreOf(preferences.genres, tag) ||
-          scoreOf(preferences.subjects, tag)
-        if (s > 0) matches.push({ type: "style", value: tag, score: s })
-        if (matches.length >= 2) break
+      if (matches.length >= 5) break
+      if (!allPrefKeys.includes(tag.toLowerCase())) continue
+      const s =
+        scoreOf(preferences.styles, tag) ||
+        scoreOf(preferences.genres, tag) ||
+        scoreOf(preferences.subjects, tag) ||
+        scoreOf(preferences.colors, tag)
+      if (s > 0) {
+        const type: MatchType =
+          scoreOf(preferences.styles, tag) > 0 ? "style"
+          : scoreOf(preferences.genres, tag) > 0 ? "genre"
+          : scoreOf(preferences.subjects, tag) > 0 ? "subject"
+          : "color"
+        matches.push({ type, value: tag, score: s })
       }
     }
   }
 
   const artistScore = scoreOf(preferences.artists, artwork.artist)
   const artistLiked = artistScore >= 2
+  if (artistLiked)
+    matches.push({ type: "artist", value: artwork.artist, score: artistScore })
+
+  const artworkDetails = buildArtworkDetails(artwork)
+  const dedupedMatches = dedupeMatchValues(matches)
 
   // ── Route to the right message bank ───────────────────────────────────────
-  const hasMatches = matches.length > 0 || artistLiked
+  const hasMatches = dedupedMatches.length > 0
 
   if (!hasMatches) {
     if (isNew) {
-      // Newly added artwork with no obvious match → fresh-discovery framing
-      return artSeed(artwork.id, NEW_DISCOVERY)
+      const msg = artSeed(artwork.id, NEW_DISCOVERY)
+      return artworkDetails ? { ...msg, details: artworkDetails } : msg
     }
     if (preferences.interactionCount >= 10) {
-      // Experienced user, intentionally broadening taste → serendipity
-      return artSeed(artwork.id, SERENDIPITY)
+      const msg = artSeed(artwork.id, SERENDIPITY)
+      return artworkDetails ? { ...msg, details: artworkDetails } : msg
     }
-    // New user or early interactions → generic encouraging message
-    return artSeed(artwork.id, GENERIC)
+    const msg = artSeed(artwork.id, GENERIC)
+    return artworkDetails ? { ...msg, details: artworkDetails } : msg
   }
 
   // ── Build "Because you liked…" message for matched artworks ───────────────
-  matches.sort((a, b) => b.score - a.score)
-  const top = matches.slice(0, 3)
+  dedupedMatches.sort((a, b) => b.score - a.score)
+  const top = dedupedMatches.slice(0, 5)
 
   let reason: string
   if (top.length === 0 && artistLiked) {
     reason = `You've engaged with ${artwork.artist}'s work before`
   } else {
     const parts = top.map(formatAttr)
-    if (artistLiked && top.length < 3) parts.push(artwork.artist)
     reason = `Because you liked ${joinParts(parts)}`
   }
 
-  const totalScore = matches.reduce((s, m) => s + m.score, 0)
+  const totalScore = dedupedMatches.reduce((s, m) => s + m.score, 0)
   const ic = preferences.interactionCount
   let headline: string
   if (artistLiked && top.length === 0) {
@@ -221,7 +300,7 @@ function buildInsightMessage(
     headline = "Your Kurator picked this"
   }
 
-  return { headline, reason }
+  return { headline, reason, details: artworkDetails ?? undefined }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -258,6 +337,11 @@ export function KuratorInsight({
           <p className="text-xs text-gray-500 mt-0.5 leading-snug">
             {message.reason}
           </p>
+          {message.details && (
+            <p className="text-xs text-gray-500 mt-1 leading-snug">
+              {message.details}
+            </p>
+          )}
           <KuratorEncouragement interactionCount={localPreferences.interactionCount} />
         </div>
       </div>
