@@ -36,7 +36,6 @@ interface MatchedAttribute {
 interface InsightMessage {
   headline: string
   reason: string
-  details?: string
 }
 
 // ─── Message banks ────────────────────────────────────────────────────────────
@@ -92,17 +91,6 @@ function bestColour(
   return best
 }
 
-function formatAttr(attr: MatchedAttribute): string {
-  const v = attr.value.toLowerCase()
-  switch (attr.type) {
-    case "color":   return `${v} tones`
-    case "subject": return v
-    case "artist":  return attr.value
-    case "medium":  return v
-    default:        return v
-  }
-}
-
 function extractFromTags(
   tags: string[] | undefined,
   field: "style" | "genre" | "subject" | "colour"
@@ -131,19 +119,52 @@ function resolveArtworkFields(artwork: Artwork) {
   }
 }
 
-/** Describe this artwork's metadata for a richer recommendation read-out. */
-function buildArtworkDetails(artwork: Artwork): string | null {
+function normalizeSegmentKey(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\s+style$/, "")
+    .replace(/\s+subject$/, "")
+    .replace(/\s+palette$/, "")
+    .trim()
+}
+
+/** Artwork metadata segments, deduped (e.g. genre "Digital" + medium "Digital Art"). */
+function buildArtworkSummary(artwork: Artwork): string | null {
   const { style, genre, subject, colour, medium } = resolveArtworkFields(artwork)
   const segments: string[] = []
+  const seen = new Set<string>()
 
-  if (style) segments.push(`${capitalize(style)} style`)
-  if (genre && genre.toLowerCase() !== style?.toLowerCase()) segments.push(capitalize(genre))
-  if (subject) segments.push(`${subject} subject`)
-  if (colour) segments.push(`${colour.toLowerCase()} palette`)
-  if (medium) segments.push(medium)
+  const add = (label: string) => {
+    const key = normalizeSegmentKey(label)
+    if (!key) return
+    for (const existing of seen) {
+      if (existing.includes(key) || key.includes(existing)) return
+    }
+    seen.add(key)
+    segments.push(label)
+  }
+
+  if (style) add(`${capitalize(style)} style`)
+  if (genre && genre.toLowerCase() !== style?.toLowerCase()) add(capitalize(genre))
+  if (subject) add(`${subject} subject`)
+  if (colour) add(`${colour.toLowerCase()} palette`)
+  if (medium) {
+    const mediumLower = medium.toLowerCase()
+    const alreadyCovered = [...seen].some(
+      (key) => mediumLower.includes(key) || key.includes(mediumLower)
+    )
+    if (!alreadyCovered) add(medium)
+  }
 
   if (segments.length === 0) return null
-  return `This work brings together ${joinParts(segments)}`
+  return joinParts(segments)
+}
+
+function buildArtistSummary(artwork: Artwork): string | null {
+  const summary = buildArtworkSummary(artwork)
+  if (!summary) return null
+  const artist = artwork.artist?.trim() || "This work"
+  return `${artist} brings together ${summary}`
 }
 
 function dedupeMatchValues(matches: MatchedAttribute[]): MatchedAttribute[] {
@@ -254,7 +275,7 @@ function buildInsightMessage(
   if (artistLiked)
     matches.push({ type: "artist", value: artwork.artist, score: artistScore })
 
-  const artworkDetails = buildArtworkDetails(artwork)
+  const artistSummary = buildArtistSummary(artwork)
   const dedupedMatches = dedupeMatchValues(matches)
 
   // ── Route to the right message bank ───────────────────────────────────────
@@ -263,32 +284,20 @@ function buildInsightMessage(
   if (!hasMatches) {
     if (isNew) {
       const msg = artSeed(artwork.id, NEW_DISCOVERY)
-      return artworkDetails ? { ...msg, details: artworkDetails } : msg
+      return artistSummary ? { headline: msg.headline, reason: artistSummary } : msg
     }
     if (preferences.interactionCount >= 10) {
       const msg = artSeed(artwork.id, SERENDIPITY)
-      return artworkDetails ? { ...msg, details: artworkDetails } : msg
+      return artistSummary ? { headline: msg.headline, reason: artistSummary } : msg
     }
     const msg = artSeed(artwork.id, GENERIC)
-    return artworkDetails ? { ...msg, details: artworkDetails } : msg
-  }
-
-  // ── Build "Because you liked…" message for matched artworks ───────────────
-  dedupedMatches.sort((a, b) => b.score - a.score)
-  const top = dedupedMatches.slice(0, 5)
-
-  let reason: string
-  if (top.length === 0 && artistLiked) {
-    reason = `You've engaged with ${artwork.artist}'s work before`
-  } else {
-    const parts = top.map(formatAttr)
-    reason = `Because you liked ${joinParts(parts)}`
+    return artistSummary ? { headline: msg.headline, reason: artistSummary } : msg
   }
 
   const totalScore = dedupedMatches.reduce((s, m) => s + m.score, 0)
   const ic = preferences.interactionCount
   let headline: string
-  if (artistLiked && top.length === 0) {
+  if (artistLiked && dedupedMatches.length === 1 && dedupedMatches[0].type === "artist") {
     headline = "Your Kurator picked this"
   } else if (isNew) {
     headline = "New in your feed"
@@ -300,7 +309,11 @@ function buildInsightMessage(
     headline = "Your Kurator picked this"
   }
 
-  return { headline, reason, details: artworkDetails ?? undefined }
+  const reason =
+    artistSummary ??
+    `${artwork.artist?.trim() || "This artist"} is a strong match for your taste profile`
+
+  return { headline, reason }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -331,17 +344,12 @@ export function KuratorInsight({
           <KuratorOrb size={16} />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-gray-800 leading-snug">
-            {message.headline}
+          <p className="text-xs text-gray-800 leading-snug">
+            <span className="font-semibold">
+              {message.headline.endsWith(".") ? message.headline : `${message.headline}.`}
+            </span>{" "}
+            <span className="text-gray-500">{message.reason}</span>
           </p>
-          <p className="text-xs text-gray-500 mt-0.5 leading-snug">
-            {message.reason}
-          </p>
-          {message.details && (
-            <p className="text-xs text-gray-500 mt-1 leading-snug">
-              {message.details}
-            </p>
-          )}
           <KuratorEncouragement interactionCount={localPreferences.interactionCount} />
         </div>
       </div>
