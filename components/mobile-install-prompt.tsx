@@ -168,7 +168,7 @@ function ModalShell({
       >
         <div className="flex justify-between items-center mb-4">
           <img
-            src="/logos/kaleidorium-icon-64.png"
+            src="/logos/kaleidorium-icon-64.png?v=13"
             alt="Kaleidorium"
             className="w-12 h-12 rounded-xl"
           />
@@ -350,7 +350,7 @@ export function MobileInstallPrompt() {
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
             <img
-              src="/logos/kaleidorium-icon-64.png"
+              src="/logos/kaleidorium-icon-64.png?v=13"
               alt="Kaleidorium Logo"
               className="w-12 h-12 rounded-xl"
             />

@@ -130,7 +130,7 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
         
         <div className="flex items-center gap-3 mb-3">
           <img
-            src="/logos/kaleidorium-icon-64.png"
+            src="/logos/kaleidorium-icon-64.png?v=13"
             alt="Kaleidorium Logo"
             className="w-10 h-10 rounded-xl flex-shrink-0"
           />

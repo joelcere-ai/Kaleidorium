@@ -1,14 +1,9 @@
 // Kaleidorium Service Worker
 // Cache name bump forces the browser to install the new SW and clear old caches
 
-const CACHE_NAME = 'kaleidorium-v9';
+const CACHE_NAME = 'kaleidorium-v10';
 const STATIC_ASSETS = [
   '/manifest.json',
-  '/logos/kaleidorium-icon-192.png?v=12',
-  '/logos/kaleidorium-icon-512.png?v=12',
-  '/logos/kaleidorium-wordmark-desktop.png?v=12',
-  '/logos/kaleidorium-wordmark-mobile.png?v=12',
-  '/logos/kaleidorium-icon-180.png?v=12',
 ];
 
 // Install: cache core assets then activate immediately
@@ -46,11 +41,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: network-first for HTML/API, cache-first for static assets
+// Fetch: network-only for logos/icons so brand assets never stick in SW cache.
+// Everything else that isn't a navigation stays network-only too.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-
-  const url = new URL(event.request.url);
 
   // Always go to network for navigations (HTML pages)
   if (event.request.mode === 'navigate') {
@@ -62,24 +56,18 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for icons and static logo assets (no query params)
-  const isStaticAsset =
-    (url.pathname.startsWith('/logos/') || url.pathname.startsWith('/icons/')) &&
-    url.search === '';
-
-  if (isStaticAsset) {
-    event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) return cached;
-        return fetch(event.request).then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        });
-      })
-    );
+  // Logos/icons/favicons: always network — never cache-first
+  const url = new URL(event.request.url);
+  if (
+    url.pathname.startsWith('/logos/') ||
+    url.pathname.startsWith('/icons/') ||
+    url.pathname === '/favicon.ico' ||
+    url.pathname === '/apple-touch-icon.png' ||
+    url.pathname === '/manifest.json' ||
+    url.pathname === '/site.webmanifest' ||
+    url.pathname === '/sw.js'
+  ) {
+    event.respondWith(fetch(event.request));
     return;
   }
 

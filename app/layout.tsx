@@ -133,12 +133,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Favicon - Load FIRST to prevent flash of old favicon */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=11" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=11" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=11" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=11" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=11" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=11" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=13" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=13" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=13" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=13" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=13" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=13" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -179,9 +179,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="build-version" content="v11-colorful-logo-2026-03-27" />
+        <meta name="build-version" content="v13-logo-2026-07-20" />
         {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.json?v=13" />
         {/* Service Worker Registration */}
         <script
           dangerouslySetInnerHTML={{

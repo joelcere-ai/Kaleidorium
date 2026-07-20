@@ -2477,45 +2477,45 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
   // Removed emergency fallback - let the app load naturally
 
-  // Show loading only if we have no artworks and are still loading
+  // Show loading only if we have no artworks and are still loading.
+  // Mobile: no branded splash — keep the page chrome and show a light inline wait.
   if (!mounted || (loading && artworks.length === 0)) {
+    if (isMobile) {
+      return (
+        <div className="flex flex-col min-h-[50vh] bg-white items-center justify-center px-4">
+          {loadingError ? (
+            <div className="text-center max-w-md space-y-2">
+              <p className="text-red-600 mb-2">{loadingError}</p>
+              <Button
+                onClick={() => {
+                  setLoadingError(null);
+                  fetchingRef.current = false;
+                  setLoading(false);
+                  fetchArtworks();
+                }}
+                variant="outline"
+                className="mr-2"
+              >
+                Try Again
+              </Button>
+              <Button
+                onClick={() => {
+                  setLoading(false);
+                  window.location.reload();
+                }}
+                variant="outline"
+              >
+                Refresh Page
+              </Button>
+            </div>
+          ) : null}
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col min-h-screen bg-white">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
-            {isMobile ? (
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <p className="text-lg text-black text-center">Loading artwork...</p>
-                {loadingError && (
-                  <div className="mt-4">
-                    <p className="text-red-600 mb-2">{loadingError}</p>
-                    <div className="space-y-2">
-                      <Button 
-                        onClick={() => {
-                          setLoadingError(null);
-                          fetchingRef.current = false;
-                          setLoading(false);
-                          fetchArtworks();
-                        }}
-                        variant="outline"
-                        className="mr-2"
-                      >
-                        Try Again
-                      </Button>
-                      <Button 
-                        onClick={() => {
-                          setLoading(false);
-                          window.location.reload();
-                        }}
-                        variant="outline"
-                      >
-                        Refresh Page
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
               <div>
                 <div className="flex items-center justify-center mb-4">
                   <div className="text-black text-xl">Loading Artwork...</div>
@@ -2549,7 +2549,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
                 )}
               </div>
-            )}
           </div>
         </div>
       </div>
