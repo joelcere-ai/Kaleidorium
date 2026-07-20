@@ -34,9 +34,23 @@ export async function fetchCurrentCuratedCollection(): Promise<CuratedCollection
 
   if (error) {
     console.error("[curated_collections] fetch error:", error)
+  } else if (data) {
+    return data as CuratedCollectionRow
+  }
+
+  // Fallback: show the most recent curated collection if this month is not ready yet
+  const { data: latest, error: latestError } = await supabase
+    .from("curated_collections")
+    .select("id, theme_title, description, artwork_ids, month, created_at")
+    .order("month", { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (latestError) {
+    console.error("[curated_collections] latest fetch error:", latestError)
     return null
   }
-  return data as CuratedCollectionRow | null
+  return (latest as CuratedCollectionRow) ?? null
 }
 
 export async function fetchArtworksByIds(ids: (number | string)[]): Promise<Artwork[]> {

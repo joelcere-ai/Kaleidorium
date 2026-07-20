@@ -430,7 +430,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
           <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
             Explore how it works
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             {ROLE_CARDS.map(({ role, label, tagline }) => {
               const active = selectedRole === role && !showInvitePanel
               return (
@@ -438,10 +438,11 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   key={role}
                   type="button"
                   onClick={() => handleRoleSelect(role)}
-                  className="transition-colors duration-150"
+                  className="role-cta-btn transition-colors duration-150"
+                  data-active={active ? "true" : "false"}
                   style={{
-                    backgroundColor: active ? "#1E1E1C" : "#6B57B8",
-                    border: `1px solid ${active ? "#1E1E1C" : "#6B57B8"}`,
+                    backgroundColor: "#6B57B8",
+                    border: "1px solid #6B57B8",
                     borderRadius: "12px",
                     padding: "16px 20px",
                     textAlign: "center",
@@ -453,18 +454,15 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     width: "100%",
                     minHeight: "108px",
                     color: "#FFFFFF",
+                    boxShadow: active ? "inset 0 0 0 2px #FFFFFF" : "none",
                   }}
                   onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = "#1E1E1C"
-                      e.currentTarget.style.borderColor = "#1E1E1C"
-                    }
+                    e.currentTarget.style.backgroundColor = "#1E1E1C"
+                    e.currentTarget.style.borderColor = "#1E1E1C"
                   }}
                   onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.backgroundColor = "#6B57B8"
-                      e.currentTarget.style.borderColor = "#6B57B8"
-                    }
+                    e.currentTarget.style.backgroundColor = "#6B57B8"
+                    e.currentTarget.style.borderColor = "#6B57B8"
                   }}
                 >
                   <p
@@ -487,10 +485,11 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             <button
               type="button"
               onClick={handleInviteSelect}
-              className="transition-colors duration-150"
+              className="role-cta-btn transition-colors duration-150"
+              data-active={showInvitePanel ? "true" : "false"}
               style={{
-                backgroundColor: showInvitePanel ? "#1E1E1C" : "#6B57B8",
-                border: `1px solid ${showInvitePanel ? "#1E1E1C" : "#6B57B8"}`,
+                backgroundColor: "#6B57B8",
+                border: "1px solid #6B57B8",
                 borderRadius: "12px",
                 padding: "16px 20px",
                 textAlign: "center",
@@ -502,18 +501,15 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 width: "100%",
                 minHeight: "108px",
                 color: "#FFFFFF",
+                boxShadow: showInvitePanel ? "inset 0 0 0 2px #FFFFFF" : "none",
               }}
               onMouseEnter={(e) => {
-                if (!showInvitePanel) {
-                  e.currentTarget.style.backgroundColor = "#1E1E1C"
-                  e.currentTarget.style.borderColor = "#1E1E1C"
-                }
+                e.currentTarget.style.backgroundColor = "#1E1E1C"
+                e.currentTarget.style.borderColor = "#1E1E1C"
               }}
               onMouseLeave={(e) => {
-                if (!showInvitePanel) {
-                  e.currentTarget.style.backgroundColor = "#6B57B8"
-                  e.currentTarget.style.borderColor = "#6B57B8"
-                }
+                e.currentTarget.style.backgroundColor = "#6B57B8"
+                e.currentTarget.style.borderColor = "#6B57B8"
               }}
             >
               <p

@@ -12,7 +12,7 @@ export const maxDuration = 120
  * Header: Authorization: Bearer <CRON_SECRET>
  * Requires: OPENAI_API_KEY, SUPABASE_SERVICE_ROLE_KEY
  */
-export async function POST(request: Request) {
+async function runCron(request: Request) {
   const secret = process.env.CRON_SECRET
   if (secret) {
     const auth = request.headers.get("authorization")
@@ -38,4 +38,13 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
+}
+
+/** Vercel Cron invokes GET; manual runs may use POST. */
+export async function GET(request: Request) {
+  return runCron(request)
+}
+
+export async function POST(request: Request) {
+  return runCron(request)
 }
