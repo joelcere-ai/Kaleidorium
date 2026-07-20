@@ -35,29 +35,17 @@ export function InviteArtistShare() {
   }
 
   return (
-    <div
-      className="share-panel rounded-2xl p-6"
-      style={{ boxShadow: "0 1px 4px rgba(20,20,20,0.04)" }}
-    >
-      <h3
-        style={{
-          fontSize: "18px",
-          fontWeight: 700,
-          color: "#FFFFFF",
-          textAlign: "center",
-          marginBottom: "8px",
-        }}
-      >
+    <div className="share-panel rounded-2xl p-6">
+      <p className="share-panel-title !mb-2" style={{ fontSize: "18px" }}>
         Invite an artist you admire
-      </h3>
+      </p>
       <p
+        className="text-center mx-auto mb-5"
         style={{
           fontSize: "14px",
           lineHeight: 1.55,
-          color: "#D1D1CE",
-          textAlign: "center",
+          color: "#5F5F5A",
           maxWidth: "420px",
-          margin: "0 auto 20px",
         }}
       >
         {KALEIDORIUM_SHARE_TEXT}

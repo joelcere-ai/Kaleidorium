@@ -75,7 +75,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "discover" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "discover" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/")}
               >
@@ -86,7 +86,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "collection" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "collection" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/collection")}
               >
@@ -97,7 +97,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "why-kaleidorium" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "why-kaleidorium" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/?view=why-kaleidorium")}
               >
@@ -108,7 +108,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "pricing" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "pricing" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/pricing")}
               >
@@ -119,7 +119,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "contact" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "contact" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/contact")}
               >
@@ -130,7 +130,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  currentPage === "profile" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  currentPage === "profile" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/profile")}
               >

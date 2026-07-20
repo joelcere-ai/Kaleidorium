@@ -3498,7 +3498,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 {/* CTA Button */}
                 <Button 
                   onClick={() => document.getElementById('mobile-portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all py-2 text-sm font-medium mb-4"
+                  className="w-full bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all py-2 text-sm font-medium mb-4"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Join the Founding 100 Artists
@@ -3740,7 +3740,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button
                     onClick={() => router.push('/for-artists/register')}
-                    className="bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium mb-4"
+                    className="bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium mb-4"
                     style={{fontFamily: 'Arial, sans-serif'}}
                   >
                     Register as an Artist
@@ -3867,7 +3867,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button 
                     onClick={() => router.push('/for-artists/register')}
-                    className="w-full bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
+                    className="w-full bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all"
                     style={{
                       color: 'white !important', 
                       backgroundColor: 'black !important',

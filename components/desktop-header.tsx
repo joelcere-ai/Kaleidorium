@@ -62,7 +62,7 @@ export function DesktopHeader({
     `inline-flex items-center gap-1.5 h-9 px-3 text-[13.5px] font-bold rounded-[8px]
      transition-colors duration-150 cursor-pointer select-none
      ${active
-       ? "text-white bg-[#2B2B2B]"
+       ? "text-white bg-[#6B57B8]"
        : "text-[#5F5F5A] hover:text-[#1E1E1C] hover:bg-[#FAFAF8]"
      }`;
 
@@ -71,7 +71,7 @@ export function DesktopHeader({
     `inline-flex items-center gap-1.5 h-9 px-4 text-[13.5px] font-bold rounded-[14px] border
      transition-colors duration-150 cursor-pointer select-none ml-1
      ${active
-       ? "bg-[#2B2B2B] border-[#2B2B2B] text-white"
+       ? "bg-[#6B57B8] border-[#6B57B8] text-white"
        : "bg-white border-[#EAE7E1] text-[#4A4A45] hover:bg-[#FAFAF8] hover:border-[#E6E4DF] hover:text-[#1E1E1C]"
      }`;
 

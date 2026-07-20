@@ -104,7 +104,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("discover") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("discover")}
               >
@@ -115,7 +115,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("collection") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("collection")}
               >
@@ -131,7 +131,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("taste-profile") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("taste-profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => {
                   setIsMenuOpen(false);
@@ -145,7 +145,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("featured") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("featured") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => {
                   setIsMenuOpen(false);
@@ -159,7 +159,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("why-kaleidorium") || isCurrentPage("for-artists") || isCurrentPage("for-galleries") || isCurrentPage("about") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("why-kaleidorium") || isCurrentPage("for-artists") || isCurrentPage("for-galleries") || isCurrentPage("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("why-kaleidorium")}
               >
@@ -170,7 +170,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("contact") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("contact")}
               >
@@ -181,7 +181,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
               <Button
                 variant="ghost"
                 className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
-                  isCurrentPage("profile") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
+                  isCurrentPage("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("profile")}
               >

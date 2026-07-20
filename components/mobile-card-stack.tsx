@@ -1067,7 +1067,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
+                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#1E1E1C] hover:!border-[#1E1E1C] transition-all duration-200"
                       style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
@@ -1617,7 +1617,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
                 <Button 
-                  className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all"
                   onClick={applyFilters}
                 >
                   Apply Filters
@@ -1859,7 +1859,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
+                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#1E1E1C] hover:!border-[#1E1E1C] transition-all duration-200"
                       style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         // Validate and fix URL before opening

@@ -201,7 +201,7 @@ function AppHeaderContent({
         <nav className="hidden md:flex items-center space-x-8">
           <Button 
             variant="ghost" 
-            className={`text-sm font-bold ${isSelected("discover") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+            className={`text-sm font-bold ${isSelected("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
             onClick={() => handleNav("discover")}
           >
             <Palette className="w-4 h-4 mr-1" />
@@ -211,7 +211,7 @@ function AppHeaderContent({
           {/* Filter Button - Always visible on desktop */}
           <Button 
             variant="ghost" 
-            className={`text-sm ${showFilters ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+            className={`text-sm ${showFilters ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
             onClick={toggleFilters}
             data-filter-button
           >
@@ -222,7 +222,7 @@ function AppHeaderContent({
           
           <Button 
             variant="ghost" 
-            className={`text-sm font-bold relative ${isSelected("collection") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+            className={`text-sm font-bold relative ${isSelected("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
             onClick={() => handleNav("collection")}
           >
             <Heart className="w-4 h-4 mr-1" />
@@ -231,7 +231,7 @@ function AppHeaderContent({
           
           <Button 
             variant="ghost" 
-            className={`text-sm font-bold ${isSelected("for-artists") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+            className={`text-sm font-bold ${isSelected("for-artists") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
             onClick={() => handleNav("for-artists")}
           >
             <Palette className="w-4 h-4 mr-1" />
@@ -240,7 +240,7 @@ function AppHeaderContent({
           
           <Button 
             variant="ghost" 
-            className={`text-sm font-bold ${isSelected("about") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+            className={`text-sm font-bold ${isSelected("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
             onClick={() => handleNav("about")}
           >
             <Info className="w-4 h-4 mr-1" />
@@ -250,7 +250,7 @@ function AppHeaderContent({
           <Link href="/contact">
             <Button 
               variant="ghost" 
-              className={`text-sm font-bold ${isSelected("contact") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+              className={`text-sm font-bold ${isSelected("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
             >
               <AtSign className="w-4 h-4 mr-1" />
               Contact
@@ -262,7 +262,7 @@ function AppHeaderContent({
             <Link href="/profile">
               <Button 
                 variant="ghost" 
-                className={`text-sm font-bold ${isSelected("profile") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+                className={`text-sm font-bold ${isSelected("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               >
                 <User className="w-4 h-4 mr-1" />
                 Profile
@@ -295,7 +295,7 @@ function AppHeaderContent({
           <div className="flex flex-col space-y-2 p-4">
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("discover") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+              className={`justify-start font-bold ${isSelected("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNav("discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
@@ -305,7 +305,7 @@ function AppHeaderContent({
             {/* Mobile Filter Button - Always visible */}
             <Button 
               variant="ghost" 
-              className={`justify-start ${showFilters ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+              className={`justify-start ${showFilters ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
               onClick={toggleFilters}
               data-filter-button
             >
@@ -316,7 +316,7 @@ function AppHeaderContent({
             
             <Button
               variant="ghost"
-              className={`justify-start font-bold relative ${isSelected("collection") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+              className={`justify-start font-bold relative ${isSelected("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNav("collection")}
             >
               <Heart className="w-4 h-4 mr-2" />
@@ -325,7 +325,7 @@ function AppHeaderContent({
             
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("for-artists") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+              className={`justify-start font-bold ${isSelected("for-artists") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNav("for-artists")}
             >
               <Palette className="w-4 h-4 mr-2" />
@@ -334,7 +334,7 @@ function AppHeaderContent({
             
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("about") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+              className={`justify-start font-bold ${isSelected("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNav("about")}
             >
               <Info className="w-4 h-4 mr-2" />
@@ -344,7 +344,7 @@ function AppHeaderContent({
             <Link href="/contact">
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold ${isSelected("contact") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+                className={`w-full justify-start font-bold ${isSelected("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <AtSign className="w-4 h-4 mr-2" />
@@ -356,7 +356,7 @@ function AppHeaderContent({
               <Link href="/profile">
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start font-bold ${isSelected("profile") ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""}`}
+                  className={`w-full justify-start font-bold ${isSelected("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <User className="w-4 h-4 mr-2" />

@@ -76,34 +76,21 @@ const ROLE_CARDS: {
   role: Role
   label: string
   tagline: string
-  colors: { bg: string; border: string; text: string; activeBg: string; activeBorder: string; activeText: string }
 }[] = [
   {
     role: "collector",
     label: "Collector",
     tagline: "Discover art tailored to your taste and champion emerging artists.",
-    colors: {
-      bg: "#F6FBF8", border: "#CFE5D8", text: "#2F6B4F",
-      activeBg: "#EDF7F2", activeBorder: "#2F6B4F", activeText: "#1D4D38",
-    },
   },
   {
     role: "artist",
     label: "Artist",
-    tagline: "Get your work in front of collectors who will truely appreciate it.",
-    colors: {
-      bg: "#FAFAFA", border: "#D8D8D8", text: "#222222",
-      activeBg: "#FFFFFF", activeBorder: "#222222", activeText: "#000000",
-    },
+    tagline: "Get your work in front of collectors who will truly appreciate it.",
   },
   {
     role: "gallery",
     label: "Gallery",
     tagline: "Grow your collector base effortlessly.",
-    colors: {
-      bg: "#FDF4F4", border: "#E6CACA", text: "#9B4B4B",
-      activeBg: "#F8ECEC", activeBorder: "#9B4B4B", activeText: "#7A2E2E",
-    },
   },
 ]
 
@@ -443,44 +430,56 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
           <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
             Explore how it works
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {ROLE_CARDS.map(({ role, label, tagline, colors }) => {
+          <div className="flex flex-wrap justify-center gap-3">
+            {ROLE_CARDS.map(({ role, label, tagline }) => {
               const active = selectedRole === role && !showInvitePanel
               return (
                 <button
                   key={role}
+                  type="button"
                   onClick={() => handleRoleSelect(role)}
+                  className="transition-colors duration-150"
                   style={{
-                    backgroundColor: active ? colors.activeBg : "#FFFFFF",
-                    borderColor: active ? colors.activeBorder : "#E6E4DF",
-                    border: '1px solid',
-                    borderRadius: '16px',
-                    padding: '18px 20px',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    boxShadow: active ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
-                    /* top-align content within equal-height grid cells */
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    alignItems: 'flex-start',
-                    width: '100%',
-                    height: '100%',
+                    backgroundColor: active ? "#1E1E1C" : "#6B57B8",
+                    border: `1px solid ${active ? "#1E1E1C" : "#6B57B8"}`,
+                    borderRadius: "12px",
+                    padding: "16px 20px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    maxWidth: "220px",
+                    minHeight: "108px",
+                    color: "#FFFFFF",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.backgroundColor = "#1E1E1C"
+                      e.currentTarget.style.borderColor = "#1E1E1C"
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.backgroundColor = "#6B57B8"
+                      e.currentTarget.style.borderColor = "#6B57B8"
+                    }
                   }}
                 >
                   <p
                     style={{
-                      fontSize: '18px',
-                      fontWeight: 600,
-                      lineHeight: '1.3',
-                      color: active ? colors.activeText : '#1E1E1C',
-                      marginBottom: '6px',
+                      fontSize: "16px",
+                      fontWeight: 700,
+                      lineHeight: "1.3",
+                      color: "#FFFFFF",
+                      marginBottom: "6px",
                     }}
                   >
-                    <strong style={{ fontWeight: 700 }}>{label}</strong>
+                    {label}
                   </p>
-                  <p style={{ fontSize: '14px', fontWeight: 400, lineHeight: '1.55', color: '#5F5F5A' }}>
+                  <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#FFFFFF", opacity: 0.92 }}>
                     {tagline}
                   </p>
                 </button>
@@ -489,36 +488,48 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
             <button
               type="button"
               onClick={handleInviteSelect}
+              className="transition-colors duration-150"
               style={{
-                backgroundColor: showInvitePanel ? "#F5F0FF" : "#FFFFFF",
-                borderColor: showInvitePanel ? "#9B8BB8" : "#E6E4DF",
-                border: "1px solid",
-                borderRadius: "16px",
-                padding: "18px 20px",
-                textAlign: "left",
+                backgroundColor: showInvitePanel ? "#1E1E1C" : "#6B57B8",
+                border: `1px solid ${showInvitePanel ? "#1E1E1C" : "#6B57B8"}`,
+                borderRadius: "12px",
+                padding: "16px 20px",
+                textAlign: "center",
                 cursor: "pointer",
-                transition: "all 0.15s ease",
-                boxShadow: showInvitePanel ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
+                justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
-                height: "100%",
+                maxWidth: "220px",
+                minHeight: "108px",
+                color: "#FFFFFF",
+              }}
+              onMouseEnter={(e) => {
+                if (!showInvitePanel) {
+                  e.currentTarget.style.backgroundColor = "#1E1E1C"
+                  e.currentTarget.style.borderColor = "#1E1E1C"
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showInvitePanel) {
+                  e.currentTarget.style.backgroundColor = "#6B57B8"
+                  e.currentTarget.style.borderColor = "#6B57B8"
+                }
               }}
             >
               <p
                 style={{
-                  fontSize: "18px",
-                  fontWeight: 600,
+                  fontSize: "16px",
+                  fontWeight: 700,
                   lineHeight: "1.3",
-                  color: showInvitePanel ? "#4F4564" : "#1E1E1C",
+                  color: "#FFFFFF",
                   marginBottom: "6px",
                 }}
               >
-                <strong style={{ fontWeight: 700 }}>Invite an artist you admire</strong>
+                Invite an artist you admire
               </p>
-              <p style={{ fontSize: "14px", fontWeight: 400, lineHeight: "1.55", color: "#5F5F5A" }}>
+              <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#FFFFFF", opacity: 0.92 }}>
                 Share Kaleidorium with a creator you think should be discovered here.
               </p>
             </button>

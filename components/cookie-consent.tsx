@@ -65,9 +65,9 @@ export function CookieConsent() {
           </p>
         </div>
         <div className="flex gap-2 justify-end">
-          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: false, functionality: false, targeting: false }); }}>Reject All</button>
-          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: true, functionality: true, targeting: true }); }}>Accept All</button>
-          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all" onClick={() => savePrefs(prefs)}>Save Preferences</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: false, functionality: false, targeting: false }); }}>Reject All</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all" onClick={() => { savePrefs({ analytics: true, functionality: true, targeting: true }); }}>Accept All</button>
+          <button className="px-3 py-2 rounded text-sm bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all" onClick={() => savePrefs(prefs)}>Save Preferences</button>
         </div>
       </div>
     </div>
