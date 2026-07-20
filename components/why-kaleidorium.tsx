@@ -430,7 +430,7 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
           <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
             Explore how it works
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {ROLE_CARDS.map(({ role, label, tagline }) => {
               const active = selectedRole === role && !showInvitePanel
               return (
@@ -451,7 +451,6 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     justifyContent: "center",
                     alignItems: "center",
                     width: "100%",
-                    maxWidth: "220px",
                     minHeight: "108px",
                     color: "#FFFFFF",
                   }}
@@ -501,7 +500,6 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
-                maxWidth: "220px",
                 minHeight: "108px",
                 color: "#FFFFFF",
               }}
