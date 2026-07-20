@@ -67,7 +67,7 @@ export function DiscoverSearchBar({
         <Button
           type="submit"
           disabled={isLoading || !value.trim()}
-          className="bg-[#F5F0FF] border border-[#D9CFF7] text-[#4F4564] hover:brightness-[0.97] shrink-0"
+          className="bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-[0.97] shrink-0"
         >
           {isLoading ? "…" : "Search"}
         </Button>

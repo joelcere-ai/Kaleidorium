@@ -350,8 +350,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                       )}
 
                     {/* Social Media Share Buttons */}
-                    <div className="mt-4 py-3 px-4 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
-                      <p className="artwork-meta text-center mb-3">Share this artwork</p>
+                    <div className="share-panel mt-4">
+                      <p className="share-panel-title">Share this artwork</p>
                       <div className="flex justify-center gap-2">
                           <button 
                             className="share-icon-btn"

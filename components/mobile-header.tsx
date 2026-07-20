@@ -70,7 +70,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/");
                   setShowMenuModal(false);
@@ -81,7 +81,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/collection");
                   setShowMenuModal(false);
@@ -92,7 +92,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/?view=why-kaleidorium");
                   setShowMenuModal(false);
@@ -103,7 +103,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/pricing");
                   setShowMenuModal(false);
@@ -114,7 +114,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/contact");
                   setShowMenuModal(false);
@@ -125,7 +125,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/profile");
                   setShowMenuModal(false);

@@ -100,39 +100,39 @@ export function CollectorArchetypeCard({ archetype, onShare }: CollectorArchetyp
         
         {/* Social Media Share Buttons - Matching existing style */}
         <div className="pt-4">
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-3">Share this archetype</p>
+          <div className="share-panel text-center">
+            <p className="share-panel-title">Share this archetype</p>
             <div className="flex justify-center gap-2">
               <button 
-                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                className="share-icon-btn !w-10 !h-10 !rounded-lg"
                 onClick={() => handleShare('twitter')}
                 title="Share on X"
               >
                 <XIcon className="w-5 h-5" />
               </button>
               <button 
-                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                className="share-icon-btn !w-10 !h-10 !rounded-lg"
                 onClick={() => handleShare('facebook')}
                 title="Share on Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </button>
               <button 
-                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                className="share-icon-btn !w-10 !h-10 !rounded-lg"
                 onClick={() => handleShare('instagram')}
                 title="Share on Instagram"
               >
                 <Instagram className="w-5 h-5" />
               </button>
               <button 
-                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                className="share-icon-btn !w-10 !h-10 !rounded-lg"
                 onClick={() => handleShare('whatsapp')}
                 title="Share on WhatsApp"
               >
                 <MessageCircle className="w-5 h-5" />
               </button>
               <button 
-                className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                className="share-icon-btn !w-10 !h-10 !rounded-lg"
                 onClick={() => handleShare('copy')}
                 title="Copy Link"
               >

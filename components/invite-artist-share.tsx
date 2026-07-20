@@ -36,14 +36,14 @@ export function InviteArtistShare() {
 
   return (
     <div
-      className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6"
+      className="share-panel rounded-2xl p-6"
       style={{ boxShadow: "0 1px 4px rgba(20,20,20,0.04)" }}
     >
       <h3
         style={{
           fontSize: "18px",
           fontWeight: 700,
-          color: "#1E1E1C",
+          color: "#FFFFFF",
           textAlign: "center",
           marginBottom: "8px",
         }}
@@ -54,7 +54,7 @@ export function InviteArtistShare() {
         style={{
           fontSize: "14px",
           lineHeight: 1.55,
-          color: "#5F5F5A",
+          color: "#D1D1CE",
           textAlign: "center",
           maxWidth: "420px",
           margin: "0 auto 20px",
@@ -62,7 +62,7 @@ export function InviteArtistShare() {
       >
         {KALEIDORIUM_SHARE_TEXT}
       </p>
-      <p className="artwork-meta text-center mb-3">Share Kaleidorium</p>
+      <p className="share-panel-title">Share Kaleidorium</p>
       <div className="flex justify-center gap-2 flex-wrap">
         <button
           className="share-icon-btn"

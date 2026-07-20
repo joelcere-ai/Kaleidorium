@@ -57,22 +57,22 @@ export function DesktopHeader({
 
   // ── shared class helpers ───────────────────────────────────────────────────
 
-  /** Plain text nav item — no border, transparent bg, refined hover */
+  /** Plain text nav item — bold type, dark-grey active with white text */
   const plainNavItem = (active: boolean) =>
-    `inline-flex items-center gap-1.5 h-9 px-3 text-[13.5px] font-medium rounded-[8px]
+    `inline-flex items-center gap-1.5 h-9 px-3 text-[13.5px] font-bold rounded-[8px]
      transition-colors duration-150 cursor-pointer select-none
      ${active
-       ? "text-[#1E1E1C] bg-[#F5F4F1]"
+       ? "text-white bg-[#2B2B2B]"
        : "text-[#5F5F5A] hover:text-[#1E1E1C] hover:bg-[#FAFAF8]"
      }`;
 
   /** Soft pill nav item — used only for Collection (count-based / stateful) */
   const pillNavItem = (active: boolean) =>
-    `inline-flex items-center gap-1.5 h-9 px-4 text-[13.5px] rounded-[14px] border
+    `inline-flex items-center gap-1.5 h-9 px-4 text-[13.5px] font-bold rounded-[14px] border
      transition-colors duration-150 cursor-pointer select-none ml-1
      ${active
-       ? "bg-[#F5F4F1] border-[#E6E4DF] text-[#1E1E1C] font-semibold"
-       : "bg-white border-[#EAE7E1] text-[#4A4A45] font-medium hover:bg-[#FAFAF8] hover:border-[#E6E4DF] hover:text-[#1E1E1C]"
+       ? "bg-[#2B2B2B] border-[#2B2B2B] text-white"
+       : "bg-white border-[#EAE7E1] text-[#4A4A45] hover:bg-[#FAFAF8] hover:border-[#E6E4DF] hover:text-[#1E1E1C]"
      }`;
 
   return (

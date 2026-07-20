@@ -113,8 +113,8 @@ export function ArtworkDetails({ artwork, showShareButton = false }: ArtworkDeta
 
       {/* Share section */}
       {showShareButton && (
-        <div className="py-3 px-4 bg-[#FAFAF8] rounded-xl border border-[#E6E4DF]">
-          <p className="artwork-meta text-center mb-3">Share this artwork</p>
+        <div className="share-panel">
+          <p className="share-panel-title">Share this artwork</p>
           <div className="flex justify-center gap-2">
             <button className="share-icon-btn" title="Share on X"
               onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer')}>

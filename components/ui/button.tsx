@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
  * Kaleidorium Button – 3 canonical variants
  *
  * default   → Primary CTA  (#1E1E1C bg, white text) — form submits, main actions
- * outline   → Secondary soft (lilac bg/border/text) — "signature" elegant action
+ * outline   → Secondary filled purple (dark purple bg, white bold text) — signature CTA
  * ghost     → Ghost / utility (white bg, neutral border) — nav & low-emphasis
  * secondary → Neutral soft (off-white bg, border) — kept for compatibility
  */
@@ -24,10 +24,10 @@ const buttonVariants = cva(
           "hover:bg-[#2d2d2b] active:scale-[0.97]",
 
         // ── B. Signature branded secondary (default premium CTA) ─
-        // Soft lilac — "View artwork", "Get Started", most hero CTAs
+        // Filled purple — "View artwork", "Get Started", most hero CTAs
         outline:
-          "bg-[#F5F0FF] border border-[#D9CFF7] text-[#4F4564] text-[15px] " +
-          "hover:brightness-[0.97] active:scale-[0.97]",
+          "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
+          "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
 
         // ── C. Ghost / neutral ───────────────────────────────
         // White bg + subtle border — nav, low-emphasis, icon wrappers

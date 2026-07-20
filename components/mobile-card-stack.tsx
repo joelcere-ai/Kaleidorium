@@ -868,7 +868,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <div className="space-y-4">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("discover")
                     setShowMenuModal(false)
@@ -879,7 +879,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("collection")
                     setShowMenuModal(false)
@@ -890,7 +890,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("taste-profile")
                     setShowMenuModal(false)
@@ -901,7 +901,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("featured")
                     setShowMenuModal(false)
@@ -912,7 +912,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("why-kaleidorium")
                     setShowMenuModal(false)
@@ -923,7 +923,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     router.push("/contact");
                     setShowMenuModal(false);
@@ -934,7 +934,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
                   onClick={() => {
                     setView("profile")
                     setShowMenuModal(false)
@@ -1068,7 +1068,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   <div className="pt-4">
                     <Button 
                       className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
-                      style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B' }}
+                      style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
                         // Validate and fix URL before opening
@@ -1095,11 +1095,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 
                 {/* Social Media Share Buttons */}
                 <div className="pt-4">
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
+                  <div className="share-panel text-center">
+                    <p className="share-panel-title">Share this artwork</p>
                     <div className="flex justify-center gap-2">
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1111,7 +1111,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <XIcon className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1123,7 +1123,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <Facebook className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={async () => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1140,7 +1140,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <Instagram className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1153,7 +1153,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <MessageCircle className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={async () => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1617,7 +1617,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
                 <Button 
-                  className="flex-1 bg-[#F5F1FF] border border-[#D9CCF3] text-[#2B2B2B] hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:brightness-90 hover:scale-[1.02] active:scale-95 transition-all"
                   onClick={applyFilters}
                 >
                   Apply Filters
@@ -1653,7 +1653,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <div className="space-y-4">
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("discover")
                   setShowMenuModal(false)
@@ -1665,7 +1665,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("collection")
                   setShowMenuModal(false)
@@ -1676,7 +1676,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("taste-profile")
                   setShowMenuModal(false)
@@ -1687,7 +1687,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("featured")
                   setShowMenuModal(false)
@@ -1698,7 +1698,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("why-kaleidorium")
                   setShowMenuModal(false)
@@ -1709,7 +1709,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   router.push("/contact");
                   setShowMenuModal(false);
@@ -1720,7 +1720,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-gray-100"
                 onClick={() => {
                   setView("profile")
                   setShowMenuModal(false)
@@ -1860,7 +1860,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   <div className="pt-4">
                     <Button 
                       className="w-full py-3 text-sm font-medium hover:scale-[1.02] active:scale-95 hover:brightness-90 transition-all duration-200"
-                      style={{ backgroundColor: '#F5F1FF', borderColor: '#D9CCF3', borderWidth: '1px', borderStyle: 'solid', color: '#2B2B2B' }}
+                      style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         // Validate and fix URL before opening
                         try {
@@ -1886,11 +1886,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 
                 {/* Social Media Share Buttons */}
                 <div className="pt-4">
-                  <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-3">Share this artwork</p>
+                  <div className="share-panel text-center">
+                    <p className="share-panel-title">Share this artwork</p>
                     <div className="flex justify-center gap-2">
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1902,7 +1902,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <XIcon className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1914,7 +1914,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <Facebook className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={async () => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1931,7 +1931,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <Instagram className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={() => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`
@@ -1944,7 +1944,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         <MessageCircle className="w-5 h-5" />
                       </button>
                       <button 
-                        className="w-10 h-10 border border-black bg-white rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200"
+                        className="share-icon-btn !w-10 !h-10 !rounded-lg"
                         onClick={async () => {
                           const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://kaleidorium.com'
                           const shareUrl = `${baseUrl}/?artworkId=${selectedArtwork.id}`

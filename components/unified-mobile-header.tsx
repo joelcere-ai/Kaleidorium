@@ -74,8 +74,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "discover" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "discover" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/")}
               >
@@ -85,8 +85,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "collection" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "collection" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/collection")}
               >
@@ -96,8 +96,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "why-kaleidorium" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "why-kaleidorium" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/?view=why-kaleidorium")}
               >
@@ -107,8 +107,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "pricing" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "pricing" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/pricing")}
               >
@@ -118,8 +118,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "contact" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "contact" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/contact")}
               >
@@ -129,8 +129,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start text-black hover:bg-gray-100 ${
-                  currentPage === "profile" ? "bg-gray-100" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-gray-100 ${
+                  currentPage === "profile" ? "bg-[#2B2B2B] text-white hover:bg-[#2B2B2B] hover:text-white" : ""
                 }`}
                 onClick={() => handleNavigation("/profile")}
               >
