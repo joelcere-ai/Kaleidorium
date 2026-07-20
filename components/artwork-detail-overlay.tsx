@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { ThumbsDown, ThumbsUp, X } from "lucide-react"
+import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ArtworkDetails } from "@/components/artwork-details"
 import type { Artwork } from "@/types/artwork"
@@ -21,7 +21,6 @@ export function ArtworkDetailOverlay({
   onClose,
   onLike,
   onDislike,
-  inCollection = false,
 }: ArtworkDetailOverlayProps) {
   useEffect(() => {
     if (!open) return
@@ -87,51 +86,33 @@ export function ArtworkDetailOverlay({
                 className="w-full h-full object-contain p-4"
               />
             </div>
-            <div className="flex items-center justify-center gap-3 px-4 py-4 border-t border-[#E6E4DF]">
-              <Button
-                variant="outline"
-                size="default"
-                className="flex-1 sm:flex-none min-w-0 sm:min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
-                style={{
-                  backgroundColor: "#FBEFF0",
-                  borderColor: "#E7C4C7",
-                  borderWidth: "1px",
-                  boxShadow: "none",
-                  color: "#A35D66",
-                  height: "42px",
-                  borderRadius: "12px",
-                }}
+            <div className="flex items-center justify-center gap-3 sm:gap-6 px-4 py-4 border-t border-[#E6E4DF]">
+              <button
+                type="button"
                 onClick={() => onDislike(artwork)}
+                className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
                 aria-label="Dislike"
               >
-                <ThumbsDown className="h-4 w-4 mr-1.5" style={{ color: "#A35D66" }} />
-                <span>Dislike</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="default"
-                className="flex-1 sm:flex-none min-w-0 sm:min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all"
-                style={{
-                  backgroundColor: "#EDF6F0",
-                  borderColor: "#B8D8C1",
-                  borderWidth: "1px",
-                  boxShadow: "none",
-                  color: "#3E7C59",
-                  height: "42px",
-                  borderRadius: "12px",
-                }}
+                <img
+                  src="/icons/actions/desktop-dislike.png"
+                  alt=""
+                  className="h-[42px] w-auto mx-auto select-none pointer-events-none"
+                  draggable={false}
+                />
+              </button>
+              <button
+                type="button"
                 onClick={() => onLike(artwork)}
+                className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
                 aria-label="Like and add to collection"
               >
-                <ThumbsUp
-                  className="h-4 w-4 mr-1.5"
-                  style={{
-                    color: "#3E7C59",
-                    fill: inCollection ? "#3E7C59" : "none",
-                  }}
+                <img
+                  src="/icons/actions/desktop-like.png"
+                  alt=""
+                  className="h-[42px] w-auto mx-auto select-none pointer-events-none"
+                  draggable={false}
                 />
-                <span>Like</span>
-              </Button>
+              </button>
             </div>
           </div>
           <div className="w-full lg:w-[45%] flex-1 min-w-0">

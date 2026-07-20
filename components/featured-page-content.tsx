@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { ThumbsDown, ThumbsUp } from "lucide-react"
 import { ArtworkDetailOverlay } from "@/components/artwork-detail-overlay"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -179,51 +178,41 @@ export function FeaturedPageContent() {
                   <CardContent className="p-4">
                     <h3 className="font-semibold text-[#1E1E1C] mb-0.5 truncate">{artwork.title}</h3>
                     <p className="text-sm text-[#8A8A84] mb-3 truncate">{artwork.artist}</p>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
+                        className="flex-1 min-w-0"
                         onClick={() => openArtworkDetail(artwork)}
                       >
                         View artwork
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="px-3 active:scale-95 hover:brightness-[0.97] transition-all"
-                        style={{
-                          backgroundColor: "#FBEFF0",
-                          borderColor: "#E7C4C7",
-                          borderWidth: "1px",
-                          boxShadow: "none",
-                        }}
+                      <button
+                        type="button"
+                        className="shrink-0 p-0 bg-transparent border-0 cursor-pointer active:scale-95 hover:brightness-[0.97] transition-all duration-150"
                         onClick={() => handleDislike(artwork)}
                         aria-label="Dislike"
                       >
-                        <ThumbsDown className="h-4 w-4" style={{ color: "#A35D66" }} />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="px-3 active:scale-95 hover:brightness-[0.97] transition-all"
-                        style={{
-                          backgroundColor: "#EDF6F0",
-                          borderColor: "#B8D8C1",
-                          borderWidth: "1px",
-                          boxShadow: "none",
-                        }}
+                        <img
+                          src="/icons/actions/desktop-dislike.png"
+                          alt=""
+                          className="h-[36px] w-auto select-none pointer-events-none"
+                          draggable={false}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="shrink-0 p-0 bg-transparent border-0 cursor-pointer active:scale-95 hover:brightness-[0.97] transition-all duration-150"
                         onClick={() => handleLike(artwork)}
                         aria-label="Like and add to collection"
                       >
-                        <ThumbsUp
-                          className="h-4 w-4"
-                          style={{
-                            color: "#3E7C59",
-                            fill: inCollection(artwork.id) ? "#3E7C59" : "none",
-                          }}
+                        <img
+                          src="/icons/actions/desktop-like.png"
+                          alt=""
+                          className="h-[36px] w-auto select-none pointer-events-none"
+                          draggable={false}
                         />
-                      </Button>
+                      </button>
                     </div>
                   </CardContent>
                 </Card>

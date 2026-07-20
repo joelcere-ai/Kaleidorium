@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
 /**
  * Kaleidorium Button – 3 canonical variants
  *
- * default   → Primary CTA  (#1E1E1C bg, white text) — form submits, main actions
- * outline   → Secondary filled purple (dark purple bg, white bold text) — signature CTA
+ * default   → Primary CTA (filled purple, white bold text) — form submits, main actions
+ * outline   → Same filled purple CTA (alias kept for existing call sites)
  * ghost     → Ghost / utility (white bg, neutral border) — nav & low-emphasis
  * secondary → Neutral soft (off-white bg, border) — kept for compatibility
  */
@@ -18,13 +18,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // ── A. Primary CTA ─────────────────────────────────
-        // Dark bg / white text — form submits, hard CTAs
+        // Filled purple — form submits, hard CTAs, "Create account", etc.
         default:
-          "bg-[#1E1E1C] text-white border border-transparent text-[15px] " +
-          "hover:bg-[#2d2d2b] active:scale-[0.97]",
+          "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
+          "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
 
-        // ── B. Signature branded secondary (default premium CTA) ─
-        // Filled purple — "View artwork", "Get Started", most hero CTAs
+        // ── B. Signature branded CTA (same look as default) ─
         outline:
           "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
           "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
