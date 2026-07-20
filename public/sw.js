@@ -1,7 +1,7 @@
 // Kaleidorium Service Worker
 // Cache name bump forces the browser to install the new SW and clear old caches
 
-const CACHE_NAME = 'kaleidorium-v7';
+const CACHE_NAME = 'kaleidorium-v8';
 const STATIC_ASSETS = [
   '/manifest.json',
   '/logos/kaleidorium-icon-192.png',

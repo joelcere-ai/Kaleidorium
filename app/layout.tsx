@@ -133,12 +133,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Favicon - Load FIRST to prevent flash of old favicon */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=10" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=10" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=10" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=10" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=10" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=10" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=11" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/kaleidorium-icon-16.png?v=11" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/kaleidorium-icon-32.png?v=11" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=11" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=11" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=11" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
