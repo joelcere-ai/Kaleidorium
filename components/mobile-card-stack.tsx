@@ -1315,58 +1315,73 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-center gap-6 relative mt-5">
             {/* Dislike */}
-            <Button
-              size="icon"
+            <button
+              type="button"
               id="dislike-button"
-              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#A35D66] ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
+                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#C42B3D] ring-offset-2 z-10 rounded-[14px]' : ''}`}
               onClick={() => {
                 handleButtonAction('dislike', artwork)
                 if (currentOnboardingStep === 'dislike') nextOnboardingStep()
               }}
               disabled={isAnimating}
+              aria-label="Dislike"
             >
-              <ThumbsDown className="w-5 h-5" style={{ color: '#A35D66' }} />
-            </Button>
+              <img
+                src="/icons/actions/mobile-dislike.png"
+                alt=""
+                className="w-14 h-14 select-none pointer-events-none"
+                draggable={false}
+              />
+            </button>
 
             {/* Info */}
-            <Button
-              size="icon"
+            <button
+              type="button"
               id="info-button"
-              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.info ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#8A8A84] ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#FFFFFF', borderColor: '#E6E4DF', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
+                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#8A8A84] ring-offset-2 z-10 rounded-[14px]' : ''}`}
               onClick={() => {
                 handleButtonAction('info', artwork)
                 if (currentOnboardingStep === 'info') nextOnboardingStep()
               }}
               disabled={isAnimating}
+              aria-label="Information"
             >
-              <Info className="w-5 h-5" style={{ color: '#5F5F5A' }} />
-            </Button>
+              <img
+                src="/icons/actions/mobile-info.png"
+                alt=""
+                className="w-14 h-14 select-none pointer-events-none"
+                draggable={false}
+              />
+            </button>
 
             {/* Like */}
-            <Button
-              size="icon"
+            <button
+              type="button"
               id="like-button"
-              className={`w-14 h-14 min-w-14 min-h-14 rounded-[12px] p-0 aspect-square flex items-center justify-center
+              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.like ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#3E7C59] ring-offset-2 z-10' : ''}`}
-              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', boxShadow: 'none' }}
+                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#1A633E] ring-offset-2 z-10 rounded-[14px]' : ''}`}
               onClick={() => {
                 handleButtonAction('like', artwork)
                 if (currentOnboardingStep === 'like') nextOnboardingStep()
               }}
               disabled={isAnimating}
+              aria-label="Like"
             >
-              <ThumbsUp className="w-5 h-5" style={{ color: '#3E7C59' }} />
-            </Button>
+              <img
+                src="/icons/actions/mobile-like.png"
+                alt=""
+                className="w-14 h-14 select-none pointer-events-none"
+                draggable={false}
+              />
+            </button>
                 </div>
               </div>
             </div>

@@ -1,10 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ThumbsUp, ThumbsDown, Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
-import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import ProgressiveImage from "./progressive-image"
@@ -246,25 +244,33 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
 
                       {/* Action Buttons */}
                       <div className="flex items-center justify-center gap-3 sm:gap-6 mt-4">
-            <Button
-              size="default"
+            <button
+              type="button"
               onClick={() => handleAction('dislike', artwork)}
-              className="flex-1 sm:flex-none min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all duration-150"
-              style={{ backgroundColor: '#FBEFF0', borderColor: '#E7C4C7', borderWidth: '1px', borderStyle: 'solid', color: '#A35D66', height: '42px', borderRadius: '12px', boxShadow: 'none' }}
+              className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
+              aria-label="Dislike"
             >
-              <ThumbsDown className="w-4 h-4 mr-1.5" style={{ color: '#A35D66' }} />
-              <span className="hidden sm:inline">Dislike</span>
-            </Button>
+              <img
+                src="/icons/actions/desktop-dislike.png"
+                alt=""
+                className="h-[42px] w-auto mx-auto select-none pointer-events-none"
+                draggable={false}
+              />
+            </button>
             
-            <Button
-              size="default"
+            <button
+              type="button"
               onClick={() => handleAction('like', artwork)}
-              className="flex-1 sm:flex-none min-w-[100px] active:scale-95 hover:brightness-[0.97] transition-all duration-150"
-              style={{ backgroundColor: '#EDF6F0', borderColor: '#B8D8C1', borderWidth: '1px', borderStyle: 'solid', color: '#3E7C59', height: '42px', borderRadius: '12px', boxShadow: 'none' }}
+              className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
+              aria-label="Like"
             >
-              <ThumbsUp className="w-4 h-4 mr-1.5" style={{ color: '#3E7C59' }} />
-              <span className="hidden sm:inline">Like</span>
-            </Button>
+              <img
+                src="/icons/actions/desktop-like.png"
+                alt=""
+                className="h-[42px] w-auto mx-auto select-none pointer-events-none"
+                draggable={false}
+              />
+            </button>
                       </div>
                     </div>
                   </div>
