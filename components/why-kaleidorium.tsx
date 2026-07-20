@@ -457,8 +457,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     boxShadow: active ? "inset 0 0 0 2px #FFFFFF" : "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#1E1E1C"
-                    e.currentTarget.style.borderColor = "#1E1E1C"
+                    e.currentTarget.style.backgroundColor = "#5A48A0"
+                    e.currentTarget.style.borderColor = "#5A48A0"
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#6B57B8"
@@ -504,8 +504,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 boxShadow: showInvitePanel ? "inset 0 0 0 2px #FFFFFF" : "none",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#1E1E1C"
-                e.currentTarget.style.borderColor = "#1E1E1C"
+                e.currentTarget.style.backgroundColor = "#5A48A0"
+                e.currentTarget.style.borderColor = "#5A48A0"
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "#6B57B8"

@@ -152,7 +152,7 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
           <Button
             onClick={handleInstall}
             size="sm"
-            className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all text-xs"
+            className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#5A48A0] hover:border-[#5A48A0] hover:scale-[1.02] active:scale-95 transition-all text-xs"
           >
             <Download className="w-3 h-3 mr-1" />
             Install

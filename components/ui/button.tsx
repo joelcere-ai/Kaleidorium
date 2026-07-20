@@ -27,7 +27,7 @@ const buttonVariants = cva(
         // Filled purple — "View artwork", "Get Started", most hero CTAs
         outline:
           "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
-          "hover:bg-[#1E1E1C] hover:border-[#1E1E1C] active:scale-[0.97]",
+          "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
 
         // ── C. Ghost / neutral ───────────────────────────────
         // White bg + subtle border — nav, low-emphasis, icon wrappers

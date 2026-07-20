@@ -183,31 +183,31 @@ export function DesktopHeader({
       {showMenu && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50">
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => handleNavigation("discover")}>
               <Palette className="mr-3 h-5 w-5" />Discover
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => handleNavigation("collection")}>
               <Heart className="mr-3 h-5 w-5" />Collection ({collectionCount})
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => { setShowMenu(false); router.push("/taste-profile"); }}>
               <Sparkles className="mr-3 h-5 w-5" />Taste Profile
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => { setShowMenu(false); router.push("/featured"); }}>
               <BadgeAlert className="mr-3 h-5 w-5" />Featured
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => handleNavigation("why-kaleidorium")}>
               <Info className="mr-3 h-5 w-5" />How it works?
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => handleNavigation("contact")}>
               <Mail className="mr-3 h-5 w-5" />Contact
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900"
+            <Button variant="ghost" className="w-full justify-start font-bold text-[#1E1E1C] hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
               onClick={() => handleNavigation("profile")}>
               <User className="mr-3 h-5 w-5" />Account
             </Button>

@@ -868,7 +868,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <div className="space-y-4">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("discover")
                     setShowMenuModal(false)
@@ -879,7 +879,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("collection")
                     setShowMenuModal(false)
@@ -890,7 +890,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("taste-profile")
                     setShowMenuModal(false)
@@ -901,7 +901,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("featured")
                     setShowMenuModal(false)
@@ -912,7 +912,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("why-kaleidorium")
                     setShowMenuModal(false)
@@ -923,7 +923,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     router.push("/contact");
                     setShowMenuModal(false);
@@ -934,7 +934,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                  className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                   onClick={() => {
                     setView("profile")
                     setShowMenuModal(false)
@@ -1067,7 +1067,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#1E1E1C] hover:!border-[#1E1E1C] transition-all duration-200"
+                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#5A48A0] hover:!border-[#5A48A0] transition-all duration-200"
                       style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
@@ -1312,16 +1312,16 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   </>
                 )}
 
-                {/* Action Buttons */}
-                <div className="flex items-center justify-center gap-6 relative mt-5">
+                {/* Action Buttons — 80% of previous w-14 (3.5rem → 2.8rem) */}
+                <div className="flex items-center justify-center gap-5 relative mt-5">
             {/* Dislike */}
             <button
               type="button"
               id="dislike-button"
-              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
+              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#C42B3D] ring-offset-2 z-10 rounded-[14px]' : ''}`}
+                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#C42B3D] ring-offset-2 z-10 rounded-[11px]' : ''}`}
               onClick={() => {
                 handleButtonAction('dislike', artwork)
                 if (currentOnboardingStep === 'dislike') nextOnboardingStep()
@@ -1332,7 +1332,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <img
                 src="/icons/actions/mobile-dislike.png"
                 alt=""
-                className="w-14 h-14 select-none pointer-events-none"
+                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
                 draggable={false}
               />
             </button>
@@ -1341,10 +1341,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <button
               type="button"
               id="info-button"
-              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
+              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.info ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#8A8A84] ring-offset-2 z-10 rounded-[14px]' : ''}`}
+                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#8A8A84] ring-offset-2 z-10 rounded-[11px]' : ''}`}
               onClick={() => {
                 handleButtonAction('info', artwork)
                 if (currentOnboardingStep === 'info') nextOnboardingStep()
@@ -1355,7 +1355,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <img
                 src="/icons/actions/mobile-info.png"
                 alt=""
-                className="w-14 h-14 select-none pointer-events-none"
+                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
                 draggable={false}
               />
             </button>
@@ -1364,10 +1364,10 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <button
               type="button"
               id="like-button"
-              className={`w-14 h-14 min-w-14 min-h-14 p-0 bg-transparent border-0 cursor-pointer
+              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
                 transition-all duration-200 active:scale-95
                 ${buttonStates.like ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#1A633E] ring-offset-2 z-10 rounded-[14px]' : ''}`}
+                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#1A633E] ring-offset-2 z-10 rounded-[11px]' : ''}`}
               onClick={() => {
                 handleButtonAction('like', artwork)
                 if (currentOnboardingStep === 'like') nextOnboardingStep()
@@ -1378,7 +1378,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <img
                 src="/icons/actions/mobile-like.png"
                 alt=""
-                className="w-14 h-14 select-none pointer-events-none"
+                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
                 draggable={false}
               />
             </button>
@@ -1617,7 +1617,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
                 <Button 
-                  className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#1E1E1C] hover:border-[#1E1E1C] hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 bg-[#6B57B8] border border-[#6B57B8] text-white font-bold hover:bg-[#5A48A0] hover:border-[#5A48A0] hover:scale-[1.02] active:scale-95 transition-all"
                   onClick={applyFilters}
                 >
                   Apply Filters
@@ -1653,7 +1653,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <div className="space-y-4">
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("discover")
                   setShowMenuModal(false)
@@ -1665,7 +1665,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("collection")
                   setShowMenuModal(false)
@@ -1676,7 +1676,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("taste-profile")
                   setShowMenuModal(false)
@@ -1687,7 +1687,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("featured")
                   setShowMenuModal(false)
@@ -1698,7 +1698,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("why-kaleidorium")
                   setShowMenuModal(false)
@@ -1709,7 +1709,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   router.push("/contact");
                   setShowMenuModal(false);
@@ -1720,7 +1720,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-gray-100"
+                className="w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white"
                 onClick={() => {
                   setView("profile")
                   setShowMenuModal(false)
@@ -1859,7 +1859,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
                     <Button 
-                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#1E1E1C] hover:!border-[#1E1E1C] transition-all duration-200"
+                      className="w-full py-3 text-sm font-bold text-white hover:scale-[1.02] active:scale-95 hover:!bg-[#5A48A0] hover:!border-[#5A48A0] transition-all duration-200"
                       style={{ backgroundColor: '#6B57B8', borderColor: '#6B57B8', borderWidth: '1px', borderStyle: 'solid', color: '#FFFFFF', fontWeight: 700 }}
                       onClick={() => {
                         // Validate and fix URL before opening

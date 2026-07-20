@@ -176,7 +176,7 @@ export function UniversalAppHeader({
           <div className="flex flex-col space-y-2 p-4">
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+              className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNavigation("/", "discover")}
             >
               <Palette className="w-4 h-4 mr-2" />
@@ -187,7 +187,7 @@ export function UniversalAppHeader({
             {(isSelected("discover") || pathname === "/") && onToggleFilters && (
               <Button
                 variant="ghost"
-                className={`justify-start ${showFilters ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
+                className={`justify-start hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${showFilters ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""} ${isFiltering ? "text-blue-600" : ""}`}
                 onClick={onToggleFilters}
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -198,7 +198,7 @@ export function UniversalAppHeader({
 
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+              className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNavigation("/collection")}
             >
               <Heart className="w-4 h-4 mr-2" />
@@ -207,7 +207,7 @@ export function UniversalAppHeader({
 
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("for-artists") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+              className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("for-artists") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNavigation("/for-artists")}
             >
               <Palette className="w-4 h-4 mr-2" />
@@ -216,7 +216,7 @@ export function UniversalAppHeader({
 
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+              className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNavigation("/about")}
             >
               <Info className="w-4 h-4 mr-2" />
@@ -225,7 +225,7 @@ export function UniversalAppHeader({
 
             <Button
               variant="ghost"
-              className={`justify-start font-bold ${isSelected("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+              className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
               onClick={() => handleNavigation("/contact")}
             >
               <Mail className="w-4 h-4 mr-2" />
@@ -235,7 +235,7 @@ export function UniversalAppHeader({
             {user ? (
               <Button
                 variant="ghost"
-                className={`justify-start font-bold ${isSelected("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
+                className={`justify-start font-bold hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${isSelected("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""}`}
                 onClick={() => handleNavigation("/profile")}
               >
                 <User className="w-4 h-4 mr-2" />

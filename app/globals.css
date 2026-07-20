@@ -161,7 +161,7 @@
     cursor: pointer;
     transition: background-color 0.15s ease, filter 0.15s ease, transform 0.1s ease;
   }
-  .btn-secondary-soft:hover  { background-color: #1E1E1C; border-color: #1E1E1C; filter: none; }
+  .btn-secondary-soft:hover  { background-color: var(--k-lilac-fill-hover); border-color: var(--k-lilac-fill-hover); filter: none; }
   .btn-secondary-soft:active { transform: scale(0.97); }
   @media (max-width: 768px) { .btn-secondary-soft { height: 44px; } }
 
@@ -412,7 +412,7 @@
     transition: background-color 0.15s ease, transform 0.1s ease;
     text-decoration: none;
   }
-  .artwork-cta-btn:hover  { background-color: #1E1E1C; border-color: #1E1E1C; filter: none; }
+  .artwork-cta-btn:hover  { background-color: var(--k-lilac-fill-hover); border-color: var(--k-lilac-fill-hover); filter: none; }
   .artwork-cta-btn:active { transform: scale(0.97); }
 
   /* Share panel — white bg, black text */
@@ -445,8 +445,8 @@
     transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
   }
   .share-icon-btn:hover {
-    background-color: #1E1E1C;
-    border-color: #1E1E1C;
+    background-color: var(--k-lilac-fill-hover);
+    border-color: var(--k-lilac-fill-hover);
     color: #FFFFFF;
   }
   .share-icon-btn svg { width: 13px; height: 13px; }
