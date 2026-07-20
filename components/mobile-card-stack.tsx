@@ -753,7 +753,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             aria-label="Kaleidorium — go to Discover"
           >
             <img 
-              src="/logos/kaleidorium-wordmark-mobile.png" 
+              src="/logos/kaleidorium-wordmark-mobile.png?v=12" 
               alt="Kaleidorium Logo" 
               className="h-8 w-auto flex-shrink-0"
             />
@@ -1204,7 +1204,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       </Button>
       <h1 className="font-serif text-xl font-semibold text-black flex items-center">
         <img
-          src="/logos/kaleidorium-wordmark-mobile.png"
+          src="/logos/kaleidorium-wordmark-mobile.png?v=12"
           alt="Kaleidorium Logo"
           className="h-8 w-auto"
         />

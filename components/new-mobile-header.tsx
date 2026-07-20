@@ -64,7 +64,7 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
             aria-label="Kaleidorium — go to Discover"
           >
             <img 
-              src="/logos/kaleidorium-wordmark-mobile.png" 
+              src="/logos/kaleidorium-wordmark-mobile.png?v=12" 
               alt="Kaleidorium Logo" 
               className="h-8 w-auto flex-shrink-0"
             />

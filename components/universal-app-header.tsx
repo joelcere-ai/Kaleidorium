@@ -71,7 +71,7 @@ export function UniversalAppHeader({
             onClick={() => handleNavigation("/", "discover")}
           >
             <img 
-              src="/logos/kaleidorium-wordmark-desktop.png" 
+              src="/logos/kaleidorium-wordmark-desktop.png?v=12" 
               alt="Kaleidorium Logo" 
             className="h-8 md:h-10 w-auto flex-shrink-0"
             />
