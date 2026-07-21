@@ -823,9 +823,8 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                           View Details
                         </Button>
                         <Button
-                          variant="outline"
                           size="sm"
-                          className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
+                          className="flex-1 bg-[#C42B3D] border border-[#C42B3D] text-white font-bold hover:bg-[#A82433] hover:border-[#A82433] active:scale-95"
                           onClick={(e) => {
                             e.stopPropagation()
                             onRemoveFromCollection(artwork.id)
