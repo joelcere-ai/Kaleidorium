@@ -937,19 +937,18 @@ function HomeContent() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="flex-1"
+                              className="flex-1 min-w-0 whitespace-nowrap"
                               onClick={() => handleArtworkClick(artwork)}
                             >
                               View artwork
                             </Button>
                             <Button
-                              variant="ghost"
                               size="sm"
-                              className="text-gray-400 hover:text-red-500 hover:bg-red-50 px-2"
+                              className="shrink-0 bg-[#C42B3D] border border-[#C42B3D] text-white font-bold hover:bg-[#A82433] hover:border-[#A82433] active:scale-95"
                               onClick={() => handleRemoveFromCollection(artwork.id)}
-                              title="Remove from collection"
+                              aria-label="Remove from collection"
                             >
-                              ✕
+                              Remove
                             </Button>
                           </div>
                         </CardContent>

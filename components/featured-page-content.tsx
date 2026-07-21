@@ -182,7 +182,7 @@ export function FeaturedPageContent() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 min-w-0"
+                        className="flex-1 min-w-0 whitespace-nowrap"
                         onClick={() => openArtworkDetail(artwork)}
                       >
                         View artwork
@@ -194,9 +194,9 @@ export function FeaturedPageContent() {
                         aria-label="Dislike"
                       >
                         <img
-                          src="/icons/actions/desktop-dislike.png"
+                          src="/icons/actions/mobile-dislike.png"
                           alt=""
-                          className="h-[36px] w-auto select-none pointer-events-none"
+                          className="w-9 h-9 select-none pointer-events-none"
                           draggable={false}
                         />
                       </button>
@@ -207,9 +207,9 @@ export function FeaturedPageContent() {
                         aria-label="Like and add to collection"
                       >
                         <img
-                          src="/icons/actions/desktop-like.png"
+                          src="/icons/actions/mobile-like.png"
                           alt=""
-                          className="h-[36px] w-auto select-none pointer-events-none"
+                          className="w-9 h-9 select-none pointer-events-none"
                           draggable={false}
                         />
                       </button>
