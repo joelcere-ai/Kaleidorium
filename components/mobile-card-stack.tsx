@@ -779,19 +779,25 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
           {collection.length === 0 ? null : (
             <div className="space-y-6">
               {collection.map((artwork) => (
-                <div key={artwork.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300">
-                  <div onClick={() => handleArtworkTap(artwork)}>
-                    {/* Artwork Image - Big Tile */}
-                    <div className="w-full aspect-[4/3] relative">
+                <div key={artwork.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    {/* Artwork Image - tap for full-size overlay */}
+                    <div
+                      className="w-full aspect-[4/3] relative cursor-zoom-in"
+                      onClick={() => handleArtworkTap(artwork)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`View ${artwork.title} full size`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          handleArtworkTap(artwork)
+                        }
+                      }}
+                    >
                       <img
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
-                        className="w-full h-full object-cover cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedArtwork(artwork)
-                          handleArtworkTap(artwork)
-                        }}
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     
@@ -835,7 +841,6 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         </Button>
                       </div>
                     </div>
-                  </div>
                 </div>
               ))}
             </div>
@@ -1267,7 +1272,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             >
               {/* Artwork Image */}
               <div 
-                className="relative w-full h-96 cursor-pointer"
+                className="relative w-full h-96 cursor-zoom-in"
                 onClick={() => handleArtworkTap(artwork)}
               >
                 <Image

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { ArtworkDetailOverlay } from "@/components/artwork-detail-overlay"
+import { ImageOverlay } from "@/components/image-overlay"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
@@ -27,6 +28,7 @@ export function FeaturedPageContent() {
   const [user, setUser] = useState<{ id: string } | null>(null)
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
   const [detailArtwork, setDetailArtwork] = useState<Artwork | null>(null)
+  const [overlayImage, setOverlayImage] = useState<{ url: string; alt: string } | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -72,6 +74,15 @@ export function FeaturedPageContent() {
 
   const closeArtworkDetail = () => {
     setDetailArtwork(null)
+  }
+
+  const openImageOverlay = (artwork: Artwork) => {
+    if (!artwork.artwork_image) return
+    setOverlayImage({ url: artwork.artwork_image, alt: artwork.title })
+  }
+
+  const closeImageOverlay = () => {
+    setOverlayImage(null)
   }
 
   const handleLike = useCallback(
@@ -166,8 +177,17 @@ export function FeaturedPageContent() {
                   className="overflow-hidden group hover:shadow-md transition-shadow border border-[#E6E4DF]"
                 >
                   <div
-                    className="aspect-square overflow-hidden bg-[#FAFAF8] cursor-pointer"
-                    onClick={() => openArtworkDetail(artwork)}
+                    className="aspect-square overflow-hidden bg-[#FAFAF8] cursor-zoom-in"
+                    onClick={() => openImageOverlay(artwork)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View ${artwork.title} full size`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        openImageOverlay(artwork)
+                      }
+                    }}
                   >
                     <img
                       src={artwork.artwork_image || "/placeholder.svg"}
@@ -230,6 +250,14 @@ export function FeaturedPageContent() {
         onDislike={handleDislike}
         inCollection={detailArtwork ? inCollection(detailArtwork.id) : false}
       />
+
+      {overlayImage && (
+        <ImageOverlay
+          artwork_image={overlayImage.url}
+          alt={overlayImage.alt}
+          onClose={closeImageOverlay}
+        />
+      )}
     </div>
   )
 }

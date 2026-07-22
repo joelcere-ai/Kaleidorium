@@ -8,6 +8,7 @@ import { PricingContent } from "@/components/pricing-content";
 import { NewMobileHeader } from "@/components/new-mobile-header";
 import { DesktopHeader } from "@/components/desktop-header";
 import MobileCardStack from "@/components/mobile-card-stack";
+import { ImageOverlay } from "@/components/image-overlay";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft, X } from "lucide-react";
@@ -278,6 +279,7 @@ function HomeContent() {
   const [view, setViewState] = useState<"discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy">(getCurrentView());
   const [collectionCount, setCollectionCount] = useState(0);
   const [collection, setCollection] = useState<any[]>([]);
+  const [overlayImage, setOverlayImage] = useState<{ url: string; alt: string } | null>(null);
   const [dbCollection, setDbCollection] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   
@@ -513,9 +515,14 @@ function HomeContent() {
     }
   };
 
-  // Handle artwork selection for desktop collection - navigate to discover with artwork ID
-  const handleArtworkClick = (artwork: any) => {
-    router.push(`/?artworkId=${artwork.id}`, { scroll: false });
+  // Open full-size artwork overlay (same as Discover)
+  const openCollectionImageOverlay = (artwork: { artwork_image?: string; title?: string }) => {
+    if (!artwork.artwork_image) return;
+    setOverlayImage({ url: artwork.artwork_image, alt: artwork.title || "Artwork" });
+  };
+
+  const closeCollectionImageOverlay = () => {
+    setOverlayImage(null);
   };
 
   // ForArtistsForm is defined as a top-level component above HomeContent (avoids remounting on parent re-render)
@@ -921,8 +928,17 @@ function HomeContent() {
                     {activeCollection.map((artwork) => (
                       <Card key={artwork.id} className="overflow-hidden group hover:shadow-md transition-shadow">
                         <div
-                          className="aspect-square overflow-hidden bg-gray-100 cursor-pointer"
-                          onClick={() => handleArtworkClick(artwork)}
+                          className="aspect-square overflow-hidden bg-gray-100 cursor-zoom-in"
+                          onClick={() => openCollectionImageOverlay(artwork)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View ${artwork.title} full size`}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              openCollectionImageOverlay(artwork);
+                            }
+                          }}
                         >
                           <img
                             src={artwork.artwork_image || "/placeholder.svg"}
@@ -938,7 +954,7 @@ function HomeContent() {
                               variant="outline"
                               size="sm"
                               className="flex-1 min-w-0 whitespace-nowrap"
-                              onClick={() => handleArtworkClick(artwork)}
+                              onClick={() => openCollectionImageOverlay(artwork)}
                             >
                               View artwork
                             </Button>
@@ -957,6 +973,13 @@ function HomeContent() {
                   </div>
                 )}
               </div>
+            )}
+            {overlayImage && (
+              <ImageOverlay
+                artwork_image={overlayImage.url}
+                alt={overlayImage.alt}
+                onClose={closeCollectionImageOverlay}
+              />
             )}
           </div>
         );
