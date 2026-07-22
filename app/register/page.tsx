@@ -645,6 +645,9 @@ export default function RegisterPage() {
                 Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
               </label>
             </div>
+            <p className="text-sm text-[#5F5F5A] leading-relaxed">
+              Your password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (for example ! @ # $ %).
+            </p>
             <Input
               type="password"
               placeholder="Password"

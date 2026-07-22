@@ -666,6 +666,12 @@ function ArtistRegisterPage() {
                   <Input name="username" placeholder="Choose a username" value={artist.username} onChange={handleArtistChange} required />
                   {errors.username && <div className="text-red-600 text-xs mt-1">{errors.username}</div>}
                 </div>
+
+                <div className="md:col-span-2">
+                  <p className="text-sm text-[#5F5F5A] leading-relaxed">
+                    Your password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (for example ! @ # $ %).
+                  </p>
+                </div>
                 
                 <div className="space-y-1">
                   <label className="block text-sm font-medium text-gray-700">Password</label>

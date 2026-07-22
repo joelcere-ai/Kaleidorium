@@ -494,6 +494,9 @@ function GalleryRegisterContent() {
 
           {/* Password */}
           <div className="space-y-2">
+            <p className="text-sm text-[#5F5F5A] leading-relaxed">
+              Your password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character (for example ! @ # $ %).
+            </p>
             <label htmlFor="password" className="text-sm font-sans font-medium text-black" style={{fontFamily: 'Arial, sans-serif'}}>
               Password *
             </label>
