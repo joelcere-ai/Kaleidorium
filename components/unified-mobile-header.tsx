@@ -74,8 +74,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "discover" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "discover" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/")}
               >
@@ -85,8 +85,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "collection" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "collection" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/collection")}
               >
@@ -96,8 +96,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "why-kaleidorium" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "why-kaleidorium" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/?view=why-kaleidorium")}
               >
@@ -107,8 +107,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "pricing" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "pricing" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/pricing")}
               >
@@ -118,8 +118,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "contact" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "contact" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/contact")}
               >
@@ -129,8 +129,8 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  currentPage === "profile" ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  currentPage === "profile" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/profile")}
               >

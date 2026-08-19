@@ -103,8 +103,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("discover") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("discover") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("discover")}
               >
@@ -114,8 +114,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("collection") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("collection") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("collection")}
               >
@@ -130,8 +130,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("taste-profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("taste-profile") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => {
                   setIsMenuOpen(false);
@@ -144,8 +144,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("featured") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("featured") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => {
                   setIsMenuOpen(false);
@@ -158,8 +158,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("why-kaleidorium") || isCurrentPage("for-artists") || isCurrentPage("for-galleries") || isCurrentPage("about") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("why-kaleidorium") || isCurrentPage("for-artists") || isCurrentPage("for-galleries") || isCurrentPage("about") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("why-kaleidorium")}
               >
@@ -169,8 +169,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("contact") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("contact") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("contact")}
               >
@@ -180,8 +180,8 @@ export function NewMobileHeader({ currentPage, collectionCount = 0, setView }: N
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#6B57B8] hover:text-white active:bg-[#6B57B8] active:text-white ${
-                  isCurrentPage("profile") ? "bg-[#6B57B8] text-white hover:bg-[#6B57B8] hover:text-white" : ""
+                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                  isCurrentPage("profile") ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("profile")}
               >

@@ -441,8 +441,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   className="role-cta-btn transition-colors duration-150"
                   data-active={active ? "true" : "false"}
                   style={{
-                    backgroundColor: "#6B57B8",
-                    border: "1px solid #6B57B8",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #000000",
                     borderRadius: "12px",
                     padding: "16px 20px",
                     textAlign: "center",
@@ -453,16 +453,16 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                     alignItems: "center",
                     width: "100%",
                     minHeight: "108px",
-                    color: "#FFFFFF",
-                    boxShadow: active ? "inset 0 0 0 2px #FFFFFF" : "none",
+                    color: "#000000",
+                    boxShadow: active ? "inset 0 0 0 2px #000000" : "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#5A48A0"
-                    e.currentTarget.style.borderColor = "#5A48A0"
+                    e.currentTarget.style.backgroundColor = "#F0F0F0"
+                    e.currentTarget.style.borderColor = "#000000"
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#6B57B8"
-                    e.currentTarget.style.borderColor = "#6B57B8"
+                    e.currentTarget.style.backgroundColor = "#FFFFFF"
+                    e.currentTarget.style.borderColor = "#000000"
                   }}
                 >
                   <p
@@ -470,13 +470,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                       fontSize: "16px",
                       fontWeight: 700,
                       lineHeight: "1.3",
-                      color: "#FFFFFF",
+                      color: "#000000",
                       marginBottom: "6px",
                     }}
                   >
                     {label}
                   </p>
-                  <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#FFFFFF", opacity: 0.92 }}>
+                  <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#3A3A3A", opacity: 0.92 }}>
                     {tagline}
                   </p>
                 </button>
@@ -488,8 +488,8 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
               className="role-cta-btn transition-colors duration-150"
               data-active={showInvitePanel ? "true" : "false"}
               style={{
-                backgroundColor: "#6B57B8",
-                border: "1px solid #6B57B8",
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #000000",
                 borderRadius: "12px",
                 padding: "16px 20px",
                 textAlign: "center",
@@ -500,16 +500,16 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                 alignItems: "center",
                 width: "100%",
                 minHeight: "108px",
-                color: "#FFFFFF",
-                boxShadow: showInvitePanel ? "inset 0 0 0 2px #FFFFFF" : "none",
+                color: "#000000",
+                boxShadow: showInvitePanel ? "inset 0 0 0 2px #000000" : "none",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#5A48A0"
-                e.currentTarget.style.borderColor = "#5A48A0"
+                e.currentTarget.style.backgroundColor = "#F0F0F0"
+                e.currentTarget.style.borderColor = "#000000"
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#6B57B8"
-                e.currentTarget.style.borderColor = "#6B57B8"
+                e.currentTarget.style.backgroundColor = "#FFFFFF"
+                e.currentTarget.style.borderColor = "#000000"
               }}
             >
               <p
@@ -517,13 +517,13 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   fontSize: "16px",
                   fontWeight: 700,
                   lineHeight: "1.3",
-                  color: "#FFFFFF",
+                  color: "#000000",
                   marginBottom: "6px",
                 }}
               >
                 Invite an artist you admire
               </p>
-              <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#FFFFFF", opacity: 0.92 }}>
+              <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#3A3A3A", opacity: 0.92 }}>
                 Share Kaleidorium with a creator you think should be discovered here.
               </p>
             </button>

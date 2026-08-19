@@ -7,37 +7,37 @@ import { cn } from "@/lib/utils"
 /**
  * Kaleidorium Button – 3 canonical variants
  *
- * default   → Primary CTA (filled purple, white bold text) — form submits, main actions
- * outline   → Same filled purple CTA (alias kept for existing call sites)
+ * default   → Primary CTA (white bg, black border + text) — form submits, main actions
+ * outline   → Same white/black CTA (alias kept for existing call sites)
  * ghost     → Ghost / utility (white bg, neutral border) — nav & low-emphasis
  * secondary → Neutral soft (off-white bg, border) — kept for compatibility
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         // ── A. Primary CTA ─────────────────────────────────
-        // Filled purple — form submits, hard CTAs, "Create account", etc.
+        // White bg, black border + text — form submits, hard CTAs
         default:
-          "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
-          "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
+          "bg-white border border-[#000000] text-[#000000] font-bold text-[15px] " +
+          "hover:bg-[#F0F0F0] hover:border-[#000000] active:scale-[0.97]",
 
         // ── B. Signature branded CTA (same look as default) ─
         outline:
-          "bg-[#6B57B8] border border-[#6B57B8] text-white font-bold text-[15px] " +
-          "hover:bg-[#5A48A0] hover:border-[#5A48A0] active:scale-[0.97]",
+          "bg-white border border-[#000000] text-[#000000] font-bold text-[15px] " +
+          "hover:bg-[#F0F0F0] hover:border-[#000000] active:scale-[0.97]",
 
         // ── C. Ghost / neutral ───────────────────────────────
-        // White bg + subtle border — nav, low-emphasis, icon wrappers
+        // White bg + black border — nav, low-emphasis, icon wrappers
         ghost:
-          "bg-white border border-[#E6E4DF] text-[#1E1E1C] text-[14px] " +
-          "hover:bg-[#FAFAF8] active:scale-[0.97]",
+          "bg-white border border-[#000000] text-[#1E1E1C] text-[14px] " +
+          "hover:bg-[#F0F0F0] active:scale-[0.97]",
 
         // ── Neutral soft (compat alias for secondary) ────────
         secondary:
-          "bg-[#FAFAF8] border border-[#E6E4DF] text-[#1E1E1C] text-[14px] " +
-          "hover:bg-[#F0EDE8] active:scale-[0.97]",
+          "bg-white border border-[#000000] text-[#1E1E1C] text-[14px] " +
+          "hover:bg-[#F0F0F0] active:scale-[0.97]",
 
         // ── Destructive (compat) ─────────────────────────────
         destructive:
