@@ -549,13 +549,19 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
       <section className="hiw-hero">
         <div className="hiw-hero-inner">
           {landingRole === "artist" ? (
-            <h1 className="hiw-hero-title hiw-hero-title--statement">
-              Get your work in front of collectors who will truly appreciate it.
-            </h1>
+            <>
+              <h1 className="hiw-hero-title hiw-hero-title--statement">
+                Get your work in front of collectors who will truly appreciate it.
+              </h1>
+              <p className="hiw-hero-subtitle">No Fees. No Commissions.</p>
+            </>
           ) : landingRole === "gallery" ? (
-            <h1 className="hiw-hero-title hiw-hero-title--statement">
-              Grow your collector base effortlessly.
-            </h1>
+            <>
+              <h1 className="hiw-hero-title hiw-hero-title--statement">
+                Grow your collector base effortlessly.
+              </h1>
+              <p className="hiw-hero-subtitle">No Fees. No Commissions.</p>
+            </>
           ) : (
             <>
               <h1 className="hiw-hero-title">Art, Matched to Taste</h1>
