@@ -1,11 +1,21 @@
-/** Shared OpenAI Assistants runner for The Kurator (asst_KKXnbPckdCyhE2hUrxCaA9vM). */
-export const KURATOR_ASSISTANT_ID = "asst_KKXnbPckdCyhE2hUrxCaA9vM"
+/** Shared OpenAI runner for The Kurator (Responses API). */
+export const KURATOR_MODEL = "gpt-5-mini"
 
-const OPENAI_HEADERS = (apiKey: string) => ({
-  Authorization: `Bearer ${apiKey}`,
-  "Content-Type": "application/json",
-  "OpenAI-Beta": "assistants=v2",
-})
+const KURATOR_INSTRUCTIONS =
+  "You are The Kurator, Kaleidorium's expert art curator. You write in a refined, specific, editorial voice and avoid generic phrases. When asked for JSON, respond with valid JSON only."
+
+type KuratorInputContent =
+  | { type: "input_text"; text: string }
+  | { type: "input_image"; image_url: string; detail?: "low" | "high" | "auto" }
+
+export interface KuratorRunOptions {
+  /** Prompt text, or mixed text/image content for vision tasks. */
+  input: string | KuratorInputContent[]
+  /** Lets The Kurator search the web (e.g. to find artists beyond Kaleidorium). */
+  webSearch?: boolean
+  /** Strict JSON schema for the reply; otherwise any JSON object. */
+  jsonSchema?: { name: string; schema: Record<string, unknown> }
+}
 
 function cleanAssistantJson(text: string): string {
   let cleaned = text.trim()
@@ -17,90 +27,49 @@ function cleanAssistantJson(text: string): string {
   return cleaned
 }
 
-/**
- * Run The Kurator assistant with a text prompt and return the raw assistant reply.
- */
-export async function runKuratorAssistant(
-  prompt: string,
-  options?: { maxPollAttempts?: number; pollIntervalMs?: number }
-): Promise<string> {
+/** Run The Kurator and return its raw JSON text reply. */
+export async function runKurator({ input, webSearch, jsonSchema }: KuratorRunOptions): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error("Missing OPENAI_API_KEY")
 
-  const maxAttempts = options?.maxPollAttempts ?? 30
-  const pollIntervalMs = options?.pollIntervalMs ?? 1500
-
-  const threadRes = await fetch("https://api.openai.com/v1/threads", {
+  const res = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({}),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: KURATOR_MODEL,
+      instructions: KURATOR_INSTRUCTIONS,
+      input: typeof input === "string" ? input : [{ role: "user", content: input }],
+      // Web search needs at least "low" reasoning on GPT-5 models.
+      reasoning: { effort: webSearch ? "low" : "minimal" },
+      ...(webSearch ? { tools: [{ type: "web_search" }] } : {}),
+      text: {
+        format: jsonSchema
+          ? { type: "json_schema", name: jsonSchema.name, strict: true, schema: jsonSchema.schema }
+          : { type: "json_object" },
+      },
+    }),
   })
-  const threadData = await threadRes.json()
-  if (!threadRes.ok) {
-    throw new Error(threadData.error?.message || "Failed to create Kurator thread")
-  }
-  const threadId = threadData.id as string
 
-  const messageRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({ role: "user", content: prompt }),
-  })
-  const messageData = await messageRes.json()
-  if (!messageRes.ok) {
-    throw new Error(messageData.error?.message || "Failed to add message to Kurator thread")
+  const data = await res.json().catch(() => null)
+  if (!res.ok || !data) {
+    throw new Error(data?.error?.message || `Kurator request failed (${res.status})`)
   }
 
-  const runRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
-    method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({ assistant_id: KURATOR_ASSISTANT_ID }),
-  })
-  const runData = await runRes.json()
-  if (!runRes.ok) {
-    throw new Error(runData.error?.message || "Failed to start Kurator run")
-  }
-  const runId = runData.id as string
+  const text = (data.output || [])
+    .filter((item: { type: string }) => item.type === "message")
+    .flatMap((item: { content?: { type: string; text?: string }[] }) => item.content || [])
+    .filter((part: { type: string }) => part.type === "output_text")
+    .map((part: { text?: string }) => part.text || "")
+    .join("")
 
-  let runStatus = runData.status as string
-  let attempts = 0
-  while (runStatus !== "completed" && attempts < maxAttempts) {
-    await new Promise((res) => setTimeout(res, pollIntervalMs))
-    const statusRes = await fetch(
-      `https://api.openai.com/v1/threads/${threadId}/runs/${runId}`,
-      { headers: OPENAI_HEADERS(apiKey) }
-    )
-    const statusData = await statusRes.json()
-    if (!statusRes.ok) {
-      throw new Error(statusData.error?.message || "Failed to check Kurator run status")
-    }
-    runStatus = statusData.status
-    attempts++
-    if (runStatus === "failed" || runStatus === "cancelled" || runStatus === "expired") {
-      const err = statusData.last_error as { message?: string; code?: string } | undefined
-      const detail = err?.message ? `: ${err.message}` : ""
-      throw new Error(`Kurator run ${runStatus}${detail}`)
-    }
-  }
-  if (runStatus !== "completed") {
-    throw new Error("Kurator run timed out")
-  }
+  if (!text) throw new Error("No Kurator response found")
+  return cleanAssistantJson(text)
+}
 
-  const messagesRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    headers: OPENAI_HEADERS(apiKey),
-  })
-  const messagesData = await messagesRes.json()
-  if (!messagesRes.ok) {
-    throw new Error(messagesData.error?.message || "Failed to retrieve Kurator messages")
-  }
-
-  const aiMessage = [...messagesData.data]
-    .reverse()
-    .find((msg: { role: string }) => msg.role === "assistant")
-
-  if (!aiMessage?.content?.[0]?.text?.value) {
-    throw new Error("No Kurator assistant response found")
-  }
-
-  return cleanAssistantJson(aiMessage.content[0].text.value)
+/** Run The Kurator with a text prompt and return the raw reply. */
+export async function runKuratorAssistant(prompt: string): Promise<string> {
+  return runKurator({ input: prompt })
 }

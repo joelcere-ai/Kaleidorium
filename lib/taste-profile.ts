@@ -309,10 +309,9 @@ export function buildRecommendationInsights(
     )
   }
 
-  const recommendations = uniqueStrings([
-    ...(ai?.recommendations ?? []),
-    ...localRecommendations,
-  ]).slice(0, 6)
+  const aiItems = uniqueStrings(ai?.recommendations ?? [])
+
+  const recommendations = (aiItems.length > 0 ? aiItems : uniqueStrings(localRecommendations)).slice(0, 6)
 
   const explorationSuggestions = uniqueStrings([
     ...(ai?.explorationSuggestions ?? []),
@@ -322,7 +321,9 @@ export function buildRecommendationInsights(
   ]).slice(0, 6)
 
   const intro =
-    artworks.length === 0
+    aiItems.length > 0
+      ? "Artists and styles from across the art world, beyond Kaleidorium, that your Kurator thinks match your taste."
+      : artworks.length === 0
       ? "Once you save artworks, your Kurator will suggest artists, styles, and themes to explore next."
       : artworks.length <= 2
         ? "Based on your early collection and Discover activity, here are focused ways to deepen your taste profile."

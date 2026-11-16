@@ -19,6 +19,7 @@ import {
   getTopPreferenceSignals,
   mapDbArtworkToArtwork,
   resolveArchetype,
+  type AiTasteInsights,
   type TastePreferences,
 } from "@/lib/taste-profile"
 import type { Artwork } from "@/types/artwork"
@@ -45,13 +46,8 @@ export function TasteProfilePageContent() {
   const [preferences, setPreferences] = useState<TastePreferences>(EMPTY_PREFS)
   const [archetype, setArchetype] = useState<CollectorArchetype | null>(null)
   const [basic, setBasic] = useState(analyzeCollectionBasic([]))
-  const [ai, setAi] = useState<{
-    summary: string
-    aesthetic_profile: string
-    collecting_pattern: string
-    recommendations: string[]
-    explorationSuggestions: string[]
-  } | null>(null)
+  const [ai, setAi] = useState<AiTasteInsights | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   const loadPreferences = useCallback(async (uid: string | null) => {
     if (!uid) {
@@ -90,6 +86,7 @@ export function TasteProfilePageContent() {
         setArchetype(artworks.length > 0 ? resolveArchetype(artworks) : null)
 
         if (artworks.length > 0) {
+          setAiLoading(true)
           const aiInsights = await fetchAiTasteInsights(artworks)
           setAi(aiInsights)
         } else {
@@ -102,6 +99,7 @@ export function TasteProfilePageContent() {
           variant: "destructive",
         })
       } finally {
+        setAiLoading(false)
         if (!opts?.silent) setRefreshing(false)
       }
     },
@@ -142,7 +140,7 @@ export function TasteProfilePageContent() {
 
       if (!cancelled) {
         setCollection(resolvedArtworks)
-        await refreshInsights(resolvedArtworks, { silent: true })
+        void refreshInsights(resolvedArtworks, { silent: true })
         setLoading(false)
       }
     })()
@@ -329,17 +327,6 @@ export function TasteProfilePageContent() {
                   <p className="taste-profile-copy">{overviewCollectingPattern}</p>
                 </div>
 
-                {collectionOverview.highlights.length > 0 && (
-                  <div className="taste-profile-subsection">
-                    <h3 className="taste-profile-subsection-title">Saved works</h3>
-                    <ul className="taste-profile-list">
-                      {collectionOverview.highlights.map((highlight) => (
-                        <li key={highlight}>{highlight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 {collection.length > 0 && (
                   <div className="taste-profile-thumbs">
                     {previewArtworks.items.map((artwork) => (
@@ -406,12 +393,21 @@ export function TasteProfilePageContent() {
 
             <section className="taste-profile-panel">
               <h2 className="taste-profile-panel-title">Personalised recommendations</h2>
-              <p className="taste-profile-lead">{recommendationInsights.intro}</p>
-              <ul className="taste-profile-list taste-profile-recommendations">
-                {recommendationInsights.recommendations.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+              {aiLoading ? (
+                <p className="taste-profile-lead flex items-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" aria-hidden="true" />
+                  Your Kurator is searching the art world for artists and styles that match your taste…
+                </p>
+              ) : (
+                <>
+                  <p className="taste-profile-lead">{recommendationInsights.intro}</p>
+                  <ul className="taste-profile-list taste-profile-recommendations">
+                    {recommendationInsights.recommendations.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
               <p className="taste-profile-footnote">
                 Recommendations update as you save artworks and interact in Discover.{" "}
                 <button

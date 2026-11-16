@@ -1,4 +1,28 @@
 import { NextResponse } from "next/server";
+import { runKurator } from "@/lib/kurator-assistant";
+
+export const maxDuration = 60;
+
+const RESPONSE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["summary", "aesthetic_profile", "collecting_pattern", "recommendations", "explorationSuggestions"],
+  properties: {
+    summary: { type: "string" },
+    aesthetic_profile: { type: "string" },
+    collecting_pattern: { type: "string" },
+    recommendations: { type: "array", items: { type: "string" } },
+    explorationSuggestions: { type: "array", items: { type: "string" } },
+  },
+};
+
+/** Strips inline markdown citations like "([site](url))" that the web search tool can add. */
+function cleanRecommendationText(text: string): string {
+  return text
+    .replace(/\s*\(\[[^\]]*\]\([^)]*\)\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +36,6 @@ export async function POST(request: Request) {
     }
 
     const apiKey = process.env.OPENAI_API_KEY;
-    const assistantId = "asst_KKXnbPckdCyhE2hUrxCaA9vM"; // The Kurator
     
     if (!apiKey) {
       return NextResponse.json({ error: "Missing OpenAI API key" }, { status: 500 });
@@ -33,173 +56,48 @@ export async function POST(request: Request) {
       price: artwork.price
     }));
 
-    // 1. Create a thread
-    const threadRes = await fetch('https://api.openai.com/v1/threads', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2',
-      },
-      body: JSON.stringify({}),
-    });
-    const threadData = await threadRes.json();
-    if (!threadRes.ok) {
-      console.error("[PROFILE INSIGHTS] Thread creation failed:", threadData);
-      return NextResponse.json({ error: "Failed to create analysis thread" }, { status: 500 });
-    }
-    const threadId = threadData.id;
-    console.log("[PROFILE INSIGHTS] Thread created:", threadId);
-
-    // 2. Add a message to the thread
-    const kuratorPrompt = `As an expert art curator, analyze this collector's art collection and provide sophisticated insights about their taste and preferences. 
+    const kuratorPrompt = `You are The Kurator, an expert art curator. Analyze this collector's art collection and provide sophisticated insights about their taste and preferences.
 
 Collection Data:
 ${JSON.stringify(collectionData, null, 2)}
 
-Please provide a response as a JSON object with these keys:
+Respond with a JSON object with these keys:
 - "summary": A rich, eloquent 3-4 sentence summary of their collection and artistic taste (avoid generic phrases like "eclectic taste" - be specific and sophisticated). Address the user directly using "You" and "Your"
 - "aesthetic_profile": A 2-3 sentence description of their aesthetic sensibilities and what draws them to art. Use "You" to make it personal
 - "collecting_pattern": 1-2 sentences about patterns in their collecting behavior. Address them directly as "You"
-- "recommendations": An array of 3-4 specific, personalized recommendations for exploring new artists, styles, or themes based on their current collection
+- "recommendations": An array of 4 recommendations of artists, artworks, or art movements/styles to discover next. These are NOT limited to artists on Kaleidorium: use web search to find real artists (historical, established, or emerging contemporary) and artworks from anywhere in the art world. Do not recommend artists already in the collection, and do not mention Kaleidorium, Discover, or the app. Each item is one sentence that names the artist or movement and explains why it fits this collector's taste (e.g. "Egon Schiele – raw, psychologically intense Expressionist portraits that extend your interest in ..."). No links, URLs, markdown, or citations.
 - "explorationSuggestions": An array of 4-5 SHORT thematic phrases (2-4 words each, like "Minimalist cityscapes", "Quiet surrealism", "Dreamlike architecture", "Soft pastel palettes") representing adjacent territories the collector should explore. These appear as visual chip/tags in the UI, so keep them concise and evocative.
 
 IMPORTANT: Always address the collector directly using "You", "Your", and "You're" rather than "The collector", "This collection", or "They". Make it personal and conversational while maintaining sophistication.
 
-Focus on being insightful, sophisticated, and specific rather than generic. Consider the relationships between artworks, the progression of their taste, and what their choices reveal about their artistic sensibilities.
+Focus on being insightful, sophisticated, and specific rather than generic. Consider the relationships between artworks, the progression of their taste, and what their choices reveal about their artistic sensibilities.`;
 
-Example format:
-{
-  "summary": "Your collection reveals a sophisticated appreciation for contemporary digital abstraction, with a particular affinity for works that explore the intersection of technology and organic forms. You've curated pieces that demonstrate both Pak's minimalist explorations and more vibrant landscape works, suggesting you value conceptual depth alongside visual impact.",
-  "aesthetic_profile": "You demonstrate a refined eye for pieces that balance intellectual rigor with emotional resonance, gravitating toward works that challenge conventional boundaries between digital and traditional artistic expression.",
-  "collecting_pattern": "Your selections show a thoughtful progression from established digital artists toward emerging voices in the space, indicating you're building a cohesive narrative around technological art.",
-  "recommendations": [
-    "Explore generative art pioneers like Casey Reas and Joshua Davis",
-    "Consider works by Memo Akten that blend AI and environmental themes",
-    "Investigate the intersection of data visualization and fine art",
-    "Look into bio-art and digital ecology movements"
-  ],
-  "explorationSuggestions": [
-    "Generative abstraction",
-    "Digital landscapes",
-    "Monochrome minimalism",
-    "Data-driven art"
-  ]
-}`;
-
-    const messageRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2',
-      },
-      body: JSON.stringify({
-        role: 'user',
-        content: kuratorPrompt
-      }),
-    });
-    const messageData = await messageRes.json();
-    if (!messageRes.ok) {
-      console.error("[PROFILE INSIGHTS] Message creation failed:", messageData);
-      return NextResponse.json({ error: "Failed to add message to thread" }, { status: 500 });
-    }
-    console.log("[PROFILE INSIGHTS] Message added to thread");
-
-    // 3. Run the Kurator assistant
-    const runRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2',
-      },
-      body: JSON.stringify({
-        assistant_id: assistantId,
-      }),
-    });
-    const runData = await runRes.json();
-    if (!runRes.ok) {
-      console.error("[PROFILE INSIGHTS] Run creation failed:", runData);
-      return NextResponse.json({ error: "Failed to start analysis" }, { status: 500 });
-    }
-    const runId = runData.id;
-    console.log("[PROFILE INSIGHTS] Run started:", runId);
-
-    // 4. Poll for completion
-    let runStatus = runData.status;
-    let attempts = 0;
-    while (runStatus !== 'completed' && attempts < 20) {
-      await new Promise(res => setTimeout(res, 1500));
-      const statusRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'OpenAI-Beta': 'assistants=v2',
-        },
+    let text: string;
+    try {
+      text = await runKurator({
+        input: kuratorPrompt,
+        webSearch: true,
+        jsonSchema: { name: "taste_profile_insights", schema: RESPONSE_SCHEMA },
       });
-      const statusData = await statusRes.json();
-      if (!statusRes.ok) {
-        console.error("[PROFILE INSIGHTS] Status check failed:", statusData);
-        return NextResponse.json({ error: "Failed to check analysis status" }, { status: 500 });
-      }
-      runStatus = statusData.status;
-      attempts++;
-      console.log("[PROFILE INSIGHTS] Run status:", runStatus, "attempt", attempts);
-      
-      if (runStatus === 'failed' || runStatus === 'cancelled' || runStatus === 'expired') {
-        console.error("[PROFILE INSIGHTS] Run failed with status:", runStatus);
-        return NextResponse.json({ error: `Analysis failed: ${runStatus}` }, { status: 500 });
-      }
-    }
-    
-    if (runStatus !== 'completed') {
-      console.error("[PROFILE INSIGHTS] Run timed out after", attempts, "attempts");
-      return NextResponse.json({ error: 'Analysis timed out' }, { status: 504 });
-    }
-    console.log("[PROFILE INSIGHTS] Run completed successfully");
-
-    // 5. Retrieve the response
-    const messagesRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2',
-      },
-    });
-    const messagesData = await messagesRes.json();
-    if (!messagesRes.ok) {
-      console.error("[PROFILE INSIGHTS] Message retrieval failed:", messagesData);
-      return NextResponse.json({ error: "Failed to retrieve analysis" }, { status: 500 });
-    }
-
-    // Find the latest assistant message
-    const aiMessage = messagesData.data.reverse().find((msg: any) => msg.role === 'assistant');
-    
-    if (!aiMessage) {
-      console.error("[PROFILE INSIGHTS] No assistant message found");
-      return NextResponse.json({ error: "No analysis response found" }, { status: 500 });
+    } catch (aiError) {
+      console.error("[PROFILE INSIGHTS] OpenAI request failed:", aiError);
+      return NextResponse.json({ error: "Failed to generate analysis" }, { status: 500 });
     }
 
     try {
-      let text = aiMessage.content[0].text.value || '';
-      // Clean up code block markers
-      text = text.trim();
-      if (text.startsWith('```json')) {
-        text = text.replace(/^```json/, '').replace(/```$/, '').trim();
-      } else if (text.startsWith('```')) {
-        text = text.replace(/^```/, '').replace(/```$/, '').trim();
-      }
-      
       console.log('[PROFILE INSIGHTS RAW RESPONSE]', text);
       const parsed = JSON.parse(text);
+
+      const recommendations: string[] = Array.isArray(parsed.recommendations)
+        ? parsed.recommendations.map((item: any) => cleanRecommendationText(String(item || ""))).filter(Boolean)
+        : [];
       
       // Validate response structure
       const response = {
         summary: parsed.summary || "Your collection shows a developing artistic sensibility.",
         aesthetic_profile: parsed.aesthetic_profile || "You appreciate quality and craftsmanship in art.",
         collecting_pattern: parsed.collecting_pattern || "Your collecting journey is just beginning.",
-        recommendations: parsed.recommendations || ["Explore more artworks in the Discover section"],
+        recommendations,
         explorationSuggestions: Array.isArray(parsed.explorationSuggestions) ? parsed.explorationSuggestions : []
       };
       
@@ -208,7 +106,7 @@ Example format:
       
     } catch (parseError) {
       console.error('[PROFILE INSIGHTS PARSE ERROR]', parseError);
-      console.error('[PROFILE INSIGHTS RAW TEXT]', aiMessage.content[0].text.value);
+      console.error('[PROFILE INSIGHTS RAW TEXT]', text);
       
       // Fallback response
       return NextResponse.json({

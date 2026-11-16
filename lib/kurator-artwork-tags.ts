@@ -1,4 +1,4 @@
-import { KURATOR_ASSISTANT_ID } from "@/lib/kurator-assistant"
+import { runKurator } from "@/lib/kurator-assistant"
 
 export const ALLOWED_COLOURS = [
   "White", "Tan", "Yellow", "Orange", "Red", "Pink", "Purple", "Blue", "Green", "Brown", "Grey", "Black",
@@ -34,12 +34,6 @@ export interface KuratorArtworkAnalysis {
   colour: string
   keywords: string[]
 }
-
-const OPENAI_HEADERS = (apiKey: string) => ({
-  Authorization: `Bearer ${apiKey}`,
-  "Content-Type": "application/json",
-  "OpenAI-Beta": "assistants=v2",
-})
 
 function buildKuratorPrompt() {
   return `You are an expert art curator. Analyze the provided artwork image. Return your answer as a JSON object with the following keys: description, genre, style, subject, colour, keywords (array of strings).
@@ -95,97 +89,17 @@ export function buildArtworkTags(analysis: KuratorArtworkAnalysis): string[] {
 
 /** Run The Kurator vision analysis on an artwork image URL. */
 export async function analyzeArtworkImage(imageUrl: string): Promise<KuratorArtworkAnalysis> {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error("Missing OPENAI_API_KEY")
   if (!imageUrl) throw new Error("Image URL is required")
 
-  const threadRes = await fetch("https://api.openai.com/v1/threads", {
-    method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({}),
+  const text = await runKurator({
+    input: [
+      { type: "input_image", image_url: imageUrl, detail: "high" },
+      { type: "input_text", text: buildKuratorPrompt() },
+    ],
   })
-  const threadData = await threadRes.json()
-  if (!threadRes.ok) {
-    throw new Error(threadData.error?.message || JSON.stringify(threadData))
-  }
-  const threadId = threadData.id as string
-
-  const messageRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({
-      role: "user",
-      content: [
-        {
-          type: "image_url",
-          image_url: { url: imageUrl, detail: "high" },
-        },
-        { type: "text", text: buildKuratorPrompt() },
-      ],
-    }),
-  })
-  const messageData = await messageRes.json()
-  if (!messageRes.ok) {
-    throw new Error(messageData.error?.message || JSON.stringify(messageData))
-  }
-
-  const runRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
-    method: "POST",
-    headers: OPENAI_HEADERS(apiKey),
-    body: JSON.stringify({ assistant_id: KURATOR_ASSISTANT_ID }),
-  })
-  const runData = await runRes.json()
-  if (!runRes.ok) {
-    throw new Error(runData.error?.message || JSON.stringify(runData))
-  }
-  const runId = runData.id as string
-
-  let runStatus = runData.status as string
-  let attempts = 0
-  while (runStatus !== "completed" && attempts < 20) {
-    await new Promise((res) => setTimeout(res, 1500))
-    const statusRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
-      headers: OPENAI_HEADERS(apiKey),
-    })
-    const statusData = await statusRes.json()
-    if (!statusRes.ok) {
-      throw new Error(statusData.error?.message || JSON.stringify(statusData))
-    }
-    runStatus = statusData.status
-    attempts++
-    if (runStatus === "failed" || runStatus === "cancelled" || runStatus === "expired") {
-      const err = statusData.last_error as { message?: string; code?: string } | undefined
-      const detail = err?.message ? `: ${err.message}` : ""
-      throw new Error(`Kurator run status: ${runStatus}${detail}`)
-    }
-  }
-  if (runStatus !== "completed") {
-    throw new Error("Timed out waiting for Kurator response")
-  }
-
-  const messagesRes = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-    headers: OPENAI_HEADERS(apiKey),
-  })
-  const messagesData = await messagesRes.json()
-  if (!messagesRes.ok) {
-    throw new Error(messagesData.error?.message || JSON.stringify(messagesData))
-  }
-
-  const aiMessage = [...messagesData.data].reverse().find((msg: { role: string }) => msg.role === "assistant")
-  if (!aiMessage) {
-    return normalizeAnalysis({})
-  }
 
   try {
-    let text = aiMessage.content[0].text.value || ""
-    text = text.trim()
-    if (text.startsWith("```json")) {
-      text = text.replace(/^```json/, "").replace(/```$/, "").trim()
-    } else if (text.startsWith("```")) {
-      text = text.replace(/^```/, "").replace(/```$/, "").trim()
-    }
-    const parsed = JSON.parse(text)
-    return normalizeAnalysis(parsed)
+    return normalizeAnalysis(JSON.parse(text))
   } catch {
     return normalizeAnalysis({})
   }

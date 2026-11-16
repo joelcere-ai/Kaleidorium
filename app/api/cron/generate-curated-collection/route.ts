@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic"
 export const maxDuration = 120
 
 /**
- * Monthly Kurator job — uses the existing OpenAI Kurator assistant (same as profile-insights / kurator-tags).
+ * Monthly Kurator job — uses the shared OpenAI Kurator runner (same as profile-insights / kurator-tags).
  * Invoke via Vercel Cron, Supabase edge proxy, or manual:
  * POST /api/cron/generate-curated-collection
  * Header: Authorization: Bearer <CRON_SECRET>

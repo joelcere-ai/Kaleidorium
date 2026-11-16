@@ -86,7 +86,7 @@ Total works: ${catalogue.length}
 
 ${compactLines.join("\n")}`
 
-  const raw = await runKuratorAssistant(prompt, { maxPollAttempts: 40 })
+  const raw = await runKuratorAssistant(prompt)
   return parseKuratorJson(raw)
 }
 
