@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, Fragment } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronRight, ChevronUp, Lightbulb, Mail, Sparkles, Upload } from "lucide-react"
 import { InviteArtistShare } from "@/components/invite-artist-share"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -17,7 +16,7 @@ const HOW_IT_WORKS: Record<Role, { title: string; body: string }[]> = {
   collector: [
     {
       title: "Discover Art That Fits Your Taste",
-      body: "Swipe through artworks and tell your Kurator what you love.",
+      body: "Swipe or like artworks and tell your Kurator what you love.",
     },
     {
       title: "Your Kurator Learns",
@@ -94,26 +93,166 @@ const ROLE_CARDS: {
   },
 ]
 
-// ─── Artwork grid (reused hero visual) ────────────────────────────────────────
+const GOOD_TO_KNOW: Record<Role, string> = {
+  collector:
+    "Your taste stays yours. You choose what to save, how you explore, and when you connect with artists.",
+  artist:
+    "You stay in control. You decide what to share, where collectors go and how you connect.",
+  gallery:
+    "You stay in control. You decide what to showcase, where collectors go and how inquiries reach you.",
+}
 
-function ArtworkGrid() {
-  const images = [
-    { src: "/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg", alt: "The Visitor" },
-    { src: "/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg", alt: "Rhapsody Blue" },
-    { src: "/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif", alt: "Isometric Pixel Art" },
-    { src: "/Onboarding-images/For Collectors/Steampunk3_1755249065054.png", alt: "Steampunk" },
-    { src: "/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg", alt: "To Theo" },
-    { src: "/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif", alt: "Last Selfie" },
-  ]
+const HERO_IMAGES = [
+  { src: "/Onboarding-images/For Collectors/Hennie_3__The_Visitor___120x100cm__Oil__1754903123908.jpg", alt: "The Visitor" },
+  { src: "/Onboarding-images/For Collectors/Josignacio_4_Josignacio_s_Rhapsody_Blue_1754903114939.jpg", alt: "Rhapsody Blue" },
+  { src: "/Onboarding-images/For Collectors/Peterson_5_Isometric_Pixel_Art_by_Peterso_1754903119020.gif", alt: "Isometric Pixel Art" },
+  { src: "/Onboarding-images/For Collectors/Steampunk3_1755249065054.png", alt: "Steampunk" },
+  { src: "/Onboarding-images/For Collectors/Theo_3_677_To_Theo_van_Gogh__Arles__S_1754903144275.jpg", alt: "To Theo" },
+  { src: "/Onboarding-images/For Collectors/xcopy_2_XCOPY_LAST_SELFIE_4K.gif", alt: "Last Selfie" },
+]
+
+// ─── Hero artwork strip ───────────────────────────────────────────────────────
+
+function ArtworkStrip() {
+  const [activeIndex, setActiveIndex] = useState(0)
+
   return (
-    <div className="flex flex-col items-center">
-      <div className="grid grid-cols-6 gap-1.5 max-w-lg mx-auto">
-        {images.map((img) => (
-          <div key={img.src} className="w-16 h-16 bg-white rounded-md overflow-hidden shadow-sm border border-gray-100">
-            <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+    <>
+      <div className="hiw-artwork-strip-desktop" aria-hidden="true">
+        {HERO_IMAGES.map((img) => (
+          <div key={img.src} className="hiw-artwork-thumb">
+            <img src={img.src} alt="" />
           </div>
         ))}
       </div>
+      <div className="hiw-artwork-strip-mobile">
+        <div className="hiw-artwork-thumb">
+          <img src={HERO_IMAGES[activeIndex].src} alt={HERO_IMAGES[activeIndex].alt} />
+        </div>
+        <div className="hiw-artwork-dots" role="tablist" aria-label="Artwork carousel">
+          {HERO_IMAGES.map((img, i) => (
+            <button
+              key={img.src}
+              type="button"
+              role="tab"
+              aria-selected={i === activeIndex}
+              aria-label={`Show artwork ${i + 1}`}
+              className={`hiw-artwork-dot${i === activeIndex ? " is-active" : ""}`}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ─── Step illustrations ───────────────────────────────────────────────────────
+
+function MatchArtworkVisual({ compact }: { compact?: boolean }) {
+  return (
+    <div className={compact ? "hiw-visual--compact" : undefined}>
+      <div className="hiw-visual-artwork" aria-hidden="true">
+        <div className="hiw-visual-action hiw-visual-action--dislike">
+          <svg className="hiw-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M7 7l10 10M17 7L7 17" />
+          </svg>
+        </div>
+        <div className="hiw-visual-action hiw-visual-action--like">
+          <svg className="hiw-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 20.5s-6.5-4.2-6.5-9.1C5.5 8.1 7.6 6 10.2 6c1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.7 2.1 4.7 5.4 0 4.9-6.5 9.1-6.5 9.1z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TrackChartVisual() {
+  return (
+    <div className="hiw-visual-chart" aria-hidden="true">
+      <svg viewBox="0 0 80 52" fill="none">
+        <path d="M6 40 L24 28 L40 34 L58 16 L74 22" stroke="#C4B5FD" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="24" cy="28" r="3.5" fill="#8B5CF6" />
+        <circle cx="40" cy="34" r="3.5" fill="#8B5CF6" />
+        <circle cx="58" cy="16" r="3.5" fill="#8B5CF6" />
+        <circle cx="74" cy="22" r="4" fill="#7C3AED" />
+      </svg>
+    </div>
+  )
+}
+
+function ConnectVisual() {
+  return (
+    <div className="hiw-visual-connect" aria-hidden="true">
+      <div className="hiw-visual-avatar hiw-visual-avatar--a" />
+      <div className="hiw-visual-envelope">
+        <Mail className="h-3 w-3" />
+      </div>
+      <div className="hiw-visual-avatar hiw-visual-avatar--b" />
+    </div>
+  )
+}
+
+function StepIllustration({ role, index, compact }: { role: Role; index: number; compact?: boolean }) {
+  const wrap = (node: React.ReactNode) => (
+    compact ? <div className="hiw-visual--compact">{node}</div> : node
+  )
+
+  if (role === "collector") {
+    if (index === 0) return wrap(<div className="hiw-visual-swipe" aria-hidden="true" />)
+    if (index === 1) {
+      return wrap(
+        <div className="hiw-visual-sparkle" aria-hidden="true">
+          <Sparkles className="h-4 w-4" />
+        </div>
+      )
+    }
+    if (index === 2) {
+      return wrap(
+        <div className="hiw-visual-collection" aria-hidden="true">
+          <span /><span /><span /><span />
+        </div>
+      )
+    }
+    return wrap(
+      <div className="hiw-visual-link" aria-hidden="true">
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <path d="M15 3h6v6" />
+          <path d="M10 14 21 3" />
+        </svg>
+      </div>
+    )
+  }
+
+  if (role === "artist") {
+    if (index === 0) {
+      return wrap(
+        <div className="hiw-visual-frame" aria-hidden="true">
+          <div className="hiw-visual-upload-btn">
+            <Upload className="h-2.5 w-2.5" />
+          </div>
+        </div>
+      )
+    }
+    if (index === 1) return <MatchArtworkVisual compact={compact} />
+    if (index === 2) return <TrackChartVisual />
+    return <ConnectVisual />
+  }
+
+  if (index === 0) {
+    return wrap(
+      <div className="hiw-visual-gallery-frames" aria-hidden="true">
+        <span /><span /><span />
+      </div>
+    )
+  }
+  if (index === 1) return <MatchArtworkVisual compact={compact} />
+  if (index === 2) return <TrackChartVisual />
+  return wrap(
+    <div className="hiw-visual-grow" aria-hidden="true">
+      <span /><span /><span />
     </div>
   )
 }
@@ -169,26 +308,26 @@ function ForArtistsForm() {
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Artist Name</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="Your artist name" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Email</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="your@email.com" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Portfolio / Website / Instagram Link</label>
         <input type="text" name="portfolioLink" value={formData.portfolioLink}
           onChange={handleChange} onBlur={handlePortfolioBlur}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="Link to your portfolio, website or Instagram" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Artwork Details</label>
         <textarea name="artworkDetails" value={formData.artworkDetails} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm resize-y min-h-[144px]"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm resize-y min-h-[144px]"
           placeholder={"Please list each artwork you'd like registered, with: title, dimensions, price, and year created. E.g. — 'Sunset Over Nairobi, 60×80cm, $1200, 2023'"}
           rows={6} required />
       </div>
@@ -255,31 +394,31 @@ function ForGalleriesForm() {
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Gallery Name</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="Your gallery name" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Gallery Website</label>
         <input type="url" name="website" value={formData.website} onChange={handleChange} onBlur={handleWebsiteBlur}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="www.yourgallery.com" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Contact Name</label>
         <input type="text" name="contactName" value={formData.contactName} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="Your name" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Email</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm"
           placeholder="your@email.com" required />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-800 mb-1">Tell us which artists and artwork you would like to list</label>
         <textarea name="message" value={formData.message} onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm resize-y min-h-[144px]"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] text-sm resize-y min-h-[144px]"
           placeholder={"Please list each artist with corresponding artwork you'd like registered, with: title, dimensions, price, and year created. E.g. — 'John Corletto, Sunset Over Nairobi, 60×80cm, $1200, 2023'. Ensure that the artist's work is easily searchable on the link you have provided."}
           rows={6} required />
       </div>
@@ -356,32 +495,31 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   const router = useRouter()
   const formRef = useRef<HTMLDivElement>(null)
   const howItWorksRef = useRef<HTMLDivElement>(null)
-  const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? null)
+  const [selectedRole, setSelectedRole] = useState<Role | null>(initialRole ?? "collector")
   const [showInvitePanel, setShowInvitePanel] = useState(false)
   const [artistSignupMode, setArtistSignupMode] = useState<"assisted" | null>(null)
   const [gallerySignupMode, setGallerySignupMode] = useState<"assisted" | null>(null)
+  const [expandedStep, setExpandedStep] = useState<number | null>(0)
   const inviteRef = useRef<HTMLDivElement>(null)
   const artistFormRef = useRef<HTMLDivElement>(null)
   const galleryFormRef = useRef<HTMLDivElement>(null)
 
-  // Sync role from URL query param on mount
+  // How it works opens on the collector path. Artist and gallery links override it.
   const searchParams = useSearchParams()
+  const roleParam = searchParams.get("role")
+  const landingRole: Role | null =
+    roleParam === "artist" || roleParam === "gallery" || roleParam === "collector" ? roleParam : null
+
   useEffect(() => {
-    const roleParam = searchParams.get("role") as Role | null
-    if (roleParam && ["collector", "artist", "gallery"].includes(roleParam)) {
-      setSelectedRole(roleParam)
-      // Scroll to How It Works when arriving via a direct role URL
-      setTimeout(() => {
-        howItWorksRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-      }, 150)
-    }
-  }, [searchParams])
+    setSelectedRole(landingRole ?? "collector")
+  }, [landingRole])
 
   const handleRoleSelect = (role: Role) => {
     setShowInvitePanel(false)
     setArtistSignupMode(null)
     setGallerySignupMode(null)
     setSelectedRole(role)
+    setExpandedStep(0)
     onRoleChange?.(role)
     const url = new URL(window.location.href)
     url.searchParams.set("role", role)
@@ -405,32 +543,44 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#FAFAF8]">
+    <div className="hiw-page flex-1 overflow-y-auto">
 
-      {/* ── 1. Hero ──────────────────────────────────────────────── */}
-      {/* top: 48px desktop / 32px mobile — hero→next: 48px */}
-      <div className="bg-[#FAFAF8]" style={{ paddingTop: 'clamp(32px, 5vw, 48px)', paddingBottom: '48px' }}>
-        <div className="container mx-auto px-4 max-w-2xl text-center">
-          {/* Title — inline style guarantees 26px regardless of cascade */}
-          <p style={{ fontSize: '26px', fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.02em', color: '#1E1E1C', textAlign: 'center', marginBottom: '16px' }}>
-            Art, Matched to Taste
-          </p>
-          {/* Intro — 16px */}
-          <p style={{ fontSize: '16px', fontWeight: 400, lineHeight: 1.6, color: '#5F5F5A', maxWidth: '520px', margin: '0 auto 24px', textAlign: 'center' }}>
-            Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience.
-          </p>
-          {/* Artwork grid */}
-          <ArtworkGrid />
+      {/* Hero */}
+      <section className="hiw-hero">
+        <div className="hiw-hero-inner">
+          {landingRole === "artist" ? (
+            <>
+              <h1 className="hiw-hero-title hiw-hero-title--statement">
+                Get your work in front of collectors who will truly appreciate it.
+              </h1>
+              <p className="hiw-hero-subtitle">No Fees. No Commissions.</p>
+            </>
+          ) : landingRole === "gallery" ? (
+            <>
+              <h1 className="hiw-hero-title hiw-hero-title--statement">
+                Grow your collector base effortlessly.
+              </h1>
+              <p className="hiw-hero-subtitle">No Fees. No Commissions.</p>
+            </>
+          ) : (
+            <>
+              <h1 className="hiw-hero-title">Art, Matched to Taste</h1>
+              <p className="hiw-hero-subtitle">
+                Whether you collect, create or represent art, Kaleidorium helps the right works find the right audience.
+              </p>
+            </>
+          )}
+          <ArtworkStrip />
         </div>
-      </div>
+      </section>
 
-      {/* ── 2. Role selector ─────────────────────────────────────── */}
-      <div className="bg-white border-b border-[#E6E4DF]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-        <div className="container mx-auto px-4 max-w-4xl">
-          <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
-            Explore how it works
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Role selector — only on How it works. Artist and gallery pages are already that path. */}
+      {landingRole !== "artist" && landingRole !== "gallery" && (
+      <section className="hiw-explore">
+        <div className="hiw-explore-inner">
+          <h2 className="hiw-section-title">Explore how it works</h2>
+
+          <div className="hiw-role-grid">
             {ROLE_CARDS.map(({ role, label, tagline }) => {
               const active = selectedRole === role && !showInvitePanel
               return (
@@ -438,129 +588,126 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   key={role}
                   type="button"
                   onClick={() => handleRoleSelect(role)}
-                  className="role-cta-btn transition-colors duration-150"
-                  data-active={active ? "true" : "false"}
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #000000",
-                    borderRadius: "12px",
-                    padding: "16px 20px",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    minHeight: "108px",
-                    color: "#000000",
-                    boxShadow: active ? "inset 0 0 0 2px #000000" : "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#F0F0F0"
-                    e.currentTarget.style.borderColor = "#000000"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#FFFFFF"
-                    e.currentTarget.style.borderColor = "#000000"
-                  }}
+                  className={`hiw-role-card${active ? " is-active" : ""}`}
                 >
-                  <p
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 700,
-                      lineHeight: "1.3",
-                      color: "#000000",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    {label}
-                  </p>
-                  <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#3A3A3A", opacity: 0.92 }}>
-                    {tagline}
-                  </p>
+                  <span className="hiw-role-card-label">{label}</span>
+                  <span className="hiw-role-card-tagline">{tagline}</span>
                 </button>
               )
             })}
             <button
               type="button"
               onClick={handleInviteSelect}
-              className="role-cta-btn transition-colors duration-150"
-              data-active={showInvitePanel ? "true" : "false"}
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #000000",
-                borderRadius: "12px",
-                padding: "16px 20px",
-                textAlign: "center",
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                minHeight: "108px",
-                color: "#000000",
-                boxShadow: showInvitePanel ? "inset 0 0 0 2px #000000" : "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#F0F0F0"
-                e.currentTarget.style.borderColor = "#000000"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#FFFFFF"
-                e.currentTarget.style.borderColor = "#000000"
-              }}
+              className={`hiw-role-card${showInvitePanel ? " is-active" : ""}`}
             >
-              <p
-                style={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                  lineHeight: "1.3",
-                  color: "#000000",
-                  marginBottom: "6px",
-                }}
-              >
-                Invite an artist you admire
-              </p>
-              <p style={{ fontSize: "13px", fontWeight: 400, lineHeight: "1.45", color: "#3A3A3A", opacity: 0.92 }}>
+              <span className="hiw-role-card-label">Invite an artist you admire</span>
+              <span className="hiw-role-card-tagline">
                 Share Kaleidorium with a creator you think should be discovered here.
-              </p>
+              </span>
+            </button>
+          </div>
+
+          <div className="hiw-role-list">
+            {ROLE_CARDS.map(({ role, label, tagline }) => {
+              const active = selectedRole === role && !showInvitePanel
+              return (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => handleRoleSelect(role)}
+                  className={`hiw-role-list-item${active ? " is-active" : ""}`}
+                >
+                  <span className="hiw-role-list-text">
+                    <span className="hiw-role-list-label">{label}</span>
+                    <span className="hiw-role-list-tagline">{tagline}</span>
+                  </span>
+                  <ChevronRight className="hiw-role-list-chevron h-4 w-4" />
+                </button>
+              )
+            })}
+            <button
+              type="button"
+              onClick={handleInviteSelect}
+              className={`hiw-role-list-item${showInvitePanel ? " is-active" : ""}`}
+            >
+              <span className="hiw-role-list-text">
+                <span className="hiw-role-list-label">Invite an artist you admire</span>
+                <span className="hiw-role-list-tagline">
+                  Share Kaleidorium with a creator you think should be discovered here.
+                </span>
+              </span>
+              <ChevronRight className="hiw-role-list-chevron h-4 w-4" />
             </button>
           </div>
         </div>
-      </div>
-
-      {/* ── 3. Dynamic How It Works ──────────────────────────────── */}
-      {selectedRole && !showInvitePanel && (
-        <div ref={howItWorksRef} className="bg-[#FAFAF8]" style={{ paddingTop: '32px', paddingBottom: '32px' }}>
-          <div className="container mx-auto px-4 max-w-5xl">
-            <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
-              How It Works
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {HOW_IT_WORKS[selectedRole].map((step, i) => (
-                <div key={i} style={{ background: '#FFFFFF', borderRadius: '16px', border: '1px solid #E6E4DF', padding: '20px', boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
-                  <div className="w-7 h-7 rounded-full bg-[#1E1E1C] text-white text-xs font-bold flex items-center justify-center mb-3">
-                    {i + 1}
-                  </div>
-                  <h3 className="how-it-works-title mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="how-it-works-body">
-                    {step.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      </section>
       )}
 
-      {/* ── 4. Role-specific form area + invite ──────────────────── */}
+      {/* How It Works */}
+      {selectedRole && !showInvitePanel && (
+        <section ref={howItWorksRef} className="hiw-steps-section">
+          <div className="hiw-steps-inner">
+            <h2 className="hiw-section-title">How It Works</h2>
+
+            <div className="hiw-steps-flow">
+              {HOW_IT_WORKS[selectedRole].map((step, i) => (
+                <Fragment key={step.title}>
+                  <div className="hiw-step-card">
+                    <div className="hiw-step-number">{i + 1}</div>
+                    <div className="hiw-step-visual-wrap">
+                      <StepIllustration role={selectedRole} index={i} />
+                    </div>
+                    <h3 className="hiw-step-title">{step.title}</h3>
+                    <p className="hiw-step-body">{step.body}</p>
+                  </div>
+                  {i < HOW_IT_WORKS[selectedRole].length - 1 && (
+                    <div className="hiw-step-connector" aria-hidden="true" />
+                  )}
+                </Fragment>
+              ))}
+            </div>
+
+            <div className="hiw-steps-accordion">
+              {HOW_IT_WORKS[selectedRole].map((step, i) => {
+                const isOpen = expandedStep === i
+                return (
+                  <div key={step.title} className="hiw-step-accordion-item">
+                    <button
+                      type="button"
+                      className="hiw-step-accordion-trigger"
+                      onClick={() => setExpandedStep(isOpen ? null : i)}
+                      aria-expanded={isOpen}
+                    >
+                      <span className="hiw-step-number">{i + 1}</span>
+                      <div className="hiw-step-visual-wrap">
+                        <StepIllustration role={selectedRole} index={i} compact />
+                      </div>
+                      <span className="hiw-step-title">{step.title}</span>
+                      <ChevronDown className={`hiw-step-accordion-chevron h-4 w-4${isOpen ? " is-open" : ""}`} />
+                    </button>
+                    {isOpen && <p className="hiw-step-accordion-body">{step.body}</p>}
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="hiw-good-to-know">
+              <div className="hiw-good-to-know-icon">
+                <Lightbulb className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="hiw-good-to-know-title">Good to know</p>
+                <p className="hiw-good-to-know-text">{GOOD_TO_KNOW[selectedRole]}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Role-specific forms */}
       {(selectedRole || showInvitePanel) && (
-        <div ref={formRef} className="bg-white" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
-          <div className="container mx-auto px-4 max-w-xl">
+        <section ref={formRef} className="hiw-form-section">
+          <div className="hiw-form-inner">
             {showInvitePanel && (
               <div ref={inviteRef}>
                 <InviteArtistShare />
@@ -569,25 +716,18 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
 
             {selectedRole === "collector" && !showInvitePanel && (
               <>
-                <div className="text-center mb-6">
-                  <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                    Join as a Collector
-                  </h2>
-                  <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                    Start discovering art through a more personal, taste-led experience.
-                  </p>
-                </div>
-                <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 text-center">
-                  <p className="body-muted mb-5" style={{ fontSize: '15px' }}>
+                <h2 className="hiw-form-heading">Join as a Collector</h2>
+                <p className="hiw-form-subheading">
+                  Start discovering art through a more personal, taste-led experience.
+                </p>
+                <div className="hiw-form-card text-center">
+                  <p className="text-[15px] leading-relaxed text-[#5F5F5A] mb-5">
                     Collectors register directly. Create your free account to start discovering artworks matched to your taste.
                   </p>
-                  <Button
-                    variant="outline"
-                    onClick={() => router.push("/register")}
-                  >
+                  <Button variant="outline" onClick={() => router.push("/register")}>
                     Create your free account
                   </Button>
-                  <p style={{ fontSize: '13px', color: '#8A8A84', marginTop: '12px' }}>Free to join. No credit card required.</p>
+                  <p className="text-[13px] text-[#8A8A84] mt-3">Free to join. No credit card required.</p>
                 </div>
                 <div className="mt-10">
                   <InviteArtistShare />
@@ -599,37 +739,19 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
               <>
                 {artistSignupMode !== "assisted" ? (
                   <>
-                    <div className="text-center mb-6">
-                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                        Get started as an artist
-                      </h2>
-                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                        Choose how you would like to join Kaleidorium.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
-                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
-                          Create your account
-                        </h3>
-                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
-                          Register yourself and upload your first artwork straight away.
-                        </p>
-                        <Button
-                          variant="outline"
-                          className="w-full"
-                          onClick={() => router.push("/for-artists/register")}
-                        >
+                    <h2 className="hiw-form-heading">Get started as an artist</h2>
+                    <p className="hiw-form-subheading">Choose how you would like to join Kaleidorium.</p>
+                    <div className="hiw-form-option-grid">
+                      <div className="hiw-form-option">
+                        <h3>Create your account</h3>
+                        <p>Register yourself and upload your first artwork straight away.</p>
+                        <Button variant="outline" className="w-full" onClick={() => router.push("/for-artists/register")}>
                           Create your account
                         </Button>
                       </div>
-                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
-                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
-                          Let us do it for you
-                        </h3>
-                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
-                          Send us your details and artwork information and we will create your account for you.
-                        </p>
+                      <div className="hiw-form-option">
+                        <h3>Let us do it for you</h3>
+                        <p>Send us your details and artwork information and we will create your account for you.</p>
                         <Button
                           variant="outline"
                           className="w-full"
@@ -647,22 +769,18 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   </>
                 ) : (
                   <div ref={artistFormRef}>
-                    <div className="text-center mb-6">
-                      <Button
-                        variant="ghost"
-                        className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
-                        onClick={() => setArtistSignupMode(null)}
-                      >
-                        ← Back to options
-                      </Button>
-                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                        Let us create your account
-                      </h2>
-                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                        Send us your details and artwork information. We'll create your artist account and email you your login details.
-                      </p>
-                    </div>
-                    <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
+                    <Button
+                      variant="ghost"
+                      className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
+                      onClick={() => setArtistSignupMode(null)}
+                    >
+                      ← Back to options
+                    </Button>
+                    <h2 className="hiw-form-heading">Let us create your account</h2>
+                    <p className="hiw-form-subheading">
+                      Send us your details and artwork information. We&apos;ll create your artist account and email you your login details.
+                    </p>
+                    <div className="hiw-form-card bg-white">
                       <ForArtistsForm />
                     </div>
                   </div>
@@ -677,37 +795,19 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
               <>
                 {gallerySignupMode !== "assisted" ? (
                   <>
-                    <div className="text-center mb-6">
-                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                        Get started as a gallery
-                      </h2>
-                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                        Choose how you would like to join Kaleidorium.
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
-                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
-                          Create your account
-                        </h3>
-                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
-                          Register yourself and set up your gallery profile straight away.
-                        </p>
-                        <Button
-                          variant="outline"
-                          className="w-full"
-                          onClick={() => router.push("/for-galleries/register")}
-                        >
+                    <h2 className="hiw-form-heading">Get started as a gallery</h2>
+                    <p className="hiw-form-subheading">Choose how you would like to join Kaleidorium.</p>
+                    <div className="hiw-form-option-grid">
+                      <div className="hiw-form-option">
+                        <h3>Create your account</h3>
+                        <p>Register yourself and set up your gallery profile straight away.</p>
+                        <Button variant="outline" className="w-full" onClick={() => router.push("/for-galleries/register")}>
                           Create your account
                         </Button>
                       </div>
-                      <div className="bg-[#FAFAF8] rounded-2xl border border-[#E6E4DF] p-6 flex flex-col">
-                        <h3 className="font-sans text-sm font-bold text-black mb-2" style={{ fontSize: '16px' }}>
-                          Let us do it for you
-                        </h3>
-                        <p className="text-sm text-[#5F5F5A] mb-5 flex-1" style={{ lineHeight: 1.55 }}>
-                          Share your gallery details and we will create your account and upload artwork for you.
-                        </p>
+                      <div className="hiw-form-option">
+                        <h3>Let us do it for you</h3>
+                        <p>Share your gallery details and we will create your account and upload artwork for you.</p>
                         <Button
                           variant="outline"
                           className="w-full"
@@ -725,22 +825,18 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
                   </>
                 ) : (
                   <div ref={galleryFormRef}>
-                    <div className="text-center mb-6">
-                      <Button
-                        variant="ghost"
-                        className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
-                        onClick={() => setGallerySignupMode(null)}
-                      >
-                        ← Back to options
-                      </Button>
-                      <h2 style={{ fontSize: 'clamp(22px,3vw,28px)', fontWeight: 700, color: '#1E1E1C', letterSpacing: '-0.015em', textAlign: 'center' }}>
-                        Let us create your account
-                      </h2>
-                      <p className="hero-page-intro mt-2" style={{ fontSize: '15px' }}>
-                        Share your gallery profile, which artists and artwork you would like to feature and we'll take care of the rest.
-                      </p>
-                    </div>
-                    <div className="bg-white rounded-2xl border border-[#E6E4DF] p-5" style={{ boxShadow: '0 1px 4px rgba(20,20,20,0.04)' }}>
+                    <Button
+                      variant="ghost"
+                      className="mb-4 text-sm text-[#5F5F5A] hover:text-[#1E1E1C]"
+                      onClick={() => setGallerySignupMode(null)}
+                    >
+                      ← Back to options
+                    </Button>
+                    <h2 className="hiw-form-heading">Let us create your account</h2>
+                    <p className="hiw-form-subheading">
+                      Share your gallery profile, which artists and artwork you would like to feature and we&apos;ll take care of the rest.
+                    </p>
+                    <div className="hiw-form-card bg-white">
                       <ForGalleriesForm />
                     </div>
                   </div>
@@ -751,18 +847,16 @@ export function WhyKaleidoriumPage({ initialRole, onRoleChange }: WhyKaleidorium
               </>
             )}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ── 5. Unified FAQ ───────────────────────────────────────── */}
-      <div className="bg-[#FAFAF8] border-t border-[#E6E4DF]" style={{ paddingTop: '48px', paddingBottom: '64px' }}>
-        <div className="container mx-auto px-4 max-w-3xl">
-          <p style={{ fontSize: '20px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.01em', color: '#1E1E1C', textAlign: 'center', marginBottom: '24px' }}>
-            Frequently Asked Questions
-          </p>
+      {/* FAQ */}
+      <section className="hiw-faq-section">
+        <div className="hiw-faq-inner">
+          <h2 className="hiw-section-title">Frequently Asked Questions</h2>
           <UnifiedFAQ />
         </div>
-      </div>
+      </section>
 
     </div>
   )
