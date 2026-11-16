@@ -801,6 +801,11 @@
     height: 1rem;
   }
 
+  .discover-btn-icon--like .discover-action-glyph {
+    width: 100%;
+    height: 100%;
+  }
+
   .discover-btn-dislike {
     background-color: #FDF0F0;
     box-shadow:
