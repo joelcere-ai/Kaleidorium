@@ -125,7 +125,7 @@ function BrowserInstructions({ browser, isIOS }: { browser: BrowserName; isIOS: 
       // Chrome (default Android)
       steps = [
         { text: <>Tap the <strong>three-dot menu</strong> <span className="inline-block bg-gray-100 px-1 rounded font-mono text-xs">⋮</span> in the top-right corner of Chrome</> },
-        { text: <>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></> },
+        { text: <>Tap <strong>"Install and create shortcut"</strong></> },
         { text: <>Tap <strong>"Add"</strong> or <strong>"Install"</strong> to confirm</> },
       ]
       note = "The Kaleidorium icon will appear in your app drawer."
@@ -355,7 +355,9 @@ export function MobileInstallPrompt() {
               className="w-12 h-12 rounded-xl"
             />
             <div>
-              <h3 className="font-semibold text-lg">Add to Home Screen</h3>
+              <h3 className="font-semibold text-lg">
+                {browserInfo?.isAndroid ? "Install and create shortcut" : "Add to Home Screen"}
+              </h3>
               <p className="text-sm text-gray-600">Quick access to discover art</p>
             </div>
           </div>
