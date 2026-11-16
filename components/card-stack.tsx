@@ -278,7 +278,7 @@ export default function CardStack({
                               <path d="M6 6l12 12M18 6L6 18" />
                             </svg>
                           </span>
-                          Dislike
+                          Not for me
                         </button>
 
                         <button
@@ -292,7 +292,7 @@ export default function CardStack({
                               <path d="M12 20.5s-6.5-4.2-6.5-9.1C5.5 8.1 7.6 6 10.2 6c1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.7 2.1 4.7 5.4 0 4.9-6.5 9.1-6.5 9.1z" />
                             </svg>
                           </span>
-                          Like
+                          Show me more
                         </button>
 
                         {cardIndex === 0 && showOnboarding && onboardingStep === 'dislike' && (
