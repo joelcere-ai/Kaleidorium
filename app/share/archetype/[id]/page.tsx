@@ -97,7 +97,7 @@ export default function ArchetypeSharePage({ params }: PageProps) {
           </p>
           <a 
             href="https://kaleidorium.com"
-            className="inline-block bg-white border border-[#000000] text-[#000000] font-bold px-8 py-3 rounded-lg font-semibold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all"
+            className="inline-block bg-white border border-[#000000] text-[#000000] font-bold px-8 py-3 rounded-lg font-semibold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all"
           >
             Visit Kaleidorium
           </a>

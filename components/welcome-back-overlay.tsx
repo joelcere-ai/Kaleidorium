@@ -77,7 +77,7 @@ export function WelcomeBackOverlay({ show, newArtworkCount, onDismiss }: Welcome
         <div className="px-4 pb-4">
           <Button
             onClick={handleDismiss}
-            className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all font-medium py-2 px-4 rounded-md transition-all duration-200"
+            className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all font-medium py-2 px-4 rounded-md transition-all duration-200"
             style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}
           >
             Start Discovering

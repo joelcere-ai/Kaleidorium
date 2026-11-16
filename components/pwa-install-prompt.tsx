@@ -130,7 +130,7 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
         
         <div className="flex items-center gap-3 mb-3">
           <img
-            src="/logos/kaleidorium-icon-64.png?v=13"
+            src="/logos/kaleidorium-icon-64.png?v=14"
             alt="Kaleidorium Logo"
             className="w-10 h-10 rounded-xl flex-shrink-0"
           />
@@ -152,7 +152,7 @@ export function PWAInstallPrompt({ show, onDismiss }: PWAInstallPromptProps) {
           <Button
             onClick={handleInstall}
             size="sm"
-            className="flex-1 bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all text-xs"
+            className="flex-1 bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all text-xs"
           >
             <Download className="w-3 h-3 mr-1" />
             Install

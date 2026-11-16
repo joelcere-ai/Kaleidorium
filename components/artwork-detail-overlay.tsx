@@ -90,28 +90,20 @@ export function ArtworkDetailOverlay({
               <button
                 type="button"
                 onClick={() => onDislike(artwork)}
-                className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
+                className="flex-1 sm:flex-none h-[42px] px-5 inline-flex items-center justify-center gap-2 bg-white border border-black rounded-[11px] text-[#000000] font-bold text-[15px] cursor-pointer active:scale-95 hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white transition-all duration-150"
                 aria-label="Dislike"
               >
-                <img
-                  src="/icons/actions/desktop-dislike.png"
-                  alt=""
-                  className="h-[42px] w-auto mx-auto select-none pointer-events-none"
-                  draggable={false}
-                />
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
+                Dislike
               </button>
               <button
                 type="button"
                 onClick={() => onLike(artwork)}
-                className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
+                className="flex-1 sm:flex-none h-[42px] px-5 inline-flex items-center justify-center gap-2 bg-white border border-black rounded-[11px] text-[#000000] font-bold text-[15px] cursor-pointer active:scale-95 hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white transition-all duration-150"
                 aria-label="Like and add to collection"
               >
-                <img
-                  src="/icons/actions/desktop-like.png"
-                  alt=""
-                  className="h-[42px] w-auto mx-auto select-none pointer-events-none"
-                  draggable={false}
-                />
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4.67A2.31 2.31 0 012 20V13a2.31 2.31 0 012.33-2H7"/></svg>
+                Like
               </button>
             </div>
           </div>

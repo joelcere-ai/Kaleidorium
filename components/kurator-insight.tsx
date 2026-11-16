@@ -44,7 +44,7 @@ const NEW_DISCOVERY: InsightMessage[] = [
   { headline: "Fresh discovery",               reason: "Newly surfaced for your profile" },
   { headline: "New for you today",             reason: "Your Kurator found this in your favourite styles" },
   { headline: "Recently matched to your taste", reason: "A new addition aligned to your preferences" },
-  { headline: "Freshly curated",               reason: "A new match based on your recent swipes" },
+  { headline: "Freshly curated",               reason: "A new match based on your recent swipes or likes" },
   { headline: "New in your feed",              reason: "Chosen because it fits your visual profile" },
   { headline: "Just added to your recommendations", reason: "A likely fit based on your taste so far" },
 ]
@@ -60,9 +60,9 @@ const SERENDIPITY: InsightMessage[] = [
 
 const GENERIC: InsightMessage[] = [
   { headline: "Your Kurator picked this",      reason: "A strong match for your recent taste profile" },
-  { headline: "Tailored to your eye",          reason: "A likely match based on your recent swipes" },
+  { headline: "Tailored to your eye",          reason: "A likely match based on your recent swipes or likes" },
   { headline: "A strong match for you",        reason: "Similar to artworks you've liked recently" },
-  { headline: "Curated for you",               reason: "Based on the patterns in your recent swipes" },
+  { headline: "Curated for you",               reason: "Based on the patterns in your recent swipes or likes" },
   { headline: "Picked with care",              reason: "Close to the style and mood of work you've enjoyed" },
 ]
 
@@ -363,7 +363,7 @@ export function KuratorEncouragement({ interactionCount }: { interactionCount: n
 
   return (
     <p className="text-xs text-gray-500 mt-1.5 leading-snug">
-      Continue liking and swiping to get more personalised suggestions
+      Continue liking or swiping to get more personalised suggestions
     </p>
   )
 }

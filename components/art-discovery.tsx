@@ -21,17 +21,26 @@ import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut"
 import { ImageOverlay } from "@/components/image-overlay"
 import { ProfilePage } from "@/components/profile-page"
 import { WelcomeBackOverlay } from "@/components/welcome-back-overlay"
+import { GuestTasteInsightOverlay } from "@/components/guest-taste-insight-overlay"
+import {
+  buildLocalGuestTasteInsight,
+  fetchGuestTasteInsight,
+  markGuestTasteInsightShown,
+  shouldShowGuestTasteInsight,
+  type GuestTasteInsight,
+} from "@/lib/guest-taste-insight"
 import { useUserEngagement } from "@/hooks/use-user-engagement"
 import { useRegistrationPrompt } from "@/hooks/use-registration-prompt"
 import { supabase } from "@/lib/supabase"
 import type { Artwork } from "@/types/artwork"
 import { v4 as uuidv4 } from 'uuid'
-
-/** Normalize artwork id (handles legacy load-more clones like "362_1738..."). */
-function artworkIdKey(id: string | number | undefined): string {
-  if (id == null) return ""
-  return String(id).split("_")[0]
-}
+import { diversifyDiscoverArtworks } from "@/lib/discover-artworks"
+import {
+  artworkIdKey,
+  consumePendingDiscoverArtwork,
+  getArtworkIdFromUrl,
+  getInitialDeepLinkArtworks,
+} from "@/lib/discover-deep-link"
 
 /** Keep first occurrence of each real artwork id. */
 function dedupeArtworks(list: Artwork[]): Artwork[] {
@@ -56,6 +65,7 @@ import CardStack from "./card-stack"
 import { KuratorBanner } from "./kurator-banner"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { DiscoverSearchBar } from "@/components/discover-search-bar"
+import { useArtworkSearch } from "@/contexts/artwork-search-context"
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
 import {
   emptyPreferences,
@@ -65,7 +75,6 @@ import {
   saveTempPreferences,
   hasTasteSignals,
 } from "@/lib/temp-preferences"
-import { searchArtworks } from "@/lib/search-artworks"
 
 interface AppHeaderProps {
   view: "discover" | "collection" | "profile" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "terms" | "privacy"
@@ -86,11 +95,12 @@ interface ArtDiscoveryProps {
 export default function ArtDiscovery({ view, setView, collectionCount, setCollectionCount, onCollectionSync, selectedArtworkId, onToggleDesktopFilters }: ArtDiscoveryProps) {
   const { isMobile, isTablet, isLandscape, isPortrait, screenWidth, screenHeight } = useMobileDetection()
   const [mounted, setMounted] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const initialDeepLinkArtworks = getInitialDeepLinkArtworks()
+  const [loading, setLoading] = useState(initialDeepLinkArtworks.length === 0)
   const [loadingError, setLoadingError] = useState<string | null>(null)
   const fetchingRef = useRef(false)
   const isUpdatingArtworksRef = useRef(false) // Prevent session restoration during updates
-  const [artworks, setArtworks] = useState<Artwork[]>([])
+  const [artworks, setArtworks] = useState<Artwork[]>(initialDeepLinkArtworks)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [collection, setCollection] = useState<Artwork[]>([])
   const [user, setUser] = useState<{ id: string } | null>(null)
@@ -198,6 +208,34 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   const [localPreferences, setLocalPreferences] = useState(() => {
     return loadTempPreferences() ?? emptyPreferences()
   });
+  const [showGuestTasteInsight, setShowGuestTasteInsight] = useState(false)
+  const [guestTasteInsight, setGuestTasteInsight] = useState<GuestTasteInsight | null>(null)
+  const [guestTasteInsightLoading, setGuestTasteInsightLoading] = useState(false)
+  const guestTasteInsightTriggeredRef = useRef(false)
+
+  const revealGuestTasteInsightIfReady = useCallback(
+    (
+      previousCount: number,
+      updatedPreferences: typeof localPreferences,
+      likedArtworks: Artwork[]
+    ) => {
+      if (guestTasteInsightTriggeredRef.current) return
+      if (!shouldShowGuestTasteInsight(!!user, previousCount, updatedPreferences.interactionCount || 0)) {
+        return
+      }
+      guestTasteInsightTriggeredRef.current = true
+      markGuestTasteInsightShown()
+      const localInsight = buildLocalGuestTasteInsight(updatedPreferences, likedArtworks)
+      setGuestTasteInsight(localInsight)
+      setShowGuestTasteInsight(true)
+      setGuestTasteInsightLoading(true)
+      void fetchGuestTasteInsight(updatedPreferences, likedArtworks).then((aiInsight) => {
+        if (aiInsight) setGuestTasteInsight(aiInsight)
+        setGuestTasteInsightLoading(false)
+      })
+    },
+    [user]
+  )
 
   const applyCollectorPreferences = useCallback((prefs: Partial<typeof localPreferences> | null | undefined) => {
     if (!prefs) return
@@ -234,11 +272,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   })
   const [isFiltering, setIsFiltering] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
-  const [discoverSearchInput, setDiscoverSearchInput] = useState("")
-  const [discoverSearchQuery, setDiscoverSearchQuery] = useState("")
-  const [discoverSearchResults, setDiscoverSearchResults] = useState<Artwork[]>([])
-  const [discoverSearchLoading, setDiscoverSearchLoading] = useState(false)
-  const [discoverSearchError, setDiscoverSearchError] = useState<string | null>(null)
+  const {
+    input: discoverSearchInput,
+    setInput: setDiscoverSearchInput,
+    query: discoverSearchQuery,
+    results: discoverSearchResults,
+    loading: discoverSearchLoading,
+    error: discoverSearchError,
+    submitSearch,
+    clearSearch,
+  } = useArtworkSearch()
   const preSearchIndexRef = useRef(0)
   const [hasSearched, setHasSearched] = useState(false) // Track if search has completed
   const [showDesktopFilters, setShowDesktopFilters] = useState(false)
@@ -932,7 +975,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     if (!user) {
       isUpdatingArtworksRef.current = true; // Prevent session restoration during update
+      const previousCount = localPreferences.interactionCount || 0
       const updatedPreferences = updateLocalPreferences(artwork, 'dislike');
+      revealGuestTasteInsightIfReady(previousCount, updatedPreferences, collection)
       // Move the disliked artwork to the END of the pool (don't remove it permanently).
       // This keeps pool diversity while ensuring it won't reappear until all others are seen.
       const otherArtworks = artworks.filter(a => a.id !== artwork.id);
@@ -1000,7 +1045,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       const newIndex = currentIndex === artworks.length - 1 ? 0 : currentIndex + 1;
       setCurrentIndex(newIndex);
     }
-  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, trackInteraction, saveDiscoverSession]);
+  }, [mounted, currentArtwork, currentIndex, artworks.length, toast, user, artworks, localPreferences, collection, trackInteraction, saveDiscoverSession, revealGuestTasteInsightIfReady]);
 
   // Refactored handleLike
   const handleLike = useCallback(async (artworkParam?: Artwork) => {
@@ -1016,13 +1061,17 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     
     if (!user) {
       isUpdatingArtworksRef.current = true; // Prevent session restoration during update
+      const previousCount = localPreferences.interactionCount || 0
       const updatedPreferences = updateLocalPreferences(artwork, 'add');
+      let likedArtworks = collection
       
       if (artwork && artwork.id && !collection.some((item) => item.id === artwork.id)) {
         const newCollection = [...collection, artwork];
+        likedArtworks = newCollection
         setCollection(newCollection);
         saveTemporaryCollection(newCollection);
       }
+      revealGuestTasteInsightIfReady(previousCount, updatedPreferences, likedArtworks)
 
       // Pass updatedPreferences directly to use fresh like/add weights (fixes stale state issue)
       const recommendedArtworks = getLocalRecommendations(artworks, updatedPreferences);
@@ -1122,7 +1171,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     fetchUserCollection,
     getRecommendations,
     setCollection,
-    saveDiscoverSession
+    saveDiscoverSession,
+    revealGuestTasteInsightIfReady,
   ]);
 
   // Enhanced handleAddToCollection with localStorage persistence
@@ -1342,14 +1392,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         
         const fullFetchData = await fullFetchResponse.json();
         console.log('✅ Full REST API call succeeded, got', fullFetchData?.length, 'records');
-        // Shuffle for diversity so users see different artists every session,
-        // not just the most recently uploaded artworks
-        const shuffled = (fullFetchData || []).slice();
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        artworksData = shuffled;
+        artworksData = fullFetchData || [];
         
       } catch (networkError) {
         console.error('❌ Network connectivity issue:', networkError);
@@ -1434,7 +1477,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         };
       }));
 
-      
+      const defaultDiscoverArtworks = diversifyDiscoverArtworks(transformedArtworks);
       // For registered users, check if they have preferences and get recommendations first
       // For anonymous users or users without preferences, use default artworks
       if (user) {
@@ -1462,23 +1505,23 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
               saveDiscoverSession();
             } else {
               console.log('No taste signals found, using default artworks');
-              setArtworks(transformedArtworks);
+              setArtworks(defaultDiscoverArtworks);
             }
           } else {
             console.log('No collector preferences found, using default artworks');
-            setArtworks(transformedArtworks);
+            setArtworks(defaultDiscoverArtworks);
           }
         } catch (error) {
           console.error('Error checking for user preferences:', error);
           // Fallback to default artworks
-          setArtworks(transformedArtworks);
+          setArtworks(defaultDiscoverArtworks);
         }
       } else {
         const tempPrefs = loadTempPreferences()
         if (tempPrefs) {
           setArtworks(getLocalRecommendations(transformedArtworks, tempPrefs))
         } else {
-          setArtworks(transformedArtworks)
+          setArtworks(defaultDiscoverArtworks)
         }
       }
     } catch (error) {
@@ -1548,8 +1591,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
   
   useEffect(() => {
     // Only fetch if no artworks and on discover view
-    // Skip if we have a selectedArtworkId - let fetchSpecificArtwork handle it
-    if (mounted && artworks.length === 0 && view === "discover" && !selectedArtworkId) {
+    // Skip when a deep-link artworkId is present — fetchSpecificArtwork handles it
+    const deepLinkArtworkId = selectedArtworkId ?? getArtworkIdFromUrl()
+    if (mounted && artworks.length === 0 && view === "discover" && !deepLinkArtworkId) {
       // Don't restore session if we're actively updating artworks (prevents loops)
       // But allow initial fetch even if flag is set (in case it got stuck)
       if (!isUpdatingArtworksRef.current) {
@@ -1586,33 +1630,16 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     if (!term) return
 
     preSearchIndexRef.current = currentIndex
-    setDiscoverSearchQuery(term)
-    setDiscoverSearchLoading(true)
-    setDiscoverSearchError(null)
     setShowFallbackMessage(false)
-
-    const { results, error } = await searchArtworks(term)
-
-    setDiscoverSearchLoading(false)
-    if (error) {
-      setDiscoverSearchError(error)
-      setDiscoverSearchResults([])
-    } else {
-      setDiscoverSearchResults(results)
-      setDiscoverSearchError(null)
-    }
+    await submitSearch()
     setCurrentIndex(0)
-  }, [discoverSearchInput, currentIndex])
+  }, [discoverSearchInput, currentIndex, submitSearch])
 
   const handleDiscoverSearchClear = useCallback(() => {
-    setDiscoverSearchInput("")
-    setDiscoverSearchQuery("")
-    setDiscoverSearchResults([])
-    setDiscoverSearchError(null)
-    setDiscoverSearchLoading(false)
+    clearSearch()
     setShowFallbackMessage(false)
     setCurrentIndex(preSearchIndexRef.current)
-  }, [])
+  }, [clearSearch])
 
   const loadMoreArtworks = useCallback(async () => {
     // All catalogue artworks are loaded on initial fetch (limit 500).
@@ -1873,11 +1900,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     setIsSearching(false)
     setActiveFilters({ style: '', subject: '', colors: '', search: '' })
     setFilteredArtworks([])
-    setDiscoverSearchInput("")
-    setDiscoverSearchQuery("")
-    setDiscoverSearchResults([])
-    setDiscoverSearchError(null)
-    setDiscoverSearchLoading(false)
+    clearSearch()
     setShowDesktopFilters(false)
     setShowFallbackMessage(false)
     setHasSearched(false)
@@ -1897,7 +1920,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
         description: "Showing your usual discovery feed",
       })
     }
-  }, [discoverSearchQuery, isFiltering, toast])
+  }, [discoverSearchQuery, isFiltering, toast, clearSearch])
 
   // Handle mobile filter changes (convert array format to string format)
   const handleMobileFilterChange = (filters: { style: string[], subject: string[], colors: string[] }) => {
@@ -2169,111 +2192,6 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
     }
   }, [view])
 
-  // Handle selectedArtworkId - find and display the specific artwork
-  useEffect(() => {
-    if (selectedArtworkId && !isLoadingSpecificArtwork) {
-      // First, try to find in already loaded artworks (handle both string and number IDs)
-      const artworkIndex = artworks.findIndex(artwork => 
-        artwork.id === selectedArtworkId || 
-        artwork.id === String(selectedArtworkId) || 
-        String(artwork.id) === selectedArtworkId
-      );
-      
-      if (artworkIndex !== -1) {
-        console.log('✅ Found artwork in loaded list at index:', artworkIndex)
-        setCurrentIndex(artworkIndex);
-        // Ensure we're on discover view
-        if (view !== 'discover') {
-          setView('discover')
-        }
-        setIsLoadingSpecificArtwork(false) // Reset flag
-        setLoading(false) // Ensure loading is false
-      } else if (artworks.length > 0) {
-        // Artwork not in loaded list, fetch it specifically
-        console.log('🔍 Artwork not in loaded list, fetching specific artwork:', selectedArtworkId)
-        setIsLoadingSpecificArtwork(true) // Set flag to prevent duplicate fetches
-        fetchSpecificArtwork(selectedArtworkId)
-      } else {
-        // Artworks not loaded yet, fetch the specific artwork directly
-        console.log('⏳ No artworks loaded, fetching specific artwork directly:', selectedArtworkId)
-        setIsLoadingSpecificArtwork(true) // Set flag to prevent duplicate fetches
-        fetchSpecificArtwork(selectedArtworkId)
-      }
-    }
-  }, [selectedArtworkId, artworks, view, setView, isLoadingSpecificArtwork])
-
-  // Fetch a specific artwork by ID
-  const fetchSpecificArtwork = async (artworkId: string) => {
-    try {
-      console.log('🔍 Fetching artwork with ID:', artworkId)
-      
-      // Try as integer first (most common case)
-      const artworkIdInt = parseInt(artworkId, 10)
-      let artworkData = null
-      let error = null
-      
-      if (!isNaN(artworkIdInt)) {
-        const { data, error: err } = await supabase
-          .from('Artwork')
-          .select('*')
-          .eq('id', artworkIdInt)
-          .single()
-        
-        artworkData = data
-        error = err
-      }
-      
-      // If not found as integer or ID is not numeric, try as string
-      if ((error && error.code === 'PGRST116') || !artworkData) {
-        const { data: artworkDataStr, error: errorStr } = await supabase
-          .from('Artwork')
-          .select('*')
-          .eq('id', artworkId)
-          .single()
-        
-        if (errorStr && errorStr.code !== 'PGRST116') {
-          console.error('❌ Artwork not found:', errorStr)
-          return
-        }
-        
-        if (artworkDataStr) {
-          artworkData = artworkDataStr
-        }
-      }
-      
-      if (artworkData) {
-        // Transform and add to artworks
-        const transformedArtwork = transformArtworkData(artworkData)
-        // Check if artwork is already in the list to prevent duplicates
-        const existingIndex = artworks.findIndex(a => 
-          a.id === transformedArtwork.id || 
-          String(a.id) === String(transformedArtwork.id)
-        )
-        
-        if (existingIndex !== -1) {
-          console.log('✅ Artwork already in list at index:', existingIndex)
-          setCurrentIndex(existingIndex)
-        } else {
-          // Only set artworks if not already present
-          setArtworks([transformedArtwork])
-          setCurrentIndex(0)
-        }
-        setView('discover')
-        setIsLoadingSpecificArtwork(false) // Reset flag after loading
-        setLoading(false) // Ensure loading is false
-        console.log('✅ Artwork loaded and displayed:', transformedArtwork.title)
-      } else {
-        console.error('❌ Artwork not found with ID:', artworkId)
-        setIsLoadingSpecificArtwork(false) // Reset flag on error
-        setLoading(false) // Ensure loading is false on error
-      }
-    } catch (error) {
-      console.error('❌ Error fetching specific artwork:', error)
-      setIsLoadingSpecificArtwork(false) // Reset flag on error
-      setLoading(false) // Ensure loading is false on error
-    }
-  }
-
   // Helper function to transform Supabase artwork data to Artwork interface
   const transformArtworkData = (artwork: any): Artwork => {
     return {
@@ -2290,13 +2208,210 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       artwork_image: artwork.artwork_image || '',
       created_at: artwork.created_at || '',
       updated_at: artwork.updated_at || '',
-      link: artwork.artwork_link || artwork.link || undefined, // Map artwork_link to link
+      link: artwork.artwork_link || artwork.link || undefined,
       style: artwork.style || undefined,
       genre: artwork.genre || undefined,
       subject: artwork.subject || undefined,
       colour: artwork.colour || undefined,
     }
   }
+
+  const clearArtworkIdFromUrl = useCallback(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    if (!url.searchParams.has('artworkId')) return
+    url.searchParams.delete('artworkId')
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
+  }, [])
+
+  const fetchArtworkRecordById = useCallback(async (artworkId: string) => {
+    const artworkIdInt = parseInt(artworkId, 10)
+    let artworkData = null
+    let error = null
+
+    if (!isNaN(artworkIdInt)) {
+      const { data, error: err } = await supabase
+        .from('Artwork')
+        .select('*')
+        .eq('id', artworkIdInt)
+        .single()
+      artworkData = data
+      error = err
+    }
+
+    if ((error && error.code === 'PGRST116') || !artworkData) {
+      const { data: artworkDataStr, error: errorStr } = await supabase
+        .from('Artwork')
+        .select('*')
+        .eq('id', artworkId)
+        .single()
+
+      if (errorStr && errorStr.code !== 'PGRST116') {
+        console.error('❌ Artwork not found:', errorStr)
+        return null
+      }
+
+      if (artworkDataStr) {
+        artworkData = artworkDataStr
+      }
+    }
+
+    return artworkData ? transformArtworkData(artworkData) : null
+  }, [])
+
+  const fetchCatalogArtworks = useCallback(async (): Promise<Artwork[]> => {
+    const supabaseUrl = 'https://zeexxekmnbbntnmwfcat.supabase.co'
+    const fullRestUrl =
+      `${supabaseUrl}/rest/v1/Artwork?select=id,artwork_title,artist,artwork_image,medium,dimensions,year,price,currency,description,tags,artwork_link,style,genre,subject,colour,created_at&limit=500`
+
+    try {
+      const response = await fetch(fullRestUrl, {
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const catalogRaw = await response.json()
+      return dedupeArtworks(
+        (catalogRaw || []).map((row: Record<string, unknown>) => transformArtworkData(row))
+      )
+    } catch (error) {
+      console.error('Failed to load catalog artworks for deep link:', error)
+      return []
+    }
+  }, [])
+
+  const buildDiscoverFeedAnchoredAt = useCallback(
+    async (anchorArtwork: Artwork): Promise<Artwork[]> => {
+      const catalogArtworks = await fetchCatalogArtworks()
+      const anchorKey = artworkIdKey(anchorArtwork.id)
+
+      const catalogWithAnchor = catalogArtworks.some(
+        (artwork) => artworkIdKey(artwork.id) === anchorKey
+      )
+        ? catalogArtworks
+        : dedupeArtworks([anchorArtwork, ...catalogArtworks])
+
+      const diversifiedCatalog = diversifyDiscoverArtworks(catalogWithAnchor)
+      const others = diversifiedCatalog.filter(
+        (artwork) => artworkIdKey(artwork.id) !== anchorKey
+      )
+
+      let orderedOthers = others
+
+      if (user) {
+        try {
+          await migrateTempPreferencesToDb(user.id)
+          const { data: collector } = await supabase
+            .from('Collectors')
+            .select('preferences')
+            .eq('user_id', user.id)
+            .maybeSingle()
+
+          if (collector?.preferences) {
+            const normalizedPrefs = normalizePreferences(
+              collector.preferences as Partial<typeof localPreferences>
+            )
+
+            if (hasTasteSignals(normalizedPrefs)) {
+              orderedOthers = await getRecommendations(user.id, others)
+              applyCollectorPreferences(normalizedPrefs)
+            }
+          }
+        } catch (error) {
+          console.error('Error building personalized deep-link feed:', error)
+        }
+      } else {
+        const tempPrefs = loadTempPreferences()
+        if (tempPrefs) {
+          orderedOthers = getLocalRecommendations(others, tempPrefs)
+        }
+      }
+
+      return dedupeArtworks([anchorArtwork, ...orderedOthers])
+    },
+    [
+      user,
+      fetchCatalogArtworks,
+      getLocalRecommendations,
+      getRecommendations,
+      applyCollectorPreferences,
+    ]
+  )
+
+  const processedDeepLinkRef = useRef<string | null>(null)
+
+  const fetchSpecificArtwork = useCallback(
+    async (artworkId: string) => {
+      const targetKey = artworkIdKey(artworkId)
+      if (!targetKey) return
+
+      try {
+        setIsLoadingSpecificArtwork(true)
+
+        let anchorArtwork =
+          consumePendingDiscoverArtwork(targetKey) ??
+          artworks.find((artwork) => artworkIdKey(artwork.id) === targetKey) ??
+          null
+
+        if (!anchorArtwork) {
+          setLoading(true)
+          anchorArtwork = await fetchArtworkRecordById(targetKey)
+          if (!anchorArtwork) {
+            console.error('❌ Artwork not found with ID:', targetKey)
+            processedDeepLinkRef.current = null
+            return
+          }
+        }
+
+        // Show the requested artwork immediately — don't wait for the full catalog.
+        setArtworks([anchorArtwork])
+        setCurrentIndex(0)
+        setLoading(false)
+
+        const feed = await buildDiscoverFeedAnchoredAt(anchorArtwork)
+        setArtworks(feed)
+        setCurrentIndex(0)
+        console.log('✅ Deep-link feed loaded with artwork first:', anchorArtwork.title)
+
+        setView('discover')
+        clearArtworkIdFromUrl()
+        saveDiscoverSession()
+      } catch (error) {
+        console.error('❌ Error fetching specific artwork:', error)
+        processedDeepLinkRef.current = null
+      } finally {
+        setIsLoadingSpecificArtwork(false)
+        setLoading(false)
+      }
+    },
+    [
+      artworks,
+      fetchArtworkRecordById,
+      buildDiscoverFeedAnchoredAt,
+      setView,
+      clearArtworkIdFromUrl,
+      saveDiscoverSession,
+    ]
+  )
+
+  // Handle deep-link artworkId — show anchor instantly, enrich feed in background
+  useEffect(() => {
+    const rawArtworkId = selectedArtworkId ?? getArtworkIdFromUrl()
+    if (!rawArtworkId) return
+
+    const targetKey = artworkIdKey(rawArtworkId)
+    if (!targetKey || processedDeepLinkRef.current === targetKey) return
+
+    processedDeepLinkRef.current = targetKey
+    void fetchSpecificArtwork(targetKey)
+  }, [selectedArtworkId, fetchSpecificArtwork])
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -2638,8 +2753,19 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
       {/* Image Overlay */}
       {overlayImage && <ImageOverlay artwork_image={overlayImage.url} alt={overlayImage.alt} onClose={closeImageOverlay} />}
 
+      <GuestTasteInsightOverlay
+        show={showGuestTasteInsight}
+        insight={guestTasteInsight}
+        loading={guestTasteInsightLoading}
+        onDismiss={() => setShowGuestTasteInsight(false)}
+        onViewTasteProfile={() => {
+          setShowGuestTasteInsight(false)
+          setView("taste-profile")
+        }}
+      />
+
       {view === "discover" ? (
-        <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-col flex-1 min-h-0 overflow-hidden discover-feed-bg">
           {!(isMobile || isTablet) && (
             <DiscoverSearchBar
               value={discoverSearchInput}
@@ -2697,7 +2823,9 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
             </div>
           ) : (currentArtwork || currentArtworkList.length === 0 || isFiltering || isDiscoverSearchMode) ? (
             <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-              <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} newArtworkCount={newArtworkCount} />
+              <div className="discover-feed-container !pb-0">
+                <KuratorBanner localPreferences={localPreferences} isRegistered={!!user} newArtworkCount={newArtworkCount} />
+              </div>
               <CardStack
                 artworks={currentArtworkList}
                 currentIndex={currentIndex}
@@ -2777,7 +2905,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         {activeFilters.style.split(',').map((tag) => (
                           <span
                             key={tag.trim()}
-                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-[#F0EBFF] text-[#6B4FD4] text-xs cursor-pointer hover:bg-red-100"
                             onClick={() => {
                               const newFilters = { ...activeFilters }
                               newFilters.style = newFilters.style.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
@@ -2809,7 +2937,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           key={tag}
                           variant="outline"
                           size="sm"
-                          className={`text-xs ${activeFilters.style.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          className={`text-xs ${activeFilters.style.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''}`}
                           onClick={() => {
                             const newFilters = { ...activeFilters }
                             if (newFilters.style.includes(tag)) {
@@ -2836,7 +2964,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         {activeFilters.subject.split(',').map((tag) => (
                           <span
                             key={tag.trim()}
-                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-[#F0EBFF] text-[#6B4FD4] text-xs cursor-pointer hover:bg-red-100"
                             onClick={() => {
                               const newFilters = { ...activeFilters }
                               newFilters.subject = newFilters.subject.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
@@ -2868,7 +2996,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           key={tag}
                           variant="outline"
                           size="sm"
-                          className={`text-xs ${activeFilters.subject.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          className={`text-xs ${activeFilters.subject.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''}`}
                           onClick={() => {
                             const newFilters = { ...activeFilters }
                             if (newFilters.subject.includes(tag)) {
@@ -2895,7 +3023,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                         {activeFilters.colors.split(',').map((tag) => (
                           <span
                             key={tag.trim()}
-                            className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-800 text-xs cursor-pointer hover:bg-red-100"
+                            className="inline-flex items-center px-2 py-1 rounded-md bg-[#F0EBFF] text-[#6B4FD4] text-xs cursor-pointer hover:bg-red-100"
                             onClick={() => {
                               const newFilters = { ...activeFilters }
                               newFilters.colors = newFilters.colors.replace(tag.trim(), '').replace(/,\s*,/g, ',').replace(/^,|,$/g, '')
@@ -2927,7 +3055,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           key={tag}
                           variant="outline"
                           size="sm"
-                          className={`text-xs ${activeFilters.colors.includes(tag) ? 'bg-blue-100 border-blue-300' : ''}`}
+                          className={`text-xs ${activeFilters.colors.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''}`}
                           onClick={() => {
                             const newFilters = { ...activeFilters }
                             if (newFilters.colors.includes(tag)) {
@@ -2991,11 +3119,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
               {!user && collection.length > 0 && (
                 <div
-                  className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg text-blue-900 flex flex-col items-start gap-3 font-sans shadow-sm"
+                  className="mb-6 p-4 bg-gradient-to-r from-[#F5F0FF] to-[#F0EBFF] border border-[#D9CFF7] rounded-lg text-[#3F3566] flex flex-col items-start gap-3 font-sans shadow-sm"
                   style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
                 >
                   <div className="flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-blue-600" />
+                    <Heart className="h-5 w-5 text-[#6B4FD4]" />
                     <span className="font-semibold">Save Your Collection!</span>
                   </div>
                   <span className="text-sm">
@@ -3028,7 +3156,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </div>
                   <h3 className="text-lg sm:text-xl font-medium mb-2">Your collection is empty</h3>
                   <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base">
-                    Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.
+                    Like an artwork to add it to your collection. Tap the Like button on any piece you love while
+                    discovering, and it will appear here.
                   </p>
                   <Button onClick={() => setView("discover")}>Discover Artwork</Button>
                 </div>
@@ -3179,11 +3308,11 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
 
             {!user && collection.length > 0 && (
               <div
-                className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg text-blue-900 flex flex-col items-start gap-3 font-sans shadow-sm"
+                className="mb-6 p-4 bg-gradient-to-r from-[#F5F0FF] to-[#F0EBFF] border border-[#D9CFF7] rounded-lg text-[#3F3566] flex flex-col items-start gap-3 font-sans shadow-sm"
                 style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif' }}
               >
                 <div className="flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-blue-600" />
+                  <Heart className="h-5 w-5 text-[#6B4FD4]" />
                   <span className="font-semibold">Save Your Collection!</span>
                 </div>
                 <span className="text-sm" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
@@ -3216,7 +3345,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 </div>
                 <h3 className="text-lg sm:text-xl font-medium mb-2" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Your collection is empty</h3>
                 <p className="text-muted-foreground max-w-md mb-6 text-sm sm:text-base" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                  Start exploring Kaleidorium's curated selection of artwork and add pieces you love to your collection.
+                  Like an artwork to add it to your collection. Click the Like button on any piece you love while
+                  discovering, and it will appear here.
                 </p>
                 <Button onClick={() => setView("discover")} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>Discover Artwork</Button>
               </div>
@@ -3249,7 +3379,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                           <div
                             key={index}
                             className={`w-2 h-2 rounded-full transition-colors ${
-                              index === currentDesktopCollectionIndex ? 'bg-blue-500' : 'bg-gray-300'
+                              index === currentDesktopCollectionIndex ? 'bg-[#6B4FD4]' : 'bg-gray-300'
                             }`}
                           />
                         ))}
@@ -3498,7 +3628,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                 {/* CTA Button */}
                 <Button 
                   onClick={() => document.getElementById('mobile-portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all py-2 text-sm font-medium mb-4"
+                  className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all py-2 text-sm font-medium mb-4"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Join the Founding 100 Artists
@@ -3740,7 +3870,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button
                     onClick={() => router.push('/for-artists/register')}
-                    className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium mb-4"
+                    className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium mb-4"
                     style={{fontFamily: 'Arial, sans-serif'}}
                   >
                     Register as an Artist
@@ -3867,7 +3997,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   </p>
                   <Button 
                     onClick={() => router.push('/for-artists/register')}
-                    className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all"
+                    className="w-full bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all"
                     style={{
                       color: 'white !important', 
                       backgroundColor: 'black !important',
@@ -3877,8 +4007,8 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                     <span style={{color: 'white !important', fontWeight: 'normal'}}>Register as an Artist</span>
                   </Button>
                 </div>
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-                  <p className="text-blue-700 font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+                <div className="mt-4 p-3 bg-[#F5F0FF] border border-[#D9CFF7] rounded text-sm">
+                  <p className="text-[#6B4FD4] font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                     <strong>Note:</strong> You'll need both your email address and the invitation token we sent you to complete registration.
                   </p>
                 </div>
@@ -3977,7 +4107,7 @@ export default function ArtDiscovery({ view, setView, collectionCount, setCollec
                   <div>
                     <h3 className="mb-2" style={{fontSize: '16px', fontFamily: '"Times New Roman", serif', fontWeight: 'bold', color: 'black', lineHeight: '1.2'}}>Is the service also free for collectors?</h3>
                     <p className="leading-relaxed for-artists-faq-answer" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif', color: 'black', lineHeight: '1.5'}}>
-                      Yes. Kaleidorium is free for collectors to browse, swipe, and discover work they love. This encourages more engagement and visibility for your art.
+                      Yes. Kaleidorium is free for collectors to browse, like, swipe, and discover work they love. This encourages more engagement and visibility for your art.
                     </p>
                   </div>
 

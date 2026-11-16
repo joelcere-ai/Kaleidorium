@@ -1,20 +1,20 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { RefreshCw, Sparkles } from "lucide-react"
+import { BarChart3, Eye, ExternalLink, RefreshCw, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { CollectorArchetypeCard } from "@/components/collector-archetype-card"
 import { InviteArtistShare } from "@/components/invite-artist-share"
 import { KuratorOrb } from "@/components/kurator-banner"
 import { supabase } from "@/lib/supabase"
 import { loadTempCollection } from "@/lib/temp-collection"
+import { loadTempPreferences } from "@/lib/temp-preferences"
 import {
   analyzeCollectionBasic,
+  buildCollectionOverview,
+  buildRecommendationInsights,
   fetchAiTasteInsights,
   getTopPreferenceSignals,
   mapDbArtworkToArtwork,
@@ -118,7 +118,12 @@ export function TasteProfilePageContent() {
       const uid = session?.user?.id ?? null
       if (cancelled) return
       setUserId(uid)
-      await loadPreferences(uid)
+      if (uid) {
+        await loadPreferences(uid)
+      } else {
+        const tempPrefs = loadTempPreferences()
+        setPreferences(tempPrefs ?? EMPTY_PREFS)
+      }
 
       let resolvedArtworks: Artwork[] = []
       if (uid) {
@@ -155,51 +160,92 @@ export function TasteProfilePageContent() {
   const topGenres = getTopPreferenceSignals(preferences.genres)
   const topSubjects = getTopPreferenceSignals(preferences.subjects)
   const topColours = getTopPreferenceSignals(preferences.colors)
-  const topArtists = getTopPreferenceSignals(preferences.artists)
+
+  const combinedTags = useMemo(() => {
+    const tags = new Set<string>([...basic.topTags, ...topStyles, ...topGenres, ...topSubjects, ...topColours])
+    return Array.from(tags)
+  }, [basic.topTags, topStyles, topGenres, topSubjects, topColours])
+
+  const previewArtworks = useMemo(() => {
+    if (collection.length <= 4) return { items: collection, overflow: 0 }
+    return {
+      items: collection.slice(0, 3),
+      overflow: collection.length - 3,
+    }
+  }, [collection])
+
+  const collectionOverview = useMemo(
+    () => buildCollectionOverview(collection, preferences.interactionCount),
+    [collection, preferences.interactionCount]
+  )
+
+  const recommendationInsights = useMemo(
+    () =>
+      buildRecommendationInsights(
+        collection,
+        {
+          topArtists: basic.topArtists,
+          topTags: basic.topTags,
+          preferredMediums: basic.preferredMediums,
+          priceRange: basic.priceRange,
+        },
+        preferences,
+        ai
+      ),
+    [collection, basic, preferences, ai]
+  )
+
+  const overviewSummary = ai?.summary || collectionOverview.summary
+  const overviewAesthetic = ai?.aesthetic_profile || collectionOverview.aestheticProfile
+  const overviewCollectingPattern = ai?.collecting_pattern || collectionOverview.collectingPattern
+
+  const bannerHeadline =
+    preferences.interactionCount >= 25
+      ? "Your Kurator knows your eye"
+      : preferences.interactionCount >= 10
+        ? "Your taste profile is taking shape"
+        : "Your Kurator is learning your taste"
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh] text-[#5F5F5A]">
-        <RefreshCw className="w-5 h-5 animate-spin mr-2" />
-        Building your taste profile…
+      <div className="taste-profile-page">
+        <div className="taste-profile-loading">
+          <RefreshCw className="w-5 h-5 animate-spin mr-2" />
+          Building your taste profile…
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-12 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-        <div>
-          <h1
-            className="text-2xl md:text-3xl font-bold text-[#1E1E1C] mb-2"
-            style={{ fontFamily: "Times New Roman, serif" }}
+    <div className="taste-profile-page">
+      <div className="taste-profile-inner">
+        <header className="taste-profile-header">
+          <div>
+            <h1 className="taste-profile-title">Taste Profile</h1>
+            <p className="taste-profile-subtitle">
+              Your Kurator learns from every swipe, like, and saved artwork — shaping a personal
+              artistic profile from your collection and interactions.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refreshInsights(collection)}
+            disabled={refreshing}
+            className="taste-profile-refresh-btn"
           >
-            Taste Profile
-          </h1>
-          <p className="text-sm text-[#5F5F5A] max-w-xl">
-            Your Kurator learns from every swipe, like, and saved artwork — shaping a personal artistic
-            profile from your collection and interactions.
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refreshInsights(collection)}
-          disabled={refreshing}
-          className="shrink-0"
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-          Refresh profile
-        </Button>
-      </div>
+            <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            Refresh profile
+          </Button>
+        </header>
 
-      {!userId && (
-        <Card className="border-[#E6E4DF] bg-gradient-to-r from-blue-50 to-purple-50">
-          <CardContent className="p-5 text-sm text-[#1E1E1C]">
+        {!userId && (
+          <section className="taste-profile-notice">
             <p className="mb-3">
               Sign in to save your taste profile permanently and sync it across devices.
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button size="sm" onClick={() => router.push("/register")}>
                 Create account
               </Button>
@@ -207,212 +253,180 @@ export function TasteProfilePageContent() {
                 Sign in
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </section>
+        )}
 
-      {!hasSignals ? (
-        <Card className="border-[#E6E4DF]">
-          <CardContent className="p-8 text-center">
+        {!hasSignals ? (
+          <section className="taste-profile-panel taste-profile-empty">
             <Sparkles className="w-10 h-10 mx-auto mb-4 text-[#8A8A84]" />
-            <h2 className="text-lg font-semibold text-[#1E1E1C] mb-2">Your profile is just getting started</h2>
-            <p className="text-sm text-[#5F5F5A] mb-6 max-w-md mx-auto">
-              Swipe through Discover, like artworks, and build your collection. After a few interactions,
-              your Kurator will reveal your collector archetype and personalised insights here.
+            <h2 className="taste-profile-panel-title text-center">Your profile is just getting started</h2>
+            <p className="taste-profile-copy text-center max-w-md mx-auto mb-6">
+              Swipe or like through Discover, save artworks, and build your collection. After a few
+              interactions, your Kurator will reveal your collector archetype and personalised
+              insights here.
             </p>
-            <Button onClick={() => router.push("/")}>Go to Discover</Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          {preferences.interactionCount > 0 && (
-            <div
-              className="w-full rounded-2xl px-4 py-3"
-              style={{
-                background: "linear-gradient(135deg, #f5f0ff 0%, #fdf2fb 40%, #fff7f0 100%)",
-                border: "1px solid rgba(139,92,246,0.10)",
-              }}
-            >
-              <div className="flex items-center gap-2.5">
-                <KuratorOrb size={18} />
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">
-                    {preferences.interactionCount >= 25
-                      ? "Your Kurator knows your eye"
-                      : preferences.interactionCount >= 10
-                        ? "Your taste profile is taking shape"
-                        : "Your Kurator is learning your taste"}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {preferences.interactionCount} interactions · {collection.length} saved artwork
-                    {collection.length !== 1 ? "s" : ""}
-                  </p>
-                </div>
-              </div>
+            <div className="text-center">
+              <Button variant="outline" onClick={() => router.push("/")}>
+                Go to Discover
+              </Button>
             </div>
-          )}
-
-          {archetype && (
-            <section>
-              <h2 className="text-sm font-medium text-[#1E1E1C] mb-3 uppercase tracking-wide">
-                Collector archetype
-              </h2>
-              <CollectorArchetypeCard archetype={archetype} />
-            </section>
-          )}
-
-          <Card className="border-[#E6E4DF]">
-            <CardHeader>
-              <CardTitle className="text-lg">Collection overview</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {ai?.summary || basic.summary}
-              </p>
-              {ai?.aesthetic_profile && (
-                <>
-                  <Separator />
+          </section>
+        ) : (
+          <>
+            {preferences.interactionCount > 0 && (
+              <section className="taste-profile-banner discover-kurator-banner">
+                <div className="flex items-center gap-2.5">
+                  <KuratorOrb size={18} />
                   <div>
-                    <h3 className="text-sm font-medium mb-2">Your aesthetic profile</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {ai.aesthetic_profile}
+                    <p className="text-sm font-semibold text-gray-800">{bannerHeadline}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {preferences.interactionCount} interactions · {collection.length} saved
+                      artwork{collection.length !== 1 ? "s" : ""}
                     </p>
                   </div>
-                </>
-              )}
-              {ai?.collecting_pattern && (
-                <div>
-                  <h3 className="text-sm font-medium mb-2">Collecting pattern</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {ai.collecting_pattern}
-                  </p>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </section>
+            )}
 
-          {(topStyles.length > 0 ||
-            topGenres.length > 0 ||
-            topSubjects.length > 0 ||
-            topColours.length > 0 ||
-            topArtists.length > 0) && (
-            <Card className="border-[#E6E4DF]">
-              <CardHeader>
-                <CardTitle className="text-lg">Taste signals from your interactions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                {topStyles.length > 0 && (
-                  <TasteSignalGroup label="Preferred styles" items={topStyles} />
-                )}
-                {topGenres.length > 0 && (
-                  <TasteSignalGroup label="Preferred genres" items={topGenres} />
-                )}
-                {topSubjects.length > 0 && (
-                  <TasteSignalGroup label="Preferred subjects" items={topSubjects} />
-                )}
-                {topColours.length > 0 && (
-                  <TasteSignalGroup label="Preferred colours" items={topColours} />
-                )}
-                {topArtists.length > 0 && (
-                  <TasteSignalGroup label="Artists you engage with" items={topArtists} />
-                )}
-              </CardContent>
-            </Card>
-          )}
+            {archetype && (
+              <section className="taste-profile-section">
+                <h2 className="taste-profile-section-label">Your collector archetype</h2>
+                <CollectorArchetypeCard archetype={archetype} />
+              </section>
+            )}
 
-          <Card className="border-[#E6E4DF]">
-            <CardHeader>
-              <CardTitle className="text-lg">Collection statistics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
-                <StatList title="Top artists in your collection" items={basic.topArtists} />
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Preferred styles & tags</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {basic.topTags.length > 0 ? (
-                      basic.topTags.map((tag) => (
-                        <Badge key={tag} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))
-                    ) : (
-                      <p className="text-sm text-muted-foreground">No tags yet</p>
+            <div className="taste-profile-grid">
+              <section className="taste-profile-panel">
+                <div className="taste-profile-panel-heading">
+                  <Eye className="w-4 h-4" />
+                  <h2 className="taste-profile-panel-title">Collection overview</h2>
+                </div>
+
+                <p className="taste-profile-lead">
+                  A reading of the artworks you&apos;ve saved — how they fit together, and what
+                  they reveal about your eye.{" "}
+                  {collection.length > 0 && (
+                    <button
+                      type="button"
+                      className="taste-profile-inline-link"
+                      onClick={() => router.push("/?view=collection")}
+                    >
+                      View your collection
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    </button>
+                  )}
+                </p>
+
+                <p className="taste-profile-copy">{overviewSummary}</p>
+
+                <div className="taste-profile-subsection">
+                  <h3 className="taste-profile-subsection-title">Your aesthetic profile</h3>
+                  <p className="taste-profile-copy">{overviewAesthetic}</p>
+                </div>
+
+                <div className="taste-profile-subsection">
+                  <h3 className="taste-profile-subsection-title">Collecting pattern</h3>
+                  <p className="taste-profile-copy">{overviewCollectingPattern}</p>
+                </div>
+
+                {collectionOverview.highlights.length > 0 && (
+                  <div className="taste-profile-subsection">
+                    <h3 className="taste-profile-subsection-title">Saved works</h3>
+                    <ul className="taste-profile-list">
+                      {collectionOverview.highlights.map((highlight) => (
+                        <li key={highlight}>{highlight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {collection.length > 0 && (
+                  <div className="taste-profile-thumbs">
+                    {previewArtworks.items.map((artwork) => (
+                      <div key={artwork.id} className="taste-profile-thumb">
+                        <img
+                          src={artwork.artwork_image || "/placeholder.svg"}
+                          alt={artwork.title}
+                          className="taste-profile-thumb-image"
+                        />
+                      </div>
+                    ))}
+                    {previewArtworks.overflow > 0 && (
+                      <div className="taste-profile-thumb taste-profile-thumb--more">
+                        <img
+                          src={
+                            collection[3]?.artwork_image ||
+                            previewArtworks.items[previewArtworks.items.length - 1]?.artwork_image ||
+                            "/placeholder.svg"
+                          }
+                          alt=""
+                          className="taste-profile-thumb-image"
+                        />
+                        <span className="taste-profile-thumb-overlay">
+                          +{previewArtworks.overflow}
+                        </span>
+                      </div>
                     )}
                   </div>
+                )}
+              </section>
+
+              <section className="taste-profile-panel">
+                <div className="taste-profile-panel-heading">
+                  <BarChart3 className="w-4 h-4" />
+                  <h2 className="taste-profile-panel-title">Collection statistics</h2>
                 </div>
-                <StatList title="Preferred mediums" items={basic.preferredMediums} />
-                <div>
-                  <h4 className="text-sm font-medium mb-2">Price range</h4>
-                  <p className="text-sm text-muted-foreground">{basic.priceRange}</p>
+
+                <div className="taste-profile-stats-grid">
+                  <StatList title="Top artists in your collection" items={basic.topArtists} />
+                  <StatList title="Preferred mediums" items={basic.preferredMediums} />
+
+                  <div className="taste-profile-stat-block">
+                    <h4 className="taste-profile-stat-title">Preferred styles &amp; tags</h4>
+                    {combinedTags.length > 0 ? (
+                      <div className="taste-profile-tag-cloud">
+                        {combinedTags.map((tag) => (
+                          <span key={tag} className="taste-profile-tag">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="taste-profile-copy">No tags yet</p>
+                    )}
+                  </div>
+
+                  <div className="taste-profile-stat-block">
+                    <h4 className="taste-profile-stat-title">Price range</h4>
+                    <p className="taste-profile-copy">{basic.priceRange}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </section>
+            </div>
 
-          {ai?.explorationSuggestions && ai.explorationSuggestions.length > 0 && (
-            <Card className="border-[#E6E4DF]">
-              <CardHeader>
-                <CardTitle className="text-lg">Territories to explore next</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {ai.explorationSuggestions.map((suggestion) => (
-                    <Badge
-                      key={suggestion}
-                      variant="outline"
-                      className="rounded-full px-3 py-1 text-xs"
-                    >
-                      {suggestion}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+            <section className="taste-profile-panel">
+              <h2 className="taste-profile-panel-title">Personalised recommendations</h2>
+              <p className="taste-profile-lead">{recommendationInsights.intro}</p>
+              <ul className="taste-profile-list taste-profile-recommendations">
+                {recommendationInsights.recommendations.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <p className="taste-profile-footnote">
+                Recommendations update as you save artworks and interact in Discover.{" "}
+                <button
+                  type="button"
+                  className="taste-profile-inline-link"
+                  onClick={() => router.push("/")}
+                >
+                  Go to Discover
+                </button>
+              </p>
+            </section>
+          </>
+        )}
 
-          <Card className="border-[#E6E4DF]">
-            <CardHeader>
-              <CardTitle className="text-lg">Personalised recommendations</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {(ai?.recommendations?.length ? ai.recommendations : basic.recommendations).length >
-              0 ? (
-                <ul className="space-y-2">
-                  {(ai?.recommendations?.length ? ai.recommendations : basic.recommendations).map(
-                    (item, index) => (
-                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <span className="text-primary mt-0.5">•</span>
-                        <span>{item}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Keep exploring Discover to unlock more recommendations.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </>
-      )}
-
-      <InviteArtistShare />
-    </div>
-  )
-}
-
-function TasteSignalGroup({ label, items }: { label: string; items: string[] }) {
-  return (
-    <div>
-      <h4 className="text-sm font-medium mb-2">{label}</h4>
-      <div className="flex flex-wrap gap-2">
-        {items.map((item) => (
-          <Badge key={item} variant="secondary">
-            {item}
-          </Badge>
-        ))}
+        <InviteArtistShare />
       </div>
     </div>
   )
@@ -420,16 +434,16 @@ function TasteSignalGroup({ label, items }: { label: string; items: string[] }) 
 
 function StatList({ title, items }: { title: string; items: string[] }) {
   return (
-    <div>
-      <h4 className="text-sm font-medium mb-2">{title}</h4>
+    <div className="taste-profile-stat-block">
+      <h4 className="taste-profile-stat-title">{title}</h4>
       {items.length > 0 ? (
-        <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
+        <ul className="taste-profile-list">
           {items.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-muted-foreground">None yet</p>
+        <p className="taste-profile-copy">None yet</p>
       )}
     </div>
   )

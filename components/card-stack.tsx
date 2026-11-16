@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
+import { Facebook, Instagram, MessageCircle, Copy, ExternalLink, Heart, X } from "lucide-react"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
@@ -71,7 +71,7 @@ export default function CardStack({
   currentIndex,
   onLike,
   onDislike,
-  onAddToCollection,
+  onAddToCollection: _onAddToCollection,
   onNext,
   onLoadMore,
   onImageClick,
@@ -82,7 +82,42 @@ export default function CardStack({
   lastVisitDate,
 }: CardStackProps) {
   const { toast } = useToast()
+  const actionPendingRef = useRef(false)
   const [visibleCardCount, setVisibleCardCount] = useState(3) // Start with 3 cards
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [onboardingStep, setOnboardingStep] = useState<'dislike' | 'like' | null>(null)
+  const ONBOARDING_PURPLE = '#3D2A6B'
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const completed =
+      localStorage.getItem('discover-onboarding-completed') ||
+      localStorage.getItem('mobile-button-onboarding-completed')
+    if (!completed && artworks.length > 0) {
+      const timer = setTimeout(() => {
+        setShowOnboarding(true)
+        setOnboardingStep('dislike')
+      }, 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [artworks.length])
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false)
+    setOnboardingStep(null)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('discover-onboarding-completed', 'true')
+      localStorage.setItem('mobile-button-onboarding-completed', 'true')
+    }
+  }
+
+  const nextOnboardingStep = () => {
+    if (onboardingStep === 'dislike') {
+      setOnboardingStep('like')
+    } else {
+      dismissOnboarding()
+    }
+  }
 
   // Get visible cards based on current count
   const getVisibleCards = () => {
@@ -140,35 +175,37 @@ export default function CardStack({
     setVisibleCardCount(3)
   }, [artworks.length, currentIndex])
 
-const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
-    switch (action) {
-      case 'like': {
-      await onLike(artwork)
-      const added = await onAddToCollection(artwork)
-      if (added !== false) {
-        toast({
-          title: "Added to your collection",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
+  const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
+    if (actionPendingRef.current) return
+    actionPendingRef.current = true
+    try {
+      switch (action) {
+        case 'like': {
+          await onLike(artwork)
+          toast({
+            title: "Added to your collection",
+            description: `"${artwork.title}" by ${artwork.artist}`,
+          })
+          break
+        }
+        case 'dislike':
+          await onDislike(artwork)
+          toast({
+            title: "Disliked!",
+            description: `"${artwork.title}" by ${artwork.artist}`,
+          })
+          break
       }
-        break
-      }
-      case 'dislike':
-      await onDislike(artwork)
-        toast({
-          title: "Disliked!",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
-        break
+    } finally {
+      actionPendingRef.current = false
     }
-    // Don't call onNext() - keep current card visible, only upcoming cards will refresh
   }
 
 
   if (!visibleCards.length) {
     return (
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-[#FAFAF8] relative">
+      <div className="flex flex-col flex-1 overflow-hidden discover-feed-bg">
+        <div className="w-full flex flex-col discover-feed-container relative">
           <div className="flex items-center justify-center p-8">
             {showFallbackMessage ? (
               <div className="text-center p-6 bg-[#FAFAF8] border border-[#E6E4DF] rounded-[16px]">
@@ -190,102 +227,165 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
+    <div className="flex flex-col flex-1 overflow-hidden discover-feed-bg">
       {/* Main CardStack Area */}
-        <div className="w-full flex flex-col p-4 sm:p-6 lg:p-8 bg-[#FAFAF8] relative">
+        <div className="w-full flex flex-col discover-feed-container relative">
         
 
         {/* Cards Stack - Vertical Layout */}
-        <div className="flex-1 max-w-7xl mx-auto w-full space-y-6">
+        <div className="flex-1 w-full space-y-8">
           {visibleCards.map(({ artwork, index }, cardIndex) => (
             <div
               key={artwork.id}
               className="transition-all duration-300 ease-out"
             >
-              <div className="bg-white rounded-[20px] border border-[#E6E4DF] overflow-hidden" style={{ boxShadow: '0 2px 10px rgba(20,20,20,0.03)' }}>
+              <div className="discover-card">
                 <div className="flex flex-col lg:flex-row">
                   {/* Artwork Image Section */}
                   <div className="w-full lg:w-[65%] flex-shrink-0">
                     <div
-                      className="relative h-[360px] lg:h-[460px] cursor-zoom-in bg-[#FAFAF8]"
+                      className="discover-artwork-frame"
                       onClick={() => onImageClick(artwork.artwork_image, artwork.title)}
                     >
                       <ProgressiveImage
                         src={artwork.artwork_image || "/placeholder.svg"}
                         alt={artwork.title}
-                        className="w-full h-full p-5"
-                        style={{ objectFit: 'contain' }}
+                        className="w-full h-full"
                         priority={cardIndex === 0}
                       />
                     </div>
                     
-                    {/* Card Info Section */}
-                    <div className="px-5 py-4 border-t border-[#E6E4DF]">
-                      <div className="mb-3">
-                        <h3 className="artwork-title mb-1">
-                          {artwork.title}
-                        </h3>
-                        <div className="artwork-artist">
-                          by <ArtistNameWithBadge 
-                            artistName={artwork.artist}
-                            artistId={(artwork as any).artist_id}
-                            className="inline"
-                          />
-                        </div>
+                    {/* Kurator insight + action buttons */}
+                    <div className="discover-actions-bar">
+                      <div className="kurator-insight-slot">
+                        {localPreferences && (
+                          <>
+                            <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
+                            <KuratorEarlyEncouragement interactionCount={localPreferences.interactionCount} />
+                          </>
+                        )}
                       </div>
 
-                      {/* Kurator Insight */}
-                      {localPreferences && (
-                        <>
-                          <KuratorInsight artwork={artwork} localPreferences={localPreferences} lastVisitDate={lastVisitDate} />
-                          <KuratorEarlyEncouragement interactionCount={localPreferences.interactionCount} />
-                        </>
-                      )}
+                      <div className="discover-action-buttons relative">
+                        <button
+                          type="button"
+                          onClick={() => handleAction('dislike', artwork)}
+                          className="discover-btn-dislike"
+                          aria-label="Not for me"
+                        >
+                          <span className="discover-btn-icon discover-btn-icon--dislike" aria-hidden="true">
+                            <svg className="discover-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                              <path d="M6 6l12 12M18 6L6 18" />
+                            </svg>
+                          </span>
+                          Dislike
+                        </button>
 
-                      {/* Action Buttons */}
-                      <div className="flex items-center justify-center gap-3 sm:gap-6 mt-4">
-            <button
-              type="button"
-              onClick={() => handleAction('dislike', artwork)}
-              className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
-              aria-label="Dislike"
-            >
-              <img
-                src="/icons/actions/desktop-dislike.png"
-                alt=""
-                className="h-[42px] w-auto mx-auto select-none pointer-events-none"
-                draggable={false}
-              />
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => handleAction('like', artwork)}
-              className="flex-1 sm:flex-none active:scale-95 hover:brightness-[0.97] transition-all duration-150 bg-transparent border-0 p-0 cursor-pointer"
-              aria-label="Like"
-            >
-              <img
-                src="/icons/actions/desktop-like.png"
-                alt=""
-                className="h-[42px] w-auto mx-auto select-none pointer-events-none"
-                draggable={false}
-              />
-            </button>
+                        <button
+                          type="button"
+                          onClick={() => handleAction('like', artwork)}
+                          className="discover-btn-like"
+                          aria-label="Show me more"
+                        >
+                          <span className="discover-btn-icon discover-btn-icon--like" aria-hidden="true">
+                            <svg className="discover-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 20.5s-6.5-4.2-6.5-9.1C5.5 8.1 7.6 6 10.2 6c1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.7 2.1 4.7 5.4 0 4.9-6.5 9.1-6.5 9.1z" />
+                            </svg>
+                          </span>
+                          Like
+                        </button>
+
+                        {cardIndex === 0 && showOnboarding && onboardingStep === 'dislike' && (
+                          <div className="absolute bottom-full right-[7.5rem] mb-3 z-50 pointer-events-auto">
+                            <div
+                              className="rounded-lg px-4 py-3 shadow-2xl w-[260px] relative border border-white/20 onboarding-tooltip"
+                              style={{ backgroundColor: ONBOARDING_PURPLE, color: '#ffffff' }}
+                            >
+                              <div className="flex items-start gap-2">
+                                <X className="w-5 h-5 flex-shrink-0 mt-0.5" strokeWidth={2.25} />
+                                <div className="flex-1">
+                                  <p className="font-semibold mb-1 text-sm">Dislike</p>
+                                  <p className="text-xs leading-relaxed">
+                                    Dislike or swipe left to see fewer artworks like this
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="mt-3 flex justify-end">
+                                <button
+                                  type="button"
+                                  className="text-xs font-semibold underline hover:no-underline"
+                                  onClick={nextOnboardingStep}
+                                >
+                                  Next →
+                                </button>
+                              </div>
+                            </div>
+                            <div
+                              className="absolute -bottom-2 right-10 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent"
+                              style={{ borderTopColor: ONBOARDING_PURPLE }}
+                            />
+                          </div>
+                        )}
+
+                        {cardIndex === 0 && showOnboarding && onboardingStep === 'like' && (
+                          <div className="absolute bottom-full right-0 mb-3 z-50 pointer-events-auto">
+                            <div
+                              className="rounded-lg px-4 py-3 shadow-2xl w-[260px] relative border border-white/20 onboarding-tooltip"
+                              style={{ backgroundColor: ONBOARDING_PURPLE, color: '#ffffff' }}
+                            >
+                              <div className="flex items-start gap-2">
+                                <Heart className="w-5 h-5 flex-shrink-0 mt-0.5" strokeWidth={2} />
+                                <div className="flex-1">
+                                  <p className="font-semibold mb-1 text-sm">Like</p>
+                                  <p className="text-xs leading-relaxed">
+                                    Like or swipe right to add it to your collection
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="mt-3 flex justify-end">
+                                <button
+                                  type="button"
+                                  className="text-xs font-semibold underline hover:no-underline"
+                                  onClick={dismissOnboarding}
+                                >
+                                  Got it ✓
+                                </button>
+                              </div>
+                            </div>
+                            <div
+                              className="absolute -bottom-2 right-10 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent"
+                              style={{ borderTopColor: ONBOARDING_PURPLE }}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
 
                   {/* Integrated Information Panel */}
-                  <div className="w-full lg:w-[35%] border-t lg:border-t-0 lg:border-l border-[#E6E4DF] bg-white">
-                    <div className="p-5 space-y-5">
+                  <div className="w-full lg:w-[35%] border-t lg:border-t-0 lg:border-l border-[#E6E4DF]/80 discover-detail-panel">
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="discover-artwork-title">
+                          {artwork.title}
+                        </h3>
+                        <div className="discover-artwork-artist">
+                          by <ArtistNameWithBadge 
+                            artistName={artwork.artist}
+                            artistId={(artwork as any).artist_id}
+                            className="inline text-[#6B4FD4]"
+                          />
+                        </div>
+                      </div>
+
                       {/* Enhanced Description */}
                       <div>
-                        <h3 className="artwork-section-title mb-3">About this artwork</h3>
+                        <h3 className="discover-section-title">About this artwork</h3>
                         <p className="artwork-description">{artwork.description}</p>
                       </div>
 
                       {/* Artwork Information */}
-                      <div className="mt-5">
+                      <div>
                         <div className="flex flex-wrap items-center gap-3 artwork-meta">
                           {artwork.year && <span>{artwork.year}</span>}
                           {artwork.medium && <span>{artwork.medium}</span>}
@@ -304,8 +404,8 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                       </div>
 
                       {/* Enhanced Tags */}
-                      <div className="space-y-3 mt-8">
-                        <h3 className="artwork-section-title mb-3">Style & Subject</h3>
+                      <div className="space-y-3">
+                        <h3 className="discover-section-title">Style & Subject</h3>
                         <div className="flex flex-wrap gap-2">
                           {[artwork.genre, artwork.style, artwork.subject, artwork.colour, ...(artwork.tags || [])]
                             .filter((tag, idx, arr) => tag && arr.indexOf(tag) === idx)
@@ -344,6 +444,7 @@ const handleAction = async (action: 'like' | 'dislike', artwork: Artwork) => {
                               }
                             }}
                           >
+                            <ExternalLink aria-hidden="true" />
                             View on artist's website
                           </button>
                         </div>

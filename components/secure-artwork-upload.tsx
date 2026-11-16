@@ -364,7 +364,7 @@ export function SecureArtworkUpload({
   const getSecurityIcon = () => {
     switch (securityStatus) {
       case 'scanning':
-        return <Shield className="w-4 h-4 animate-spin text-blue-500" />;
+        return <Shield className="w-4 h-4 animate-spin text-[#6B4FD4]" />;
       case 'safe':
         return <CheckCircle className="w-4 h-4 text-green-500" />;
       case 'threat':
@@ -471,7 +471,7 @@ export function SecureArtworkUpload({
             <div className={`flex items-center space-x-1 ${
               securityStatus === 'safe' ? 'text-green-600' : 
               securityStatus === 'threat' ? 'text-red-600' : 
-              securityStatus === 'scanning' ? 'text-blue-600' : 
+              securityStatus === 'scanning' ? 'text-[#6B4FD4]' : 
               'text-gray-500'
             }`}>
               {getSecurityIcon()}

@@ -11,6 +11,9 @@ import { cn } from "@/lib/utils"
  * outline   → Same white/black CTA (alias kept for existing call sites)
  * ghost     → Ghost / utility (white bg, neutral border) — nav & low-emphasis
  * secondary → Neutral soft (off-white bg, border) — kept for compatibility
+ *
+ * Hover (all non-link variants): light purple fill + white text
+ * Top navigation keeps its own classes and is not affected.
  */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -18,39 +21,37 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // ── A. Primary CTA ─────────────────────────────────
-        // White bg, black border + text — form submits, hard CTAs
         default:
           "bg-white border border-[#000000] text-[#000000] font-bold text-[15px] " +
-          "hover:bg-[#F0F0F0] hover:border-[#000000] active:scale-[0.97]",
+          "hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white active:scale-[0.97]",
 
         // ── B. Signature branded CTA (same look as default) ─
         outline:
           "bg-white border border-[#000000] text-[#000000] font-bold text-[15px] " +
-          "hover:bg-[#F0F0F0] hover:border-[#000000] active:scale-[0.97]",
+          "hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white active:scale-[0.97]",
 
         // ── C. Ghost / neutral ───────────────────────────────
-        // White bg + black border — nav, low-emphasis, icon wrappers
         ghost:
           "bg-white border border-[#000000] text-[#1E1E1C] text-[14px] " +
-          "hover:bg-[#F0F0F0] active:scale-[0.97]",
+          "hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white active:scale-[0.97]",
 
         // ── Neutral soft (compat alias for secondary) ────────
         secondary:
           "bg-white border border-[#000000] text-[#1E1E1C] text-[14px] " +
-          "hover:bg-[#F0F0F0] active:scale-[0.97]",
+          "hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white active:scale-[0.97]",
 
         // ── Destructive (compat) ─────────────────────────────
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
 
         link:
-          "text-[#4F4564] underline-offset-4 hover:underline border-transparent bg-transparent",
+          "text-[#6B4FD4] underline-offset-4 hover:underline decoration-[#6B4FD4] border-transparent bg-transparent",
       },
       size: {
         default: "h-11 px-5 py-2 [&_svg]:size-4",   /* 44px — refined primary */
         sm:      "h-9 px-4 py-1.5 text-sm rounded-[10px] [&_svg]:size-3.5", /* 36px compact */
         lg:      "h-12 px-8 py-2 text-base [&_svg]:size-5",
-        icon:    "h-9 w-9 [&_svg]:size-4 border-transparent bg-transparent hover:bg-[#FAFAF8]",
+        icon:    "h-9 w-9 [&_svg]:size-4 border-transparent bg-transparent hover:bg-[#FAFAF8] hover:text-[#1E1E1C]",
       },
     },
     defaultVariants: {

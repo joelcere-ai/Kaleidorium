@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { useToast } from "@/hooks/use-toast"
+import { KaleidoriumWordmark } from "@/components/kaleidorium-wordmark"
 
 interface FilterState {
   style: string
@@ -189,12 +190,8 @@ function AppHeaderContent({
     <header className="border-b bg-background relative app-header z-[110]">
       <div className="flex items-center justify-between p-4 md:p-6">
         {/* Logo with improved mobile spacing */}
-        <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0">
-          <img 
-            src="/logos/kaleidorium-wordmark-desktop.png?v=12" 
-            alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto flex-shrink-0"
-          />
+        <Link href="/" className="flex items-center py-2 px-1 md:py-0 md:px-0 flex-shrink-0" aria-label="Kaleidorium — home">
+          <KaleidoriumWordmark size="desktop" />
         </Link>
 
         {/* Desktop Navigation */}

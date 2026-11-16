@@ -30,10 +30,11 @@ export function DiscoverSearchBar({
 
   return (
     <div
+      id="discover-search-bar"
       className={
         embedded
-          ? "shrink-0 bg-white border-b border-[#E6E4DF] px-4 py-3 space-y-2 z-10"
-          : "sticky top-0 z-20 bg-white border-b border-[#E6E4DF] px-4 py-3 space-y-2 shadow-sm"
+          ? "shrink-0 discover-search-shell py-3 space-y-2 z-10"
+          : "sticky top-0 z-20 discover-search-shell py-3 space-y-2"
       }
     >
       <form
@@ -46,10 +47,11 @@ export function DiscoverSearchBar({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8A8A84] pointer-events-none" />
           <Input
+            id="discover-search-input"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Search artist, title, style, subject, colour…"
-            className="pl-9 pr-9 border-[#E6E4DF] bg-white"
+            className="pl-9 pr-9 discover-search-input"
             disabled={isLoading}
             aria-label="Search artworks"
           />

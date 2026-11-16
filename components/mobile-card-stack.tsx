@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { Heart, ThumbsUp, ThumbsDown, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, BadgeAlert, Sparkles } from "lucide-react"
+import { Heart, Info, Menu, Search, Palette, Mail, User, Facebook, Instagram, MessageCircle, Trash, RefreshCw, ChevronDown, ChevronUp, X, Copy, BadgeAlert, Sparkles, Building2 } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import type { Artwork } from "@/types/artwork"
 import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
+import { KaleidoriumWordmark } from "@/components/kaleidorium-wordmark"
 import { KuratorBanner } from "@/components/kurator-banner"
 import { KuratorInsight, KuratorEarlyEncouragement } from "@/components/kurator-insight"
 
@@ -153,6 +154,7 @@ const [buttonStates, setButtonStates] = useState<{
 
   const containerRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const actionPendingRef = useRef(false)
   const startX = useRef(0)
   const currentX = useRef(0)
   const isDragging = useRef(false)
@@ -377,15 +379,12 @@ const [buttonStates, setButtonStates] = useState<{
       
       // Execute action immediately without waiting for animation
       if (currentX.current > 0) {
-        // Swipe right - add to collection (also records like via handler)
+        // Swipe right - like (also adds to collection via handler)
         await onLike(artwork)
-        const added = await onAddToCollection(artwork)
-        if (added !== false) {
-          toast({
-            title: "Added to your collection",
-            description: `"${artwork.title}" by ${artwork.artist}`,
-          })
-        }
+        toast({
+          title: "Added to your collection",
+          description: `"${artwork.title}" by ${artwork.artist}`,
+        })
       } else {
         // Swipe left - Dislike
         onDislike(artwork)
@@ -438,6 +437,9 @@ const [buttonStates, setButtonStates] = useState<{
 
   // Enhanced button action handler with micro-interactions
 const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: Artwork) => {
+    if (action !== 'info' && actionPendingRef.current) return
+    if (action !== 'info') actionPendingRef.current = true
+
     // Trigger haptic feedback if available
     if (navigator.vibrate) {
       navigator.vibrate(50)
@@ -449,29 +451,30 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       setButtonStates(prev => ({ ...prev, [action]: false }))
     }, 200)
 
-    switch (action) {
-      case 'like': {
-        await onLike(artwork)
-        const added = await onAddToCollection(artwork)
-        if (added !== false) {
+    try {
+      switch (action) {
+        case 'like': {
+          await onLike(artwork)
           toast({
             title: "Added to your collection",
             description: `"${artwork.title}" by ${artwork.artist}`,
           })
+          break
         }
-        break
+        case 'dislike':
+          await onDislike(artwork)
+          toast({
+            title: "Disliked!",
+            description: `"${artwork.title}" by ${artwork.artist}`,
+          })
+          break
+        case 'info':
+          setSelectedArtwork(artwork)
+          setShowInfoModal(true)
+          break
       }
-      case 'dislike':
-        await onDislike(artwork)
-        toast({
-          title: "Disliked!",
-          description: `"${artwork.title}" by ${artwork.artist}`,
-        })
-        break
-      case 'info':
-        setSelectedArtwork(artwork)
-        setShowInfoModal(true)
-        break
+    } finally {
+      if (action !== 'info') actionPendingRef.current = false
     }
   }
 
@@ -576,7 +579,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
   // Check if user has completed button onboarding
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const onboardingCompleted = localStorage.getItem('mobile-button-onboarding-completed')
+      const onboardingCompleted =
+        localStorage.getItem('discover-onboarding-completed') ||
+        localStorage.getItem('mobile-button-onboarding-completed')
       if (!onboardingCompleted && view === 'discover' && artworks.length > 0) {
         // Wait a bit after page load, then show onboarding
         const timer = setTimeout(() => {
@@ -592,6 +597,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     setShowButtonOnboarding(false)
     setCurrentOnboardingStep(null)
     if (typeof window !== 'undefined') {
+      localStorage.setItem('discover-onboarding-completed', 'true')
       localStorage.setItem('mobile-button-onboarding-completed', 'true')
     }
   }
@@ -606,82 +612,101 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
     }
   }
 
+  const ONBOARDING_PURPLE = '#3D2A6B'
+
   // Button Onboarding Overlay - Shows tooltips for each button (small windows, no full-screen backdrop)
   const buttonOnboardingOverlay = showButtonOnboarding && view === "discover" && currentOnboardingStep ? (
     <div className="fixed inset-0 z-[160] pointer-events-none" style={{ zIndex: 160 }}>
-      {/* Tooltip positioned near the active button - no backdrop, just the tooltip */}
       {currentOnboardingStep === 'dislike' && (
         <div className="absolute bottom-32 left-[calc(50%-40px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
-            <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
-              <ThumbsDown className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
-              <div className="flex-1" style={{ color: '#ffffff !important' }}>
-                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff !important', fontWeight: 600, visibility: 'visible', opacity: 1 }}>Dislike</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db !important', visibility: 'visible', opacity: 1 }}>Dislike an artwork to see fewer of the same</p>
+          <div
+            className="rounded-lg px-4 py-3 shadow-2xl max-w-[260px] relative border border-white/20 onboarding-tooltip"
+            style={{ backgroundColor: ONBOARDING_PURPLE, color: '#ffffff' }}
+          >
+            <div className="flex items-start gap-2">
+              <X className="w-5 h-5 flex-shrink-0 mt-0.5" strokeWidth={2.25} />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm">Dislike</p>
+                <p className="text-xs leading-relaxed">
+                  Dislike or swipe left to see fewer artworks like this
+                </p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
                 className="text-xs font-semibold underline hover:no-underline"
-                style={{ color: '#ffffff !important', textDecoration: 'underline', visibility: 'visible', opacity: 1 }}
                 onClick={nextOnboardingStep}
               >
                 Next →
               </button>
             </div>
           </div>
-          {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
+          <div
+            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent"
+            style={{ borderTopColor: ONBOARDING_PURPLE }}
+          />
         </div>
       )}
-      
+
       {currentOnboardingStep === 'info' && (
         <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
-            <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
-              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
-              <div className="flex-1" style={{ color: '#ffffff !important' }}>
-                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff !important', fontWeight: 600, visibility: 'visible', opacity: 1 }}>Information</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db !important', visibility: 'visible', opacity: 1 }}>Find out more about an artwork</p>
+          <div
+            className="rounded-lg px-4 py-3 shadow-2xl max-w-[260px] relative border border-white/20 onboarding-tooltip"
+            style={{ backgroundColor: ONBOARDING_PURPLE, color: '#ffffff' }}
+          >
+            <div className="flex items-start gap-2">
+              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" strokeWidth={2} />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm">Info</p>
+                <p className="text-xs leading-relaxed">
+                  Tap Info to learn more about an artwork
+                </p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
                 className="text-xs font-semibold underline hover:no-underline"
-                style={{ color: '#ffffff !important', textDecoration: 'underline', visibility: 'visible', opacity: 1 }}
                 onClick={nextOnboardingStep}
               >
                 Next →
               </button>
             </div>
           </div>
-          {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
+          <div
+            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent"
+            style={{ borderTopColor: ONBOARDING_PURPLE }}
+          />
         </div>
       )}
-      
+
       {currentOnboardingStep === 'like' && (
         <div className="absolute bottom-32 left-[calc(50%+96px)] transform -translate-x-1/2 pointer-events-auto" style={{ zIndex: 170 }}>
-          <div className="bg-black rounded-lg px-4 py-3 shadow-2xl max-w-[240px] relative border-2 border-white onboarding-tooltip" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
-            <div className="flex items-start gap-2" style={{ color: '#ffffff !important' }}>
-              <ThumbsUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#ffffff !important', strokeWidth: 2, fill: 'none' }} />
-              <div className="flex-1" style={{ color: '#ffffff !important' }}>
-                <p className="font-semibold mb-1 text-sm" style={{ color: '#ffffff !important', fontWeight: 600, visibility: 'visible', opacity: 1 }}>Like</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#d1d5db !important', visibility: 'visible', opacity: 1 }}>Like an artwork to add it to your collection</p>
+          <div
+            className="rounded-lg px-4 py-3 shadow-2xl max-w-[260px] relative border border-white/20 onboarding-tooltip"
+            style={{ backgroundColor: ONBOARDING_PURPLE, color: '#ffffff' }}
+          >
+            <div className="flex items-start gap-2">
+              <Heart className="w-5 h-5 flex-shrink-0 mt-0.5" strokeWidth={2} />
+              <div className="flex-1">
+                <p className="font-semibold mb-1 text-sm">Like</p>
+                <p className="text-xs leading-relaxed">
+                  Like or swipe right to add it to your collection
+                </p>
               </div>
             </div>
             <div className="mt-3 flex justify-end">
               <button
                 className="text-xs font-semibold underline hover:no-underline"
-                style={{ color: '#ffffff !important', textDecoration: 'underline', visibility: 'visible', opacity: 1 }}
                 onClick={dismissButtonOnboarding}
               >
                 Got it ✓
               </button>
             </div>
           </div>
-          {/* Arrow pointing to button */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#000000' }}></div>
+          <div
+            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent"
+            style={{ borderTopColor: ONBOARDING_PURPLE }}
+          />
         </div>
       )}
     </div>
@@ -697,15 +722,15 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       {/* Buttons are in a flex container with justify-center and gap-6, roughly at 30%, 50%, 70% */}
       {/* Swipe left instruction - positioned near dislike button (left side, ~30% from left) */}
       <div className="absolute bottom-36 left-[30%] transform -translate-x-1/2">
-        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 shadow-lg whitespace-nowrap">
-          <ThumbsDown className="w-3.5 h-3.5 text-white flex-shrink-0" />
+        <div className="bg-[#3D2A6B] text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 shadow-lg whitespace-nowrap">
+          <X className="w-3.5 h-3.5 text-white flex-shrink-0" />
           <span>Swipe left to pass</span>
         </div>
       </div>
       
       {/* Tap for details instruction - positioned near info button (center, ~50%) */}
       <div className="absolute bottom-36 left-1/2 transform -translate-x-1/2">
-        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-200 shadow-lg whitespace-nowrap">
+        <div className="bg-[#3D2A6B] text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-200 shadow-lg whitespace-nowrap">
           <Info className="w-3.5 h-3.5 text-white flex-shrink-0" />
           <span>Tap for details</span>
         </div>
@@ -713,8 +738,8 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       
       {/* Swipe right instruction - positioned near like button (right side, ~70% from left) */}
       <div className="absolute bottom-36 left-[70%] transform -translate-x-1/2">
-        <div className="bg-black/85 text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-300 shadow-lg whitespace-nowrap">
-          <ThumbsUp className="w-3.5 h-3.5 text-white flex-shrink-0" />
+        <div className="bg-[#3D2A6B] text-white text-xs font-sans rounded-full px-3 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom duration-500 delay-300 shadow-lg whitespace-nowrap">
+          <Heart className="w-3.5 h-3.5 text-white flex-shrink-0" />
           <span>Swipe right to like</span>
         </div>
       </div>
@@ -752,11 +777,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             className="flex items-center flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9CFF7] rounded-[6px]"
             aria-label="Kaleidorium — go to Discover"
           >
-            <img 
-              src="/logos/kaleidorium-wordmark-mobile.png?v=12" 
-              alt="Kaleidorium Logo" 
-              className="h-8 w-auto flex-shrink-0"
-            />
+            <KaleidoriumWordmark size="mobile" />
           </button>
           <Button
             variant="ghost"
@@ -776,7 +797,19 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             </div>
           )}
 
-          {collection.length === 0 ? null : (
+          {collection.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
+              <div className="w-20 h-20 mb-6 rounded-full bg-[#FAFAF8] border border-[#E6E4DF] flex items-center justify-center">
+                <Heart className="h-9 w-9 text-[#1E1E1C]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-lg font-bold text-[#1E1E1C] mb-2">Your collection is empty</h3>
+              <p className="text-[#5F5F5A] max-w-xs mb-6 text-sm leading-relaxed">
+                Like an artwork to add it to your collection. Tap the Like button on any piece you love while
+                discovering, and it will appear here.
+              </p>
+              <Button onClick={() => setView("discover")}>Discover Artwork</Button>
+            </div>
+          ) : (
             <div className="space-y-6">
               {collection.map((artwork) => (
                 <div key={artwork.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -850,11 +883,11 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
         {/* Mobile Menu Modal */}
         {showMenuModal && (
           <div
-            className="fixed inset-0 bg-black/50 flex items-end z-[100]"
+            className="mobile-menu-overlay bg-black/50 z-[100]"
             onClick={() => setShowMenuModal(false)}
           >
             <div
-              className="bg-white rounded-t-2xl p-6 w-full"
+              className="bg-white rounded-t-2xl w-full mobile-menu-drawer"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
@@ -863,7 +896,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowMenuModal(false)}
-                  className="text-black hover:bg-gray-100 h-12 w-12"
+                  className="mobile-menu-close-btn text-black h-12 w-12"
                 >
                   <X className="w-8 h-8" />
                   <span className="sr-only">Close menu</span>
@@ -872,7 +905,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <div className="space-y-4">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("discover")
                     setShowMenuModal(false)
@@ -883,7 +916,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("collection")
                     setShowMenuModal(false)
@@ -894,7 +927,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("taste-profile")
                     setShowMenuModal(false)
@@ -905,7 +938,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("featured")
                     setShowMenuModal(false)
@@ -916,7 +949,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("why-kaleidorium")
                     setShowMenuModal(false)
@@ -927,7 +960,29 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
+                  onClick={() => {
+                    setShowMenuModal(false)
+                    router.push("/?view=why-kaleidorium&role=artist")
+                  }}
+                >
+                  <Palette className="mr-3 h-5 w-5" />
+                  For Artists
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="mobile-menu-btn w-full"
+                  onClick={() => {
+                    setShowMenuModal(false)
+                    router.push("/?view=why-kaleidorium&role=gallery")
+                  }}
+                >
+                  <Building2 className="mr-3 h-5 w-5" />
+                  For Galleries
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     router.push("/contact");
                     setShowMenuModal(false);
@@ -938,7 +993,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                  className="mobile-menu-btn w-full"
                   onClick={() => {
                     setView("profile")
                     setShowMenuModal(false)
@@ -951,7 +1006,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 <div className="border-t border-gray-200 mt-4 pt-4">
                   <div className="space-y-2">
                     <button
-                      className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                      className="mobile-menu-footer-link"
                       onClick={() => {
                         setView("terms");
                         setShowMenuModal(false);
@@ -960,7 +1015,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                       Terms of Service
                     </button>
                     <button
-                      className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                      className="mobile-menu-footer-link"
                       onClick={() => {
                         setView("privacy");
                         setShowMenuModal(false);
@@ -1054,12 +1109,12 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                     
                     return allTags.length > 0 && (
                       <div>
-                        <span className="font-semibold text-black">Tags:</span>
+                        <span className="discover-section-title">Style &amp; Subject</span>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {allTags.map((tag) => (
-                            <Badge key={tag} variant="secondary">
+                            <span key={tag} className="artwork-chip">
                               {tag}
-                            </Badge>
+                            </span>
                           ))}
                         </div>
                       </div>
@@ -1070,9 +1125,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {/* Artist Website Button - Always show if link exists */}
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
-                    <Button 
-                      className="w-full py-3 text-sm font-bold text-[#000000] hover:scale-[1.02] active:scale-95 hover:!bg-[#F0F0F0] hover:!border-[#000000] transition-all duration-200"
-                      style={{ backgroundColor: '#FFFFFF', borderColor: '#000000', borderWidth: '1px', borderStyle: 'solid', color: '#000000', fontWeight: 700 }}
+                    <button
+                      type="button"
+                      className="artwork-cta-btn"
                       onClick={() => {
                         const linkUrl = selectedArtwork.link!;
                         // Validate and fix URL before opening
@@ -1092,8 +1147,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         }
                       }}
                     >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
                       View on artist's website
-                    </Button>
+                    </button>
                   </div>
                 )}
                 
@@ -1206,13 +1262,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       >
         <Menu className="w-6 h-6" />
       </Button>
-      <h1 className="font-serif text-xl font-semibold text-black flex items-center">
-        <img
-          src="/logos/kaleidorium-wordmark-mobile.png?v=12"
-          alt="Kaleidorium Logo"
-          className="h-8 w-auto"
-        />
-      </h1>
+      <div className="flex items-center justify-center flex-1">
+        <KaleidoriumWordmark size="mobile" />
+      </div>
       <Button
         variant="ghost"
         size="icon"
@@ -1251,7 +1303,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
       <div className={getMainAreaClasses()}>
         <div
           ref={containerRef}
-          className="h-full overflow-y-auto p-4 space-y-4"
+          className="h-full overflow-y-auto p-4 space-y-5 discover-feed-bg"
         >
           {/* Kurator Banner — above the feed */}
           {view === "discover" && localPreferences && (
@@ -1264,7 +1316,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               ref={(el) => {
                 cardRefs.current[artwork.id] = el
               }}
-              className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out transform hover:scale-[1.01] overflow-hidden"
+              className="discover-mobile-card"
               onTouchStart={(e) => handleTouchStart(e, artwork.id)}
               onTouchMove={(e) => handleTouchMove(e, artwork.id)}
               onTouchEnd={() => handleTouchEnd(artwork.id, artwork)}
@@ -1272,14 +1324,14 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             >
               {/* Artwork Image */}
               <div 
-                className="relative w-full h-96 cursor-zoom-in"
+                className="discover-mobile-artwork-frame"
                 onClick={() => handleArtworkTap(artwork)}
               >
                 <Image
                   src={artwork.artwork_image}
                   alt={artwork.title}
                   fill
-                  className="object-cover transition-opacity duration-300"
+                  className="object-contain p-3 transition-opacity duration-300"
                   sizes="100vw"
                   priority={index < 3}
                 />
@@ -1296,14 +1348,14 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </div>
 
               {/* Simplified Artwork Information */}
-              <div className="p-4">
+              <div className="discover-mobile-card-body">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
-                    <h2 className="text-lg font-bold text-black mb-1">{artwork.title}</h2>
+                    <h2 className="discover-mobile-title">{artwork.title}</h2>
                     <ArtistNameWithBadge 
                       artistName={artwork.artist}
                       artistId={(artwork as any).artist_id}
-                      className="text-base text-gray-600"
+                      className="discover-mobile-artist"
                     />
                   </div>
                 </div>
@@ -1316,76 +1368,72 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   </>
                 )}
 
-                {/* Action Buttons — 80% of previous w-14 (3.5rem → 2.8rem) */}
-                <div className="flex items-center justify-center gap-5 relative mt-5">
-            {/* Dislike */}
-            <button
-              type="button"
-              id="dislike-button"
-              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
-                transition-all duration-200 active:scale-95
-                ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#000000] ring-offset-2 z-10 rounded-[11px]' : ''}`}
-              onClick={() => {
-                handleButtonAction('dislike', artwork)
-                if (currentOnboardingStep === 'dislike') nextOnboardingStep()
-              }}
-              disabled={isAnimating}
-              aria-label="Dislike"
-            >
-              <img
-                src="/icons/actions/mobile-dislike.png"
-                alt=""
-                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
-                draggable={false}
-              />
-            </button>
+                {/* Action Buttons */}
+                <div className="discover-mobile-actions relative">
+                  <div className="discover-mobile-action">
+                    <button
+                      type="button"
+                      id="dislike-button"
+                      className={`discover-mobile-action-btn discover-mobile-action-btn--dislike
+                        ${buttonStates.dislike ? 'scale-95 brightness-90' : ''}
+                        ${currentOnboardingStep === 'dislike' ? 'ring-2 ring-[#D64545] ring-offset-2 z-10' : ''}`}
+                      onClick={() => {
+                        handleButtonAction('dislike', artwork)
+                        if (currentOnboardingStep === 'dislike') nextOnboardingStep()
+                      }}
+                      disabled={isAnimating}
+                      aria-label="Not for me"
+                    >
+                      <svg className="discover-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                        <path d="M7 7l10 10M17 7L7 17" />
+                      </svg>
+                    </button>
+                    <span className="discover-mobile-action-label">Not for me</span>
+                  </div>
 
-            {/* Info */}
-            <button
-              type="button"
-              id="info-button"
-              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
-                transition-all duration-200 active:scale-95
-                ${buttonStates.info ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#000000] ring-offset-2 z-10 rounded-[11px]' : ''}`}
-              onClick={() => {
-                handleButtonAction('info', artwork)
-                if (currentOnboardingStep === 'info') nextOnboardingStep()
-              }}
-              disabled={isAnimating}
-              aria-label="Information"
-            >
-              <img
-                src="/icons/actions/mobile-info.png"
-                alt=""
-                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
-                draggable={false}
-              />
-            </button>
+                  <div className="discover-mobile-action">
+                    <button
+                      type="button"
+                      id="info-button"
+                      className={`discover-mobile-action-btn discover-mobile-action-btn--info
+                        ${buttonStates.info ? 'scale-95 brightness-90' : ''}
+                        ${currentOnboardingStep === 'info' ? 'ring-2 ring-[#1E1E1C] ring-offset-2 z-10' : ''}`}
+                      onClick={() => {
+                        handleButtonAction('info', artwork)
+                        if (currentOnboardingStep === 'info') nextOnboardingStep()
+                      }}
+                      disabled={isAnimating}
+                      aria-label="Info"
+                    >
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <line x1="12" y1="10" x2="12" y2="16" />
+                        <circle cx="12" cy="7.25" r="0.75" fill="currentColor" stroke="none" />
+                      </svg>
+                    </button>
+                    <span className="discover-mobile-action-label">Info</span>
+                  </div>
 
-            {/* Like */}
-            <button
-              type="button"
-              id="like-button"
-              className={`w-[2.8rem] h-[2.8rem] min-w-[2.8rem] min-h-[2.8rem] p-0 bg-transparent border-0 cursor-pointer
-                transition-all duration-200 active:scale-95
-                ${buttonStates.like ? 'scale-95 brightness-90' : ''}
-                ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#000000] ring-offset-2 z-10 rounded-[11px]' : ''}`}
-              onClick={() => {
-                handleButtonAction('like', artwork)
-                if (currentOnboardingStep === 'like') nextOnboardingStep()
-              }}
-              disabled={isAnimating}
-              aria-label="Like"
-            >
-              <img
-                src="/icons/actions/mobile-like.png"
-                alt=""
-                className="w-[2.8rem] h-[2.8rem] select-none pointer-events-none"
-                draggable={false}
-              />
-            </button>
+                  <div className="discover-mobile-action">
+                    <button
+                      type="button"
+                      id="like-button"
+                      className={`discover-mobile-action-btn discover-mobile-action-btn--like
+                        ${buttonStates.like ? 'scale-95 brightness-90' : ''}
+                        ${currentOnboardingStep === 'like' ? 'ring-2 ring-[#3D9B6A] ring-offset-2 z-10' : ''}`}
+                      onClick={() => {
+                        handleButtonAction('like', artwork)
+                        if (currentOnboardingStep === 'like') nextOnboardingStep()
+                      }}
+                      disabled={isAnimating}
+                      aria-label="Show me more"
+                    >
+                      <svg className="discover-action-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M12 20.5s-6.5-4.2-6.5-9.1C5.5 8.1 7.6 6 10.2 6c1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.7 2.1 4.7 5.4 0 4.9-6.5 9.1-6.5 9.1z" />
+                      </svg>
+                    </button>
+                    <span className="discover-mobile-action-label">Show me more</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1485,7 +1533,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         key={tag}
                         variant="outline"
                         className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
-                          filters.style.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                          filters.style.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''
                         }`}
                         onClick={() => addFilterTag('style', tag)}
                       >
@@ -1546,7 +1594,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         key={tag}
                         variant="outline"
                         className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
-                          filters.subject.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                          filters.subject.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''
                         }`}
                         onClick={() => addFilterTag('subject', tag)}
                       >
@@ -1607,7 +1655,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         key={tag}
                         variant="outline"
                         className={`cursor-pointer hover:bg-gray-200 text-xs font-normal ${
-                          filters.colors.includes(tag) ? 'bg-blue-100 border-blue-300' : ''
+                          filters.colors.includes(tag) ? 'bg-[#F0EBFF] border-[#D9CFF7]' : ''
                         }`}
                         onClick={() => addFilterTag('colors', tag)}
                       >
@@ -1621,7 +1669,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               {/* Filter Action Buttons */}
               <div className="flex gap-4 mt-8">
                 <Button 
-                  className="flex-1 bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all"
                   onClick={applyFilters}
                 >
                   Apply Filters
@@ -1641,15 +1689,15 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
 
       {/* Mobile Menu Modal */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-end z-[100]">
-          <div className="bg-white rounded-t-2xl p-6 w-full">
+        <div className="mobile-menu-overlay bg-black/50 z-[100]">
+          <div className="bg-white rounded-t-2xl w-full mobile-menu-drawer">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-black">Menu</h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowMenuModal(false)}
-                className="text-black hover:bg-gray-100"
+                className="mobile-menu-close-btn text-black"
               >
                 ×
               </Button>
@@ -1657,7 +1705,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
             <div className="space-y-4">
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("discover")
                   setShowMenuModal(false)
@@ -1669,7 +1717,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("collection")
                   setShowMenuModal(false)
@@ -1680,7 +1728,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("taste-profile")
                   setShowMenuModal(false)
@@ -1691,7 +1739,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("featured")
                   setShowMenuModal(false)
@@ -1702,7 +1750,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("why-kaleidorium")
                   setShowMenuModal(false)
@@ -1713,7 +1761,29 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
+                onClick={() => {
+                  setShowMenuModal(false)
+                  router.push("/?view=why-kaleidorium&role=artist")
+                }}
+              >
+                <Palette className="mr-3 h-5 w-5" />
+                For Artists
+              </Button>
+              <Button
+                variant="ghost"
+                className="mobile-menu-btn w-full"
+                onClick={() => {
+                  setShowMenuModal(false)
+                  router.push("/?view=why-kaleidorium&role=gallery")
+                }}
+              >
+                <Building2 className="mr-3 h-5 w-5" />
+                For Galleries
+              </Button>
+              <Button
+                variant="ghost"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/contact");
                   setShowMenuModal(false);
@@ -1724,7 +1794,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   setView("profile")
                   setShowMenuModal(false)
@@ -1737,7 +1807,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
               <div className="border-t border-gray-200 mt-4 pt-4">
                 <div className="space-y-2">
                   <button
-                    className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                    className="mobile-menu-footer-link"
                     onClick={() => {
                       setView("terms");
                       setShowMenuModal(false);
@@ -1746,7 +1816,7 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                     Terms of Service
                   </button>
                   <button
-                    className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                    className="mobile-menu-footer-link"
                     onClick={() => {
                       setView("privacy");
                       setShowMenuModal(false);
@@ -1847,12 +1917,12 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                   
                   return allTags.length > 0 && (
                     <div>
-                      <span className="font-semibold text-black">Style & Subject:</span>
+                      <span className="discover-section-title">Style &amp; Subject</span>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {allTags.map((tag) => (
-                          <Badge key={tag} variant="secondary">
+                          <span key={tag} className="artwork-chip">
                             {tag}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -1862,9 +1932,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                 {/* Artist Website Button - Only show if link exists */}
                 {selectedArtwork.link && selectedArtwork.link.trim() !== '' && (
                   <div className="pt-4">
-                    <Button 
-                      className="w-full py-3 text-sm font-bold text-[#000000] hover:scale-[1.02] active:scale-95 hover:!bg-[#F0F0F0] hover:!border-[#000000] transition-all duration-200"
-                      style={{ backgroundColor: '#FFFFFF', borderColor: '#000000', borderWidth: '1px', borderStyle: 'solid', color: '#000000', fontWeight: 700 }}
+                    <button
+                      type="button"
+                      className="artwork-cta-btn"
                       onClick={() => {
                         // Validate and fix URL before opening
                         try {
@@ -1883,8 +1953,9 @@ const handleButtonAction = async (action: 'like' | 'dislike' | 'info', artwork: 
                         }
                       }}
                     >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
                       View on artist's website
-                    </Button>
+                    </button>
                   </div>
                 )}
                 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Search, Heart, Palette, Info, Mail, AtSign } from "lucide-react";
+import { KaleidoriumWordmark } from "@/components/kaleidorium-wordmark";
 import { supabase } from "@/lib/supabase";
 
 interface UniversalAppHeaderProps {
@@ -70,11 +71,7 @@ export function UniversalAppHeader({
             className="flex items-center space-x-1 font-serif text-xl font-semibold text-black flex-shrink-0"
             onClick={() => handleNavigation("/", "discover")}
           >
-            <img 
-              src="/logos/kaleidorium-wordmark-desktop.png?v=12" 
-              alt="Kaleidorium Logo" 
-            className="h-8 md:h-10 w-auto flex-shrink-0"
-            />
+            <KaleidoriumWordmark size="desktop" />
           </Button>
         </div>
 

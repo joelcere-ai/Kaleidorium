@@ -21,14 +21,14 @@ export function Footer() {
       <div className="container mx-auto flex flex-col sm:flex-row justify-center gap-4">
         <button
           onClick={handleTermsClick}
-          className="hover:underline text-sm text-foreground font-normal cursor-pointer bg-transparent border-none"
+          className="text-sm text-foreground font-normal cursor-pointer bg-transparent border-none underline-offset-4 hover:text-[#6B4FD4] hover:underline decoration-[#6B4FD4]"
         >
           Terms of Service
         </button>
         <span className="hidden sm:inline text-sm text-foreground">|</span>
         <button
           onClick={handlePrivacyClick}
-          className="hover:underline text-sm text-foreground font-normal cursor-pointer bg-transparent border-none"
+          className="text-sm text-foreground font-normal cursor-pointer bg-transparent border-none underline-offset-4 hover:text-[#6B4FD4] hover:underline decoration-[#6B4FD4]"
         >
           Privacy & Data Policy
         </button>

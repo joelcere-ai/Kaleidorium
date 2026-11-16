@@ -1,79 +1,56 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
-import { ArtworkDetailOverlay } from "@/components/artwork-detail-overlay"
+import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Info, MoreVertical } from "lucide-react"
+import { ArtistNameWithBadge } from "@/components/artist-name-with-badge"
 import { ImageOverlay } from "@/components/image-overlay"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { useToast } from "@/hooks/use-toast"
-import { supabase } from "@/lib/supabase"
-import {
-  fetchArtworksByIds,
-  fetchCurrentCuratedCollection,
-  formatMonthLabel,
-  type CuratedCollectionRow,
-} from "@/lib/curated-collection"
-import {
-  addArtworkToUserCollection,
-  updateUserArtworkPreferences,
-} from "@/lib/artwork-preferences"
-import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection"
+import { stashPendingDiscoverArtwork } from "@/lib/discover-deep-link"
+import { FEATURED_ARTIST, fetchFeaturedArtistArtworks } from "@/lib/featured-artist"
 import type { Artwork } from "@/types/artwork"
 
-export function FeaturedPageContent() {
-  const { toast } = useToast()
-  const [loading, setLoading] = useState(true)
-  const [collection, setCollection] = useState<CuratedCollectionRow | null>(null)
-  const [artworks, setArtworks] = useState<Artwork[]>([])
-  const [user, setUser] = useState<{ id: string } | null>(null)
-  const [savedIds, setSavedIds] = useState<Set<string>>(new Set())
-  const [detailArtwork, setDetailArtwork] = useState<Artwork | null>(null)
-  const [overlayImage, setOverlayImage] = useState<{ url: string; alt: string } | null>(null)
+function formatArtworkMeta(artwork: Artwork) {
+  const parts = [artwork.year, artwork.medium].filter(Boolean)
+  return parts.join(" · ")
+}
 
-  useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session?.user) {
-        setUser(null)
-        setSavedIds(new Set(loadTempCollection().map((a) => a.id)))
-        return
-      }
-      setUser({ id: session.user.id })
-      const { data } = await supabase
-        .from("Collection")
-        .select("artwork_id")
-        .eq("user_id", session.user.id)
-      const ids = new Set((data || []).map((r) => String(r.artwork_id)))
-      setSavedIds(ids)
-    })
-  }, [])
+export function FeaturedPageContent() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+  const [artworks, setArtworks] = useState<Artwork[]>([])
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [overlayImage, setOverlayImage] = useState<{ url: string; alt: string } | null>(null)
+  const menuRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       setLoading(true)
-      const row = await fetchCurrentCuratedCollection()
-      if (cancelled) return
-      setCollection(row)
-      if (row?.artwork_ids?.length) {
-        const ids = Array.isArray(row.artwork_ids) ? row.artwork_ids : []
-        const loaded = await fetchArtworksByIds(ids)
-        if (!cancelled) setArtworks(loaded)
-      } else {
-        setArtworks([])
+      const loaded = await fetchFeaturedArtistArtworks()
+      if (!cancelled) {
+        setArtworks(loaded)
+        setLoading(false)
       }
-      setLoading(false)
     })()
     return () => {
       cancelled = true
     }
   }, [])
 
-  const openArtworkDetail = (artwork: Artwork) => {
-    setDetailArtwork(artwork)
-  }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
-  const closeArtworkDetail = () => {
-    setDetailArtwork(null)
+  const openArtworkInDiscover = (artwork: Artwork) => {
+    const artworkId = String(artwork.id).split("_")[0]
+    stashPendingDiscoverArtwork(artwork)
+    router.push(`/?artworkId=${encodeURIComponent(artworkId)}`)
   }
 
   const openImageOverlay = (artwork: Artwork) => {
@@ -85,171 +62,130 @@ export function FeaturedPageContent() {
     setOverlayImage(null)
   }
 
-  const handleLike = useCallback(
-    async (artwork: Artwork) => {
-      if (!user) {
-        const current = loadTempCollection()
-        if (!current.some((a) => a.id === artwork.id)) {
-          const next = [...current, artwork]
-          saveTempCollection(next)
-          setSavedIds(new Set(next.map((a) => a.id)))
-        }
-        toast({
-          title: "Added to your collection",
-          description: "Sign in to sync your collection and refine your taste profile.",
-        })
-        return
-      }
-
-      const okPref = await updateUserArtworkPreferences(user.id, artwork, "add")
-      const okColl = await addArtworkToUserCollection(user.id, artwork)
-      if (okPref && okColl) {
-        setSavedIds((prev) => new Set([...prev, artwork.id]))
-        toast({ title: "Added to your collection" })
-      } else {
-        toast({
-          title: "Something went wrong",
-          description: "Could not save your preference. Please try again.",
-          variant: "destructive",
-        })
-      }
-    },
-    [user, toast]
+  const renderMenu = (artwork: Artwork) => (
+    <div className="collection-card-menu-wrap" ref={openMenuId === artwork.id ? menuRef : null}>
+      <button
+        type="button"
+        className="collection-card-menu-btn"
+        aria-label="Artwork actions"
+        onClick={(event) => {
+          event.stopPropagation()
+          setOpenMenuId((current) => (current === artwork.id ? null : artwork.id))
+        }}
+      >
+        <MoreVertical className="w-4 h-4" />
+      </button>
+      {openMenuId === artwork.id && (
+        <div className="collection-card-menu" role="menu">
+          <button
+            type="button"
+            className="collection-card-menu-item"
+            onClick={(event) => {
+              event.stopPropagation()
+              setOpenMenuId(null)
+              openArtworkInDiscover(artwork)
+            }}
+          >
+            <Info className="w-4 h-4" />
+            View details
+          </button>
+        </div>
+      )}
+    </div>
   )
 
-  const handleDislike = useCallback(
-    async (artwork: Artwork) => {
-      if (!user) {
-        toast({
-          title: "Preference noted",
-          description: "Sign in to build your full taste profile across Kaleidorium.",
-        })
-        return
-      }
-      const ok = await updateUserArtworkPreferences(user.id, artwork, "dislike")
-      if (ok) {
-        toast({ title: "Thanks — we'll show you less like this" })
-      }
-    },
-    [user, toast]
-  )
-
-  const inCollection = (artworkId: string) => savedIds.has(artworkId)
+  const heroImage = artworks[0]?.artwork_image
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex-1 overflow-y-auto">
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <header className="mb-10 text-center max-w-2xl mx-auto">
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1E1E1C] tracking-tight">
-            Curated Collections
-          </h1>
-          <p className="text-sm md:text-base text-[#5F5F5A] mt-2 leading-relaxed">
-            A new themed selection every month, chosen by our Kurator.
-          </p>
+    <div className="featured-page">
+      <div className="featured-page-inner">
+        <header className="featured-page-header">
+          <p className="featured-page-eyebrow">Featured artist</p>
         </header>
 
-        {loading ? (
-          <p className="text-center text-[#8A8A84] text-sm py-16">Loading this month&apos;s collection…</p>
-        ) : !collection || artworks.length === 0 ? (
-          <div className="text-center py-20 px-4 rounded-2xl border border-[#E6E4DF] bg-white">
-            <p className="text-[#5F5F5A] text-base leading-relaxed">
-              This month&apos;s curated collection is on its way.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="mb-8 max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-wider text-[#8A8A84] mb-2">
-                {formatMonthLabel(collection.month)}
-              </p>
-              <h2 className="text-xl md:text-2xl font-bold text-[#1E1E1C] mb-3">
-                {collection.theme_title}
-              </h2>
-              <p className="text-sm md:text-base text-[#5F5F5A] leading-relaxed">
-                {collection.description}
-              </p>
+        <section className="featured-artist-hero">
+          {heroImage && (
+            <div className="featured-artist-hero-image-wrap">
+              <img
+                src={heroImage}
+                alt={`Artwork by ${FEATURED_ARTIST.fullName}`}
+                className="featured-artist-hero-image"
+              />
             </div>
-
-            <div className="flex flex-col gap-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6">
-              {artworks.map((artwork) => (
-                <Card
-                  key={artwork.id}
-                  className="overflow-hidden group hover:shadow-md transition-shadow border border-[#E6E4DF]"
-                >
-                  <div
-                    className="aspect-square overflow-hidden bg-[#FAFAF8] cursor-zoom-in"
-                    onClick={() => openImageOverlay(artwork)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`View ${artwork.title} full size`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault()
-                        openImageOverlay(artwork)
-                      }
-                    }}
-                  >
-                    <img
-                      src={artwork.artwork_image || "/placeholder.svg"}
-                      alt={artwork.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-[#1E1E1C] mb-0.5 truncate">{artwork.title}</h3>
-                    <p className="text-sm text-[#8A8A84] mb-3 truncate">{artwork.artist}</p>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 min-w-0 whitespace-nowrap"
-                        onClick={() => openArtworkDetail(artwork)}
-                      >
-                        View artwork
-                      </Button>
-                      <button
-                        type="button"
-                        className="shrink-0 p-0 bg-transparent border-0 cursor-pointer active:scale-95 hover:brightness-[0.97] transition-all duration-150"
-                        onClick={() => handleDislike(artwork)}
-                        aria-label="Dislike"
-                      >
-                        <img
-                          src="/icons/actions/mobile-dislike.png"
-                          alt=""
-                          className="w-9 h-9 select-none pointer-events-none"
-                          draggable={false}
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        className="shrink-0 p-0 bg-transparent border-0 cursor-pointer active:scale-95 hover:brightness-[0.97] transition-all duration-150"
-                        onClick={() => handleLike(artwork)}
-                        aria-label="Like and add to collection"
-                      >
-                        <img
-                          src="/icons/actions/mobile-like.png"
-                          alt=""
-                          className="w-9 h-9 select-none pointer-events-none"
-                          draggable={false}
-                        />
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
+          )}
+          <div className="featured-artist-intro">
+            <h2 className="featured-artist-name">{FEATURED_ARTIST.fullName}</h2>
+            <div className="featured-artist-copy">
+              {FEATURED_ARTIST.introParagraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
               ))}
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </section>
 
-      <ArtworkDetailOverlay
-        artwork={detailArtwork}
-        open={detailArtwork !== null}
-        onClose={closeArtworkDetail}
-        onLike={handleLike}
-        onDislike={handleDislike}
-        inCollection={detailArtwork ? inCollection(detailArtwork.id) : false}
-      />
+        <section className="featured-artworks-section">
+          <div className="featured-artworks-heading">
+            <h2 className="featured-artworks-title">Works on Kaleidorium</h2>
+            {!loading && (
+              <p className="featured-artworks-count">
+                {artworks.length} artwork{artworks.length !== 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
+
+          {loading ? (
+            <p className="featured-page-loading">Loading artworks…</p>
+          ) : artworks.length === 0 ? (
+            <div className="featured-page-empty">
+              <p>Artworks by {FEATURED_ARTIST.displayName} will appear here soon.</p>
+            </div>
+          ) : (
+            <>
+              <div className="collection-grid">
+                {artworks.map((artwork) => (
+                  <article key={artwork.id} className="collection-card">
+                    <div
+                      className="collection-card-image-wrap collection-card-image-wrap--zoom"
+                      onClick={() => openImageOverlay(artwork)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`View ${artwork.title} full size`}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault()
+                          openImageOverlay(artwork)
+                        }
+                      }}
+                    >
+                      <img
+                        src={artwork.artwork_image || "/placeholder.svg"}
+                        alt={artwork.title}
+                        className="collection-card-image"
+                      />
+                      {renderMenu(artwork)}
+                    </div>
+                    <div className="collection-card-body">
+                      <h3 className="collection-card-title">{artwork.title}</h3>
+                      <ArtistNameWithBadge
+                        artistName={artwork.artist}
+                        artistId={(artwork as Artwork & { artist_id?: string }).artist_id}
+                        className="collection-card-artist"
+                      />
+                      {formatArtworkMeta(artwork) && (
+                        <p className="collection-card-meta">{formatArtworkMeta(artwork)}</p>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <p className="collection-footer-hint">
+                <Info className="w-4 h-4" />
+                Tap an artwork to zoom · Use the menu to view in Discover
+              </p>
+            </>
+          )}
+        </section>
+      </div>
 
       {overlayImage && (
         <ImageOverlay

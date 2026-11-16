@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, User, Search, Heart, Info, Mail, DollarSign } from "lucide-react";
+import { KaleidoriumWordmark } from "@/components/kaleidorium-wordmark";
 
 interface UnifiedMobileHeaderProps {
   currentPage?: "discover" | "collection" | "why-kaleidorium" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "profile";
@@ -40,11 +41,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
           className="flex items-center flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9CFF7] rounded-[6px]"
           aria-label="Kaleidorium — go to Discover"
         >
-          <img 
-            src="/logos/kaleidorium-wordmark-mobile.png?v=12" 
-            alt="Kaleidorium Logo" 
-            className="h-8 w-auto flex-shrink-0"
-          />
+          <KaleidoriumWordmark size="mobile" />
         </button>
         <Button
           variant="ghost"
@@ -58,15 +55,15 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
 
       {/* Mobile Menu Modal */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-2xl p-6">
+        <div className="mobile-menu-overlay bg-black/50 z-[60] justify-center">
+          <div className="bg-white w-full max-w-md rounded-t-2xl mobile-menu-drawer">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-black">Menu</h2>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowMenuModal(false)}
-                className="text-black hover:bg-gray-100"
+                className="mobile-menu-close-btn text-black"
               >
                 ×
               </Button>
@@ -74,7 +71,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "discover" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/")}
@@ -85,7 +82,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "collection" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/collection")}
@@ -96,7 +93,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "why-kaleidorium" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/?view=why-kaleidorium")}
@@ -107,7 +104,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
 
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "pricing" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/pricing")}
@@ -118,7 +115,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "contact" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/contact")}
@@ -129,7 +126,7 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
               
               <Button
                 variant="ghost"
-                className={`w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0] ${
+                className={`mobile-menu-btn w-full ${
                   currentPage === "profile" ? "font-semibold underline" : ""
                 }`}
                 onClick={() => handleNavigation("/profile")}
@@ -143,13 +140,13 @@ export function UnifiedMobileHeader({ currentPage }: UnifiedMobileHeaderProps) {
             <div className="border-t border-gray-200 mt-4 pt-4">
               <div className="space-y-2">
                 <button
-                  className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                  className="mobile-menu-footer-link"
                   onClick={() => handleNavigation("/terms")}
                 >
                   Terms of Service
                 </button>
                 <button
-                  className="w-full text-left text-sm text-gray-600 hover:text-gray-800 py-2"
+                  className="mobile-menu-footer-link"
                   onClick={() => handleNavigation("/privacy")}
                 >
                   Privacy & Data Policy

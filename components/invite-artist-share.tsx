@@ -2,6 +2,12 @@
 
 import { Facebook, Instagram, MessageCircle, Copy } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import {
+  KALEIDORIUM_SITE_URL,
+  buildInviteShareMessage,
+  buildTwitterShareUrl,
+  buildWhatsAppShareUrl,
+} from "@/lib/invite-share"
 
 const KaleidoriumXIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -9,30 +15,33 @@ const KaleidoriumXIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-const KALEIDORIUM_SITE_URL = "https://www.kaleidorium.com"
-const KALEIDORIUM_SHARE_TEXT =
-  "Discover Kaleidorium — a new art discovery engine that connects collectors and artists based on taste."
-
 export function InviteArtistShare() {
   const { toast } = useToast()
-  const shareUrl = KALEIDORIUM_SITE_URL
+  const shareMessage = buildInviteShareMessage(KALEIDORIUM_SITE_URL)
 
-  const handleCopy = async () => {
-    const text = `${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`
+  const copyShareMessage = async (description: string) => {
     try {
-      await navigator.clipboard.writeText(text)
+      await navigator.clipboard.writeText(shareMessage)
       toast({
-        title: "Link copied!",
-        description: "Paste it in a message to an artist you admire.",
+        title: "Copied!",
+        description,
       })
+      return true
     } catch {
       toast({
         title: "Could not copy",
         description: "Please copy the link manually.",
         variant: "destructive",
       })
+      return false
     }
   }
+
+  const handleCopy = () =>
+    copyShareMessage("Paste it in a message to an artist you admire.")
+
+  const handleFacebookShare = () =>
+    copyShareMessage("Paste the message when you share on Facebook.")
 
   return (
     <div className="share-panel rounded-2xl p-6">
@@ -40,7 +49,7 @@ export function InviteArtistShare() {
         Invite an artist you admire
       </p>
       <p
-        className="text-center mx-auto mb-5"
+        className="text-center mx-auto mb-4"
         style={{
           fontSize: "14px",
           lineHeight: 1.55,
@@ -48,8 +57,20 @@ export function InviteArtistShare() {
           maxWidth: "420px",
         }}
       >
-        {KALEIDORIUM_SHARE_TEXT}
+        Choose how you&apos;d like to share below. We&apos;ll prepare a short message about Kaleidorium
+        and a link you can send to an artist you admire.
       </p>
+      <div
+        className="mx-auto mb-5 rounded-xl border border-[#E6E4DF] bg-[#FAFAF8] px-4 py-3 text-left"
+        style={{ maxWidth: "420px" }}
+      >
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#8A8A84] mb-2">
+          What you&apos;ll share
+        </p>
+        <p className="text-[13px] leading-relaxed text-[#5F5F5A] whitespace-pre-line">
+          {shareMessage}
+        </p>
+      </div>
       <p className="share-panel-title">Share Kaleidorium</p>
       <div className="flex justify-center gap-2 flex-wrap">
         <button
@@ -57,11 +78,7 @@ export function InviteArtistShare() {
           title="Share on X"
           type="button"
           onClick={() =>
-            window.open(
-              `https://twitter.com/intent/tweet?text=${encodeURIComponent(KALEIDORIUM_SHARE_TEXT)}&url=${encodeURIComponent(shareUrl)}`,
-              "_blank",
-              "noopener,noreferrer"
-            )
+            window.open(buildTwitterShareUrl(KALEIDORIUM_SITE_URL), "_blank", "noopener,noreferrer")
           }
         >
           <KaleidoriumXIcon className="w-[13px] h-[13px]" />
@@ -70,13 +87,7 @@ export function InviteArtistShare() {
           className="share-icon-btn"
           title="Share on Facebook"
           type="button"
-          onClick={() =>
-            window.open(
-              `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(KALEIDORIUM_SHARE_TEXT)}`,
-              "_blank",
-              "noopener,noreferrer"
-            )
-          }
+          onClick={handleFacebookShare}
         >
           <Facebook />
         </button>
@@ -84,17 +95,7 @@ export function InviteArtistShare() {
           className="share-icon-btn"
           title="Share on Instagram (copy link)"
           type="button"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(`${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`)
-              toast({
-                title: "Link copied!",
-                description: "Paste it in your Instagram story or post.",
-              })
-            } catch {
-              handleCopy()
-            }
-          }}
+          onClick={() => copyShareMessage("Paste it in your Instagram story or post.")}
         >
           <Instagram />
         </button>
@@ -102,14 +103,9 @@ export function InviteArtistShare() {
           className="share-icon-btn"
           title="Share on WhatsApp"
           type="button"
-          onClick={() => {
-            const whatsappText = `${KALEIDORIUM_SHARE_TEXT}\n\n${shareUrl}`
-            window.open(
-              `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
-              "_blank",
-              "noopener,noreferrer"
-            )
-          }}
+          onClick={() =>
+            window.open(buildWhatsAppShareUrl(KALEIDORIUM_SITE_URL), "_blank", "noopener,noreferrer")
+          }
         >
           <MessageCircle />
         </button>

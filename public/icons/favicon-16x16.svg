@@ -1,5 +1,4 @@
-<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <rect width="16" height="16" fill="white" stroke="black" stroke-width="2" rx="2"/>
-  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" 
-        font-family="serif" font-size="9.6" font-weight="600" fill="black">K</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <image width="16" height="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAPoAAAD6AG1e1JrAAADFklEQVQ4jW2T2U9TURDGC+qTTybExBcf1f/AJ0xITBRFg4kkQqA+YKwBDBFxQ20JiiyhRqgIRctelrYsdqWUAN2wlIu2EEopXbyltIDthbZs5S5jLkRjU7+XmXO+zC9nJmcYDAaDIRKJjtFxxREt9i1Hq+gcOJAMAEl/PJclfM45H+lC57ZOMf4nly2cEXDGDkIogMMS5h2B4bAY0ayetRkjVswNsGwJMxOKPfbIhRXbftj5fQcWv4Vj6A+Aed1mE+2pBmxnpmWbc9axXVjQ74BtaluXALCM7dxwzVAwp8PwWU2IQlQYbh2NgVSw/FLR7NfourfBINnAv0mDpHU8CoumaFocQNnivTXC3wS9ZJ2YVgTBOBCE+lKEeJE9jneUu6mhhhVS0xEgjZIQWNTRXevkRmocQNXuzZbUrkNL2SIx2r4Gjc9nqfw0MVV4VUaxc7WxNvYSrmxZg8ne0J5JsZaZ0MKIYIXZV7kK3AIL8SpHS92/LIHCdDH2PFsZ4OSY4H3BPCVrXKNUbWjWv8P9q+FPnjsdbC9U5yM468owmZfaBW+K5PmdncbTr5nqV9xi04ysCT2cPv8+ciLhBYrPnhxhxSpU5SNE4TUpybzUA2V58iHaU6stJ+tLzXr+S0stfeZwIJnBgKQ4wOgX3005D4PGRwv440w1VXh9CMqZWmiuMORWsfTq9w9s0MHxQR/XWXkE4STHASZ6fRnqlk3gP7XjPTVOaKuwAa/kO/n2nmGfk2egaljTJL9sieiv9sNgw88nCS1Miv3pWmEURlpXCbMyBIbBDUr8ASXriszb5XeniLoChBSwl6judx5C1hgEdSd6Iw5g1++nu80Ac1rsABkNUjMjGDWjjBA6qTeT+9Asai5xQXvFMt5b64Hhj35cJw5ejAMsWn+dR217W47ZbbCbIgcOUwxmx3+xaE8qRFIEbLuxv9YPX3nroGpdVya0QOunA8sIuGIHAScFCwhWfDibCThORyEfSRnioWZtJwFjPf7bCcV/Pga6tMVy2yPP6Bzg6E6UdbTOml7fOakA7ZYL0bh1/g0QDwJEKC9fZAAAAABJRU5ErkJggg=="/>
 </svg>

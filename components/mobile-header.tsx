@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, User, Search, Heart, Info, Mail, DollarSign } from "lucide-react";
+import { KaleidoriumWordmark } from "@/components/kaleidorium-wordmark";
 
 interface MobileHeaderProps {
   currentPage?: "discover" | "collection" | "for-artists" | "for-galleries" | "about" | "contact" | "pricing" | "login" | "profile" | "register";
@@ -36,11 +37,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
           className="flex items-center flex-shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9CFF7] rounded-[6px]"
           aria-label="Kaleidorium — go to Discover"
         >
-          <img 
-            src="/logos/kaleidorium-wordmark-mobile.png?v=12" 
-            alt="Kaleidorium Logo" 
-            className="h-8 w-auto flex-shrink-0"
-          />
+          <KaleidoriumWordmark size="mobile" />
         </button>
         <Button
           variant="ghost"
@@ -54,15 +51,15 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
 
       {/* Mobile Menu Modal */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-2xl p-6">
+        <div className="mobile-menu-overlay bg-black/50 z-[60] justify-center">
+          <div className="bg-white w-full max-w-md rounded-t-2xl mobile-menu-drawer">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-black">Menu</h2>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowMenuModal(false)}
-                className="text-black hover:bg-gray-100"
+                className="mobile-menu-close-btn text-black"
               >
                 ×
               </Button>
@@ -70,7 +67,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
             <div className="space-y-3">
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/");
                   setShowMenuModal(false);
@@ -81,7 +78,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/collection");
                   setShowMenuModal(false);
@@ -92,7 +89,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/?view=why-kaleidorium");
                   setShowMenuModal(false);
@@ -103,7 +100,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/pricing");
                   setShowMenuModal(false);
@@ -114,7 +111,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/contact");
                   setShowMenuModal(false);
@@ -125,7 +122,7 @@ export function MobileHeader({ currentPage }: MobileHeaderProps) {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start font-bold text-black hover:bg-[#F0F0F0] active:bg-[#F0F0F0]"
+                className="mobile-menu-btn w-full"
                 onClick={() => {
                   router.push("/profile");
                   setShowMenuModal(false);

@@ -1210,7 +1210,7 @@ export function ArtistGalleryDashboard({ userId, isGallery, artistId }: ArtistGa
                       />
                       <div>
                         <p className="font-medium">{artwork.artwork_title}</p>
-                        <p className="text-sm text-muted-foreground">by {artwork.artist}</p>
+                        <p className="text-sm text-[#6B4FD4]">by {artwork.artist}</p>
                       </div>
                       {/* Performance Metrics */}
                       <div className="flex gap-4 text-sm text-muted-foreground pt-2 border-t border-[#E6E4DF]">

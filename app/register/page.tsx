@@ -611,7 +611,7 @@ export default function RegisterPage() {
                 onChange={(e) => setCountry(e.target.value)}
                 disabled={isLoading}
                 required
-                className="block w-full border border-input rounded-md px-3 py-2 text-sm"
+                className="block w-full border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
               >
                 <option value="">Select Country</option>
                 {countries.map((c: { value: string; label: string }) => (
@@ -639,7 +639,7 @@ export default function RegisterPage() {
                 checked={notificationConsent}
                 onChange={(e) => setNotificationConsent(e.target.checked)}
                 disabled={isLoading}
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mt-1 h-4 w-4 text-[#6B4FD4] focus:ring-[#D9CFF7] border-gray-300 rounded"
               />
               <label htmlFor="notificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
                 Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.
@@ -674,7 +674,7 @@ export default function RegisterPage() {
               <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>What mediums of art do you enjoy the most?</label>
               <div className="flex flex-wrap gap-2 mb-1">
                 {artTypes.map((tag, idx) => (
-                  <span key={tag+idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                  <span key={tag+idx} className="artwork-chip px-2 py-1 rounded flex items-center">
                     {tag}
                     <button type="button" className="ml-1 text-xs" onClick={() => setArtTypes(artTypes.filter((t, i) => i !== idx))}>&times;</button>
                   </span>
@@ -715,7 +715,7 @@ export default function RegisterPage() {
                     {ART_TYPE_SUGGESTIONS.filter(s => !artTypes.includes(s) && s.toLowerCase().includes(artTypeInput.toLowerCase())).map((s, idx) => (
                       <li
                         key={s}
-                        className={`px-3 py-2 cursor-pointer ${artTypeSuggestionIdx === idx ? 'bg-blue-100' : ''}`}
+                        className={`px-3 py-2 cursor-pointer ${artTypeSuggestionIdx === idx ? 'bg-[#F0EBFF] text-[#6B4FD4]' : ''}`}
                         onMouseDown={() => {
                           if (!artTypes.includes(s)) setArtTypes([...artTypes, s]);
                           setArtTypeInput("");
@@ -734,7 +734,7 @@ export default function RegisterPage() {
               <label className="block mb-1 text-sm font-sans font-bold text-black" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>What styles of art resonate with you the most?</label>
               <div className="flex flex-wrap gap-2 mb-1">
                 {artStyles.map((tag, idx) => (
-                  <span key={tag+idx} className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center">
+                  <span key={tag+idx} className="artwork-chip px-2 py-1 rounded flex items-center">
                     {tag}
                     <button type="button" className="ml-1 text-xs" onClick={() => setArtStyles(artStyles.filter((t, i) => i !== idx))}>&times;</button>
                   </span>
@@ -775,7 +775,7 @@ export default function RegisterPage() {
                     {ART_STYLE_SUGGESTIONS.filter(s => !artStyles.includes(s) && s.toLowerCase().includes(artStyleInput.toLowerCase())).map((s, idx) => (
                       <li
                         key={s}
-                        className={`px-3 py-2 cursor-pointer ${artStyleSuggestionIdx === idx ? 'bg-green-100' : ''}`}
+                        className={`px-3 py-2 cursor-pointer ${artStyleSuggestionIdx === idx ? 'bg-[#F0EBFF] text-[#6B4FD4]' : ''}`}
                         onMouseDown={() => {
                           if (!artStyles.includes(s)) setArtStyles([...artStyles, s]);
                           setArtStyleInput("");
@@ -797,7 +797,7 @@ export default function RegisterPage() {
                 onChange={e => setArtSpendingRange(e.target.value as ArtSpendingRange)}
                 disabled={isLoading}
                 required
-                className="block w-full border border-input rounded-md px-3 py-2 text-sm"
+                className="block w-full border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D9CFF7] focus:border-transparent"
               >
                 <option value="">Select price range</option>
                 {spendingRanges.map((range) => (

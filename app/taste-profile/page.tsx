@@ -7,6 +7,8 @@ import { NewMobileHeader } from "@/components/new-mobile-header"
 import { TasteProfilePageContent } from "@/components/taste-profile-page-content"
 import { supabase } from "@/lib/supabase"
 import { loadTempCollection } from "@/lib/temp-collection"
+import { ArtworkSearchProvider, useArtworkSearch } from "@/contexts/artwork-search-context"
+import { GlobalArtworkSearchBar, GlobalArtworkSearchResults } from "@/components/global-artwork-search"
 
 type AppView =
   | "discover"
@@ -22,6 +24,41 @@ type AppView =
   | "pricing"
   | "terms"
   | "privacy"
+
+function TasteProfilePageBody({
+  collectionCount,
+  setView,
+}: {
+  collectionCount: number
+  setView: (view: AppView) => void
+}) {
+  const { hasActiveSearch } = useArtworkSearch()
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="md:hidden">
+        <NewMobileHeader
+          currentPage="taste-profile"
+          collectionCount={collectionCount}
+          setView={setView}
+        />
+      </div>
+      <div className="hidden md:block">
+        <DesktopHeader
+          currentPage="taste-profile"
+          collectionCount={collectionCount}
+          setView={setView}
+        />
+      </div>
+      <div className="hidden md:block">
+        <GlobalArtworkSearchBar />
+      </div>
+      <main className="flex-1 flex flex-col pt-[calc(96px+env(safe-area-inset-top))] md:pt-0 pb-[calc(24px+env(safe-area-inset-bottom))] md:pb-0">
+        {hasActiveSearch ? <GlobalArtworkSearchResults /> : <TasteProfilePageContent />}
+      </main>
+    </div>
+  )
+}
 
 export default function TasteProfilePage() {
   const router = useRouter()
@@ -62,24 +99,8 @@ export default function TasteProfilePage() {
   )
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="md:hidden">
-        <NewMobileHeader
-          currentPage="taste-profile"
-          collectionCount={collectionCount}
-          setView={setView}
-        />
-      </div>
-      <div className="hidden md:block">
-        <DesktopHeader
-          currentPage="taste-profile"
-          collectionCount={collectionCount}
-          setView={setView}
-        />
-      </div>
-      <main className="flex-1 flex flex-col pt-[calc(96px+env(safe-area-inset-top))] md:pt-0 pb-[calc(24px+env(safe-area-inset-bottom))] md:pb-0">
-        <TasteProfilePageContent />
-      </main>
-    </div>
+    <ArtworkSearchProvider>
+      <TasteProfilePageBody collectionCount={collectionCount} setView={setView} />
+    </ArtworkSearchProvider>
   )
 }

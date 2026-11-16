@@ -614,11 +614,11 @@ function ArtistRegisterPage() {
                 </Button>
               </form>
               <div className="mt-6 p-5 bg-[#F6F4FB] border border-[#DDD6F2] rounded-2xl" style={{fontFamily: 'Arial, sans-serif'}}>
-                <p className="text-sm font-semibold text-[#4F4564] mb-3">Need Help?</p>
-                <div className="space-y-3 text-sm text-[#6E62A6] leading-relaxed">
+                <p className="text-sm font-semibold text-[#6B4FD4] mb-3">Need Help?</p>
+                <div className="space-y-3 text-sm text-[#6B4FD4] leading-relaxed">
                   <p>
                     <span className="font-medium">Don't have a token?</span> Artist registration requires an invitation from our team.{" "}
-                    <a href="/?view=why-kaleidorium&role=artist" className="underline hover:text-[#4F4564]">
+                    <a href="/?view=why-kaleidorium&role=artist" className="underline hover:text-[#6B4FD4]">
                       Submit your portfolio for review
                     </a>{" "}
                     to be considered.
@@ -719,7 +719,7 @@ function ArtistRegisterPage() {
                     id="artistNotificationConsent"
                     checked={artist.notificationConsent}
                     onChange={(e) => setArtist({ ...artist, notificationConsent: e.target.checked })}
-                    className="mt-1 h-4 w-4 text-[#4F4564] focus:ring-[#D9CFF7] border-[#E6E4DF] rounded"
+                    className="mt-1 h-4 w-4 text-[#6B4FD4] focus:ring-[#D9CFF7] border-[#E6E4DF] rounded"
                   />
                   <label htmlFor="artistNotificationConsent" className="text-sm text-gray-700 leading-relaxed font-normal">
                     Tick this box to be notified when new artwork matches your profile, and to receive the odd communication from Kaleidorium.

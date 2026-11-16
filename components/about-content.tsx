@@ -102,10 +102,10 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
                 Swipe. Discover. Fall in Love (with Art).
               </h1>
               <p className="text-base font-sans text-black mb-4 leading-relaxed" style={{fontFamily: 'Arial, sans-serif'}}>
-                Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple, swipe-based app that gets smarter as you use it.
+                Finding art you actually like shouldn't feel like browsing a furniture catalog. Kaleidorium is a simple discovery experience that gets smarter as you use it.
               </p>
               <p className="text-sm font-sans text-black mb-3" style={{fontFamily: 'Arial, sans-serif'}}>
-                You swipe, we learn. Our AI-powered algorithm refines your preferences and shows you art you're more likely to love across style and mediums.
+                You like or swipe, we learn. Our AI-powered algorithm refines your preferences and shows you art you're more likely to love across style and mediums.
               </p>
               <p className="text-sm font-sans text-black mb-6" style={{fontFamily: 'Arial, sans-serif'}}>
                 Save what speaks to you. Build your own visual album to inspire you, click to explore the artist's site, get a personalised artistic profile, artwork recommendations curated for you, and support artists you like.
@@ -115,7 +115,7 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   onClick={() => router.push('/register')}
-                  className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
+                  className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Register as a Collector
@@ -199,9 +199,9 @@ export function AboutContent({ setView }: { setView: (view: "discover" | "collec
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <h3 className="font-sans font-bold text-black mb-2 text-sm">Swipe & Discover</h3>
+              <h3 className="font-sans font-bold text-black mb-2 text-sm">Like, Swipe & Discover</h3>
               <p className="text-xs font-sans text-gray-600 leading-relaxed">
-                Swipe through curated artwork. Like what you love, skip what doesn't resonate.
+                Browse curated artwork. Like what you love, skip what doesn't resonate.
               </p>
             </div>
 

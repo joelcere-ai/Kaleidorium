@@ -181,7 +181,7 @@ export function ProfilePictureUpload({
           <div className="text-xs text-muted-foreground mt-2 space-y-1">
             <p>JPG, PNG, GIF, or WebP • Max 5MB</p>
             {enableSecureScan && (
-              <p className="flex items-center justify-center text-blue-600 text-sm font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
+              <p className="flex items-center justify-center text-[#6B4FD4] text-sm font-sans" style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
                 <Shield className="w-3 h-3 mr-1" />
                 Advanced security scanning enabled
               </p>

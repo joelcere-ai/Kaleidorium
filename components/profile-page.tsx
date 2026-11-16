@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select"
 
 const profileTabTriggerClass =
-  "rounded-md px-3 py-2 text-sm font-medium text-[#6B6578] transition-colors hover:text-[#4F4564] data-[state=active]:bg-[#F5F0FF] data-[state=active]:text-[#4F4564] data-[state=active]:border data-[state=active]:border-[#D9CFF7] data-[state=active]:shadow-none"
+  "rounded-md px-3 py-2 text-sm font-medium text-[#6B6578] transition-colors hover:text-[#6B4FD4] data-[state=active]:bg-[#F0EBFF] data-[state=active]:text-[#6B4FD4] data-[state=active]:border data-[state=active]:border-[#D9CFF7] data-[state=active]:shadow-none"
 
 interface ProfilePageProps {
   collection: Artwork[]
@@ -1510,7 +1510,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                       <div>
                           <h4 className="text-sm font-medium mb-2">Top Artists</h4>
                         {insights.topArtists.length > 0 ? (
-                          <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                          <ul className="list-disc pl-5 text-sm text-[#6B4FD4]">
                             {insights.topArtists.map((artist: string) => (
                               <li key={artist}>{artist}</li>
                             ))}
@@ -1525,9 +1525,9 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                         <div className="flex flex-wrap gap-2">
                           {insights.topTags.length > 0 ? (
                             insights.topTags.map((tag) => (
-                              <Badge key={tag} variant="secondary">
+                              <span key={tag} className="artwork-chip">
                                 {tag}
-                              </Badge>
+                              </span>
                             ))
                           ) : (
                             <p className="text-sm text-muted-foreground">No styles in collection yet</p>
@@ -1850,7 +1850,7 @@ export function ProfilePage({ collection, onReturnToDiscover }: ProfilePageProps
                                 href={artistData.website} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-[#6E62A6] hover:underline"
+                                className="text-[#6B4FD4] hover:underline"
                               >
                                 {artistData.website}
                               </a>

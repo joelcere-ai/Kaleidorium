@@ -11,7 +11,7 @@ import MobileCardStack from "@/components/mobile-card-stack";
 import { ImageOverlay } from "@/components/image-overlay";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, X } from "lucide-react";
+import { Heart, ArrowLeft, X, ThumbsUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useMobileDetection } from "@/hooks/use-mobile-detection";
@@ -21,7 +21,12 @@ import { useToast } from "@/hooks/use-toast";
 import { WhyKaleidoriumPage } from "@/components/why-kaleidorium";
 import { loadTempCollection, saveTempCollection } from "@/lib/temp-collection";
 import { migrateTempPreferencesToDb } from "@/lib/temp-preferences";
+import { mapDbArtworkToArtwork } from "@/lib/taste-profile";
+import { stashPendingDiscoverArtwork } from "@/lib/discover-deep-link";
 import type { Artwork } from "@/types/artwork";
+import { ArtworkSearchProvider, useArtworkSearch } from "@/contexts/artwork-search-context";
+import { CollectionPageContent } from "@/components/collection-page-content";
+import { GlobalArtworkSearchBar, GlobalArtworkSearchResults } from "@/components/global-artwork-search";
 
 // Defined outside HomeContent to avoid remounting on every parent re-render
 // (keyboard appearing on mobile caused window.resize → HomeContent re-render → form unmount)
@@ -88,20 +93,20 @@ function ForArtistsForm() {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Name</label>
             <input type="text" name="name" value={formData.name} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="Your full name" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="your@email.com" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Portfolio Link</label>
             <input type="url" name="portfolioLink" value={formData.portfolioLink}
               onChange={handleInputChange} onBlur={handlePortfolioBlur}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="www.yourportfolio.com" required />
           </div>
           <Button type="submit" disabled={isSubmitting} variant="outline" className="w-full">
@@ -203,32 +208,32 @@ function ForGalleriesForm() {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Gallery Name</label>
             <input type="text" name="name" value={formData.name} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="Your gallery name" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Website</label>
             <input type="url" name="website" value={formData.website}
               onChange={handleInputChange} onBlur={handleWebsiteBlur}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="www.yourgallery.com" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Contact Name</label>
             <input type="text" name="contactName" value={formData.contactName} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="Your name" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="your@email.com" required />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-black mb-1">Message</label>
             <textarea name="message" value={formData.message} onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D9CFF7]"
               placeholder="Tell us about your gallery and which artists you would like to list..."
               rows={4} required />
           </div>
@@ -432,7 +437,12 @@ function HomeContent() {
 
   const resolveActiveCollection = useCallback((): Artwork[] => {
     if (!user) return collection;
-    return dbCollection.length > 0 ? dbCollection : collection;
+    if (dbCollection.length > 0) {
+      return dbCollection.map((row) =>
+        mapDbArtworkToArtwork(row as Record<string, unknown>)
+      );
+    }
+    return collection;
   }, [user, dbCollection, collection]);
 
   const displayCollectionCount = resolveActiveCollection().length;
@@ -838,13 +848,13 @@ function HomeContent() {
         </div>
         <button
           type="submit"
-          className="font-sans bg-white border border-[#000000] text-[#000000] font-bold px-4 py-2 rounded text-sm hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all"
+          className="font-sans bg-white border border-[#000000] text-[#000000] font-bold px-4 py-2 rounded text-sm hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all"
           disabled={loading}
           style={{fontFamily: 'Arial, sans-serif'}}
         >
           {loading ? "Sending..." : "Submit"}
         </button>
-        {status && <div className="font-sans mt-4 text-center text-blue-700 text-sm">{status}</div>}
+        {status && <div className="font-sans mt-4 text-center text-[#6B4FD4] text-sm">{status}</div>}
       </form>
     );
   };
@@ -894,93 +904,22 @@ function HomeContent() {
       
       case "collection": {
         const activeCollection = resolveActiveCollection();
+        const handleViewInDiscover = (artwork: Artwork) => {
+          const artworkId = String(artwork.id).split("_")[0];
+          stashPendingDiscoverArtwork(artwork);
+          setViewState("discover");
+          router.push(`/?artworkId=${encodeURIComponent(artworkId)}`, { scroll: false });
+        };
+
         return (
           <div className="flex-1 overflow-y-auto">
-            {isMobile ? (
-              <MobileCardStack
-                artworks={activeCollection}
-                view="collection"
-                setView={setView}
-                collection={activeCollection}
-                onRemoveFromCollection={handleRemoveFromCollection}
-                onLike={() => {}}
-                onDislike={() => {}}
-                onAddToCollection={() => {}}
-                onLoadMore={() => {}}
-              />
-            ) : (
-              <div className="container mx-auto px-4 py-8">
-                <div className="mb-6">
-                  <Button variant="ghost" onClick={() => setView("discover")} style={{fontSize: '14px', fontFamily: 'Arial, sans-serif'}}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Discovery
-                  </Button>
-                </div>
-
-                <div className="mb-5">
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Your Collection ({activeCollection.length})
-                  </h2>
-                </div>
-
-                {activeCollection.length === 0 ? null : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {activeCollection.map((artwork) => (
-                      <Card key={artwork.id} className="overflow-hidden group hover:shadow-md transition-shadow">
-                        <div
-                          className="aspect-square overflow-hidden bg-gray-100 cursor-zoom-in"
-                          onClick={() => openCollectionImageOverlay(artwork)}
-                          role="button"
-                          tabIndex={0}
-                          aria-label={`View ${artwork.title} full size`}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              openCollectionImageOverlay(artwork);
-                            }
-                          }}
-                        >
-                          <img
-                            src={artwork.artwork_image || "/placeholder.svg"}
-                            alt={artwork.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-0.5 truncate">{artwork.title}</h3>
-                          <p className="text-sm text-gray-500 mb-3 truncate">{artwork.artist}</p>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="flex-1 min-w-0 whitespace-nowrap"
-                              onClick={() => openCollectionImageOverlay(artwork)}
-                            >
-                              View artwork
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="shrink-0 bg-[#C42B3D] border border-[#C42B3D] text-white font-bold hover:bg-[#A82433] hover:border-[#A82433] active:scale-95"
-                              onClick={() => handleRemoveFromCollection(artwork.id)}
-                              aria-label="Remove from collection"
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-            {overlayImage && (
-              <ImageOverlay
-                artwork_image={overlayImage.url}
-                alt={overlayImage.alt}
-                onClose={closeCollectionImageOverlay}
-              />
-            )}
+            <CollectionPageContent
+              artworks={activeCollection}
+              isMobile={isMobile}
+              onRemoveFromCollection={handleRemoveFromCollection}
+              onViewInDiscover={handleViewInDiscover}
+              onDiscover={() => setView("discover")}
+            />
           </div>
         );
       }
@@ -1033,7 +972,7 @@ function HomeContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
+                        className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         Join the Founding 100 Artists
@@ -1276,7 +1215,7 @@ function HomeContent() {
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('portfolio-form')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
+                            className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the Founding 100 Artists
@@ -1513,7 +1452,7 @@ function HomeContent() {
                     </p>
                     <Button
                       onClick={() => router.push('/for-artists/register')}
-                      className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
+                      className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                       style={{fontFamily: 'Arial, sans-serif'}}
                     >
                       Register as an Artist
@@ -1660,7 +1599,7 @@ function HomeContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
+                        className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                         style={{fontFamily: 'Arial, sans-serif'}}
                       >
                         Join the first 50 partner galleries
@@ -1905,7 +1844,7 @@ function HomeContent() {
                 </p>
                 <Button
                   onClick={() => router.push('/for-galleries/register')}
-                  className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
+                  className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                   style={{fontFamily: 'Arial, sans-serif'}}
                 >
                   Register as a Gallery
@@ -1952,7 +1891,7 @@ function HomeContent() {
                         <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
                             onClick={() => document.getElementById('gallery-form')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
+                            className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-6 py-2 text-sm font-medium"
                             style={{fontFamily: 'Arial, sans-serif'}}
                           >
                             Join the first 50 partner galleries
@@ -2197,7 +2136,7 @@ function HomeContent() {
                     </p>
                     <Button
                       onClick={() => router.push('/for-galleries/register')}
-                      className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#F0F0F0] hover:border-[#000000] hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
+                      className="bg-white border border-[#000000] text-[#000000] font-bold hover:bg-[#8B6AD4] hover:border-[#8B6AD4] hover:text-white hover:scale-[1.02] active:scale-95 transition-all px-8 py-2 text-sm font-medium"
                       style={{fontFamily: 'Arial, sans-serif'}}
                     >
                       Register as a Gallery
@@ -2309,14 +2248,18 @@ function HomeContent() {
       }
     : {};
 
+  const { hasActiveSearch } = useArtworkSearch();
+  const showGlobalSearchResults = hasActiveSearch && view !== "discover";
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {renderHeader()}
+      {!isMobile && <GlobalArtworkSearchBar hideBar={view === "discover" || view === "collection"} />}
       <main
         className="flex-1 flex flex-col"
         style={mobileContentPadding}
       >
-        {renderContent()}
+        {showGlobalSearchResults ? <GlobalArtworkSearchResults /> : renderContent()}
       </main>
     </div>
   );
@@ -2325,7 +2268,9 @@ function HomeContent() {
 export default function Home() {
   return (
     <Suspense fallback={null}>
-      <HomeContent />
+      <ArtworkSearchProvider>
+        <HomeContent />
+      </ArtworkSearchProvider>
     </Suspense>
   );
 }
