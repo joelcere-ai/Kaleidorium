@@ -26,7 +26,8 @@ import { stashPendingDiscoverArtwork } from "@/lib/discover-deep-link";
 import type { Artwork } from "@/types/artwork";
 import { ArtworkSearchProvider, useArtworkSearch } from "@/contexts/artwork-search-context";
 import { CollectionPageContent } from "@/components/collection-page-content";
-import { GlobalArtworkSearchBar, GlobalArtworkSearchResults } from "@/components/global-artwork-search";
+import { GlobalArtworkSearchBar, GlobalArtworkSearchResults } from "@/components/global-artwork-search"
+import { ViewStructuredData } from "@/components/view-structured-data";
 
 // Defined outside HomeContent to avoid remounting on every parent re-render
 // (keyboard appearing on mobile caused window.resize → HomeContent re-render → form unmount)
@@ -2253,6 +2254,7 @@ function HomeContent() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <ViewStructuredData view={view} role={searchParams.get("role")} />
       {renderHeader()}
       {!isMobile && <GlobalArtworkSearchBar hideBar={view === "discover" || view === "collection"} />}
       <main

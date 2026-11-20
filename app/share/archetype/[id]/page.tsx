@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { getArchetypeById } from '@/lib/collector-archetypes'
+import { SITE_URL } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 
 interface PageProps {
@@ -19,14 +20,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const shareText = `I'm a ${archetype.name}! Discover your collector archetype at Kaleidorium.com`
-  const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kaleidorium.com'}${archetype.imagePath}`
+  const imageUrl = `${SITE_URL}${encodeURI(archetype.imagePath)}`
+  const canonical = `${SITE_URL}/share/archetype/${archetype.id}`
 
   return {
-    title: `${archetype.name} - Kaleidorium`,
-    description: shareText,
+    title: { absolute: `${archetype.name} · Kaleidorium` },
+    description: archetype.description,
+    alternates: { canonical },
+    robots: { index: true, follow: true },
     openGraph: {
       title: archetype.name,
       description: shareText,
+      url: canonical,
+      siteName: 'Kaleidorium',
       images: [
         {
           url: imageUrl,

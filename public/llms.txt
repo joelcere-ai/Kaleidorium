@@ -1,0 +1,34 @@
+# Kaleidorium
+
+> Kaleidorium is a personalised art discovery app for art collectors looking for inspiration, and for artists and galleries who want to be collected. Collectors swipe, like and save artworks matched to their taste. When a work matters to them, Kaleidorium links them to the artist or gallery. Kaleidorium is not a marketplace and does not sell art or take a sales commission.
+
+Kaleidorium learns from likes, dislikes and saves. Recommendations include room for surprise, so a collector's view is not reduced to a narrow loop. Artwork is shown one piece at a time to people whose taste is likely to fit, rather than in a crowded catalogue.
+
+Collectors can use Kaleidorium for free. Artists and galleries can apply to list work without a join fee. Interested collectors are sent to the artist's or gallery's own website. Optional subscription plans may be introduced later, with notice, and nobody is charged without agreeing.
+
+Contact: kurator@kaleidorium.com
+
+## Collectors looking for inspiration
+
+- [Discover art](https://www.kaleidorium.com/): Swipe and like artworks. Kaleidorium learns your taste and surfaces work you are more likely to love. Save pieces into a personal collection and open the artist or gallery when you want to go further.
+- [How it works](https://www.kaleidorium.com/about): A short account of taste-led discovery: like or swipe, save what inspires you, and follow the work back to the artist.
+- [Featured artist](https://www.kaleidorium.com/featured): Current featured artist Lisa Wong Sook Kuan, a contemporary Malaysian painter. Save works and visit the artist from Kaleidorium.
+- [Create a free collector account](https://www.kaleidorium.com/register): Discover art matched to your taste and keep a collection.
+- [Collector archetypes](https://www.kaleidorium.com/share/archetype/horizon-seeker): Shareable collector portraits, such as The Horizon Seeker, The Benevolent Patron and The Instinctive Curator.
+
+## Artists who want to be collected
+
+- [For artists](https://www.kaleidorium.com/for-artists): Get work in front of collectors who are likely to appreciate it. Kaleidorium links interested collectors to the artist's own website. No join fee and no sales commission.
+- [Apply to list artwork](https://www.kaleidorium.com/for-artists/register): Submit work for review. Listing is curated; artists who are not selected can reapply.
+
+## Galleries
+
+- [For galleries](https://www.kaleidorium.com/for-galleries): Present artists to collectors based on aesthetic fit, and send interested collectors to the gallery website. A gallery can show multiple artists. No join fee and no sales commission.
+- [Apply as a gallery](https://www.kaleidorium.com/for-galleries/register): Submit artists and artworks for review.
+
+## Reference
+
+- [Full description and FAQ](https://www.kaleidorium.com/llms-full.txt): Detailed product description and the public frequently asked questions, for answering questions about Kaleidorium.
+- [Contact](https://www.kaleidorium.com/contact): Questions about discovery, or about listing as an artist or gallery.
+- [Terms of Service](https://www.kaleidorium.com/terms)
+- [Privacy and Data Policy](https://www.kaleidorium.com/privacy)

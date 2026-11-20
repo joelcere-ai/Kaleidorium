@@ -14,25 +14,18 @@ import { CookieConsent } from "@/components/cookie-consent"
 import { Footer } from "@/components/footer"
 import { MobileInstallPrompt } from "@/components/mobile-install-prompt"
 import { NavigationProvider } from "@/components/navigation-context"
+import { RouteJsonLd } from "@/components/route-json-ld"
+import { HOME_TITLE, PAGES, SITE_URL, siteJsonLd } from "@/lib/seo"
 
 
 export const metadata: Metadata = {
-  title: "Kaleidorium – Your Personal Art Curator",
-  description: "Kaleidorium is your personal art curator. Swipe or like to discover art matched to your taste and collect what you love.",
-  keywords: [
-    "digital art finder",
-    "contemporary art online", 
-    "NFT alternatives",
-    "swipe art discovery",
-    "art collector platform",
-    "match artists with collectors",
-    "AI art curation",
-    "online art gallery",
-    "curated art collection",
-    "art discovery platform",
-    "digital art marketplace",
-    "contemporary art gallery"
-  ],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: HOME_TITLE,
+    template: "%s · Kaleidorium",
+  },
+  description: PAGES.home.description,
+  keywords: [...PAGES.home.keywords],
   authors: [{ name: "Kaleidorium" }],
   creator: "Kaleidorium",
   publisher: "Kaleidorium",
@@ -50,32 +43,35 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.kaleidorium.com',
-    title: 'Kaleidorium – Your Personal Art Curator',
-    description: 'Kaleidorium is your personal art curator. Swipe or like to discover art matched to your taste and collect what you love.',
+    url: SITE_URL,
+    title: HOME_TITLE,
+    description: PAGES.home.description,
     siteName: 'Kaleidorium',
     images: [
       {
-        url: 'https://www.kaleidorium.com/logos/kaleidorium-icon-512.png',
+        url: '/logos/kaleidorium-icon-512.png',
         width: 512,
         height: 512,
-        alt: 'Kaleidorium - Art Discovery Platform',
+        alt: 'Kaleidorium, taste-led art discovery for collectors, artists and galleries',
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Kaleidorium – Your Personal Art Curator',
-    description: 'Kaleidorium is your personal art curator. Swipe or like to discover art matched to your taste and collect what you love.',
-    images: ['https://www.kaleidorium.com/logos/kaleidorium-icon-512.png'],
+    card: 'summary',
+    title: HOME_TITLE,
+    description: PAGES.home.description,
+    images: ['/logos/kaleidorium-icon-512.png'],
     creator: '@kaleidorium',
     site: '@kaleidorium',
   },
   alternates: {
-    canonical: 'https://www.kaleidorium.com',
+    canonical: SITE_URL,
+    types: {
+      'text/plain': `${SITE_URL}/llms.txt`,
+    },
   },
-  category: 'Art & Culture',
-  classification: 'Art Discovery Platform',
+  category: 'Art',
+  classification: 'Art discovery for collectors, artists and galleries',
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -139,30 +135,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/png" sizes="48x48" href="/logos/kaleidorium-icon-48.png?v=14" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=14" />
         <link rel="apple-touch-icon" sizes="180x180" href="/logos/kaleidorium-icon-180.png?v=14" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Kaleidorium",
-              url: "https://www.kaleidorium.com/",
-              logo: "https://www.kaleidorium.com/logos/kaleidorium-icon-512.png",
-              sameAs: ["https://www.instagram.com/kaleidorium/"],
-            }),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "Kaleidorium",
-              url: "https://www.kaleidorium.com/",
-            }),
-          }}
-        />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary" />
+        <RouteJsonLd data={siteJsonLd()} />
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-6NYJYN06VB"></script>
         <script

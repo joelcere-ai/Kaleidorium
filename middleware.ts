@@ -35,6 +35,24 @@ export async function middleware(req: NextRequest) {
   // Note: Admin route protection is now handled directly in the /admin page component
   // This middleware is now mainly for other future route protections
 
+  const privatePath = [
+    "/admin",
+    "/api",
+    "/profile",
+    "/collection",
+    "/taste-profile",
+    "/forgot-password",
+    "/password-reset",
+    "/reset-password",
+    "/update-password",
+    "/verify-otp",
+    "/auth",
+  ].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+
+  if (privatePath) {
+    res.headers.set("X-Robots-Tag", "noindex, nofollow")
+  }
+
   return res
 }
 
